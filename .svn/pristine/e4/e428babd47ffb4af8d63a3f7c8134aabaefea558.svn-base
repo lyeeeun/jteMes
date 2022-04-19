@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.qualMgt.qualPec.autoQualMgt.NewAutoQualMgtMapper">
+	<sql id="autoInsp_base">
+			insp_id as inspId,
+			insp_date as inspDate,
+			item_nm as itemNm,
+			inner_dia as innerDia,
+			outer_dia as outerDia,
+			external_dia as externalDia,
+			electric_part as electricPart,
+			distance,
+			pass_yn as passYn
+		FROM his_auto_inspect
+		WHERE 1=1
+		AND item_nm = #{itemNm}
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != '' ">
+			AND insp_date between #{searchStartDate} AND DATE_ADD(#{searchEndDate},INTERVAL 0 DAY)
+		</if>
+	</sql>
+	
+	<select id="selectAutoInspInfo"
+		parameterType="jin.mes.cform.qualMgt.qualPec.autoQualMgt.NewAutoQualMgtDto"
+		resultType="jin.mes.cform.qualMgt.qualPec.autoQualMgt.NewAutoQualMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY insp_date desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="autoInsp_base"></include>
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<select id="selectAutoInspInfoCount"
+		parameterType="jin.mes.cform.qualMgt.qualPec.autoQualMgt.NewAutoQualMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="autoInsp_base"></include>
+		)c_table
+	</select>
+	
+	<select id="selectInspItemList"
+		parameterType="jin.mes.cform.qualMgt.qualPec.autoQualMgt.NewAutoQualMgtDto"
+		resultType="jin.mes.cform.qualMgt.qualPec.autoQualMgt.NewAutoQualMgtDto">
+		SELECT 
+			item_nm AS itemNm
+		FROM his_auto_inspect
+		WHERE item_nm != 'test'
+		GROUP BY item_nm
+	</select>
+	
+	
+	
+</mapper>

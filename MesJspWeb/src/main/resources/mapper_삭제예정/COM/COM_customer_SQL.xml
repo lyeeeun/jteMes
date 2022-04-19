@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="COM_customer">
+	<!-- CUSTOMER 고객사 테이블 전체 조회 -->
+	<select id="customerList" parameterType="hashmap"
+		resultType="hashmap">
+		   SELECT 
+		    		CUSTOMERID,		
+		    		CUSTOMERNAME,	
+		    		CUSTOMERDESC,	
+		    		BIZ_GBN,		
+		    		BIZ_KND,		
+		    		CUSTOMER_STAT,	
+		    		EST_YMD,		
+		    		REG_YMD,		
+		    		REP_NM,			
+		    		BIZ_REG_NO,		
+		    		ADDR,			
+		    		FAX_NO,			
+		    		CHR_NM,			
+		    		CHR_TEL_NO,		
+		    		DEL_GBN,		
+		    		CUSTOMERIUSE	
+			FROM TB_CUSTOMER
+			WHERE  DEL_GBN = 'N' 		
+		<if test='CUSTOMERNAME != null and CUSTOMERNAME != ""'>
+			AND CUSTOMERNAME LIKE CONCAT("%" #{CUSTOMERNAME} "%")
+		</if>
+		<if test='CUSTOMERIUSE != null and CUSTOMERIUSE != ""'>
+			AND CUSTOMERIUSE =#{CUSTOMERIUSE}
+		</if>
+		    ORDER BY CUSTOMERID
+	</select>
+
+	<!-- CUSTOMER 사용여부 중복제거 후 조회(콤보박스 이용) -->
+	<select id="customerIUseList" parameterType="hashmap"
+		resultType="hashmap">
+		    SELECT DISTINCT CUSTOMERIUSE
+			  FROM TB_CUSTOMER
+			  
+	</select>
+
+	<!-- 고객사 추가 -->
+	<select id="insertCustomerList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		INSERT 
+			INTO TB_CUSTOMER(
+ 		    		CUSTOMERID,		
+		    		CUSTOMERNAME,
+		    		CUSTOMERDESC,	
+		    		BIZ_GBN,		
+		    		BIZ_KND,		
+		    		CUSTOMER_STAT,	
+		    		EST_YMD,		
+		    		REG_YMD,		
+		    		REP_NM,			
+		    		BIZ_REG_NO,		
+		    		ADDR,			
+		    		FAX_NO,		
+		    		CHR_NM,			
+		    		CHR_TEL_NO,	
+		    		DEL_GBN,		
+		    		CUSTOMERIUSE,	
+					REG_USER_ID,	
+					REG_PGM_ID,		
+					REG_DT,			
+					UPD_USER_ID,	
+					UPD_PGM_ID,		
+					UPD_DT			
+					)
+			VALUES(
+				    (SELECT SUB_TABLE.CUSTOMERID + 1 AS CUSTOMERID FROM tb_customer AS SUB_TABLE ORDER BY CUSTOMERID DESC LIMIT 1) <!--FN_CM_SEQ('CUSTOMERID', NULL, NULL)-->
+				   ,#{CUSTOMERNAME}
+				   ,#{CUSTOMERDESC}
+				   ,#{BIZ_GBN}
+				   ,#{BIZ_KND}
+				   ,#{CUSTOMER_STAT}
+				   ,#{EST_YMD}
+				   ,#{REG_YMD}
+				   ,#{REP_NM}
+				   ,#{BIZ_REG_NO}
+				   ,#{ADDR}
+				   ,#{FAX_NO}
+				   ,#{CHR_NM}
+				   ,#{CHR_TEL_NO}
+				   ,'N'
+				   ,'Y'
+				   ,#{REG_USER_ID}
+				   ,#{REG_PGM_ID}
+				   ,now()
+				   ,#{UPD_USER_ID}
+				   ,#{UPD_PGM_ID}
+				   ,now()
+				   )
+	</select>
+	<!-- 고객사 수정 -->
+	<select id="updateCustomerList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		UPDATE TB_CUSTOMER
+		SET 
+			CUSTOMERNAME = #{CUSTOMERNAME}
+			,CUSTOMERDESC = #{CUSTOMERDESC}
+			,BIZ_GBN = #{BIZ_GBN}
+			,BIZ_KND = #{BIZ_KND}
+			,CUSTOMER_STAT = #{CUSTOMER_STAT}
+			,EST_YMD = #{EST_YMD}
+			,REG_YMD = #{REG_YMD}
+			,REP_NM = #{REP_NM}
+			,BIZ_REG_NO = #{BIZ_REG_NO}
+			,ADDR = #{ADDR}
+			,FAX_NO = #{FAX_NO}
+			,CHR_NM = #{CHR_NM}
+			,CHR_TEL_NO = #{CHR_TEL_NO}
+			,CUSTOMERIUSE = #{CUSTOMERIUSE}
+		WHERE CUSTOMERID = #{CUSTOMERID}
+	</select>
+	<!-- 고객사 삭제 -->
+	<select id="deleteCustomerList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		UPDATE TB_CUSTOMER
+		SET	DEL_GBN = 'Y'
+		WHERE CUSTOMERID = #{CUSTOMERID}
+	</select>
+</mapper>

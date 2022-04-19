@@ -1,0 +1,13 @@
+
+.sparePartsMgtForm .sparePartsMgtForm .k-grid-toolbar div input { /**200810 youmi 메인 그리드 상단의 라디오 버튼 정렬을 위해 추가**/
+	vertical-align: sub;
+}
+#jtePopToolUse {
+	height: 100%;
+}
+
+.sparePartsMgtForm-jteSingleGrid {
+	width:100%;
+	height:100%;
+	float:left;
+}

@@ -1,0 +1,90 @@
+
+.infergodsMgtForm #jtePopAddForm_master {
+	width:100%;
+}
+
+.infergodsMgtspecProcMgtFormForm .jtePopForm_master {
+	width: 100%;
+}
+
+.specProcMgtForm #jtePopForm_form {
+	text-align: left;
+}
+
+.specProcMgtForm .select-btn-area input[type='radio'],
+.specProcMgtForm .select-btn-area input[type='radio']:checked {/** 라디오 버튼 여백을 위해 추가_200810 youmi **/
+	margin-left: 10px;
+	margin-right: 5px;  
+}
+
+.k-grid-toolbar .jte-search-aria #history_grid_shSelTxt{ /** 팝업 검색창 좌우의 여백을 위해 추가_200810 youmi **/
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+/*********************************************/
+
+.specProcMgtForm .pop-col-left-title {
+	width: 20%;
+}
+
+.specProcMgtForm .pop-col-left-content-1 {
+	width: 18%;
+}
+
+.specProcMgtForm .pop-col-left-content-2 {
+	width: 12%;
+}
+
+.specProcMgtForm .pop-col-right-title {
+	width: 20%;
+}
+
+.specProcMgtForm .pop-col-right-content-1 {
+	width: 18%;
+}
+
+.specProcMgtForm .pop-col-right-content-2 {
+	width: 12%;
+}
+
+/************************************************/
+
+.specProcMgtForm .left-input {
+	width: 100%;
+}
+
+.specProcMgtForm .right-input {
+	width: 100%;
+}
+
+.specProcMgtForm .center-input {
+	width: 100%;
+}
+
+.specProcMgtForm .center-input {
+	width: 100%;
+}
+
+.specProcMgtForm .search-btn {
+	width: 95%;
+	float: right;
+}
+
+.specProcMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.specProcMgtForm .right-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.specProcMgtForm .left-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+/*********************************************/

@@ -1,0 +1,721 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.mapper.qualMgt.infergodsMgt.InfergodsMgtMapper">
+
+	<!-- 불량관리 - 자재 -->
+	<sql id="badMtrl_base">
+			badId,	
+			badCode,
+			badQty,
+			chkUser,
+			chkUserNm,
+			chkDate,
+			badTarget,
+			badTargetCode,
+			badTargetNm,
+			badDesc,
+			mtrlId,
+			mtrlNm,
+			mtrlDiv,
+			mtrlMgtId,
+			badPgUser,
+			badPgUserNm,
+			badPgDate,
+			badPgCd,
+			badPgNm
+		FROM(
+			SELECT -- 1. 자재 - 입고불량
+					bad.bad_id				AS badId, 			-- 불량아이디
+					bad.bad_code				AS badCode,			-- 불량코드(기초코드)
+					bad.bad_qty				AS badQty,			-- 불량수량
+					bad.chk_user				AS chkUser,			-- 불량등록자 아이디
+					badUser.user_nm				AS chkUserNm,		-- 불량등록자 이름
+					bad.chk_date				AS chkDate,			-- 불략확인일
+					bad.bad_target				AS badTarget,		-- 불량업무구분(기초코드)
+					bad.bad_target_code			AS badTargetCode,	-- 불량업무코드(대상ID매핑)
+					'' 							AS badTargetNm,		-- 개별주문에는 명칭이 없으므로 생략
+					bad.bad_desc				AS badDesc,			-- 불량설명
+					mtrlMgt.mtrl_id				AS mtrlId,			-- 자재 ID
+					mtrlInfo.mtrl_nm			AS mtrlNm,			-- 자재명
+					mtrlInfo.description			AS mtrlDiv,		-- 자재구분
+					mtrlQm.mtrl_mgt_id			AS mtrlMgtId,		-- 자재상세ID
+					mtrlOrder.mtrl_order_user 		AS badPgUser,		-- 발주 수령자 아이디
+					orderUser.user_nm			AS badPgUserNm,		-- 발주 수령자 이름
+					mtrlOrder.mtrl_order_date 		AS badPgDate,		-- 발주 수령일
+					mtrlOrder.mtrl_of_id			AS badPgCd,			-- 주문서 코드
+					mtrlForm.mtrl_of_nm			AS badPgNm		-- 주문서 명
+				FROM prs_bad_product bad
+				JOIN prs_mtrl_control mtrlCtrl ON mtrlCtrl.control_no = bad.bad_target_code AND bad.bad_target = 'qual_spec01' -- 발주내역
+				JOIN prs_mtrl_order mtrlOrder ON mtrlOrder.mtrl_order_id = mtrlCtrl.mtrl_order_id
+				JOIN prs_mtrl_orderform mtrlForm ON mtrlForm.mtrl_of_id = mtrlOrder.mtrl_of_id  -- 발주주문서
+				JOIN qm_mtrl_mgt mtrlQm ON mtrlQm.mtrl_qty_target_code = bad.bad_id AND mtrlQm.mtrl_qty_target = 'mtrl_tagt03'    -- 수량확인
+				LEFT OUTER JOIN cm_mtrl_mgt mtrlMgt ON mtrlMgt.mtrl_mgt_id = mtrlQm.mtrl_mgt_id	-- 자재상세정보 확인
+				LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlInfo.mtrl_id = mtrlMgt.mtrl_id -- 자재마스터 확인
+				LEFT OUTER JOIN mb_user_info badUser ON badUser.user_id = bad.chk_user -- 불량등록자 확인
+				LEFT OUTER JOIN mb_user_info orderUser ON orderUser.user_id = mtrlOrder.mtrl_order_user -- 수량 확인자
+			UNION
+				SELECT -- 2. 자재 - 작업도중 확인 불량
+					bad.bad_id				AS badId, 			-- 불량아이디
+					bad.bad_code			AS badCode,			-- 불량코드(기초코드)
+					bad.bad_qty				AS badQty,			-- 불량수량
+					bad.chk_user			AS chkUser,			-- 불량등록자 아이디
+					badUser.user_nm			AS chkUserNm,		-- 불량등록자 이름
+					bad.chk_date			AS chkDate,			-- 불략확인일
+					bad.bad_target			AS badTarget,		-- 불량업무구분(기초코드)
+					bad.bad_target_code		AS badTargetCode,	-- 불량업무코드(대상ID매핑)
+					'' 						AS badTargetNm,		-- 작업정보에에는 명칭이 없으므로 생략
+					bad.bad_desc			AS badDesc,			-- 불량설명
+					mtrlMgt.mtrl_id			AS mtrlId,			-- 자재 ID
+					mtrlInfo.mtrl_nm		AS mtrlNm,			-- 자재명
+					mtrlInfo.description	AS mtrlDiv,		-- 자재구분
+					mtrlQm.mtrl_mgt_id		AS mtrlMgtId,		-- 자재상세ID
+					workInfo.prod_work_user AS badPgUser,		-- 작업자 아이디
+					workUser.user_nm		AS badPgUserNm,		-- 작업자 이름
+					workInfo.prod_work_end	AS badPgDate,		-- 작업 종료 시간
+					workInfo.lot_id			AS badPgCd,			-- Lot코드
+					lot.lot_nm				AS badPgNm		-- Lot 명
+				FROM prs_bad_product bad
+				JOIN qm_mtrl_mgt mtrlQm ON mtrlQm.mtrl_qty_target_code = bad.bad_id AND mtrlQm.mtrl_qty_target = 'mtrl_tagt03'    -- 수량관리	
+				JOIN prs_mtrl_useinfo useInfo ON useInfo.mtrl_use_id = bad.bad_target_code AND bad.bad_target = 'qual_spec02' -- 자재사용정보
+				LEFT OUTER JOIN prs_work_info workInfo ON workInfo.prod_work_id = useInfo.prod_work_id							-- 생산작업정보
+				LEFT OUTER JOIN prs_lot_info lot ON lot.lot_id = workInfo.lot_id											--  Lot정보
+				LEFT OUTER JOIN cm_mtrl_mgt mtrlMgt ON mtrlMgt.mtrl_mgt_id = mtrlQm.mtrl_mgt_id							-- 자재상세정보 확인
+				LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlInfo.mtrl_id = mtrlMgt.mtrl_id							 -- 자재마스터 확인
+				LEFT OUTER JOIN mb_user_info badUser ON badUser.user_id = bad.chk_user 								-- 불량등록자 확인
+				LEFT OUTER JOIN mb_user_info workUser ON workUser.user_id = workInfo.prod_work_user 					-- 수량 확인자
+		)u_table
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="mtrlMgtId != null and mtrlMgtId != '' ">
+			AND u_table.mtrlMgtId = #{mtrlMgtId}
+		</if>
+		<if test="mtrlId != null and mtrlId != '' ">
+			AND u_table.mtrlMgtId = #{mtrlId}
+		</if>
+		<if test="mtrlOrderId != null and mtrlOrderId != '' ">
+			AND u_table.mtrlOrderId = #{mtrlOrderId}
+		</if>
+		<if test="controlNo != null and controlNo != '' ">
+			AND u_table.controlNo = #{controlNo}
+		</if>
+		<if test="badId != null and badId != '' ">
+			AND u_table.badId = #{badId}
+		</if>
+		<if test="badTarget != null and badTarget != '' ">
+			AND u_table.badTarget = #{badTarget}
+		</if>
+		<if test="badTargetCode != null and badTargetCode != '' ">
+			AND u_table.badTargetCode = #{badTargetCode}
+		</if>
+		<if test="chkUserNm != null and chkUserNm != '' ">
+			AND u_table.chkUserNm = #{chkUserNm}
+		</if>
+		<if test="badPgUserNm != null and badPgUserNm != '' ">
+			AND u_table.badPgUserNm = #{badPgUserNm}
+		</if>
+		<if test="badPgCd != null and badPgCd != '' ">
+			AND u_table.badPgCd = #{badPgCd}
+		</if>
+		<if test="badPgNm != null and badPgNm != '' ">
+			AND u_table.badPgNm = #{badPgNm}
+		</if>
+	</sql>
+	
+	
+	<!-- 불량관리 - 품목 -->
+	<sql id="badItem_base">
+			badId,
+			lotId,	
+			badCode,
+			badQty,
+			chkUser,
+			chkUserNm,
+			chkDate,
+			badTarget,
+			badTargetCode,
+			badTargetNm,
+			badDesc,
+			itemId,
+			itemNm,
+			badPgUser,
+			badPgUserNm,
+			badPgDate
+		FROM(
+							-- 1. 품목 - 작업도중 확인 불량
+				SELECT 
+					bad.bad_id				AS badId, 			-- 불량아이디
+					bad.lot_id				AS lotId,			-- Lot ID
+					bad.bad_code			AS badCode,			-- 불량코드(기초코드)
+					bad.bad_qty				AS badQty,			-- 불량수량
+					bad.chk_user			AS chkUser,			-- 불량등록자 아이디
+					chkUserInfo.user_nm		AS chkUserNm,		-- 불량등록자 이름
+					bad.chk_date			AS chkDate,			-- 불략확인일
+					bad.bad_target			AS badTarget,		-- 불량업무구분(기초코드)
+					bad.bad_target_code		AS badTargetCode,	-- 불량업무코드(대상ID매핑)
+					'' 						AS badTargetNm,		-- 작업정보에에는 명칭이 없으므로 생략
+					bad.bad_desc			AS badDesc,			-- 불량설명
+					itemInfo.item_id		AS itemId,			-- 품목 ID
+					itemInfo.item_nm		AS itemNm,			-- 품목 명
+					workInfo.prod_work_user AS badPgUser,		-- 작업자 아이디
+					badUserInfo.user_nm		AS badPgUserNm,		-- 작업자 이름
+					workInfo.prod_work_end	AS badPgDate		-- 작업 종료 시간
+				FROM prs_bad_product bad
+				INNER JOIN prs_work_info workInfo 
+				ON bad.bad_target_code = workInfo.prod_work_id
+				INNER JOIN prs_lot_info lotInfo
+				ON workInfo.lot_id = lotInfo.lot_id
+				INNER JOIN bc_item_info itemInfo
+				ON lotInfo.item_id = itemInfo.item_id
+				INNER JOIN mb_user_info chkUserInfo
+				ON bad.chk_user = chkUserInfo.user_id
+				INNER JOIN mb_user_info badUserInfo
+				ON workInfo.prod_work_user = badUserInfo.user_id
+		--	UNION
+							-- 2. 품목 - 출하 불량
+		--		SELECT 
+		--			bad.bad_id				AS badId, 			-- 불량아이디
+		--			bad.lot_id				AS lotId,			-- Lot ID
+		--			bad.bad_code			AS badCode,			-- 불량코드(기초코드)
+		--			bad.bad_qty				AS badQty,			-- 불량수량
+		--			bad.chk_user			AS chkUser,			-- 불량등록자 아이디
+		--			chkUserInfo.user_nm		AS chkUserNm,		-- 불량등록자 이름
+		--			bad.chk_date			AS chkDate,			-- 불략확인일
+		--			bad.bad_target			AS badTarget,		-- 불량업무구분(기초코드)
+		--			bad.bad_target_code		AS badTargetCode,	-- 불량업무코드(대상ID매핑)
+		--			'' 						AS badTargetNm,		-- 작업정보에에는 명칭이 없으므로 생략
+		--			bad.bad_desc			AS badDesc,			-- 불량설명
+		--			itemInfo.item_id		AS itemId,			-- 품목 ID
+		--			itemInfo.item_nm		AS itemNm,			-- 품목 명
+		--			pkgInfo.pkg_work_user 	AS badPgUser,		-- 작업자 아이디
+		--			badUserInfo.user_nm		AS badPgUserNm,		-- 작업자 이름
+		--			pkgInfo.pkg_work_end	AS badPgDate		-- 작업 종료 시간
+<!-- 				FROM prs_bad_product bad
+				INNER JOIN prs_package_work pkgInfo
+				ON bad.bad_target_code = pkgInfo.pkg_work_id
+				INNER JOIN prs_lot_info lotInfo
+				ON pkgInfo.lot_id = lotInfo.lot_id
+				INNER JOIN bc_item_info itemInfo
+				ON lotInfo.item_id = itemInfo.item_id
+				INNER JOIN mb_user_info chkUserInfo
+				ON bad.chk_user = chkUserInfo.user_id
+				INNER JOIN mb_user_info badUserInfo
+				ON pkgInfo.pkg_work_user = badUserInfo.user_id -->
+		--	UNION
+							-- 3. 품목 - 클레임 불량
+		--		SELECT 
+		--			bad.bad_id				AS badId,	 		-- 불량아이디
+		--			bad.lot_id				AS lotId,			-- Lot ID
+		--			bad.bad_code			AS badCode,			-- 불량코드(기초코드)
+		--			bad.bad_qty				AS badQty,			-- 불량수량
+		--			bad.chk_user			AS chkUser,			-- 불량등록자 아이디
+		--			chkUserInfo.user_nm		AS chkUserNm,		-- 불량등록자 이름
+		--			bad.chk_date			AS chkDate,			-- 불략확인일
+		--			bad.bad_target			AS badTarget,		-- 불량업무구분(기초코드)
+		--			bad.bad_target_code		AS badTargetCode,	-- 불량업무코드(대상ID매핑)
+		--			claim.claim_nm 			AS badTargetNm,		-- 작업정보에에는 명칭이 없으므로 생략
+		--			bad.bad_desc			AS badDesc,			-- 불량설명
+		--			itemInfo.item_id		AS itemId,			-- 품목ID
+		--			itemInfo.item_nm		AS itemNm,			-- 품목 명
+		--			bad.chk_user			AS badPgUser,		-- 작업자 아이디
+		--			chkUserInfo.user_nm		AS badPgUserNm,		-- 작업자 이름
+		--			bad.chk_date			AS badPgDate		-- 작업 종료 시간
+<!-- 				FROM prs_bad_product bad
+				INNER JOIN prs_claim_Info claim
+				ON bad.bad_target_code = claim.claim_id
+				INNER JOIN prs_lot_info lotInfo
+				ON bad.lot_id = lotInfo.lot_id
+				INNER JOIN bc_item_info itemInfo
+				ON lotInfo.item_id = itemInfo.item_id
+				INNER JOIN mb_user_info chkUserInfo
+				ON bad.chk_user = chkUserInfo.user_id -->
+			UNION
+						-- 4. 품목 - 꽌리자 입력
+				SELECT DISTINCT
+					bad.bad_id				AS badId,	 		-- 불량아이디
+					bad.lot_id				AS lotId,			-- Lot ID
+					bad.bad_code			AS badCode,			-- 불량코드(기초코드)
+					bad.bad_qty				AS badQty,			-- 불량수량
+					bad.chk_user			AS chkUser,			-- 불량등록자 아이디
+					chkUserInfo.user_nm		AS chkUserNm,		-- 불량등록자 이름
+					bad.chk_date			AS chkDate,			-- 불략확인일
+					bad.bad_target			AS badTarget,		-- 불량업무구분(기초코드)
+					bad.bad_target_code		AS badTargetCode,	-- 불량업무코드(대상ID매핑)
+					''	 					AS badTargetNm,		-- 작업정보에에는 명칭이 없으므로 생략
+					bad.bad_desc			AS badDesc,			-- 불량설명
+					itemInfo.item_id		AS itemId,			-- 품목ID
+					itemInfo.item_nm		AS itemNm,			-- 품목 명
+					''						AS badPgUser,		-- 작업자 아이디
+					''						AS badPgUserNm,		-- 작업자 이름
+					''						AS badPgDate		-- 작업 종료 시간
+				FROM prs_bad_product bad
+				INNER JOIN prs_lot_info lotInfo
+				ON bad.lot_id = lotInfo.lot_id
+				INNER JOIN bc_item_info itemInfo
+				ON lotInfo.item_id = itemInfo.item_id
+				INNER JOIN mb_user_info chkUserInfo
+				ON bad.chk_user = chkUserInfo.user_id
+				WHERE bad.bad_target_code = 'ADMIN'
+			UNION
+						-- 5. 품목 최종 검사
+				SELECT DISTINCT
+					bad.bad_id			AS badId,
+					bad.lot_id			AS lotId,	
+					bad.bad_code			AS badCode,
+					bad.bad_qty			AS badQty,
+					bad.chk_user			AS chkUser,
+					chkUserInfo.user_nm		AS chkUserNm,
+					bad.chk_date			AS chkDate,
+					bad.bad_target			AS badTarget,
+					bad.bad_target_code		AS badTargetCode,
+					''				AS badTargetNm,
+					bad.bad_desc			AS badDesc,
+					itemInfo.item_id		AS itemId,
+					itemInfo.item_nm		AS itemNm,
+					''				AS badPgUser,
+					''				AS badPgUserNm,
+					''				AS badPgDate
+				FROM prs_bad_product bad
+				INNER JOIN prs_lot_info lotInfo ON bad.lot_id = lotInfo.lot_id
+				INNER JOIN bc_item_info itemInfo ON lotInfo.item_id = itemInfo.item_id
+				INNER JOIN mb_user_info chkUserInfo ON bad.chk_user = chkUserInfo.user_id
+				WHERE bad.bad_target_code = 'FINAL'
+		)u_table
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="itemId != null and itemId != '' ">
+			AND u_table.itemId = #{itemId}
+		</if>
+		<if test="lotId != null and lotId != '' ">
+			AND u_table.lotId = #{lotId}
+		</if>
+		<if test="badId != null and badId != '' ">
+			AND u_table.badId = #{badId}
+		</if>
+		<if test="badTarget != null and badTarget != '' ">
+			AND u_table.badTarget = #{badTarget}
+		</if>
+		<if test="badTargetCode != null and badTargetCode != '' ">
+			AND u_table.badTargetCode = #{badTargetCode}
+		</if>
+		<if test="chkUserNm != null and chkUserNm != '' ">
+			AND u_table.chkUserNm = #{chkUserNm}
+		</if>
+		<if test="badPgUserNm != null and badPgUserNm != '' ">
+			AND u_table.badPgUserNm = #{badPgUserNm}
+		</if>
+		GROUP BY badId
+	</sql>
+
+
+	<!-- 불량관리 - 자재(Page) select -->
+	<select id="selectMtrlBadList"
+		parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto"
+		resultType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY chkDate desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="badMtrl_base" />
+			)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+
+	<!--  불량관리 - 자재 (Count) -->
+	<select id="selectMtrlBadCount"
+		parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="badMtrl_base" />
+				)c_table
+	</select>
+	
+	<!-- 불량관리 총수량 -->
+<!-- 	<select id="selectMtrlHistoryTotal" -->
+<!-- 		parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto" -->
+<!-- 		resultType="int"> -->
+<!-- 		SELECT sum(mtrl_qty_total) AS mtrlQtyTotal FROM qm_mtrl_mgt -->
+<!-- 		WHERE mtrl_mgt_id = #{mtrlMgtId} -->
+<!-- 	</select> -->
+	
+	<!-- 불량관리 등록 -->
+	<insert id="insertMtrlBad" parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto">
+		<selectKey keyProperty="badId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('PRDBD') AS bad_id
+		</selectKey>
+		INSERT INTO prs_bad_product(
+				bad_id,
+				bad_code,
+				bad_qty,
+				chk_user,
+				chk_date,
+				bad_target,
+				bad_target_code,
+				bad_desc
+		)VALUES(
+				#{badId},
+				#{badCode},
+				#{badQty},
+				#{chkUser},
+				#{chkDate},
+				#{badTarget},
+				#{badTargetCode},
+				#{badDesc}
+		)
+	</insert>
+	
+	<!-- 불량관리 수정 -->
+	<update id="updateMtrlBad" parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto">
+		UPDATE prs_bad_product
+			SET bad_id = bad_id
+				<if test="badQty != null ">
+					,bad_qty = #{badQty}
+				</if>
+				<if test="badCode != null ">
+					,bad_code = #{badCode}
+				</if>
+				<if test="chkUser != null ">
+					,chk_user = #{chkUser}
+				</if>
+				<if test="chkDate != null ">
+					,chk_date = #{chkDate}
+				</if>
+				<if test="badDesc != null ">
+					,bad_desc = #{badDesc}
+				</if>
+		WHERE bad_id = #{badId}
+	</update>
+	
+	<!-- 불량관리 삭제 -->
+	<delete id="deleteMtrlBad" parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto">
+		DELETE FROM prs_bad_product
+		WHERE bad_id = #{badId}
+	</delete>
+	
+	<!-- 불량관리 - 품목(Page) select -->
+	<select id="selectItemBadList"
+		parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto"
+		resultType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY chkDate desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="badItem_base" />
+			)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+
+	<!--  불량관리 - 품목(Count) -->
+	<select id="selectItemBadCount"
+		parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="badItem_base" />
+				)c_table
+	</select>
+	
+	<!-- 품목 총 불량 집계 -->
+	<select id="selectItemBadTotal" 
+		parameterType="jin.mes.form.item.itemStockMgt.ItemStockMgtDto" resultType="int">
+		SELECT 
+			IFNULL(SUM(bad.bad_qty),0) AS itemBadTotal 
+		FROM prs_bad_product bad
+		WHERE 1=1
+		<if test="badTarget != null and badTarget != '' ">
+			AND bad.bad_target = #{badTarget}
+		</if>
+		<if test="badTargetCode != null and badTargetCode != '' ">
+			AND bad.bad_target_code = #{badTargetCode}
+		</if>
+		<if test="chkUser != null and chkUser != '' ">
+			AND bad.chk_user = #{chkUser}
+		</if>
+		<if test="chkDate != null and chkDate != '' ">
+			AND bad.chk_date = #{chkDate}
+		</if>
+	</select>
+	
+	<!-- 불량관리 등록 -->
+	<insert id="insertItemBad" parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto">
+		<selectKey keyProperty="badId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('PRDBD') AS bad_id
+		</selectKey>
+		INSERT INTO prs_bad_product(
+				bad_id,
+				bad_code,
+				bad_qty,
+				chk_user,
+				chk_date,
+				bad_target,
+				bad_target_code,
+				bad_desc,
+				lot_id
+		)VALUES(
+				#{badId},
+				#{badCode},
+				#{badQty},
+				#{chkUser},
+				now(),
+				#{badTarget},
+				#{badTargetCode},
+				#{badDesc},
+				#{lotId}
+		)
+	</insert>
+	
+	<!-- 불량품 관리 로직 변경 -->
+	
+	<sql id="itemBadRate_base">	 
+			lotQty.lotId, 
+			lotQty.itemNm, 
+			lotQty.totalQty, 
+			lotBadQty.totalBadQty, 
+			lotBadQty.totalBadQty/lotQty.totalQty*100 AS totalBadRate
+		FROM (
+				(	
+					SELECT lot_id AS lotId, SUM(lot_qty) totalQty, itemInfo.item_nm AS itemNm
+					FROM prs_lot_info lotInfo
+					INNER JOIN bc_item_info itemInfo
+					ON lotInfo.item_id = itemInfo.item_id
+					GROUP BY lot_id
+				) lotQty
+				INNER JOIN
+				(
+					SELECT lot_id AS lotId, SUM(bad_qty) AS totalBadQty 
+					FROM prs_bad_product
+					GROUP BY lot_id
+				) lotBadQty
+				ON lotQty.lotId = lotBadQty.lotId
+			)
+		WHERE 1=1	
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<sql id="mtrlBadRate_base">	 
+			mtrlQty.mtrl_mgt_id 									AS mtrlMgtId,
+			mtrlQty.description 									AS mtrlDiv, 
+			mtrlQty.mtrl_nm 										AS mtrlNm,
+			mtrlQty.totalQty, 
+			mtrlBadQty.totalBadQty, 
+			mtrlBadQty.totalBadQty/mtrlQty.totalQty*100				AS totalBadRate
+		FROM (
+				(	
+					SELECT mtrlInfo.mtrl_nm, mtrlInfo.description, qmMtrl.mtrl_mgt_id, SUM(mtrl_qty_total) AS totalQty
+					FROM qm_mtrl_mgt qmMtrl
+					INNER JOIN cm_mtrl_mgt cmMtrl
+					ON qmMtrl.mtrl_mgt_id = cmMtrl.mtrl_mgt_id
+					INNER JOIN bc_material_info mtrlInfo
+					ON cmMtrl.mtrl_id = mtrlInfo.mtrl_id
+					WHERE mtrl_qty_target = 'mtrl_tagt01' or mtrl_qty_target = 'mtrl_tagt04' OR mtrl_qty_target = 'mtrl_tagt05'
+					GROUP BY mtrl_mgt_id
+				) mtrlQty
+				INNER JOIN
+				(
+					SELECT mtrl_mgt_id, SUM(ABS(mtrl_qty_total)) AS totalBadQty
+					FROM qm_mtrl_mgt
+					WHERE mtrl_qty_target = 'mtrl_tagt03'
+					GROUP BY mtrl_mgt_id
+				) mtrlBadQty
+				ON mtrlQty.mtrl_mgt_id = mtrlBadQty.mtrl_mgt_id
+			) 
+		WHERE 1=1	
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<sql id="eqmtBadRate_base">	 
+			eqmtMgtId,
+			eqmtMgtNm,
+			totalQty,
+			totalBadQty,
+			totalBadRate
+			FROM (
+				SELECT
+					eqmtMgt.eqmt_mgt_id															AS eqmtMgtId, 
+					eqmtMgt.eqmt_mgt_nm															AS eqmtMgtNm,
+					SUM(prod_work_good) + SUM(prod_work_bad) 									AS totalQty, 
+					SUM(prod_work_bad)															AS totalBadQty, 
+					IFNULL(SUM(prod_work_bad)/(SUM(prod_work_good) + SUM(prod_work_bad))*100,0) AS totalBadRate
+				FROM prs_work_info workInfo
+				INNER JOIN bc_equipment_mgt eqmtMgt
+				ON workInfo.eqmt_mgt_id = eqmtMgt.eqmt_mgt_id
+				GROUP BY workInfo.eqmt_mgt_id
+			) eqmtBad
+			WHERE 1=1	
+			<if test="searchText != null and searchText != '' ">
+				AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+			</if>
+	</sql>
+	
+	<sql id="workerBadRate_base">	 
+			userId,
+			userNm,
+			totalQty,
+			totalBadQty,
+			totalBadRate
+			FROM (
+				SELECT 
+					workInfo.prod_work_user														AS userId,
+					userInfo.user_nm															AS userNm,
+					SUM(prod_work_good) + SUM(prod_work_bad) 									AS totalQty, 
+					SUM(prod_work_bad)															AS totalBadQty, 
+					IFNULL(SUM(prod_work_bad)/(SUM(prod_work_good) + SUM(prod_work_bad))*100,0) AS totalBadRate
+				FROM prs_work_info workInfo
+				INNER JOIN mb_user_info userInfo
+				ON workInfo.prod_work_user = userInfo.user_id
+				GROUP BY prod_work_user
+			) workerBad
+			WHERE 1=1
+			<if test="searchText != null and searchText != '' ">
+				AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+			</if>
+	</sql>
+	
+	<select id="selectBadRate"
+		parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto"
+		resultType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY totalBadRate desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<choose>
+						<when test="selectTarget == 'item'">
+							<include refid="itemBadRate_base" />
+						</when>
+						<when test="selectTarget == 'mtrl'">
+							<include refid="mtrlBadRate_base" />
+						</when>
+						<when test="selectTarget == 'eqmt'">
+							<include refid="eqmtBadRate_base" />
+						</when>
+						<when test="selectTarget == 'worker'">
+							<include refid="workerBadRate_base" />
+						</when>
+					</choose>
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<select id="selectBadRateCount"
+		parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<choose>
+						<when test="selectTarget == 'item'">
+							<include refid="itemBadRate_base" />
+						</when>
+						<when test="selectTarget == 'mtrl'">
+							<include refid="mtrlBadRate_base" />
+						</when>
+						<when test="selectTarget == 'eqmt'">
+							<include refid="eqmtBadRate_base" />
+						</when>
+						<when test="selectTarget == 'worker'">
+							<include refid="workerBadRate_base" />
+						</when>
+					</choose>
+				)c_table
+	</select>
+	
+		<!-- 자재 불량율 집계 -->
+	<sql id="badHistory_base">	 
+				bad.bad_id				AS badId, 			-- 불량아이디
+				workInfo.lot_id			AS lotId,			-- Lot ID
+				bad.bad_code			AS badCode,			-- 불량코드(기초코드)
+				bad.bad_qty				AS badQty,			-- 불량수량
+				bad.chk_user			AS chkUser,			-- 불량등록자 아이디
+				chkUserInfo.user_nm		AS chkUserNm,		-- 불량등록자 이름
+				bad.chk_date			AS chkDate,			-- 불략확인일
+				bad.bad_target			AS badTarget,		-- 불량업무구분(기초코드)
+				bad.bad_target_code		AS badTargetCode,	-- 불량업무코드(대상ID매핑)
+				'' 						AS badTargetNm,		-- 작업정보에에는 명칭이 없으므로 생략
+				eqmtMgt.eqmt_mgt_id		AS eqmtMgtId,		-- 설비 코드
+				eqmtMgt.eqmt_mgt_nm		AS eqmtMgtNm,		-- 설비명
+				bad.bad_desc			AS badDesc,			-- 불량설명
+				workInfo.prod_work_user AS badPgUser,		-- 작업자 아이디
+				badUserInfo.user_nm		AS badPgUserNm,		-- 작업자 이름
+				workInfo.prod_work_end	AS badPgDate		-- 작업 종료 시간
+			FROM prs_bad_product bad
+			INNER JOIN prs_work_info workInfo
+			ON bad.bad_target_code = workInfo.prod_work_id
+			INNER JOIN bc_equipment_mgt eqmtMgt
+			ON workInfo.eqmt_mgt_id = eqmtMgt.eqmt_mgt_id
+			INNER JOIN mb_user_info chkUserInfo
+			ON bad.chk_user = chkUserInfo.user_id
+			INNER JOIN mb_user_info badUserInfo
+			ON workInfo.prod_work_user = badUserInfo.user_id
+			WHERE 1=1	
+			<if test="searchText != null and searchText != '' ">
+				AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+			</if>
+			<if test="eqmtMgtId != null and eqmtMgtId != '' ">
+				AND eqmtMgt.eqmt_mgt_id = #{eqmtMgtId} 
+			</if>
+			<if test="userId != null and userId != '' ">
+				AND workInfo.prod_work_user = #{userId}
+			</if>
+	</sql>
+	
+	<select id="selectBadHistory"
+		parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto"
+		resultType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY chkDate desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="badHistory_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<select id="selectBadHistoryCount"
+		parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="badHistory_base" />
+				)c_table
+	</select>
+	
+</mapper>

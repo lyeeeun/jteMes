@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.perform.performOrderChart.NewPerformOrderChartMapper">
+<!-- 수주정보 select -->
+	<select id="selectPerformOrderInfo"
+		parameterType="jin.mes.cform.perform.performOrderChart.NewPerformOrderChartDto"
+		resultType="jin.mes.cform.perform.performOrderChart.NewPerformOrderChartDto">
+			SELECT 
+				lotInfo.order_id AS orderId,
+				lotInfo.item_id AS itemId,
+				lotInfo.lot_id AS lotId,
+				lotInfo.lot_nm AS lotNm,
+				itemInfo.item_nm AS itemNm,
+				lotInfo.lot_type AS lotType,
+				lotInfo.lot_pm AS lotPm,
+				SUM(lotInfo.lot_qty) AS lotQty,
+				IFNULL(qmItem.lotAchieve,0) AS lotAchieve,
+				IFNULL(badItem.lotDefect,0) AS lotDefect,
+				IFNULL(SUM(lotInfo.lot_qty)-IFNULL(qmItem.lotAchieve,0),SUM(lotInfo.lot_qty)) AS lotRemain,
+				IFNULL(IFNULL(qmItem.lotAchieve,0)/SUM(lotInfo.lot_qty)*100,0) AS lotAchieveRate,
+				IFNULL(IFNULL(badItem.lotDefect,0)/(IFNULL(qmItem.lotAchieve,0) + IFNULL(badItem.lotDefect,0))*100,0) AS lotDefectRate
+			FROM prs_lot_info lotInfo
+			LEFT JOIN (
+				SELECT lot_id, SUM(bad_qty) AS lotDefect
+				FROM prs_bad_product
+				WHERE 1=1
+				GROUP BY lot_id
+			) badItem
+			ON lotInfo.lot_id = badItem.lot_id
+			LEFT JOIN (
+				SELECT item_mgt_id, SUM(item_qty_total) lotAchieve
+				FROM qm_item_mgt
+				WHERE 1=1
+				AND item_qty_target != 'prod_tagt02'
+				GROUP BY item_mgt_id
+			) qmItem
+			ON lotInfo.lot_id = qmItem.item_mgt_id
+			LEFT JOIN bc_item_info itemInfo
+			On lotInfo.item_id = itemInfo.item_id
+			WHERE 1=1
+			<if test="orderId != null"> 
+				AND lotInfo.order_id = #{orderId}
+			</if> 
+			GROUP BY lotInfo.lot_id
+	</select>
+	
+	<select id="selectPerformTotalOrderInfo"
+		parameterType="jin.mes.cform.perform.performOrderChart.NewPerformOrderChartDto"
+		resultType="jin.mes.cform.perform.performOrderChart.NewPerformOrderChartDto">
+		SELECT 
+				lotInfo.order_id																		AS orderId,
+				lotInfo.item_id																			AS itemId,
+				lotInfo.lot_id																			AS lotId,
+				lotInfo.lot_nm																			AS lotNm,
+				lotInfo.lot_type																		AS lotType,
+				lotInfo.lot_pm																			AS lotPm,
+				SUM(lotInfo.lot_qty)																	AS lotTotalQty,
+				IFNULL(SUM(qmItem.lotAchieve),0)															AS lotTotalGood,
+				IFNULL(badItem.lotDefect,0)																AS lotDefect,
+				IFNULL(SUM(lotInfo.lot_qty)-IFNULL(SUM(qmItem.lotAchieve),0),SUM(lotInfo.lot_qty))			AS lotTotalRemain,
+				IFNULL(IFNULL(SUM(qmItem.lotAchieve),0)/SUM(lotInfo.lot_qty)*100,0)							AS lotTotalGoodRate,
+				IFNULL((SUM(lotInfo.lot_qty)-IFNULL(SUM(qmItem.lotAchieve),0))/SUM(lotInfo.lot_qty)*100,0)	AS lotTotalRemainRate
+			FROM prs_lot_info lotInfo
+			LEFT JOIN (
+				SELECT lot_id, SUM(bad_qty) AS lotDefect
+				FROM prs_bad_product
+				WHERE 1=1
+				GROUP BY lot_id
+			) badItem
+			ON lotInfo.lot_id = badItem.lot_id
+			LEFT JOIN (
+				SELECT item_mgt_id, SUM(item_qty_total) lotAchieve
+				FROM qm_item_mgt
+				WHERE 1=1
+				AND item_qty_target != 'prod_tagt02'
+				GROUP BY item_mgt_id
+			) qmItem
+			ON lotInfo.lot_id = qmItem.item_mgt_id
+			WHERE 1=1
+			<if test="orderId != null"> 
+				AND lotInfo.order_id = #{orderId}
+			</if> 
+			GROUP BY lotInfo.order_id
+	</select>
+	
+	
+	<!-- 수주정보 select -->
+	<select id="rowCount"
+	parameterType="jin.mes.cform.perform.performOrderChart.NewPerformOrderChartDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM prs_lot_info lotInfo
+			INNER JOIN (
+					SELECT lot_id, SUM(prod_work_good) AS prodWorkGood, SUM(prod_work_bad) AS prodWorkBad
+					FROM prs_work_info
+					GROUP BY lot_id
+			) AS workInfo 
+			ON lotInfo.lot_id = workInfo.lot_id
+			WHERE 1=1
+			<if test="orderId != null"> 
+				AND lotInfo.order_id = #{orderId}
+			</if>
+	</select>
+</mapper>

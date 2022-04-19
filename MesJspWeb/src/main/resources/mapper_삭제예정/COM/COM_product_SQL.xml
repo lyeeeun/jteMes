@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="COM_product">
+<!--  FN_CM_GETCOMNM('ATOS_MES', 'PRODTYPE', PRODTYPE) AS PRODTYPE_NM
+      FN_CM_GETCOMNM('ATOS_MES', 'PRODSPEC', PRODSPEC) AS PRODSPEC_NM -->
+	<select id="selectInList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			    SELECT  	PRODID, 														
+					    	MODLID, 														
+					    	PRODNAME, 															
+					    	PRODUNIT_CD,													
+					    	PRODDESC,														
+					    	PRODTYPE,														
+					    	PRODTYPE AS PRODTYPE_NM, 
+					    	PRODMTRL,													
+					    	PRODSPEC,													
+					    	PRODSPEC AS PRODSPEC_NM, 
+					    	PRD_LEN,													
+					    	PRD_WTH,													
+					    	PRD_HIG,												
+					    	PRODIUSE                                                         
+			     FROM 		 TB_PRODUCT
+				 WHERE       1=1
+		]]>
+		<if test='DEL_GBN != "N"'>
+				AND DEL_GBN ='N'
+		</if>
+		<if test='PRODNAME != null and PRODNAME != ""'>
+			AND PRODNAME LIKE CONCAT("%" #{PRODNAME} "%") 
+		</if>
+		<if test='PRODTYPE != null and PRODTYPE != ""'>
+			AND PRODTYPE = #{PRODTYPE}
+		</if>
+		<if test='PRODIUSE != null and PRODIUSE != ""'>
+			AND PRODIUSE =#{PRODIUSE}
+		</if>
+		ORDER BY PRODID
+	</select>
+	
+	<!-- PRODIUSE 사용여부 중복제거 후 조회(콤보박스 이용) -->
+	<select id="productIUseList" parameterType="hashmap"
+		resultType="hashmap">
+		    SELECT DISTINCT PRODIUSE
+			  FROM TB_PRODUCT
+	</select>	
+	
+	
+	<select id="selectProductUnitList" resultType="hashmap">
+		
+		SELECT 	 COM_CD,
+			     COM_NM 
+		FROM     TB_COMCDINF 
+		WHERE    GRP_CD = 'PRODUNITCD' 
+	
+
+	</select>
+	
+
+	<select id="selectProductTypeList" resultType="hashmap">
+		SELECT 	 COM_CD,
+			     COM_NM 
+		FROM     TB_COMCDINF 
+		WHERE    GRP_CD = 'PRODTYPE' 
+
+	</select>
+	
+	<select id="selectProductSpecList" resultType="hashmap">
+		SELECT 	 COM_CD,
+			     COM_NM,
+			     DUMY1_VALUE
+		FROM     TB_COMCDINF 
+		WHERE    GRP_CD = 'PRODSPEC' 
+
+	</select>
+
+	<!-- FN_CM_SEQ('MTRLID', NULL, NULL) -->
+	<select id="insertProductList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[   
+		INSERT 
+			INTO TB_PRODUCT(
+  					PRODID,             
+					MODLID,  
+					PRODTYPE,         
+					PRODNAME,	            
+					PRODDESC,
+					PRODMTRL,
+					PRODSPEC,
+					PRD_LEN,
+					PRD_WTH,
+					PRD_HIG,                
+					PRODIUSE,   
+					DEL_GBN,         
+					REG_USER_ID,        
+					REG_PGM_ID,         
+					REG_DT,              
+					UPD_USER_ID,          
+					UPD_PGM_ID,          
+					UPD_DT,             
+					PRODUNIT_CD 
+					)
+			VALUES(
+			       (SELECT SUB_TABLE.PRODID + 1 AS PRODID FROM tb_product AS SUB_TABLE ORDER BY PRODID DESC LIMIT 1) 
+			       ,#{MODLID}
+			       ,#{PRODTYPE}
+				   ,#{PRODNAME}
+				   ,#{PRODDESC}
+				   ,#{PRODMTRL}
+				   ,#{PRODSPEC}
+				   ,#{PRD_LEN}
+				   ,#{PRD_WTH}
+				   ,#{PRD_HIG}
+				   ,'Y'
+				   ,'N'
+				   ,#{REG_USER_ID}
+				   ,#{REG_PGM_ID}
+				   ,now()
+				   ,#{UPD_USER_ID}
+				   ,#{UPD_PGM_ID}
+				   ,now()
+				   ,#{PRODUNIT_CD}
+				   )
+			]]>
+	</select>
+
+
+	<select id="updateProductList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		UPDATE TB_PRODUCT
+		   SET 	MODLID = #{MODLID},
+		    	PRODNAME = #{PRODNAME},
+		    	PRODUNIT_CD = #{PRODUNIT_CD},
+		    	PRODDESC = #{PRODDESC},
+		    	PRODTYPE = #{PRODTYPE},
+		    	PRODSPEC = #{PRODSPEC},
+	    		PRD_LEN = #{PRD_LEN},
+	    		PRD_WTH = #{PRD_WTH},
+	    		PRD_HIG = #{PRD_HIG},
+			    PRODIUSE = #{PRODIUSE}
+         WHERE   PRODID = #{PRODID}
+
+	</select>
+	
+	<select id="deleteProductList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		UPDATE TB_PRODUCT
+		   SET DEL_GBN = 'Y' 
+		 WHERE PRODID = #{PRODID}
+	</select>
+
+</mapper>
+

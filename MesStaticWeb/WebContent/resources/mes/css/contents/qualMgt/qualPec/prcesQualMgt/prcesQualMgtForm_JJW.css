@@ -1,0 +1,146 @@
+/***** 200511JJW 오른쪽 그리드 - 추가버튼 팝업 *******/
+
+#jtePopToolUse {
+	height: 100%;
+}
+
+.prcesQualMgtForm-jteSingleGrid {
+	width:100%;
+	height:100%;
+	float:left;
+}
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.prcesQualMgtForm .fa-info-circle:before {
+	color:#3367D6;
+}
+
+.prcesQualMgtForm .jtePopForm_master {
+	width: 100%;
+}
+
+.prcesQualMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.prcesQualMgtForm .col-left-title {
+	width: 24%;
+}
+
+.prcesQualMgtForm .col-left-content {
+	width: 27%;
+}
+
+.prcesQualMgtForm .col-right-title {
+	width: 22%;
+}
+
+.prcesQualMgtForm .col-right-content {
+	width: 27%;
+}
+
+.prcesQualMgtForm .normal-input{
+	width: 100%;
+}
+
+.prcesQualMgtForm .center-input{
+	width: 100%;
+}
+
+.prcesQualMgtForm .left-input {
+	width: 100%;
+}
+
+.prcesQualMgtForm .right-input {
+	width: 100%;
+}
+
+.prcesQualMgtForm .left-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.prcesQualMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.prcesQualMgtForm .search-btn {
+	width: 100%;
+}
+
+/***** 200511JJW 오른쪽 그리드 정비이력 버튼 클릭 시 나타나는 팝업  *******/
+
+.prcesQualMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.prcesQualMgtForm .popsc-col-left-title {
+	width: 22%;
+}
+
+.prcesQualMgtForm .popsc-col-left-content-1 {
+	width: 17%;
+}
+
+.prcesQualMgtForm .popsc-col-left-content-2 {
+	width: 9%;
+}
+
+.prcesQualMgtForm .popsc-col-right-title {
+	width: 26%;
+}
+
+.prcesQualMgtForm .popsc-col-right-content {
+	width: 26%;
+}
+
+
+.prcesQualMgtForm .normal-input{
+	width: 100%;
+}
+
+.prcesQualMgtForm .center-input{
+	width: 100%;
+}
+
+.prcesQualMgtForm .left-input {
+	width: 100%;
+}
+
+.prcesQualMgtForm .right-input {
+	width: 100%;
+}
+
+.prcesQualMgtForm .left-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.prcesQualMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.prcesQualMgtForm .search-btn {
+	width: 100%;
+}
+
+#jtePopQcDocAdd_form {
+	/* font-size: 16px; */
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+#jtePopQcDocAdd_form td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}

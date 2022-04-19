@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/rms_layout}" lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/css/rms/EngineAlarm/event_ranking.css" />
+<title>Insert title here</title>
+</head>
+<body>
+	<div id="container">
+		<!-- 본문내용 -->
+		<div class="content" layout:fragment="content">
+			<div th:insert="fragments/search_alarm :: search" class="search"></div>
+			<div class="content_layer">
+				<table id="mytt" style="width: 100%;">
+					<colgroup>
+						<col style="width: 50%">
+						<col style="width: 50%">
+					</colgroup>
+					<tr>
+						<td>
+							<div id="result" style="height:500px;"></div>
+						</td>
+						<td>
+							<div style="font-family: helvetica font-weight : 100; font-size: 12px; margin: 0 auto;">
+								<a> Event Ranking </a>
+								<div>
+									<select id="rankSortSelect" style="margin: 0px 5px; height: 35px;" onchange="getRankList();">
+										<option value="asc">Count asc</option>
+										<option value="desc" selected="selected">Count desc</option>
+									</select> 
+									<input type="text" id="rankSearchText" onkeyup="getRankList();" />
+								</div>
+								<ul id="event_list">
+								
+								</ul>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2"><div id="Eventranking" style=" width:100%; margin: 0 auto; height: 350px;"></div></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+<!-- 각 페이지의 스크립트가 작성될 위치 -->
+<th:block layout:fragment="script">
+	<script src="/util/plotly-latest.min.js"></script>
+	<script src="/util/jui/core.min.js"></script>
+	<script src="/util/jui/chart.min.js"></script>
+	
+
+	<script src="/js/rms/EngineAlarm/event_ranking.js"></script>
+	<script src="/js/fragments/search_repeat.js"></script>
+</th:block>
+</html>

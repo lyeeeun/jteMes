@@ -1,0 +1,200 @@
+.header-area{
+	width:100%;
+}
+/* 기본정보/로그아웃/정보수정 시작 */
+.my-config-area{
+	width:100%;
+	height: 28px;
+/* 	height:22px; */ /*04.02 JJW 헤더 세로 길이 수정 원본*/
+/* 	height:24px; */
+	line-height:22px;
+	font-size:14px;
+	font-weight:600;
+	background-color: #0b2b6f;
+	color: #ffffff;
+	float: right;
+}
+
+.my-config-area ul{
+	display:inline;
+	list-style:none;
+	padding:0px;
+	virtical-align:middle;
+	/* margin-top: 3px; */
+	background-color: #ffffff;
+	float: right;
+}
+.my-config-area ul li{
+	display:inline-block;
+	margin-right: 10px;
+}
+#btnLogout, #btnMyInfo{
+	cursor:pointer;
+/* 	border: 1px solid #ffffff;
+    border-radius: 6px;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: #2350B1; */
+	font-size: 14px;
+	color: #2350B1;
+
+	padding-right: 115px;
+	margin: 0;
+}
+/* 기본정보/로그아웃/정보수정 종료 */
+
+/* 퀵메뉴 시작*/
+/*03.12 JJW*/
+.quick-menu-area{
+	width:100%;
+	height:80px;
+	lign-height:80px;
+	background:#3367D6;
+	color:#ffffff;
+}
+.quick-menu-area ul{
+	height:100%;
+	margin:0px;
+	padding:0px;
+	
+	list-style:none;
+}
+.quick-menu-area ul li{
+	height:100%;
+	margin:0px;
+	padding:0px;
+	display:inline;
+	line-height:80px;
+}
+.quick-menu-area ul li img{
+vertical-align:middle;
+}
+
+.header-Logo {
+	width: 100px;
+}
+
+.k-menu .k-item>.k-link, .k-menu-scroll-wrapper .k-item>.k-link, .k-popups-wrapper .k-item>.k-link {
+	background-color: #ffffff;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.k-group .k-menu-group .k-popup .k-reset {
+	color: black;
+	padding-right: 90px;
+	margin-left: 20px;
+
+}
+
+/*사용시간 영역_200729 youmi 추가*/
+
+#sessionCountdown{    /*정렬_200731 youmi 추가*/
+	vertical-align: top;
+	margin-right : 4px;
+}
+
+#alarmArea + div {
+	margin-top: 3px;  
+	
+}
+
+#sessionCountdown span {
+	line-height: normal;
+}
+
+/*메시지 개수 알림 디자인 변경 _200729 youmi 추가*/
+.my-config-area #alarmArea #alarmBadge {
+	font-size: 9px;
+	border-radius: 15px;
+	padding: 0 6px;
+	margin-top: -5px;
+	margin-left: 2px;
+	border-color: red;
+	color: white;
+	background-color: red;
+}
+
+/* 사용시간 연장 버튼 */
+#btnTimeAdd{
+	margin: 0 0 0 0; /*원래 0 10px 0 10px; 200731 0 4px 0 0; _200819 youmi 추가*/
+/*     background: #078aeb; 버튼 배경 색상 삭제_200819 youmi */
+    color: white;
+    padding: 2px 2px 2px 4px; /*원래 2px; _200819 youmi 추가*/
+    border-radius: 4px;
+    cursor: pointer;
+    border : 1px solid #ffffff80; /*버튼 외곽선 하양 투명도 50% 추가_200819 youmi*/
+}
+
+/*드롭다운 메뉴 바탕 색*/
+.k-widget .k-reset .k-header .k-menu .k-menu-horizontal {
+	background-color: #ffffff;
+}
+
+.k-autocomplete.k-state-border-down, .k-autocomplete.k-state-border-up, .k-datepicker-calendar, .k-dropdown-wrap.k-state-active, .k-filebrowser .k-image, .k-grid .k-filter-options, .k-menu .k-menu-group, .k-multiselect.k-state-focused, .k-picker-wrap.k-state-active, .k-popup, .k-time-popup, .k-tooltip {
+	background-color: #ffffff;
+}
+
+.k-menu-group .k-item:hover, .k-menu-group .k-item.k-state-hover, .k-menu.k-context-menu .k-item:hover, .k-menu.k-context-menu .k-item.k-state-hover {
+	background-color: #ffffff;
+}
+
+#btnMyInfo {
+    margin-top: 5px;
+}
+
+#btnMyInfo :hover {
+	color: #ff7a7a;
+}
+
+#btnLogout :hover {
+	color: #ff7a7a;
+}
+#alarmArea {
+	border-right : 1px solid #dfdfdf;
+}
+.alarmUnit{
+	color: black;
+	border-bottom : 1px solid #BDBDBD !important;
+}
+
+.alarmUnit-read{
+	color: grey;
+	border-bottom : 1px solid #BDBDBD !important;
+}
+
+.alarmUnit-read :hover, .alarmUnit :hover {
+	color: #ff7a7a !important;
+}
+
+.k-autocomplete.k-state-border-down, .k-autocomplete.k-state-border-up, .k-datepicker-calendar, .k-dropdown-wrap.k-state-active, .k-filebrowser .k-image, .k-grid .k-filter-options, .k-menu .k-menu-group, .k-multiselect.k-state-focused, .k-picker-wrap.k-state-active, .k-popup, .k-time-popup, .k-tooltip {
+	box-shadow: 0 12px 20px 0 rgba(0, 0, 0, .2);
+}
+
+.my-config-area ul :hover {
+	color: #3367D6;
+}
+
+/* 04.27 메뉴 밀림 현상 때문에 제외 */
+/* .k-menu .k-animation-container .k-menu-group, .k-menu-scroll-wrapper .k-animation-container .k-menu-group, .k-popups-wrapper .k-animation-container .k-menu-group {
+	margin-left: 12px;
+} */
+
+#user-config-dropdown li ul {
+	margin-left: 15px;
+}
+
+
+
+.k-widget .k-reset .k-header .k-menu .k-menu-horizontal {
+	background-color: #ffffff;
+}
+
+/* 04.22 */
+.user-config-dropdown {
+    position: absolute;
+    left: 1px;
+    z-index: 2;
+    float: right;
+}	
+/* 퀵메뉴 종료*/

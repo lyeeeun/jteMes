@@ -1,0 +1,45 @@
+{
+  "_from": "ng-easyui",
+  "_id": "ng-easyui@1.2.5",
+  "_inBundle": false,
+  "_integrity": "sha512-cXLkKlMEF0Ybcu47YQJUYNVqgamc54rmrbs+kZ6bVh+3CKcfIHAtXOaqtBOMR/ppb7AIoQiyvSR4aRfpoIw1VA==",
+  "_location": "/ng-easyui",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "ng-easyui",
+    "name": "ng-easyui",
+    "escapedName": "ng-easyui",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/ng-easyui/-/ng-easyui-1.2.5.tgz",
+  "_shasum": "59d0c48f40cb6a62089c4b47ecefff79a04f270f",
+  "_spec": "ng-easyui",
+  "_where": "D:\\JTE\\Tools",
+  "author": {
+    "name": "jeasyui.com",
+    "email": "info@jeasyui.com"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "The EasyUI for Angular",
+  "homepage": "https://www.jeasyui.com/demo-angular/main/index.php",
+  "keywords": [
+    "angular",
+    "easyui"
+  ],
+  "license": "SEE LICENSE IN license_freeware.txt",
+  "main": "components/easyui/easyui.module.js",
+  "name": "ng-easyui",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.2.5"
+}

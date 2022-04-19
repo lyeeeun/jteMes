@@ -1,0 +1,249 @@
+@charset "UTF-8";
+
+/****************************** JJW 20.11.09 ******************************/
+/* K버튼 기본 색상 변경 */
+.k-button {
+	border-radius: 4px;
+	border-color: #a0bbf3;
+	color: #344975;
+	background-color: #c0d1f4;
+	background-position: 50% 50%;
+	background-image: url(textures/highlight.png);
+	background-image: none,
+		linear-gradient(to bottom, rgba(255, 255, 255, .25) 0,
+		rgba(255, 255, 255, 0) 100%)
+}
+
+/* k버튼 클릭시 주황 테두리 변경 */
+.k-button.k-state-focused, .k-button.k-state-focused.k-state-disabled,
+	.k-button:focus, .k-button:focus:hover, .k-state-disabled .k-button.k-state-focused
+	{
+	border-color: #078aeb;
+	box-shadow: 0 0 2px 1px #bad7fb;
+}
+
+/* k버튼 클릭시 주황 테두리 변경 */
+.k-button:focus:active {
+	box-shadow: 0 0 2px 1px #bad7fb;
+}
+
+/* k버튼 클릭시 주황 테두리 변경 */
+.k-button.k-state-active, .k-button.k-state-selected, .k-button:active {
+	color: #fff;
+	background-color: #078aeb;
+	border-color: #078aeb;
+	background-image: url(textures/highlight.png);
+	background-image: none,
+		linear-gradient(to bottom, rgba(255, 255, 255, .15) 0,
+		rgba(255, 255, 255, 0) 100%)
+}
+
+/* 드롭다운 박스 아래 선택된 요소 색상 변경 */
+.k-draghandle.k-state-selected:hover, .k-ghost-splitbar-horizontal,
+	.k-ghost-splitbar-vertical, .k-list>.k-state-highlight, .k-list>.k-state-selected,
+	.k-marquee-color, .k-panel>.k-state-selected, .k-scheduler .k-today.k-state-selected,
+	.k-state-selected, .k-state-selected:link, .k-state-selected:visited {
+	color: #344975;
+	background-color: #c0d1f4;
+	border-color: #a0bbf3;
+}
+
+/* JJW 인풋박스 기본 테두리 색상 */
+.k-textbox, .k-textarea, .k-input.k-textbox {
+	border-color: #a0bbf3;
+	color: #333;
+	background-color: #fff;
+	background-clip: padding-box
+}
+
+.k-textbox .k-ie11, .k-textarea .k-ie11, .k-input.k-textbox .k-ie11 {
+	background-clip: border-box
+}
+
+/* JJW 인풋박스 호버 색상 */
+.k-textbox:hover, .k-textbox.k-state-hover, .k-textarea:hover,
+	.k-textarea.k-state-hover, .k-input.k-textbox:hover, .k-input.k-textbox.k-state-hover
+	{
+	border-color: #06c;
+}
+
+/* JJW 인풋박스 클릭시 색상 */
+.k-textbox:focus, .k-textbox.k-state-focus, .k-textarea:focus,
+	.k-textarea.k-state-focus, .k-input.k-textbox:focus, .k-input.k-textbox.k-state-focus
+	{
+	border-color: #078aeb;
+	color: #333
+}
+
+/****************************** YUMI 20.11.09 ******************************/
+
+/* YUMI 그리드 최상단 색상 적용 */
+
+.k-autocomplete, .k-draghandle, .k-dropdown-wrap, .k-grid-header,
+	.k-grouping-header, .k-header, .k-numeric-wrap, .k-panelbar .k-tabstrip-items .k-item,
+	.k-picker-wrap, .k-progressbar, .k-state-highlight, .k-tabstrip-items .k-item {
+	background-image: none,
+		linear-gradient(to bottom, rgba(255, 255, 255, .25) 0,
+		rgba(255, 255, 255, 0) 100%);
+	background-position: 50% 50%;
+	background-color: rgba(51, 103, 214, 0.19)
+	}
+
+/* YUMI 그리드 최상단 border 색상 적용 */
+.k-gantt-toolbar .k-state-default, .k-grid .k-grouping-header,
+	.k-grid-header, .k-grid-header-wrap, .k-grouping-header .k-group-indicator,
+	.k-header {
+	border-color: #ffffff
+}
+
+/* YUMI 그리드 하단 pager 색상 적용 */
+
+.k-pager-wrap {
+	background-color: #dee6f8;
+	color: #18649c;
+}
+
+/* YUMI 그리드 하단 선택한 pager 색상 적용 */ 
+.k-pager-wrap .k-link.k-state-selected {
+	color: #fff;
+	background-color: rgba(55, 139, 255, 0.47);
+}
+
+/* YUMI 날짜 선택 today 색상 적용 */
+.k-calendar .k-today .k-link {
+	color: #078aeb;
+	box-shadow: inset 0 0 0 1px #078aeb;
+}
+
+/* YUMI 날짜 선택 focus 색상 적용 */
+.k-calendar td.k-state-focused .k-link {
+	box-shadow: inset 0 0 2px 1px #078aeb;
+}
+
+/* YUMI 날짜 선택 팝업 선택 시 색상 적용 */
+.k-calendar td.k-state-selected .k-link {
+	border-color: #f85a00;
+	color: #fff;
+	background-color: #078aeb;
+	background-image: url(textures/highlight.png);
+	background-image: none,
+		linear-gradient(to bottom, rgba(255, 255, 255, .15) 0,
+		rgba(255, 255, 255, 0) 100%)
+}
+
+/* YUMI 날짜 선택 팝업 호버 시 색상 적용 */
+.k-calendar td.k-state-hover .k-link {
+	border-color: #c4e7ff;
+	color: #000;
+	background-color: #c4e7ff;
+	background-image: url(textures/highlight.png);
+	background-image: none,
+		linear-gradient(to bottom, rgba(255, 255, 255, .25) 0,
+		rgba(255, 255, 255, 0) 100%)
+}
+
+/****************************** JJW 20.11.10 ******************************/
+
+/* 그리드 선택 요소 호버시 색상 */
+.k-grid td.k-state-selected:hover, .k-grid tr.k-state-selected:hover {
+    background-color: #6f9eff;
+    background-image: none;
+    color: #ffffff;
+}
+
+/* JJW 20.11.10 이중 그리드 구분선 색상 변경 */
+.k-grid-content-locked, .k-grid-content-locked td, .k-grid-header-locked,
+	.k-grid-header-locked .k-header {
+	border-left-color: #ffffff;
+	border-right-color: #ffffff;
+}
+
+/****************************** YUMI 20.11.11 ******************************/
+
+/**YUMI 텍스트 입력 영역에서 드래그시 색상 변경 **/
+.k-textarea .k-input::selection, .k-textarea::selection {
+	color: #fff;
+	background-color: #078aeb		
+}
+
+/****************************** YUMI 20.11.13 ******************************/
+
+/**YUMI 드롭다운 메뉴 호버시 색상 변경 **/
+.k-dropdown .k-state-focused,
+.k-filebrowser-dropzone,
+.k-list>.k-state-hover,
+.k-pager-wrap .k-link:hover,
+.k-scheduler .k-scheduler-toolbar ul li.k-state-hover,
+.k-splitbar-horizontal-hover,
+.k-splitbar-vertical-hover,
+.k-state-hover { 
+    background-color: #c0d1f4;
+    border-color: #bae3ff;	
+/*     background-image: linear-gradient(#c4e7ff, #bae3ff); */
+    color: #2e2e2e;
+}
+
+/**YUMI pager 화살표 버튼 외곽선 색상 변경 **/
+
+.k-pager-wrap .k-link {
+	border-color: #ffffff90;
+	border-width: 2px;
+}
+ 
+.k-pager-wrap .k-link.k-state-disabled {
+	border-color: #ffffff;
+	border-width: 2px;
+}
+
+/****************************** JJW 20.11.19 ******************************/
+
+/* K버튼 기본 색상 변경 */
+.k-button {
+	border-radius: 4px;
+	border-color: #a0bbf3;
+	color: #344975;
+	background-color: #c0d1f4;
+	background-position: 50% 50%;
+	background-image: url(textures/highlight.png);
+	background-image: none,
+		linear-gradient(to bottom, rgba(255, 255, 255, .25) 0,
+		rgba(255, 255, 255, 0) 100%)
+}
+
+/* k-버튼 호버 변경 */
+.k-button.k-state-hover, .k-button:hover {
+	color: #2e2e2e;
+	border-color: #769be8;
+	background-color: #b1c1e3;
+	background-image: url(textures/highlight.png);
+	background-image: none,
+		linear-gradient(to bottom, rgba(255, 255, 255, .25) 0,
+		rgba(255, 255, 255, 0) 100%)
+}
+
+/* k버튼 클릭시 주황 테두리 변경 */
+.k-button.k-state-active, .k-button.k-state-selected, .k-button:active {
+	color: #fff;
+	background-color: #078aeb;
+	border-color: #078aeb;
+	background-image: url(textures/highlight.png);
+	background-image: none,
+		linear-gradient(to bottom, rgba(255, 255, 255, .15) 0,
+		rgba(255, 255, 255, 0) 100%)
+}
+
+/* k버튼 클릭시 주황 테두리 변경 */
+.k-button.k-state-focused, .k-button.k-state-focused.k-state-disabled,
+	.k-button:focus, .k-button:focus:hover, .k-state-disabled .k-button.k-state-focused
+	{
+	border-color: #078aeb;
+	box-shadow: 0 0 2px 1px #0a7ace
+}
+
+.k-grid .k-grid-toolbar > * {
+	float: inherit !important;
+}
+
+/* .k-grid .k-grid-toolbar > *{
+	float:left;
+} */

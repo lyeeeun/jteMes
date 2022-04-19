@@ -1,0 +1,98 @@
+.tree-file{
+	background:none;
+	width:2px;	 
+}
+.tree-folder{
+	background:none;
+	width:2px;	 
+}
+.tree-folder-open{
+	background:none;
+}
+.left{
+	position:fixed;
+	width:220px;
+	padding:5px;
+	background:#363636;
+	height:100%;
+	left:0;
+	top:60px;
+	text-align:center;
+	box-shadow : 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+	z-index:3000;
+}
+.left_area{
+	height:100%;
+}
+.left_area .panel-htop{
+	height:100%;
+}
+.panel-body{
+	border:none;
+}
+.main-left{
+	height:99%;
+	overflow:auto;
+	background:#363636;
+}
+/* 트리영역 */
+.main-left:before{
+	height:99%;
+}
+.tree-node{
+	margin:3px;
+}
+.tree-title{
+	font-size:14px;
+	margin: 0 5px 0 5px;
+	color: #b1b4b3;
+	font-weight:600;
+}
+.tree-node-selected {
+	border-left: none;
+	background:#585b5c;
+	color:#fff;
+}
+.tree-node-selected .tree-title{
+	color:#fff;
+}
+/* .tree-expanded{
+	background:none;
+}
+.tree-collapsed{
+	background:none;
+} */
+/* 좌측메뉴 아이콘 */
+.fas{
+	font-size:16px;
+}
+.fa-chart-bar{
+	color:#ff33ff;
+}
+.fa-tachometer-alt{
+	color:#000000;
+}
+.fa-desktop{
+	color:#148cff;
+}
+.fa-exclamation-circle{
+	color:#FF0000;
+}
+.fa-chart-line{
+	color:#ABF200;
+}
+.fa-chart-pie{
+	color:#3cb371;
+}
+.fa-list-alt{
+	color:#00D8FF;
+}
+.fa-city{
+	color:#ececee;
+}
+.fa-plug{
+	color:#5AAEFF;
+}
+.fa-charging-station{
+	color:#FFE400;
+}

@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.MfgplanMapper">
+	
+	<!-- 생산계획 조회 쿼리(month) -->
+	<sql id = "monthPlanComSql">
+		MAX(orderId) 					AS orderId, 
+		MAX(orderNm) 					AS orderNm, 
+		MAX(orderStdt) 					AS orderStdt, 
+		MAX(orderEddt)					AS orderEddt, 
+		lotId, 
+		MAX(lotNm) 						AS lotNm,
+		MAX(itemId) 					AS itemId,
+		MAX(itemNm) 					AS itemNm,
+		MAX(itemDeduction) 				AS itemDeduction,
+		MAX(itemDayTarget) 				AS itemDayTarget,
+		MAX(lotState) 					AS lotState, 
+		MAX(lotQty)						AS lotQty, 
+		MAX(lotDesc) 					AS lotDesc,
+		MAX(lotCreatorId)				AS lotCreatorId, 
+		MAX(lotCreatedAt)				AS lotCreatedAt, 
+		MAX(lotUpdatorId)				AS lotUpdatorId,
+		MAX(lotUpdatedAt)				AS lotUpdatedAt, 
+		SUM(planTotal.prod_plan_qty) 	AS planTotalQty,
+		SUM(workTotal.itemQtyTotal)		AS workTotalQty
+		<foreach collection="calPrmt" item="monthUnit">
+			, MAX(planQty${monthUnit}) AS planQty${monthUnit}
+			, MAX(workQty${monthUnit}) AS workQty${monthUnit}
+		</foreach>
+			FROM (	SELECT
+				orderId, 
+				orderNm, 
+				orderStdt, 
+				orderEddt, 
+				lotId, 
+				lotNm,
+				itemId,
+				itemNm,
+				itemDeduction,
+				itemDayTarget,
+				lotState, 
+				lotQty, 
+				lotDesc,
+				lotCreatorId,
+				lotCreatedAt,
+				lotUpdatorId,
+				lotUpdatedAt, 
+				prodPlanYear
+				<foreach collection="calPrmt" item="monthUnit">
+					, MAX(IF(prodPlanMonth = #{monthUnit}, prodPlanQty, 0)) 	AS planQty${monthUnit}
+					, MAX(IF(prodPlanMonth = #{monthUnit}, itemQtyTotal, 0)) 	AS workQty${monthUnit}
+				</foreach>
+				
+				FROM(
+				SELECT
+					MAX(orderInfo.order_id)					AS orderId,
+					MAX(orderInfo.order_nm)					AS orderNm,
+					MAX(orderInfo.order_stdt)				AS orderStdt,
+					MAX(orderInfo.order_eddt)				AS orderEddt,
+					lotCal.lotId							AS lotId,
+					MAX(lotCal.lotNm)						AS lotNm,
+					MAX(lotCal.itemId)						AS itemId,
+					MAX(item.item_nm)						AS itemNm,
+					MAX(item.item_deduction)				AS itemDeduction,
+					MAX(item.item_day_target)				AS itemDayTarget,
+					MAX(lotCal.lotState)					AS lotState,
+					MAX(lotCal.lotQty)						AS lotQty,
+					MAX(lotCal.lotDesc)						AS lotDesc,
+					MAX(lotCal.lotCreatorId)				AS lotCreatorId, 
+					MAX(lotCal.lotCreatedAt)				AS lotCreatedAt, 
+					MAX(lotCal.lotUpdatorId)				AS lotUpdatorId,
+					MAX(lotCal.lotUpdatedAt)				AS lotUpdatedAt, 
+					MAX(lotCal.prodPlanYear) 				AS prodPlanYear,
+					MAX(lotCal.prodPlanMonth)				AS prodPlanMonth,
+					MAX(monthPlan.prod_Plan_Id)				AS prodPlanId, 
+					MAX(monthPlan.prod_plan_type)			AS prodPlanType,
+					MAX(assign.prod_asm_id)					AS prodAsmId,
+					MAX(IFNULL(monthPlan.prod_plan_qty,0))	AS prodPlanQty,
+					SUM(IFNULL(prodQm.item_qty_total,0))	AS itemQtyTotal
+				FROM(
+					SELECT  MAX(lot.order_id)		AS orderId,
+						lot.lot_id					AS lotId,
+						MAX(lot.lot_nm)				AS lotNm,
+						MAX(lot.item_id)			AS itemId,
+						MAX(lot.lot_State)			AS lotState,
+						MAX(lot.lot_qty)			AS lotQty,
+						MAX(lot.lot_desc)			AS lotDesc,
+						MAX(lot.creator_id)			AS lotCreatorId, 
+						MAX(lot.created_at)			AS lotCreatedAt, 
+						MAX(lot.updator_id)			AS lotUpdatorId,
+						MAX(lot.updated_at)			AS lotUpdatedAt, 
+						cal.cal_year 				AS prodPlanYear,
+						cal.cal_month	 			AS prodPlanMonth
+					FROM(
+						SELECT cal_year,cal_month FROM bc_calendar_info
+						WHERE  cal_year = IFNULL(#{calYear},YEAR(SYSDATE()))
+						GROUP BY cal_month
+					)cal
+					CROSS JOIN prs_lot_info lot
+					GROUP BY lot.lot_id,cal.cal_year,cal.cal_month
+				)lotCal
+				LEFT OUTER JOIN prs_order_info orderInfo ON orderInfo.order_id = lotCal.orderId
+				LEFT OUTER JOIN bc_item_info item ON item.item_id = lotCal.itemId
+				LEFT OUTER JOIN prs_product_plan monthPlan ON monthPlan.prod_plan_year = lotCal.prodPlanYear AND monthPlan.prod_plan_month = lotCal.prodPlanMonth AND monthPlan.prod_plan_type = 'prod_plan01' AND monthPlan.lot_id = lotCal.lotId
+				LEFT OUTER JOIN prs_product_plan dayPlan ON dayPlan.prod_plan_year = lotCal.prodPlanYear AND dayPlan.prod_plan_month = lotCal.prodPlanMonth AND dayPlan.prod_plan_type = 'prod_plan02' AND dayPlan.lot_id = lotCal.lotId
+				LEFT OUTER JOIN prs_product_assignment assign ON assign.prod_plan_id = monthPlan.prod_plan_id
+				LEFT OUTER JOIN prs_work_info workInfo ON  workInfo.prod_plan_id = dayPlan.prod_plan_id AND workInfo.prod_asm_id = assign.prod_asm_id
+				LEFT OUTER JOIN qm_item_mgt prodQm ON prodQm.item_qty_target = 'prod_tagt01' AND prodQm.item_qty_target_code = workInfo.prod_work_Id
+
+				WHERE 1=1
+				<if test="searchText != null and searchText != '' ">
+					AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+				</if>
+				<choose>
+					<when test="lotState != null and lotState != '' and lotState == 'ord_sta01'">
+						AND lotCal.lotState != 'ord_sta02'
+					</when>
+					<when test="lotState != null and lotState != '' and lotState == 'ord_sta02'">
+						AND lotCal.lotState = 'ord_sta02'
+					</when>
+				</choose>
+				<!-- <if test="lotState != null and lotState != '' ">
+					AND lotCal.lotState = #{lotState}
+				</if> -->
+				GROUP BY lotCal.lotId,lotCal.prodPlanYear,lotCal.prodPlanMonth
+			)pivot
+			GROUP BY orderId, orderNm, orderStdt, orderEddt, lotId, lotNm, itemId, itemNm, itemDeduction, itemDayTarget, lotState, lotQty, lotDesc,lotCreatorId, lotCreatedAt, lotUpdatorId, lotUpdatedAt, prodPlanYear
+		)grp
+		LEFT OUTER JOIN ( -- 총생산량
+			SELECT 
+				item_mgt_id 		AS item_mgt_id, 
+				SUM(item_qty_total) AS itemQtyTotal 
+			FROM qm_item_mgt
+			WHERE item_qty_target in('prod_tagt01', 'prod_tagt03', 'prod_tagt04', 'ADMIN') -- 작업, 클레임, 불량, 관리자
+			GROUP BY item_mgt_id
+			) workTotal ON grp.lotId = workTotal.item_mgt_id
+		LEFT OUTER JOIN (
+			SELECT -- 총 계획량
+				lot_id,
+				prod_plan_type, 
+				SUM(prod_plan_qty) AS prod_plan_qty 
+			FROM prs_product_plan 
+			GROUP BY lot_id,prod_plan_type
+		) planTotal 
+		ON grp.lotId = planTotal.lot_id AND prod_plan_type ='prod_plan01'
+		GROUP BY grp.lotId 
+	</sql>
+	
+	<!-- 생산계획 조회 쿼리(day) -->
+	<sql id = "dayPlanComSql">
+		MAX(orderId) 					AS orderId, 
+		MAX(orderNm) 					AS orderNm, 
+		MAX(orderStdt) 					AS orderStdt, 
+		MAX(orderEddt) 					AS orderEddt, 
+		lotId, 
+		MAX(lotNm) 						AS lotNm, 
+		MAX(itemId) 					AS itemId,
+		MAX(itemNm) 					AS itemNm,
+		MAX(itemDeduction) 				AS itemDeduction,
+		MAX(itemDayTarget) 				AS itemDayTarget,
+		MAX(lotState) 					AS lotState, 
+		MAX(lotQty) 					AS lotQty, 
+		MAX(lotDesc) 					AS lotDesc,
+		MAX(lotCreatorId)				AS lotCreatorId, 
+		MAX(lotCreatedAt)				AS lotCreatedAt, 
+		MAX(lotUpdatorId)				AS lotUpdatorId,
+		MAX(lotUpdatedAt)				AS lotUpdatedAt,
+		MAX(prodPlanYear) 				AS prodPlanYear, 
+		MAX(prodPlanMonth) 				AS prodPlanMonth,
+		SUM(planTotal.prod_plan_qty) 	AS planTotalQty,
+		SUM(workTotal.itemQtyTotal) 	AS workTotalQty
+		<foreach collection="calPrmt" item="dayUnit">
+			, MAX(planQty${dayUnit}) AS planQty${dayUnit}
+			, MAX(workQty${dayUnit}) AS workQty${dayUnit}
+		</foreach>
+			FROM(	SELECT
+			orderId, 
+			orderNm, 
+			orderStdt, 
+			orderEddt, 
+			lotId, 
+			lotNm, 
+			itemId,
+			itemNm,
+			itemDeduction,
+			itemDayTarget,
+			lotState, 
+			lotQty, 
+			lotDesc,
+			lotCreatorId,
+			lotCreatedAt,
+			lotUpdatorId,
+			lotUpdatedAt, 
+			prodPlanYear, 
+			prodPlanMonth
+			<foreach collection="calPrmt" item="dayUnit">
+				, MAX(IF(prodPlanDay = #{dayUnit}, prodPlanQty, 0))		AS planQty${dayUnit}
+				, MAX(IF(prodPlanDay = #{dayUnit}, itemQtyTotal, 0))	AS workQty${dayUnit}
+			</foreach>
+			
+			FROM(
+				SELECT
+					MAX(orderInfo.order_id)					AS orderId,
+					MAX(orderInfo.order_nm)					AS orderNm,
+					MAX(orderInfo.order_stdt)				AS orderStdt,
+					MAX(orderInfo.order_eddt)				AS orderEddt,
+					lotCal.lotId,
+					MAX(lotCal.lotNm)						AS lotNm,
+					MAX(lotCal.itemId)						AS itemId,
+					MAX(item.item_nm)						AS itemNm,
+					MAX(item.item_deduction)				AS itemDeduction,
+					MAX(item.item_day_target)				AS itemDayTarget,
+					MAX(lotCal.lotState)					AS lotState,
+					MAX(lotCal.lotQty)						AS lotQty,
+					MAX(lotCal.lotDesc)						AS lotDesc,
+					MAX(lotCal.lotCreatorId)				AS lotCreatorId, 
+					MAX(lotCal.lotCreatedAt)				AS lotCreatedAt, 
+					MAX(lotCal.lotUpdatorId)				AS lotUpdatorId,
+					MAX(lotCal.lotUpdatedAt)				AS lotUpdatedAt,
+					lotCal.prodPlanWeek,
+					lotCal.prodPlanYear,
+					lotCal.prodPlanMonth,
+					MAX(lotCal.prodPlanDay)					AS prodPlanDay,
+					MAX(plan.prod_Plan_Id)					AS prodPlanId, 
+					MAX(plan.prod_plan_type)				AS prodPlanType,
+					MAX(assign.prod_asm_id)					AS prodAsmId,
+					MAX(workInfo.prod_work_id)				AS prodWorkId,
+					MAX(IFNULL(plan.prod_plan_qty,0))		AS prodPlanQty,
+					SUM(IFNULL(prodQm.item_qty_total,0))	AS itemQtyTotal
+				FROM(SELECT 
+					lot.order_id				AS orderId,
+					lot.lot_id					AS lotId,
+					MAX(lot.item_id)			AS itemId,
+					MAX(lot.lot_nm)				AS lotNm,
+					MAX(lot.lot_State)			AS lotState,
+					SUM(lot.lot_qty)			AS lotQty,
+					MAX(lot.lot_desc)			AS lotDesc,
+					MAX(lot.creator_id)			AS lotCreatorId, 
+					MAX(lot.created_at)			AS lotCreatedAt, 
+					MAX(lot.updator_id)			AS lotUpdatorId,
+					MAX(lot.updated_at)			AS lotUpdatedAt,
+					cal.cal_week 				AS prodPlanWeek,
+					cal.cal_year 				AS prodPlanYear,
+					cal.cal_month	 			AS prodPlanMonth,
+					cal.cal_day 				AS prodPlanDay
+					FROM bc_calendar_info cal 
+					CROSS JOIN prs_lot_info lot
+					WHERE cal.cal_solar BETWEEN CONCAT(#{calYear},'-',#{calMonth},'-01') AND LAST_DAY(CONCAT(#{calYear},'-',#{calMonth},'-01'))
+					GROUP BY lot.lot_id,cal.cal_week,cal.cal_year,cal.cal_month,cal.cal_day 
+				)lotCal
+				LEFT OUTER JOIN prs_order_info orderInfo ON orderInfo.order_id = lotCal.orderId	
+				LEFT OUTER JOIN bc_item_info item on item.item_id = lotCal.itemId
+				LEFT OUTER JOIN prs_product_plan plan ON plan.prod_plan_year = lotCal.prodPlanYear AND plan.prod_plan_month = lotCal.prodPlanMonth AND plan.prod_plan_day = lotCal.prodPlanDay AND plan.lot_id = lotCal.lotId
+				LEFT OUTER JOIN prs_product_assignment assign ON plan.prod_plan_id = assign.prod_plan_id
+				LEFT OUTER JOIN prs_work_info workInfo ON plan.prod_plan_id = workInfo.prod_plan_id AND assign.prod_asm_id = workInfo.prod_asm_id
+				LEFT OUTER JOIN qm_item_mgt prodQm ON prodQm.item_qty_target = 'prod_tagt01' AND prodQm.item_qty_target_code = workInfo.prod_Work_Id
+				WHERE 1=1
+				<if test="searchText != null and searchText != '' ">
+					AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+				</if>
+				<choose>
+					<when test="lotState != null and lotState != '' and lotState == 'ord_sta01'">
+						AND lotCal.lotState != 'ord_sta02'
+					</when>
+					<when test="lotState != null and lotState != '' and lotState == 'ord_sta02'">
+						AND lotCal.lotState = 'ord_sta02'
+					</when>
+				</choose>
+				<!-- <if test="lotState != null and lotState != '' ">
+					AND lotCal.lotState = #{lotState}
+				</if> -->
+				GROUP BY lotCal.lotId, lotCal.prodPlanWeek, lotCal.prodPlanYear, lotCal.prodPlanMonth, lotCal.prodPlanDay 
+			)pivot
+			GROUP BY orderId, orderNm, orderStdt, orderEddt, lotId, lotNm, itemId, itemNm, itemDeduction,itemDayTarget , lotState, lotQty, lotDesc, lotCreatorId, lotCreatedAt, lotUpdatorId, lotUpdatedAt, prodPlanYear , prodPlanMonth
+		)grp
+		LEFT OUTER JOIN (
+			SELECT 
+				item_mgt_id 		AS item_mgt_id, 
+				SUM(item_qty_total) AS itemQtyTotal 
+			FROM qm_item_mgt
+			WHERE item_qty_target in('prod_tagt01', 'prod_tagt03', 'prod_tagt04', 'ADMIN') -- 작업, 클레임, 불량, 관리자
+			GROUP BY item_mgt_id
+			) workTotal ON grp.lotId = workTotal.item_mgt_id
+		LEFT OUTER JOIN (
+			SELECT 
+				lot_id,
+				prod_plan_type, 
+				SUM(prod_plan_qty) AS prod_plan_qty 
+			FROM prs_product_plan 
+			GROUP BY lot_id,prod_plan_type
+		) planTotal ON grp.lotId = planTotal.lot_id AND prod_plan_type ='prod_plan02'
+		GROUP BY grp.lotId 
+	</sql>
+	<!-- 월간계획정보 조회 -->
+	<select id="selectMonthPlanList"
+		parameterType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.MfgplanDto"
+		resultType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.MfgplanDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test='sort != null and sort != "" '>
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY lotUpdatedAt DESC) AS RNUM,
+					</otherwise>
+				</choose>
+				g_table.*
+				FROM(
+					SELECT
+					<include refid="monthPlanComSql" />
+			)g_table
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+	
+	<!-- 월간계획정보 Count-->
+	<select id="selectMonthPlanListCount"
+	parameterType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.MfgplanDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="monthPlanComSql" />
+				)c_table
+	</select>
+	
+	
+	<!-- 일간계획정보 조회 -->
+	<select id="selectDayPlanList"
+		parameterType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.MfgplanDto"
+		resultType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.MfgplanDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test='sort != null and sort != "" '>
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY lotUpdatedAt DESC) AS RNUM,
+					</otherwise>
+				</choose>
+				g_table.*
+				FROM(
+					SELECT
+					<include refid="dayPlanComSql" />
+			)g_table
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+	
+	<!-- 일간계획정보 카운트 -->
+	<select id="selectDayPlanListCount"
+	parameterType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.MfgplanDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="dayPlanComSql" />
+				)c_table
+	</select>
+	
+	<!--생산계획 상세 -->
+	<select id="selectPlanDetail"
+		parameterType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.ProductPlanDto"
+		resultType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.ProductPlanDto">
+		SELECT 
+			lot.lot_id												AS lotId,
+			MAX(lot.lot_nm)											AS lotNm,
+			MAX(lot.item_id)										AS itemId,
+			MAX(item.item_nm)										AS itemNm,
+			MAX(item.item_deduction)								AS itemDeduction,
+			MAX(item.item_day_target)								AS itemDayTarget,
+			MAX(plan.prod_plan_id)									AS prodPlanId, 
+			MAX(plan.prod_plan_type)								AS prodPlanType, 
+			IFNULL(MAX(plan.prod_plan_year),#{prodPlanYear})		AS prodPlanYear, 
+			IFNULL(MAX(plan.prod_plan_month),#{prodPlanMonth})		AS prodPlanMonth, 
+			IFNULL(MAX(plan.prod_plan_day),#{prodPlanDay})			AS prodPlanDay, 
+			MAX(plan.prod_plan_qty)									AS prodPlanQty, 
+			MAX(plan.prod_plan_desc)								AS prodPlanDesc, 
+			MAX(plan.created_at)									AS createdAt, 
+			MAX(plan.creator_id)									AS creatorId, 
+			MAX(plan.updated_at)									AS updatedAt, 
+			MAX(plan.updator_id)									AS updatorId,
+			IF (IFNULL(MAX(plan.prod_plan_id),'') = '', 'C','U')	AS ACTION
+		FROM prs_lot_info lot
+		LEFT OUTER JOIN bc_item_info item ON lot.item_id = item.item_id
+		LEFT OUTER JOIN prs_product_plan plan ON lot.lot_id = plan.lot_id
+		<if test="prodPlanType != null and prodPlanType != '' ">
+			AND plan.prod_plan_type = #{prodPlanType}
+		</if>
+		<if test="prodPlanYear != null and prodPlanYear != '' ">
+			AND plan.prod_plan_year = #{prodPlanYear}
+		</if>
+		<if test="prodPlanMonth != null and prodPlanMonth != '' ">
+			AND plan.prod_plan_month = #{prodPlanMonth}
+		</if>
+		<if test="prodPlanDay != null and prodPlanDay != '' ">
+			AND plan.prod_plan_day = #{prodPlanDay}
+		</if>
+		WHERE 1=1
+		<if test="lotId != null and lotId != '' ">
+			AND lot.lot_id = #{lotId} 
+		</if>
+		<if test="prodPlanId != null and prodPlanId != '' ">
+			AND plan.prod_plan_id = #{prodPlanId} 
+		</if>
+				 
+		GROUP BY lotId
+	</select>
+	
+	<!-- 생산계획 등록 -->
+	<insert id="insertPlanCnt" parameterType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.ProductPlanDto">
+		<selectKey keyProperty="prodPlanId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('PLN') AS prodPlanId
+		</selectKey>
+		INSERT 
+			INTO prs_product_plan(
+				prod_plan_id, 
+				prod_plan_type, 
+				prod_plan_year, 
+				prod_plan_month, 
+				prod_plan_day, 
+				prod_plan_qty, 
+				prod_plan_desc, 
+				created_at, 
+				creator_id, 
+				updated_at, 
+				updator_id, 
+				lot_id
+			)
+			VALUES(
+				#{prodPlanId},
+				#{prodPlanType},
+				#{prodPlanYear}, 
+				#{prodPlanMonth}, 
+				<choose>
+					<when test='prodPlanDay != null and !prodPlanDay.equals("")'>
+						#{prodPlanDay},
+					</when>
+					<otherwise>
+						NULL,
+					</otherwise>
+				</choose>
+				#{prodPlanQty}, 
+				#{prodPlanDesc}, 
+				now(), 
+				#{creatorId}, 
+				now(), 
+				#{updatorId}, 
+				#{lotId}
+				)
+	</insert>
+	
+	<!-- 생산계획 수정 -->
+	<update id="updatePlanCnt" parameterType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.ProductPlanDto">
+		UPDATE prs_product_plan 
+			SET prod_plan_qty = #{prodPlanQty}, 
+				prod_plan_desc = #{prodPlanDesc}, 
+				updator_id = #{updatorId}, 
+				updated_at = now()
+			WHERE prod_plan_id = #{prodPlanId}
+	</update>
+	
+	<!-- 생산계획 삭제 -->
+	<delete id="deletePlan">
+		DELETE FROM prs_product_plan
+		WHERE prod_plan_id = #{prodPlanId} 
+	</delete>
+	
+	<!-- 해당날짜에 데이터가 있는지  조회(일괄처리) -->
+	<sql id="bulkPlan_base">
+		SELECT 
+			COUNT(DISTINCT plan.prod_plan_id) AS planCnt,
+			COUNT(DISTINCT asgn.prod_asm_id) AS asgnCnt, 
+			COUNT(DISTINCT wok.prod_work_id) AS workCnt  
+		FROM prs_product_plan plan
+		LEFT OUTER JOIN prs_product_assignment asgn ON plan.prod_plan_id = asgn.prod_plan_id
+		LEFT OUTER JOIN prs_work_info wok ON wok.prod_asm_id = asgn.prod_asm_id
+		WHERE plan.lot_id = #{lotId}  
+	</sql>
+	
+	<!-- 해당날짜에 데이터가 있는지  조회(일괄처리) - month --> 
+	<select id="selectBulkMonthPos"
+		parameterType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.ProductPlanDto"
+		resultType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.ProductPlanDto">
+		<include refid="bulkPlan_base" />
+		AND plan.prod_plan_year = #{prodPlanYear} AND plan.prod_plan_month = #{prodPlanMonth} AND plan.prod_plan_type = 'prod_plan01'
+		GROUP BY plan.prod_plan_id
+	</select>
+	
+	<!-- 해당날짜에 데이터가 있는지  조회(일괄처리) - day -->
+	<select id="selectBulkDayPos"
+		parameterType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.ProductPlanDto"
+		resultType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.ProductPlanDto">
+		<include refid="bulkPlan_base" />
+		AND plan.prod_plan_year = #{prodPlanYear} AND plan.prod_plan_month = #{prodPlanMonth} AND plan.prod_plan_day = #{prodPlanDay} AND plan.prod_plan_type = 'prod_plan02'
+		GROUP BY plan.prod_plan_id
+	</select>
+	
+	<!-- 해당기간에 데이터가 있는지  조회(일괄처리 - 중복데이터를 막기 위함) - Month -->
+	<select id="selectBulkMonthPeriod"
+		parameterType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.ProductPlanDto"
+		resultType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.ProductPlanDto">
+		SELECT 
+			IFNULL(SUM(planCnt), 0) AS planCnt,
+			IFNULL(SUM(asgnCnt), 0) AS asgnCnt,
+			IFNULL(SUM(workCnt), 0) AS workCnt
+		FROM(
+			<include refid="bulkPlan_base" />
+			AND CONCAT(plan.prod_plan_year, '-', plan.prod_plan_month) BETWEEN #{bulkStdt} AND #{bulkEddt} AND prod_plan_type = 'prod_plan01'
+			GROUP BY plan.prod_plan_id
+		)s_table
+	</select>
+	
+	<!-- 해당기간에 데이터가 있는지  조회(일괄처리 - 중복데이터를 막기 위함) - Day -->
+	<select id="selectBulkDayPeriod"
+		parameterType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.ProductPlanDto"
+		resultType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.ProductPlanDto">
+		SELECT 
+			IFNULL(SUM(planCnt), 0) AS planCnt,
+			IFNULL(SUM(asgnCnt), 0) AS asgnCnt,
+			IFNULL(SUM(workCnt), 0) AS workCnt
+		FROM(
+			<include refid="bulkPlan_base" />
+			AND CONCAT(plan.prod_plan_year, '-', plan.prod_plan_month, '-', plan.prod_plan_day) BETWEEN #{bulkStdt} AND #{bulkEddt} AND prod_plan_type = 'prod_plan02'
+			GROUP BY plan.prod_plan_id
+		)s_table
+	</select>
+	
+	<select id="selectBulkPlanCnt"
+		parameterType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.ProductPlanDto"
+		resultType="java.lang.Integer">
+		SELECT
+			-- SUM(prod_plan_qty) AS prod_plan_qty,
+			-- MAX(lot_qty) AS lot_qty,
+			MAX(lot_qty) - SUM(prod_plan_qty) AS prod_plan_qty
+		FROM prs_product_plan plan
+		LEFT OUTER JOIN prs_lot_info lot ON lot.lot_id = plan.lot_id
+		WHERE plan.lot_id = #{lotId} AND prod_plan_type = #{prodPlanType}
+		GROUP BY plan.lot_id
+	</select>
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.mapper.mfgMgt.analsMgt.AnalsMgtMapper">
+	<sql id="routingSheet_base">
+			eqmtMgt.eqmt_mgt_id AS eqmtMgtId,
+			eqmtMgt.eqmt_mgt_nm AS eqmtMgtNm,
+			IFNULL(eqmtMgt.day_target, 1) AS dayTarget,
+			workInfo.prod_work_start AS prodWorkStart,
+			workInfo.prod_work_end AS prodWorkEnd,
+			workInfo.prod_work_qty AS prodWorkQty,
+			workInfo.routing_id	AS routingId
+		FROM prs_work_info workInfo
+		INNER JOIN bc_equipment_mgt eqmtMgt
+		ON workInfo.eqmt_mgt_id = eqmtMgt.eqmt_mgt_id
+		WHERE prod_asm_id = #{prodAsmId}
+	</sql>
+	
+	<!-- 작업지시(팝업) select -->
+	<select id="selectRoutingSheet"
+		parameterType="jin.mes.form.mfgMgt.analsMgt.AnalsMgtDto"
+		resultType="jin.mes.form.mfgMgt.analsMgt.AnalsMgtDto">
+		SELECT 
+		<include refid="routingSheet_base" />
+	</select>
+</mapper>

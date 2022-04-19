@@ -1,0 +1,340 @@
+
+.claimMgtForm .center-input {
+	width: 100%;
+}
+
+.claimMgtForm .col-left-title {
+	width: 16%;
+}
+
+.claimMgtForm .col-left-content {
+	width: 36%;
+}
+
+.claimMgtForm .col-right-title {
+	width: 12%;
+}
+
+.claimMgtForm .col-right-content {
+	width: 36%;
+}
+
+/* .claimMgtForm div.k-window-content{
+	overflow: unset; 팝업창의 스크롤 없앰
+} */
+
+.claimMgtForm .grid-content {
+	width: 100%;
+}
+.claimMgtForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+.claimMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.claimMgtForm .left-input {
+	width: 90%;
+	float: left;
+}
+
+.claimMgtForm .right-input {
+	width: 90%;
+	float: right;
+}
+
+/*********클레임 관리 그리드 더블클릭 시의 팝업창**********/
+
+.claimMgtForm-popsc #jtePopAddForm_master {
+	width: 100%;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+#jtePopAddForm_master {
+/* 	font-size: 16px; */
+}
+
+#jtePopAddForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.claimMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.claimMgtForm-popsc .center-input {
+	width: 100%;
+}
+
+.claimMgtForm-popsc .center-input.btn-input {
+	width: 90%;
+	float: left;
+}
+
+.claimMgtForm-popsc .popsc-col-left-title {
+	width: 20%;
+}
+
+.claimMgtForm-popsc .popsc-col-left-content {
+	width: 27%;
+}
+
+.claimMgtForm-popsc .popsc-col-right-title {
+	width: 26%;
+}
+
+.claimMgtForm-popsc .popsc-col-right-content {
+	width: 27%;
+}
+
+.claimMgtForm-popsc div.k-window-content{
+	overflow: unset; /*팝업창의 스크롤 없앰*/
+}
+
+.claimMgtForm-popsc .grid-content {
+	width: 100%;
+}
+
+.claimMgtForm-popsc .jtePopAddForm_master th {
+	text-align: left;	
+}
+
+/* .claimMgtForm-popsc .jtePopAddForm_master td.pop_title{
+	padding-top: 0em;
+	padding-bottom: 0em;
+} */
+
+.claimMgtForm-popsc .left-input {
+	width: 95%;
+	float: left;
+}
+
+.claimMgtForm-popsc .right-input {
+	width: 95%;
+	float: right;
+}
+
+/*********클레임 관리 그리드 더블클릭 → 팝업창 하단 그리드 좌측의 클레임 정보 입력 버튼 클릭 시의 팝업창**********/
+
+.claimMgtForm .popsc-btn {
+	width: 100%;
+}
+
+/*********클레임 관리 그리드 더블클릭 → 팝업창 하단 그리드 좌측의 재수주 버튼 클릭 시의 팝업창**********/
+
+.claimMgtForm .search-btn {
+	width: 100%;
+}
+#jteClaimReorderForm_master {
+/* 	font-size: 16px; */
+}
+
+#jteClaimReorderForm #jteClaimReorderForm_master {
+	width: 100%;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.claimMgtForm-poptr .jteClaimReorderForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+/* .claimMgtForm-poptr .jteClaimReorderForm_master td.pop_title{
+	padding-top: 0em;
+	padding-bottom: 0em;
+} */
+
+.claimMgtForm .poptr-center-input {
+	width: 100%;
+}
+
+.claimMgtForm .poptr-col-left-title {
+	width: 16%;
+}
+
+.claimMgtForm .poptr-col-left-content-1 {
+	width: 20%;
+}
+
+.claimMgtForm .poptr-col-left-content-2 {
+	width: 12%;
+}
+
+.claimMgtForm .poptr-col-right-title {
+	width: 20%;
+}
+
+.claimMgtForm .poptr-col-right-content-1 {
+	width: 20%;
+}
+
+.claimMgtForm .poptr-col-right-content-2 {
+	width: 12%;
+}
+
+.claimMgtForm .right-input .btn-input{
+	width: 100%;
+}
+
+.claimMgtForm-poptr .left-input {
+	width: 100%;
+}
+
+.claimMgtForm-poptr .right-input {
+	width: 100%;
+}
+
+.claimMgtForm-poptr .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+#popArea .k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#popArea td {
+	padding: .4em .6em;
+}
+
+
+/********* 클레임 관리 그리드 더블클릭 → 팝업창 하단 그리드 좌측의 클레임 정보 입력 버튼 클릭 → 불량 정보 등록 버튼 클릭 시의 팝업창**********/
+
+.toolInfo.toolInfo-title {
+	width: 100%;
+}
+
+.toolInfo.toolInfo-title tr {
+/* 	font-size: 16px; */
+}
+
+.toolInfoPopup_form .toolInfo-div {
+	height: 250px;
+	margin: 10px;
+	border: 1px solid #D5E0F5;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+.toolInfoPopup_form .final-btn-area {
+	margin-top: 0;
+	vertical-align: bottom;
+}
+
+.toolInfo-title tr {
+	width: 100%;
+}
+
+.toolInfo.toolInfo-title .col-toolInfo-check {
+	width: 8%;
+}
+
+.toolInfo.toolInfo-title .col-toolInfo1 {
+	width: 60%;
+}
+
+.toolInfo.toolInfo-title .col-toolInfo2 {
+	width: 32%;
+}
+
+#toolInfo-title .claimMgtForm .claimMgtForm-toolInfo-title {
+	width: 100%;
+    font-size: 20px;
+    font-weight: bold;
+    float: left;
+}
+
+.toolInfo-div .toolInfo .claimMgtForm .claimMgtFormtoolInfo-content {
+	padding-left: 5px;
+	width: 100%;
+}
+
+.claimMgtForm-toolInfo-content td {
+	width: 30%;
+}
+
+.plus-minus-btn-area {
+	padding: 10px;
+/* 	text-align: center; */
+}
+
+.plus-minus-btn {
+	width: 50px;
+	font-size: 26px;
+	font-weight: bold;
+	padding: 4px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-right: 10px;
+}
+
+
+
+
+
+
+.tool-checkbox-td {
+	width: 10%;
+	text-align: center;
+}
+
+.routingMgtForm .toolInfo-title{
+	width: 100%;
+	font-weight: bolder;
+	margin-bottom: -10px;
+}
+
+.routingMgtForm .toolInfo-content {
+	width: 100%;
+}
+
+.routingMgtForm .toolInfo tr {
+	text-align: left;	
+}
+
+.routingMgtForm .toolInfo th {
+	text-align: left;	
+}
+
+.routingMgtForm .toolInfo td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+	
+}
+
+.routingMgtForm .toolInfo-title td {
+	text-align: left;
+	font-size: 20px;
+}
+
+.routingMgtForm .toolInfo-content .badCode {
+	width: 95%;
+	float: left;
+	font-size: 20px;
+}
+
+.routingMgtForm .toolInfo-content .badQty {
+	width: 98%;
+	float: left;
+	font-size: 20px;
+}
+
+.routingMgtForm .col-toolInfo {
+	width: 24%;
+}
+
+/*20.08.06 왼쪽 셀 가운데 정렬 JJW*/
+.claimMgtForm.k-grid th:first-child, .claimMgtForm.k-grid td:first-child {
+	text-align: center;
+}

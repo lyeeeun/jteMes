@@ -1,0 +1,817 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.mfgMgt.wrkinWrkerMgt.NewWrkinWrkerMgtMapper">
+
+	<!-- 작업정보 쿼리 -->
+	<sql id="prodWork_base">
+			lot.order_id			AS orderId,			-- 수주ID
+			plan.lot_id				AS lotId,			-- LotID
+			lot.lot_nm				AS lotNm,			-- Lot명
+			item.item_id			AS itemId,			-- 아이템ID
+			item.item_nm			AS itemNm,			-- 아이템명
+			item.item_total_stock 	AS itemTotalStock,	   -- 총재고량
+			item.item_day_target 	AS itemDayTarget,	   -- 일일목표량
+			item.item_deduction 	AS itemDeduction,	   -- 공제량
+			item.item_std01 		AS itemStd01,		   -- 단위1
+			item.item_std02 		AS itemStd02,		   -- 단위2
+			item.item_std03 		AS itemStd03,		   -- 단위3
+			item.item_std04 		AS itemStd04,		   -- 단위4
+			item.item_std05			AS itemStd05,		   -- 단위5
+			item.item_std_str01		as itemStdStr01,
+			item.item_std_str02		as itemStdStr02,
+			item.item_std_str03		as itemStdStr03,
+			item.item_std_str04		as itemStdStr04,
+			item.item_std_str05 	as itemStdStr05,
+			item.item_unit 			AS itemUnit,		   -- 유닛
+			item.item_mtrl 			AS itemMtrl,		   -- 재질
+			
+			plan.prod_plan_id		AS prodPlanId,		-- 생산계획정보 ID
+			plan.prod_plan_year		AS prodPlanYear,	-- 계획연도
+			plan.prod_plan_month	AS prodPlanMonth,	-- 계획월
+			plan.prod_plan_day		AS prodPlanDay,		-- 계획일
+			plan.prod_plan_qty		AS prodPlanQty,		-- 계획량
+			plan.prod_plan_desc		AS prodPlanDesc,	-- 비고
+			asgn.prod_asm_id		AS prodAsmId,		-- 작업지시 ID
+			asgn.prod_asm_nm		AS prodAsmNm,		-- 작업지시명
+			asgn.prod_asm_date		AS prodAsmDate,		-- 작업지시일
+			asgn.prod_asm_qty		AS prodAsmQty,		-- 생산지시량
+			asgn.prod_asm_desc		AS prodAsmDesc,		-- 비고
+			asgn.prod_asm_user		AS prodAsmUser,		-- 작업지시 수신자 아이디(부서 담당자)
+			d_usr.user_nm			AS prodAsmUserNm,	-- 작업지시 수신자 명
+			asgn.prod_asm_emj		AS prodAsmEmj,		-- 긴급여부
+			asgn.prod_asm_state		AS prodAsmState,	-- 작업상태
+			asgn.created_at			AS createdAt,		-- 생성일
+			asgn.creator_id			AS creatorId,		-- 생성자
+			asgn.dept_id			AS deptId,			-- 부서정보
+			d_dept.dept_Nm			AS deptNm,			-- 부서명
+			wok.prod_work_id		AS prodWorkId,		-- 작업정보ID
+			wok.routing_id			AS routingId,		-- 라우팅ID
+			rut.routing_seq			AS routingSeq,		-- 라우팅 순서
+			rut.routing_type		AS routingType,		-- 공정정보
+			group_concat(bom.bom_target)	AS bomTarget,		-- bom구분(자재, 품목)
+			wok.eqmt_mgt_id			AS eqmtMgtId,		-- 설비개별코드 ID
+			eqmt.eqmt_mgt_nm		AS eqmtMgtNm,		-- 설비명
+			eqmt.place_id			AS placeId,			-- 설비위치코드
+			place.place_nm			AS placeNm,			-- 설비위치명
+			wok.prod_work_user		AS prodWorkUser,	-- 작업자 아이디
+			w_usr.user_nm			AS prodWorkUserNm,	-- 작업자 명
+			wok.prod_work_qty		AS prodWorkQty,		-- 작업자 작업지시량
+			wok.prod_work_good		AS prodWorkGood,	-- 생산량
+			wok.prod_work_bad		AS prodWorkBad,		-- 불량량
+			IF(IFNULL(itemQty.item_qty_target_code,'') = '','C','U')		AS qtyAction,		-- 수량등록여부
+			wok.prod_work_start		AS prodWorkStart,	-- 시작시간
+			wok.prod_work_end		AS prodWorkEnd,		-- 종료시간
+			wok.prod_work_desc		AS prodWorkDesc,	-- 작업지시 비고
+			mtrlUse.mtrl_mgt_id		AS mtrlMgtId,		-- 사용자재 코드
+			mtrlInfo.mtrl_nm		AS mtrlNm,			-- 자재명
+			mtrlInfo.description	AS mtrlDiv,			-- 자재구분
+			mtrlUse.mtrl_use_input	AS mtrUseInput,		-- 자재 투입량
+			mtrlUse.mtrl_use_cnt	AS mtrlUseCnt		-- 자재 사용량
+		FROM prs_work_info wok -- 작업정보
+		LEFT OUTER JOIN prs_product_assignment asgn ON wok.prod_asm_id = asgn.prod_asm_id 					-- 생산지시
+		JOIN prs_product_plan plan ON plan.prod_plan_id = asgn.prod_plan_id AND plan.prod_plan_type = 'prod_plan02'	-- 생산계획(일간)
+		LEFT OUTER JOIN mb_user_info d_usr ON d_usr.user_id = asgn.prod_asm_user					-- 작업지시 수신자 정보
+		LEFT OUTER JOIN mb_dept_info d_dept ON d_dept.dept_id = asgn.dept_id						-- 작업지시 수신자 부서
+		-- LEFT OUTER JOIN mb_position_info d_pos ON d_pos.position_id = d_usr.position_id					-- 작업지시 수신자 직위
+		LEFT OUTER JOIN prs_lot_info lot ON lot.lot_id = plan.lot_id							-- Lot정보
+		LEFT OUTER JOIN prs_order_info odr ON odr.order_id = lot.order_id						-- 수주정보
+		LEFT OUTER JOIN bc_item_info item ON item.item_id = lot.item_id							-- 품목정보
+		LEFT OUTER JOIN mb_user_info w_usr ON w_usr.user_id = wok.prod_work_user 					-- 작업자 정보
+		LEFT OUTER JOIN bc_routing_info rut ON rut.routing_id = wok.routing_id						-- 라우팅 정보
+		LEFT OUTER JOIN bc_rtl_bom_routing rtl ON rtl.routing_id = rut.routing_id					-- routing - bom 매핑테이블
+		LEFT OUTER JOIN bc_bom_info bom ON bom.bom_id = rtl.bom_id							-- bom 정보
+		LEFT OUTER JOIN bc_equipment_mgt eqmt ON eqmt.eqmt_mgt_id = wok.eqmt_mgt_id					-- 설비정보
+		LEFT OUTER JOIN bc_place_info place ON place.place_id = eqmt.place_id					-- 설비 위치정보
+		LEFT OUTER JOIN qm_item_mgt itemQty ON  itemQty.item_qty_target_code = wok.prod_work_id				-- 수량등록히스토리
+		LEFT OUTER JOIN prs_mtrl_useinfo mtrlUse ON mtrlUse.prod_work_id = wok.prod_work_id		-- 자재사용정보
+		LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlInfo.mtrl_id = mtrlUse.mtrl_id			-- 자재정보 
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="prodPlanId != null and prodPlanId != '' ">	
+			AND plan.prod_plan_id = #{prodPlanId}
+		</if>
+		<if test="prodPlanYear != null and prodPlanYear != '' ">	
+			AND plan.prod_plan_year = #{prodPlanYear}
+		</if>
+		<if test="prodPlanMonth != null and prodPlanMonth != '' ">	
+			AND plan.prod_plan_month = #{prodPlanMonth}
+		</if>
+		<if test="prodPlanDay != null and prodPlanDay != '' ">	
+			AND plan.prod_plan_day = #{prodPlanDay}
+		</if>
+		<if test="prodAsmId != null and prodAsmId != '' ">
+			AND asgn.prod_asm_id = #{prodAsmId}
+		</if>
+		<if test="prodAsmUser != null and prodAsmUser != '' ">	
+			AND asgn.prod_asm_user = #{prodAsmUser}
+		</if>
+		<if test="prodAsmEmj != null and prodAsmEmj != '' ">	
+			AND asgn.prod_asm_emj = #{prodAsmEmj}
+		</if>
+		<if test="deptId != null and deptId != '' ">	
+			AND asgn.dept_id = #{deptId}
+		</if>
+		<if test="prodWorkId != null and prodWorkId != '' ">	
+			AND wok.prod_work_id = #{prodWorkId}
+		</if>
+		<if test="routingId != null and routingId != '' ">	
+			AND wok.routing_id = #{routingId}
+		</if>
+		<if test="routingType != null and routingType != '' ">
+			AND rut.routing_type = #{routingType}
+		</if>
+		<if test="prodWorkUser != null and prodWorkUser != '' ">	
+			AND wok.prod_work_user = #{prodWorkUser}
+		</if>
+		<if test="eqmtMgtId != null and eqmtMgtId != '' ">	
+			AND wok.eqmt_mgt_id = #{eqmtMgtId}
+		</if>
+		<if test="placeId != null and placeId != '' ">	
+			AND eqmt.place_id = #{place_id}
+		</if>
+		GROUP BY wok.prod_work_id, wok.routing_id
+	</sql>
+	
+	<!-- 작업정보(Page) select -->
+	<select id="selectProdWorkList"
+		parameterType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto"
+		resultType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test='sort != null and sort != "" '>
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY prodAsmId DESC, routingSeq ASC) AS RNUM,
+					</otherwise>
+				</choose>
+				g_table.*
+				FROM(
+					SELECT
+					<include refid="prodWork_base" />
+			)g_table
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+	
+	<!-- 작업정보 Count -->
+	<select id="selectProdWorkCount"
+		parameterType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="prodWork_base" />
+				)c_table
+	</select>
+	
+	<!-- 작업정보  팝업 -->
+	<sql id="prodWork_pop">
+			lot.order_id			AS orderId,		       -- 수주ID                    
+			plan.lot_id				AS lotId,		       -- LotID                   
+			lot.lot_nm				AS lotNm,	  		   -- Lot명                    
+			item.item_id			AS itemId,			   -- 아이템ID
+			item.item_nm			AS itemNm,			   -- 아이템명
+			item.item_total_stock 	AS itemTotalStock,	   -- 총재고량
+			item.item_day_target 	AS itemDayTarget,	   -- 일일목표량
+			item.item_deduction 	AS itemDeduction,	   -- 공제량
+			item.item_std01 		AS itemStd01,		   -- 단위1
+			item.item_std02 		AS itemStd02,		   -- 단위2
+			item.item_std03 		AS itemStd03,		   -- 단위3
+			item.item_std04 		AS itemStd04,		   -- 단위4
+			item.item_std05			AS itemStd05,		   -- 단위5
+			item.item_std_str01		as itemStdStr01,
+			item.item_std_str02		as itemStdStr02,
+			item.item_std_str03		as itemStdStr03,
+			item.item_std_str04		as itemStdStr04,
+			item.item_std_str05 	as itemStdStr05,
+			item.item_unit 			AS itemUnit,		   -- 유닛
+			item.item_mtrl 			AS itemMtrl,		   -- 재질
+			
+			plan.prod_plan_id      	AS prodPlanId,         -- 생산계획정보 ID               
+			plan.prod_plan_year    	AS prodPlanYear,       -- 계획연도                    
+			plan.prod_plan_month   	AS prodPlanMonth,      -- 계획월                     
+			plan.prod_plan_day     	AS prodPlanDay,        -- 계획일                     
+			plan.prod_plan_qty     	AS prodPlanQty,        -- 계획량                     
+			plan.prod_plan_desc    	AS prodPlanDesc,       -- 비고                      
+			asgn.prod_asm_id		AS prodAsmId,          -- 작업지시 ID                 
+			asgn.prod_asm_nm		AS prodAsmNm,          -- 작업지시명                   
+			asgn.prod_asm_date      AS prodAsmDate,        -- 작업지시일                   
+			asgn.prod_asm_qty       AS prodAsmQty,         -- 생산지시량                   
+			asgn.prod_asm_desc     	AS prodAsmDesc,        -- 비고                      
+			asgn.prod_asm_user    	AS prodAsmUser,        -- 작업지시 수신자 아이디(부서 담당자)
+			d_usr.user_nm		   	AS prodAsmUserNm,      -- 작업지시 수신자 명
+			asgn.prod_asm_emj      	AS prodAsmEmj,         -- 긴급여부                    
+			asgn.prod_asm_state    	AS prodAsmState,       -- 작업상태                    
+			asgn.created_at			AS createdAt,          -- 생성일                     
+			asgn.creator_id			AS creatorId,	       -- 생성자                     
+			asgn.dept_id			AS deptId,	           -- 부서정보
+			d_dept.dept_Nm			AS deptNm,	       	   -- 부서명
+			wok.prod_work_id      	AS prodWorkId,         -- 작업정보ID                  
+			wok.routing_id	 		AS routingId,		   -- 라우팅ID
+			rut.routing_seq	 		AS routingSeq,		   -- 라우팅 순서
+			rut.routing_type		AS routingType,		   -- 공정정보
+			group_concat(bom.bom_target)	AS bomTarget,		-- bom구분(자재, 품목)
+			wok.eqmt_mgt_id			AS eqmtMgtId,		   -- 설비개별코드 ID               
+			eqmt.eqmt_mgt_nm		AS eqmtMgtNm,	       -- 설비명
+			eqmt.place_id			AS placeId,				-- 설비위치코드
+			place.place_nm			AS placeNm,				-- 설비위치명           
+			wok.prod_work_user    	AS prodWorkUser,       -- 작업자 아이디                     
+			w_usr.user_nm		   	AS prodWorkUserNm,     -- 작업자 명                     
+			wok.prod_work_qty		AS prodWorkQty,		   -- 작업자 작업지시량
+			wok.prod_work_good    	AS prodWorkGood,       -- 생산량                     
+			wok.prod_work_bad     	AS prodWorkBad,        -- 불량량
+			IF(IFNULL(itemQty.item_qty_target_code,'') = '','C','U')		AS qtyAction,		-- 수량등록여부
+			wok.prod_work_start   	AS prodWorkStart,      -- 시작시간                    
+			wok.prod_work_end     	AS prodWorkEnd,        -- 종료시간
+			wok.prod_work_desc		AS prodWorkDesc		-- 작업지시 비고
+		FROM  prs_product_plan plan -- 생산계획
+		LEFT OUTER JOIN prs_product_assignment asgn ON plan.prod_plan_id = asgn.prod_plan_id 		-- 생산지시
+		LEFT OUTER JOIN mb_user_info d_usr ON d_usr.user_id = asgn.prod_asm_user					-- 작업지시 수신자 정보
+		LEFT OUTER JOIN mb_dept_info d_dept ON d_dept.dept_id = asgn.dept_id						-- 작업지시 수신자 부서
+		-- LEFT OUTER JOIN mb_position_info d_pos ON d_pos.position_id = d_usr.position_id		 	-- 작업지시 수신자 직위
+		LEFT OUTER JOIN prs_lot_info lot ON lot.lot_id = plan.lot_id								-- Lot정보
+		LEFT OUTER JOIN prs_order_info odr ON odr.order_id = lot.order_id							-- 수주정보
+		LEFT OUTER JOIN bc_item_info item ON item.item_id = lot.item_id								-- 품목정보
+		LEFT OUTER JOIN prs_work_info wok ON wok.prod_asm_id = asgn.prod_asm_id 					-- 작업정보
+		LEFT OUTER JOIN mb_user_info w_usr ON w_usr.user_id = wok.prod_work_user 					-- 작업자 정보
+		LEFT OUTER JOIN bc_routing_info rut ON rut.routing_id = wok.routing_id						-- 라우팅 정보
+		LEFT OUTER JOIN bc_rtl_bom_routing rtl ON rtl.routing_id = rut.routing_id					-- routing - bom 매핑테이블
+		LEFT OUTER JOIN bc_bom_info bom ON bom.bom_id = rtl.bom_id									-- bom 정보
+		LEFT OUTER JOIN bc_equipment_mgt eqmt ON eqmt.eqmt_mgt_id = wok.eqmt_mgt_id					-- 설비정보
+		LEFT OUTER JOIN bc_place_info place ON place.place_id = eqmt.place_id					-- 설비 위치정보
+		LEFT OUTER JOIN qm_item_mgt itemQty ON  itemQty.item_qty_target_code = wok.prod_work_id				-- 수량등록히스토리
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="prodPlanId != null and prodPlanId != '' ">	
+			AND plan.prod_plan_id = #{prodPlanId}
+		</if>
+		<if test="prodPlanYear != null and prodPlanYear != '' ">	
+			AND plan.prod_plan_year = #{prodPlanYear}
+		</if>
+		<if test="prodPlanMonth != null and prodPlanMonth != '' ">	
+			AND plan.prod_plan_month = #{prodPlanMonth}
+		</if>
+		<if test="prodPlanDay != null and prodPlanDay != '' ">	
+			AND plan.prod_plan_day = #{prodPlanDay}
+		</if>
+		<if test="prodAsmId != null and prodAsmId != '' ">
+			AND asgn.prod_asm_id = #{prodAsmId}
+		</if>
+		<if test="prodAsmUser != null and prodAsmUser != '' ">	
+			AND asgn.prod_asm_user = #{prodAsmUser}
+		</if>
+		<if test="prodAsmEmj != null and prodAsmEmj != '' ">	
+			AND asgn.prod_asm_emj = #{prodAsmEmj}
+		</if>
+		<if test="deptId != null and deptId != '' ">	
+			AND asgn.dept_id = #{deptId}
+		</if>
+		<if test="prodWorkId != null and prodWorkId != '' ">	
+			AND wok.prod_work_id = #{prodWorkId}
+		</if>
+		<if test="routingId != null and routingId != '' ">	
+			AND wok.routing_id = #{routingId}
+		</if>
+		<if test="routingType != null and routingType != '' ">
+			AND rut.routing_type = #{routingType}
+		</if>
+		<if test="prodWorkUser != null and prodWorkUser != '' ">	
+			AND wok.prod_work_user = #{prodWorkUser}
+		</if>
+		<if test="eqmtMgtId != null and eqmtMgtId != '' ">	
+			AND wok.eqmt_mgt_id = #{eqmtMgtId}
+		</if>
+		<if test="placeId != null and placeId != '' ">	
+			AND eqmt.place_id = #{place_id}
+		</if>
+		GROUP BY wok.prod_work_id, wok.routing_id
+	</sql>
+	
+	<!-- 작업정보(팝업) select -->
+	<select id="selectProdWorkPop"
+		parameterType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto"
+		resultType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto">
+		SELECT 
+		<include refid="prodWork_pop" />
+	</select>
+	
+	<!-- 작업정보 입력 -->
+	<insert id="insertProdWork" parameterType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto">
+	<selectKey keyProperty="prodWorkId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('PWK') AS prodWorkId
+	</selectKey>
+		INSERT INTO prs_work_info(
+			prod_work_id,
+			prod_plan_id,
+			routing_id,
+			eqmt_mgt_id,
+			prod_work_user,
+			prod_work_qty,
+			prod_work_good,
+			prod_work_bad,
+			prod_work_start,
+			prod_work_end,
+			prod_work_desc,
+			lot_id,
+			prod_asm_id
+		)VALUES(
+			#{prodWorkId},
+			#{prodPlanId},
+			#{routingId},
+			#{eqmtMgtId},
+			#{prodWorkUser},
+			#{prodWorkQty},
+			#{prodWorkGood},
+			#{prodWorkBad},
+			#{prodWorkStart},
+			#{prodWorkEnd},
+			#{prodWorkDesc},
+			#{lotId},
+			#{prodAsmId}
+		)
+	</insert>
+	<!-- 작업정보 수정 -->
+	<update id="updateProdWork" parameterType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto">
+		UPDATE prs_work_info
+		SET prod_asm_id = prod_asm_id
+			<if test="routingId != null">	
+				,routing_id = #{routingId}
+			</if>
+			<if test="eqmtMgtId != null">	
+				,eqmt_mgt_id = #{eqmtMgtId}
+			</if>
+			<if test="prodWorkUser != null">	
+				,prod_work_user = #{prodWorkUser}
+			</if>
+			<if test="prodWorkQty != null and prodWorkQty !=0">	
+				,prod_work_qty = #{prodWorkQty}
+			</if>
+			<if test="prodWorkGood != null and prodWorkGood !=0 ">	
+				,prod_work_good = #{prodWorkGood}
+			</if>
+			<if test="prodWorkBad != null and prodWorkBad !=0">	
+				,prod_work_bad = #{prodWorkBad}
+			</if>
+			<if test="prodWorkStart != null">	
+				,prod_work_start = #{prodWorkStart}
+			</if>
+			<if test="prodWorkEnd != null">	
+				,prod_work_end = #{prodWorkEnd}
+			</if>
+			<if test="prodWorkDesc != null">	
+				,prod_work_desc = #{prodWorkDesc}
+			</if>
+		WHERE prod_work_id  = #{prodWorkId}
+	</update>
+	
+	<!-- 작업정보 삭제 -->
+	<delete id="deleteProdWork" parameterType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto">
+		DELETE FROM prs_work_info
+		WHERE prod_work_id  = #{prodWorkId}
+	</delete>
+	
+	<!--자재 재고 파악  -->
+	<select id="selectProdMtrlChkList"
+		parameterType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto"
+		resultType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlMgtDto">
+		SELECT * FROM (
+			SELECT
+				<choose>
+					<when test='sort != null and sort != "" '>
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY bomTargetCnt DESC) AS RNUM,
+					</otherwise>
+				</choose>
+				rout.routing_id					AS routingId,		-- 라우팅 코드
+				rout.item_id					AS itemId,			-- 아이템코드 
+				bomRtl.bom_id					AS bomId,			-- bom코드
+				bom.bom_target_cnt				AS bomTargetCnt,	-- 필요수량
+				bom.bom_target_id				AS mtrlId,			-- 자재코드
+				mtrlInfo.description			AS mtrlDiv,			-- 자재구분
+				mtrlInfo.mtrl_nm         		AS mtrlNm, 			-- 자재명
+				mtrlInfo.mtrl_type       		AS mtrlType,		-- 자재타입
+				mtrlInfo.mtrl_HCD        		AS mtrlHCD,			
+				mtrlInfo.mtrl_std01        		AS mtrlStd01, 
+				mtrlInfo.mtrl_std02        		AS mtrlStd02, 
+				mtrlInfo.mtrl_std03        		AS mtrlStd03, 
+				mtrlInfo.mtrl_std04     		AS mtrlStd04,
+				mtrlInfo.mtrl_std05     		AS mtrlStd05, 
+				mtrlInfo.mtrl_useday     		AS mtrlUseday, 
+				mtrlInfo.mtrl_cost       		AS mtrlCost, 
+				mtrlInfo.is_use          		AS isUse,  
+				mtrlInfo.mtrl_desc				AS mtrlDesc,
+				mtrlInfo.mtrl_qual       		AS mtrlQual, 
+				mtrlInfo.mtrl_unit       		AS mtrlUnit
+			FROM bc_routing_info rout																		-- 라우팅 정보
+			LEFT OUTER JOIN bc_rtl_bom_routing bomRtl ON bomRtl.routing_id = rout.routing_id				-- 라우팅 BOM 매핑정보
+			JOIN bc_bom_info bom ON bom.bom_id = bomRtl.bom_id AND bom_target = 'prcs_bom02'		-- BOM 정보
+			LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlInfo.mtrl_id =  bom.bom_target_id 				-- BOM에 포함된 자재정보
+			WHERE rout.routing_id = #{routingId}
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+	
+	<!-- 자재투입현황 베이스 -->
+	<sql id="mtrlUse_base">
+			workInfo.prod_work_id		AS prodWorkId,
+			workInfo.prod_work_start	AS prodWorkStart,
+			workInfo.prod_work_end		AS prodWorkEnd,
+			workInfo.prod_work_desc		AS prodWorkDesc,
+			workInfo.prod_work_user		AS prodWorkUser,
+			rtlBom.bom_id				AS bomId,
+			mtrlInfo.mtrl_id			AS mtrlId,
+			mtrlInfo.description		AS mtrlDiv,
+			mtrlInfo.mtrl_nm			AS mtrlNm,
+			mtrlInfo.mtrl_type       	AS mtrlType,
+			mtrlInfo.mtrl_HCD        	AS mtrlHCD,			
+			mtrlInfo.mtrl_std01        	AS mtrlStd01, 
+			mtrlInfo.mtrl_std02        	AS mtrlStd02, 
+			mtrlInfo.mtrl_std03        	AS mtrlStd03, 
+			mtrlInfo.mtrl_std04     	AS mtrlStd04,
+			mtrlInfo.mtrl_std05     	AS mtrlStd05, 
+			mtrlInfo.mtrl_useday     	AS mtrlUseday, 
+			mtrlInfo.mtrl_cost       	AS mtrlCost, 
+			mtrlInfo.is_use          	AS isUse,  
+			mtrlInfo.mtrl_desc	     	AS mtrlDesc,
+			mtrlInfo.mtrl_qual       	AS mtrlQual, 
+			mtrlInfo.mtrl_unit       	AS mtrlUnit,
+			mtrlUse.mtrl_use_id			AS mtrlUseId,
+			mtrlUse.mtrl_use_input		AS mtrlUseInput,
+			mtrlUse.mtrl_use_cnt		AS mtrlUseCnt,
+			mtrlUse.mtrl_mgt_id			AS mtrlMgtId,
+			mtrlMgt.mtrl_mgt_purchase	AS mtrlMgtPurchase,
+			mtrlMgt.mtrl_mgt_cnt		AS mtrlMgtCnt,
+			mtrlMgt.description			AS mtrlMgtDesc,
+			bad.bad_id					AS badId,
+			bad.bad_code				AS badCode,
+			bad.bad_qty					AS badQty,
+			bad.chk_user				AS chkUser,
+			userInfo.user_nm			AS chkUserNm,
+			bad.chk_date				AS chkDate,
+			bad.bad_target				AS badTarget,
+			bad.bad_target_code			AS badTargetCode,
+			bad.bad_desc				AS badDesc
+		FROM prs_work_info workInfo													-- 작업정보
+		LEFT OUTER JOIN bc_rtl_bom_routing rtlBom ON rtlBom.routing_id = workInfo.routing_id						-- 라우팅-BOM매핑
+		LEFT OUTER JOIN bc_bom_info bom ON bom.bom_id = rtlBom.bom_id									-- BOM
+		JOIN bc_material_info mtrlInfo ON mtrlInfo.mtrl_id = bom.bom_target_id AND bom.bom_target = 'prcs_bom02'		-- 자재정보								
+		LEFT OUTER JOIN prs_mtrl_useInfo mtrlUse ON mtrlUse.prod_work_id = workInfo.prod_work_id AND mtrlInfo.mtrl_id = mtrlUse.mtrl_id -- 자재사용정보
+		LEFT OUTER JOIN cm_mtrl_mgt mtrlMgt ON mtrlMgt.mtrl_mgt_id = mtrlUse.mtrl_mgt_id						-- 자재관리
+		LEFT OUTER JOIN prs_bad_product bad ON bad.bad_target_code = mtrlUse.mtrl_use_id AND bad.bad_target = 'qual_spec02'		-- 불량관리
+		LEFT OUTER JOIN mb_user_info userInfo ON userInfo.user_id = bad.chk_user
+		WHERE workInfo.prod_work_id = #{prodWorkId}
+	</sql>
+	
+	<!-- 자재투입현황 리스트, 토탈집계등 -->
+	<sql id="mtrlUseGroup_base">
+				g_table.prodWorkId 				AS prodWorkId,
+				g_table.prodWorkStart 			AS prodWorkStart,
+				g_table.prodWorkEnd 			AS prodWorkEnd,
+				g_table.prodWorkDesc 			AS prodWorkDesc,
+				g_table.prodWorkUser			AS prodWorkUser,
+				g_table.mtrlUseId				AS mtrlUseId,
+				g_table.bomId					AS bomId,
+				MAX(g_table.mtrlId) 			AS mtrlId,
+				MAX(g_table.mtrlNm) 			AS mtrlNm,
+				MAX(g_table.mtrlDiv)     		AS mtrlDiv,
+				MAX(g_table.mtrlType)   	    AS mtrlType,
+				MAX(g_table.mtrlHCD)        	AS mtrlHCD,			
+				MAX(g_table.mtrlStd01)        	AS mtrlStd01, 
+				MAX(g_table.mtrlStd02)        	AS mtrlStd02, 
+				MAX(g_table.mtrlStd03)        	AS mtrlStd03, 
+				MAX(g_table.mtrlStd04)     		AS mtrlStd04,
+				MAX(g_table.mtrlStd05)     		AS mtrlStd05, 
+				MAX(g_table.mtrlUseday)     	AS mtrlUseday, 
+				MAX(g_table.mtrlCost)       	AS mtrlCost, 
+				MAX(g_table.mtrlDesc)     		AS mtrlDesc,
+				MAX(g_table.mtrlQual)       	AS mtrlQual, 
+				MAX(g_table.mtrlUnit)       	AS mtrlUnit,
+				MAX(g_table.mtrlUseInput) 		AS mtrlUseInput,
+				MAX(g_table.mtrlUseCnt) 		AS mtrlUseCnt,
+				SUM(g_table.badQty)				AS badQty,
+				MAX(g_table.mtrlMgtId)			AS mtrlMgtId,
+				MAX(g_table.mtrlMgtPurchase)	AS mtrlMgtPurchase,
+				MAX(g_table.mtrlMgtCnt)			AS mtrlMgtCnt,
+				MAX(g_table.mtrlMgtDesc)		AS mtrlMgtDesc
+		FROM(
+			SELECT 
+				<include refid="mtrlUse_base" />
+		)g_table
+		WHERE 1=1
+		<if test="mtrlId != null and mtrlId != '' ">
+			AND g_table.mtrlId =  #{mtrlId}
+		</if>
+		<if test="mtrlUseId != null and mtrlUseId != '' ">
+			AND g_table.mtrlUseId =  #{mtrlUseId}
+		</if>
+		<if test="mtrlMgtId != null and mtrlMgtId != '' ">
+			AND g_table.mtrlMgtId =  #{mtrlMgtId}
+		</if>
+		GROUP BY g_table.prodWorkId, g_table.bomId, g_table.mtrlUseId
+	</sql>
+	
+	<!--자재투입현황 토탈 조회 -->
+	<select id="selectMtrlUseList"
+		parameterType="jin.mes.cform.mfgMgt.wrkinWrkerMgt.NewMtrlUseDto"
+		resultType="jin.mes.cform.mfgMgt.wrkinWrkerMgt.NewMtrlUseDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test='sort != null and sort != "" '>
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER() AS RNUM,
+					</otherwise>
+				</choose>
+				t_table.prodWorkId 				AS prodWorkId,
+				t_table.prodWorkStart 			AS prodWorkStart,
+				t_table.prodWorkEnd 			AS prodWorkEnd,
+				t_table.prodWorkDesc 			AS prodWorkDesc,
+				t_table.prodWorkUser 			AS prodWorkUser,
+				t_table.mtrlUseId				AS mtrlUseId,
+				t_table.bomId					AS bomId,
+				MAX(t_table.mtrlId) 			AS mtrlId,
+				MAX(t_table.mtrlNm) 			AS mtrlNm,
+				MAX(t_table.mtrlDiv)     		AS mtrlDiv,
+				MAX(t_table.mtrlType)      		AS mtrlType,
+				MAX(t_table.mtrlHCD)        	AS mtrlHCD,			
+				MAX(t_table.mtrlStd01)        	AS mtrlStd01, 
+				MAX(t_table.mtrlStd02)        	AS mtrlStd02, 
+				MAX(t_table.mtrlStd03)        	AS mtrlStd03, 
+				MAX(t_table.mtrlStd04)     		AS mtrlStd04,
+				MAX(t_table.mtrlStd05)     		AS mtrlStd05, 
+				MAX(t_table.mtrlUseday)     	AS mtrlUseday, 
+				MAX(t_table.mtrlCost)       	AS mtrlCost, 
+				MAX(t_table.mtrlDesc)     		AS mtrlDesc,
+				MAX(t_table.mtrlQual)       	AS mtrlQual, 
+				MAX(t_table.mtrlUnit)       	AS mtrlUnit,
+				SUM(t_table.mtrlUseInput) 		AS mtrlUseInput,
+				SUM(t_table.mtrlUseCnt) 		AS mtrlUseCnt,
+				SUM(t_table.badQty)				AS badQty,
+				MAX(t_table.mtrlMgtPurchase)	AS mtrlMgtPurchase,
+				MAX(t_table.mtrlMgtCnt)			AS mtrlMgtCnt,
+				MAX(t_table.mtrlMgtDesc)		AS mtrlMgtDesc
+			FROM(
+				SELECT
+				<include refid="mtrlUseGroup_base" />
+			)t_table
+			GROUP BY t_table.prodWorkId, t_table.bomId
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+	
+	<!-- 자재투입현황 세부항목 조회 -->
+	<select id="selectMtrlUseDetailList"
+		parameterType="jin.mes.cform.mfgMgt.wrkinWrkerMgt.NewMtrlUseDto"
+		resultType="jin.mes.cform.mfgMgt.wrkinWrkerMgt.NewMtrlUseDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test='sort != null and sort != "" '>
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER() AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="mtrlUseGroup_base" />
+			)s_table
+			WHERE mtrlMgtId IS NOT NULL
+			
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+	
+	<!-- 자재투입현황 불량조회  -->
+	<select id="selectMtrlUseBadList"
+		parameterType="jin.mes.cform.mfgMgt.wrkinWrkerMgt.NewMtrlUseDto"
+		resultType="jin.mes.cform.mfgMgt.wrkinWrkerMgt.NewMtrlUseDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test='sort != null and sort != "" '>
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER() AS RNUM,
+					</otherwise>
+				</choose>
+				
+				<include refid="mtrlUse_base" />
+				AND bad.bad_id IS NOT NULL	-- badID null 조회하지 않음
+				<if test="mtrlUseId != null and mtrlUseId != '' ">
+					AND bad.bad_target_code= #{mtrlUseId}
+				</if>
+			)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+	
+	<!--자재투입현황 개발품목 조회 -->
+	<sql id="mtrlUseDevItem_base">
+			workInfo.prod_work_id		AS prodWorkId,
+			workInfo.prod_work_start	AS prodWorkStart,
+			workInfo.prod_work_end		AS prodWorkEnd,
+			workInfo.prod_work_desc		AS prodWorkDesc,
+			workInfo.prod_work_user		AS prodWorkUser,
+			mtrlInfo.mtrl_id			AS mtrlId,
+			mtrlInfo.description		AS mtrlDiv,
+			mtrlInfo.mtrl_nm			AS mtrlNm,
+			mtrlInfo.mtrl_type       	AS mtrlType,
+			mtrlInfo.mtrl_HCD        	AS mtrlHCD,			
+			mtrlInfo.mtrl_std01        	AS mtrlStd01, 
+			mtrlInfo.mtrl_std02        	AS mtrlStd02, 
+			mtrlInfo.mtrl_std03        	AS mtrlStd03, 
+			mtrlInfo.mtrl_std04     	AS mtrlStd04,
+			mtrlInfo.mtrl_std05     	AS mtrlStd05, 
+			mtrlInfo.mtrl_useday     	AS mtrlUseday, 
+			mtrlInfo.mtrl_cost       	AS mtrlCost, 
+			mtrlInfo.is_use          	AS isUse,  
+			mtrlInfo.mtrl_desc	     	AS mtrlDesc,
+			mtrlInfo.mtrl_qual       	AS mtrlQual, 
+			mtrlInfo.mtrl_unit       	AS mtrlUnit,
+			mtrlUse.mtrl_use_id			AS mtrlUseId,
+			mtrlUse.mtrl_use_input		AS mtrlUseInput,
+			mtrlUse.mtrl_use_cnt		AS mtrlUseCnt,
+			mtrlUse.mtrl_mgt_id			AS mtrlMgtId,
+			mtrlMgt.mtrl_mgt_purchase	AS mtrlMgtPurchase,
+			mtrlMgt.mtrl_mgt_cnt		AS mtrlMgtCnt,
+			mtrlMgt.description			AS mtrlMgtDesc,
+			bad.bad_id					AS badId,
+			bad.bad_code				AS badCode,
+			bad.bad_qty					AS badQty,
+			bad.chk_user				AS chkUser,
+			userInfo.user_nm			AS chkUserNm,
+			bad.chk_date				AS chkDate,
+			bad.bad_target				AS badTarget,
+			bad.bad_target_code			AS badTargetCode,
+			bad.bad_desc				AS badDesc
+		FROM prs_work_info workInfo													-- 작업정보
+		LEFT OUTER JOIN prs_mtrl_useInfo mtrlUse ON mtrlUse.prod_work_id = workInfo.prod_work_id -- 자재사용정보			
+		LEFT OUTER JOIN cm_mtrl_mgt mtrlMgt ON mtrlMgt.mtrl_mgt_id = mtrlUse.mtrl_mgt_id						-- 자재관리			
+		LEFT OUTER JOIN bc_material_info mtrlInfo ON  mtrlInfo.mtrl_id = mtrlMgt.mtrl_id			
+		LEFT OUTER JOIN prs_bad_product bad ON bad.bad_target_code = mtrlUse.mtrl_use_id AND bad.bad_target = 'qual_spec02'		-- 불량관리
+		LEFT OUTER JOIN mb_user_info userInfo ON userInfo.user_id = bad.chk_user
+		WHERE workInfo.prod_work_id = #{prodWorkId}
+		<if test="mtrlUseId != null and mtrlUseId != '' ">
+			AND mtrlUse.mtrl_use_id = #{mtrlUseId}
+		</if>
+	</sql>
+	<select id="selectMtrlUseDevItemList"
+		parameterType="jin.mes.cform.mfgMgt.wrkinWrkerMgt.NewMtrlUseDto"
+		resultType="jin.mes.cform.mfgMgt.wrkinWrkerMgt.NewMtrlUseDto">
+		SELECT 
+			<include refid="mtrlUseDevItem_base" />
+		GROUP BY mtrlUse.mtrl_use_id
+	</select>
+	
+	<select id="selectMtrlUseDevItemBadList"
+		parameterType="jin.mes.cform.mfgMgt.wrkinWrkerMgt.NewMtrlUseDto"
+		resultType="jin.mes.cform.mfgMgt.wrkinWrkerMgt.NewMtrlUseDto">
+		SELECT 
+			<include refid="mtrlUseDevItem_base" />
+			AND bad.bad_id IS NOT NULL
+	</select>
+	
+	
+	<!-- 자재사용 등록 -->
+	<insert id="insertMtrlUse" parameterType="jin.mes.cform.mfgMgt.wrkinWrkerMgt.NewMtrlUseDto">
+	<selectKey keyProperty="mtrlUseId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('MTUS') AS mtrlUseId
+	</selectKey>
+		INSERT INTO prs_mtrl_useInfo(
+			mtrl_use_id,
+			mtrl_use_input,
+			mtrl_use_cnt,
+			mtrl_id,
+			mtrl_mgt_id,
+			prod_work_id
+		)VALUES(
+			#{mtrlUseId},
+			#{mtrlUseInput},
+			#{mtrlUseCnt},
+			#{mtrlId},
+			#{mtrlMgtId},
+			#{prodWorkId}
+		)
+	</insert>
+	
+	<!-- 자재사용 수정 -->
+	<update id="updateMtrlUse" parameterType="jin.mes.cform.mfgMgt.wrkinWrkerMgt.NewMtrlUseDto">
+		UPDATE prs_mtrl_useInfo
+		SET mtrl_use_id = mtrl_use_id
+			<if test="mtrlUseInput != null">	
+				,mtrl_use_input = #{mtrlUseInput}
+			</if>
+			<if test="mtrlUseCnt != null">	
+				,mtrl_use_cnt = #{mtrlUseCnt}
+			</if>
+		WHERE mtrl_use_id  = #{mtrlUseId}
+	</update>
+	
+		<!-- 자재사용 삭제 -->
+	<update id="deleteMtrlUse" parameterType="jin.mes.cform.mfgMgt.wrkinWrkerMgt.NewMtrlUseDto">
+		DELETE FROM prs_mtrl_useInfo
+		WHERE mtrl_use_id  = #{mtrlUseId}
+	</update>
+	
+	<sql id="bulkCopy_base">
+			plan.lot_id				AS lotId,			-- LotID
+			plan.prod_plan_id		AS prodPlanId,		-- 생산계획정보 ID
+			plan.prod_plan_type		AS prodPlanType,	-- 계획구분(월,일)
+			plan.prod_plan_year		AS prodPlanYear,	-- 계획연도
+			plan.prod_plan_month	AS prodPlanMonth,	-- 계획월
+			plan.prod_plan_day		AS prodPlanDay,		-- 계획일
+			plan.prod_plan_qty		AS prodPlanQty,		-- 계획량
+			plan.prod_plan_desc		AS prodPlanDesc,	-- 비고
+			asgn.prod_asm_id		AS prodAsmId,		-- 작업지시 ID
+			asgn.prod_asm_nm		AS prodAsmNm,		-- 작업지시명
+			asgn.prod_asm_date		AS prodAsmDate,		-- 작업지시일
+			asgn.prod_asm_qty		AS prodAsmQty,		-- 생산지시량
+			asgn.prod_asm_desc		AS prodAsmDesc,		-- 비고
+			asgn.prod_asm_user		AS prodAsmUser,		-- 작업지시 수신자 아이디(부서 담당자)
+			asgn.prod_asm_emj		AS prodAsmEmj,		-- 긴급여부
+			asgn.prod_asm_state		AS prodAsmState,	-- 작업상태
+			asgn.dept_id			AS deptId,			-- 부서정보
+			wok.prod_work_id		AS prodWorkId,		-- 작업정보ID
+			wok.routing_id			AS routingId,		-- 라우팅ID
+			wok.eqmt_mgt_id			AS eqmtMgtId,		-- 설비개별코드 ID
+			wok.prod_work_user		AS prodWorkUser,	-- 작업자 아이디
+			wok.prod_work_qty		AS prodWorkQty,		-- 작업자 작업지시량
+			wok.prod_work_desc		AS prodWorkDesc		-- 작업지시 비고
+		FROM prs_product_plan plan 
+		LEFT OUTER JOIN prs_product_assignment asgn ON plan.prod_plan_id = asgn.prod_plan_id 
+		LEFT OUTER JOIN prs_work_info wok ON wok.prod_asm_id = asgn.prod_asm_id 
+	</sql>
+	
+	<!-- 계획수립 일괄등록 데이터 가져오기  -->
+	<select id="selectbulkCopyList"
+		parameterType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto"
+		resultType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto">
+		SELECT *
+		FROM(	
+			SELECT 
+				<include refid="bulkCopy_base" />
+			WHERE plan.prod_plan_id = #{prodPlanId}
+			<if test="prodAsmId !='' and prodAsmId != null">	
+				AND asgn.prod_asm_id = #{prodAsmId}
+			</if>
+		)s_table
+		GROUP BY s_table.prodPlanId
+		<if test="action == 'asgn' ">	
+				, s_table.prodAsmId
+		</if>
+		<if test="action == 'work' ">	
+				, s_table.prodAsmId, s_table.prodWorkId
+		</if>
+	</select>
+	
+	<!-- 삭제하기 위한 데이터 조회  -->
+	<select id="selectbulkDeleteList"
+		parameterType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto"
+		resultType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto">
+		SELECT 
+			<include refid="bulkCopy_base" />
+		WHERE plan.lot_id = #{lotId}
+		<if test="action == 'plan' ">
+			<choose>
+				<when test="prodPlanType == 'prod_plan01' ">
+					AND CONCAT(plan.prod_plan_year, '-', plan.prod_plan_month) BETWEEN #{bulkStdt} AND #{bulkEddt}
+					AND plan.prod_plan_type = #{prodPlanType}
+					GROUP BY plan.prod_plan_id
+				</when>
+				<when test="prodPlanType == 'prod_plan02' ">
+					AND CONCAT(plan.prod_plan_year, '-', plan.prod_plan_month, '-', plan.prod_plan_day) BETWEEN #{bulkStdt} AND #{bulkEddt}
+					AND plan.prod_plan_type = #{prodPlanType}
+					GROUP BY plan.prod_plan_id
+				</when>
+			</choose>
+		</if>
+		<if test="action == 'asgn' ">	
+			AND plan.prod_plan_id = #{prodPlanId}
+			GROUP BY plan.prod_plan_id, asgn.prod_asm_id
+		</if>
+		<if test="action == 'work' ">
+			AND plan.prod_plan_id = #{prodPlanId}
+			AND asgn.prod_asm_id = #{prodAsmId}
+			GROUP BY plan.prod_plan_id, asgn.prod_asm_id, wok.prod_work_id	
+		</if>
+	</select>
+</mapper>

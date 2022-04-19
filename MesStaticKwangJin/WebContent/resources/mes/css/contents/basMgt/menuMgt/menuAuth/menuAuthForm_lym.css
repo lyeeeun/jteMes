@@ -1,0 +1,72 @@
+@CHARSET "UTF-8";
+
+/**200430 CSS 파일 생성_LYM**/
+
+.menuAuthForm .left-content-box {
+	width:73%; 
+}
+
+.menuAuthForm .right-content-box {
+	height: 100%;
+	width:25%; 
+	box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, 0.13); 
+	background:#22364e;
+}
+
+.menuAuthForm #jteSubTree{
+	height:100%;
+	padding: 15px 30px;
+	color: #ffffff;	
+}
+
+.menuAuthForm .center-content-box {
+/* 	height:100%; */
+	padding: 10px;
+} 
+
+.menuAuthForm .right-content-box span {
+	margin-right: 8px;
+}
+
+/*  .menuAuthForm {
+	margin-top: 0.8em;
+	height:100%;
+}
+ */
+
+/* .menuAuthForm .grid-content {
+	width: 100%;
+} */
+
+
+/*  .menuAuthForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    * listbox inline 표시 위해_gwpark *
+    display: inline-flex; 
+    margin-top: 2%;
+} */
+
+/* .menuAuthForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+} */
+
+/* .menuAuthForm .right-content-box {
+	height: 100%;
+	width:25%; 
+	padding: 15px 30px;
+	box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, 0.13); 
+	background:#22364e;
+	overflow: auto;
+	overflow-y: scroll;
+	border-radius: 5px;
+} */
+
+/* .menuAuthForm .k-treeview{
+	color: #ffffff;	
+} */
+
+/* .menuAuthForm .left-content-box {
+	width:73%; 
+} */

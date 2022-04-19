@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CM_workOrderSelectPop">
+
+	<select id="selectResultList" parameterType="hashmap"
+		resultType="hashmap">
+			<![CDATA[
+		
+		   SELECT          MW.WOID     															
+		                 , MW.CUSTOMERID  														
+		                 , MW.PRODID      														
+		                 , C.CUSTOMERNAME 														  
+		                 , P.PRODNAME     														  
+		                 , MW.SHOPFLOOR_QTY   													 
+		                 , MW.REMARK															
+		                 , MW.DEL_GBN        													 
+			 FROM TB_MESWORKORDER MW          
+			INNER JOIN TB_CUSTOMER C ON MW.CUSTOMERID=C.CUSTOMERID
+			INNER JOIN TB_PRODUCT P ON MW.PRODID=P.PRODID
+		    WHERE 1=1
+		      AND  MW.SHOPFLOOR_QTY - MW.OUT_TOT_QTY - MW.DEFECT_TOT_QTY > 0
+		]]>
+		
+	</select>
+
+</mapper>

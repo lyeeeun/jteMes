@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>Registration</title>
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/login/registration.js"></script>
+<link rel="stylesheet" href="/resources/mes/css/login/registration.css">
+
+</head>
+<body>
+	<h3>Registration</h3>
+	<hr/>
+	<form id="userForm" name="userForm" th:action="@{/registration}" method="post">
+		action : <b><span id="reqNewUser" style="color:#92B3B7">Input your information...</span></b><br/>
+		<hr/>
+		login id : <input type="text" name="userId" id="userId" maxlength="15"/><br/>
+		password : <input type="password" name="password" id="password" maxlength="16"/> password check : <input type="password" name="passwordCheck" id="passwordCheck" /> <br/>
+		user name <input type="text" name="userNm" id="userNm" maxlength="25"/><br/>
+		description : <textarea name="description" id="description" style="width:90%; resize:none;" rows=3></textarea> <br/>
+		<hr/>
+<!-- 		<p>기본 권한 리스트</p> -->
+<!-- 		<table> -->
+<!-- 			<tr th:each="role : ${roles}"> -->
+<!-- 				<td th:text="${role}">role</td> -->
+<!-- 				<td th:utext="|<input type='checkbox' name='roles' value='${role}' />|">USER_ROLE</td> -->
+<!-- 				<td><input type="checkbox" name="roles" value="ROLE_USER" th:value="${role}"/></td> -->
+<!-- 				<td th:text='|Value of "${role}" is "${role}".|'>sample</td> -->
+<!-- 				<td th:text="|Value of '${role}' is '${role}'.|">sample</td> -->
+<!-- 				<td th:text="${'Value of &quot;' + role + '&quot; is &quot;' + role + '&quot;.'}">sample</td> -->
+<!-- 			</tr> -->
+<!-- 		</table> -->
+		<p>사용자 권한 리스트</p>
+		<table>
+			<tr th:each="userRole : ${userRoles}">
+				<td th:text="${userRole.roleNm}">role</td><td ><input type='checkbox' name='roles' value='ROLE_SOME_ONE' th:value="${userRole.roleId}"/></td>
+			</tr>
+		</table>
+<!-- 		ROOT <input type="checkbox" name="roles" value="ROLE_ROOT" /> -->
+<!-- 		 | ADMIN <input type="checkbox" name="roles" value="ROLE_ADMIN" /> -->
+<!-- 		 | USER <input type="checkbox" name="roles" value="ROLE_USER" /> -->
+		<hr/>
+		<p>---DONE---</p>
+		<br/>
+	</form>
+
+</body>
+</html>

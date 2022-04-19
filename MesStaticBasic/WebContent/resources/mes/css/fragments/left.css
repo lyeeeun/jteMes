@@ -1,0 +1,176 @@
+@charset "UTF-8";
+.left-area{
+	height:100%;
+	display: flex;
+	flex-direction: column;
+}
+.left-header{
+	background:#192534;
+	height:80px;
+	line-height:80px;
+	text-align:center;
+}
+.left-header i{
+	color:white;
+	font-size:60px;
+	vertical-align:middle;
+}
+
+#panelbar{
+	width:100%;
+	padding:0px;
+	background: #ffffff;
+	flex: 1; 
+	display:block;
+	height:100%;
+	border-right : 1px solid #c5c5c5;
+	border-radius : 5px;
+	overflow:hidden;
+}
+#panelbar >ul{
+	overflow : auto;
+	height : 94%;
+}
+
+#panelbar li{
+	margin: 4px;
+}
+
+#menuFilterArea{
+	margin:5px;
+}
+#menuFilterText{
+	width: 140px;
+	margin-right : 10px; 
+}
+
+#menuPathNaviTop {
+	background:##0b2b6f;
+	color:#E3E3E3;
+}
+.k-drawer-wrapper,.k-drawer-items{
+	height:100%;
+}
+.k-drawer-left.k-drawer-expanded .k-drawer{
+	border:none;
+}
+.k-block, .k-draghandle, .k-inline-block, .k-widget{
+	border:none;
+}
+
+.k-treeview .k-in.k-state-selected {
+    color: #fff;
+    background-color: #2b81f5;
+    font-weight: bold;
+}
+
+/* .k-draghandle.k-state-selected:hover, .k-ghost-splitbar-horizontal, .k-ghost-splitbar-vertical,
+.k-list>.k-state-highlight, .k-list>.k-state-selected, .k-marqrRuee-color, .k-panel>.k-state-selected,
+.k-scheduler .k-scheduler-toolbar .k-state-selected, .k-scheduler .k-today.k-state-selected, .k-state-selected,
+.k-state-selected:link, .k-state-selected:visited, .k-tool.k-state-selected {
+	background-color: #6089c8;
+}
+ */
+.k-draghandle.k-state-selected:focus {
+	background-color: #9baec8;
+}
+
+.k-list>.k-state-focused.k-state-selected, .k-listview>.k-state-focused.k-state-selected, .k-state-focused.k-state-selected, td.k-state-focused.k-state-selected {
+	box-shadow: inset 0 0 3px 1px #6089c8;
+}
+
+.k-icon:before {
+    bottom: 0px;
+}
+
+.k-panelbar-collapse.k-icon, .k-panelbar-expand.k-icon {
+	top: 30%;
+}
+
+/* .k-primary {color: #fff;
+    border-color: #6089c8;
+    background-color: #6089c8;
+    background-image: url(textures/highlight.png);
+*/
+
+.fa-folder{
+	color:#F3D984;
+}
+
+.fa-folder:before {
+    margin-right: 7px;
+}
+
+.fas {
+	width: 20px;
+	height: 20px;
+}
+
+.k-drawer-item.k-state-selected {
+	color: #000000;
+}
+
+.k-drawer-item {
+	font-size: 16px;
+}
+
+.k-drawer-item .k-icon{
+	margin:0px;
+}
+		
+span .menuCd-M {
+	font-size: 16px;
+}
+
+span .menuCd-F {
+	margin-left: 6px;
+}
+
+.k-treeview .k-in:hover, .k-treeview .k-in.k-state-hover {
+	background-color: #d7e4ff;
+	font-weight: bold;
+	color: #3367D6;
+}
+
+
+/* 04.22 */
+
+#toolbar {
+	position: relative;
+	width: 100%;
+	border-bottom: solid #c0c0c0 1px;
+}
+
+/* 20.04.24 JJW 햄버거 메뉴 수정 */
+#toolbar .k-button.k-button-icon {
+	margin-left: 5px;
+}
+
+
+/* div#user-config-dropdown:not(.test) {
+	background-color: rgba(255, 0, 0, 0.0);
+} */
+
+.my-config-area-hr {
+	border: 1px dashed #e2e2e2;
+	width: 90%;
+	margin-top: 3px;
+}
+
+/* jkkim 매뉴얼 다운로드 */
+.header-manual{
+	font-size: 18px;
+	font-weight: 600;
+	margin-left: 15px;
+	color: #0B2B6F;
+	text-decoration: none;
+/* 	cursor: pointer; */
+}
+
+ .header-manual:link { color: #0B2B6F; font-size: 18px; font-weight: 600; margin-left: 20px; text-decoration: none;}
+ .header-manual:visited { color: #0B2B6F; font-size: 18px; font-weight: 600; margin-left: 20px; text-decoration: none;}
+ .header-manual:hover { color: #3367D6; font-size: 18px; font-weight: 600; margin-left: 20px; text-decoration: none;}
+ 
+ .menuCd-M{
+	font-size:14px;
+}

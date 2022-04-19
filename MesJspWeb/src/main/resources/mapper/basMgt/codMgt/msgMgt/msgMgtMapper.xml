@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.mapper.basMgt.codMgt.msgMgt.MsgMgtMapper">
+	
+	<!-- 다국어 조회 쿼리 -->
+	<sql id = "msgSelectSql">
+		 t_table.*
+		FROM(
+			SELECT
+			msg_id													AS msgId
+			<foreach collection="msgPrmt" item="langUnit">
+				,MAX(IF(cd_val = #{langUnit}, cd_val, #{langUnit}))	AS ${langUnit}LangCd
+				,MAX(IF(cd_val = #{langUnit}, msg_view, '')) 		AS ${langUnit}MsgView
+				,MAX(IF(cd_val = #{langUnit}, lang_nm, '')) 		AS ${langUnit}CdNm
+			</foreach>
+			,updated_at												AS updatedAt
+			FROM(
+				SELECT
+					msg.msg_id,
+					msg.msg_view,
+					IFNULL(lang.msg_view,cod.cd_nm) lang_nm,
+					cod.cd_val,
+					msg.updated_at
+				FROM cw_msg_view msg
+				LEFT OUTER JOIN cw_comn_code cod ON msg.lang_cd = cod.cd_val
+				LEFT OUTER JOIN cw_msg_view lang ON CONCAT('bc_',cod.cd_id) = lang.msg_id AND lang.lang_cd = #{langCd}
+				WHERE cod.up_cd_id = 'msgLangCode'
+			)pivot
+			GROUP BY msg_id
+		)t_table
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="msgId != null and msgId != '' ">
+			AND msgId = #{msgId}
+		</if>
+	</sql>
+	
+	<!-- 다국어 조회 쿼리(List) -->
+	<select id="selectMsgList"
+		parameterType="jin.mes.form.basMgt.codMgt.msgMgt.MsgMgtDto"
+		resultType="jin.mes.form.basMgt.codMgt.msgMgt.MsgMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="msgSelectSql" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 다국어 조회 쿼리(Count) -->
+	<select id="selectMsgListCount"
+	parameterType="jin.mes.form.basMgt.codMgt.msgMgt.MsgMgtDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="msgSelectSql" />
+				)c_table
+	</select>
+	
+	
+	<!-- 다국어 조회 쿼리(단일) -->
+	<select id="selectMsgOne"
+	parameterType="jin.mes.form.basMgt.codMgt.msgMgt.MsgMgtDto"
+		resultType="jin.mes.form.basMgt.codMgt.msgMgt.MsgMgtDto">
+					SELECT
+					<include refid="msgSelectSql" />
+	</select>
+	
+</mapper>

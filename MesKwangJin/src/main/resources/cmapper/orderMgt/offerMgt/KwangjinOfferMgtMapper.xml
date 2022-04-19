@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.orderMgt.offerMgt.KwangjinOfferMgtMapper">
+
+	<sql id="offer_base">
+	
+		offer.offer_id		AS offerId,
+		offer.offer_nm		AS offerNm,
+		offer.offer_date	AS offerDate,
+		offer.offer_file	AS offerFile,
+		offer.offer_desc	AS offerDesc,
+		offer.creator_id	AS creatorId,
+		offer.created_at	AS createdAt,
+		offer.updator_id	AS updatorId,
+		offer.updated_at	AS updatedAt,
+		offer.comp_id		AS compId,
+		comp.comp_std_str02	AS compStdStr02,
+		comp.comp_nm		AS compNm,
+		comp.comp_number	AS compNumber
+		
+		FROM prs_offer_mgt offer
+		LEFT OUTER JOIN bc_company_info comp on offer.comp_id = comp.comp_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="offerId != null and offerId != '' "> 
+			AND offer.offer_id = #{offerId}
+		</if>
+		<if test="searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != '' ">
+			AND DATE_FORMAT(offer_date,'%Y-%m-%d') between #{searchStartDate} AND #{searchEndDate}
+		</if>
+	</sql>
+	
+	<!-- 해당 수주에 포함된 Lot 조회 select -->
+	<select id="selectOfferInfoList"
+		parameterType="jin.mes.cform.orderMgt.offerMgt.KwangjinOfferMgtDto"
+		resultType="jin.mes.cform.orderMgt.offerMgt.KwangjinOfferMgtDto">
+			SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY offerId desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="offer_base"></include>
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 해당 수주에 포함된 Lot 조회 select(Count) -->
+	<select id="selectOfferInfoCount"
+	parameterType="jin.mes.cform.orderMgt.offerMgt.KwangjinOfferMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*) 
+			FROM(
+				SELECT
+				<include refid="offer_base"></include>
+			)c_table
+	</select>
+
+	<!-- 클레임정보 입력 -->
+	<insert id="insertOfferInfo" parameterType="jin.mes.cform.orderMgt.offerMgt.KwangjinOfferMgtDto">
+	<selectKey keyProperty="offerId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('OFFER') as offerId
+	</selectKey>
+		INSERT INTO prs_offer_mgt(
+			offer_id,
+			offer_nm,
+			offer_date,
+			offer_file,
+			offer_desc,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at,
+			comp_id
+		)VALUES(
+			#{offerId},
+			#{offerNm},
+			#{offerDate},
+			#{offerFile},
+			#{offerDesc},
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			NOW(),
+			#{compId}
+		)
+	</insert>
+	
+	<!-- 클레임정보 수정 -->
+	<update id="updateOfferInfo" parameterType="jin.mes.cform.orderMgt.offerMgt.KwangjinOfferMgtDto">
+		UPDATE prs_offer_mgt
+		SET updated_at = #{updatedAt},
+			updator_id = #{updatorId}
+			<if test="offerNm != null and offerNm != ''">	
+				,offer_nm = #{offerNm}
+			</if>
+			<if test="offerFile != null and offerFile != ''">	
+				,offer_file = #{offerFile}
+			</if>
+			<if test="offerDesc != null and offerDesc != ''">	
+				,offer_desc = #{offerDesc}
+			</if>
+				<if test="offerDate != null">	
+				,offer_date = #{offerDate}
+			</if>
+		WHERE offer_id  = #{offerId}
+	</update>
+	
+	<!-- 클레임정보 삭제 -->
+	<delete id="deleteOfferInfo" parameterType="jin.mes.cform.orderMgt.offerMgt.KwangjinOfferMgtDto">
+		DELETE FROM prs_offer_mgt
+		WHERE offer_id  = #{offerId}
+	</delete>
+	
+</mapper>

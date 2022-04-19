@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.mapper.common.attach.AttachMgtMapper">
+	
+	<select id="selectAttchMgtList" 
+		parameterType="jin.mes.common.attach.AttachMgtDto"
+		resultType="jin.mes.common.attach.AttachMgtDto">
+		SELECT	
+			attach_id		AS attachId,
+			attach_target	AS attachTarget,
+			attach_code     AS attachCode,
+			attach_path     AS attachPath,
+			attach_origin   AS attachOrigin,
+			attach_filename AS attachFilename,
+			attach_size     AS attachSize,
+			attach_ext      AS attachExt,
+			img_yn          AS imgYn,
+			img_width       AS imgWidth,
+			img_height      AS imgHeight,
+			creator_id      AS creatorId,
+			created_at      AS createdAt
+		FROM cw_attach_mgt
+		WHERE 1=1
+		<if test="attachId != null and attachId != '' ">
+			AND attach_id = #{attachId}
+		</if>
+		<if test="attachTarget != null and attachTarget != '' ">
+			AND attach_target = #{attachTarget}
+		</if>
+		<if test="attachCode != null and attachCode != '' ">
+			AND attach_code = #{attachCode}
+		</if>
+	</select>
+	
+	<insert id="insertAttchMgt" parameterType="jin.mes.common.attach.AttachMgtDto">
+		<selectKey keyProperty="attachId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('ATTACH') AS attachId
+		</selectKey>
+		INSERT INTO cw_attach_mgt(
+			attach_id,
+			attach_target,
+			attach_code,
+			attach_path,
+			attach_origin,
+			attach_filename,
+			attach_size,
+			attach_ext,
+			img_yn,
+			img_width,
+			img_height,
+			creator_id,
+			created_at
+		)VALUES(
+			#{attachId},
+			#{attachTarget},
+			#{attachCode},
+			#{attachPath},
+			#{attachOrigin},
+			#{attachFilename},
+			#{attachSize},
+			#{attachExt},
+			#{imgYn},
+			#{imgWidth},
+			#{imgHeight},
+			#{creatorId},
+			NOW()
+		)
+	</insert>
+	
+	<delete id="deleteAttchMgt" parameterType="jin.mes.common.attach.AttachMgtDto">
+		DELETE FROM cw_attach_mgt
+		WHERE attach_id  = #{attachId}
+	</delete>
+</mapper>

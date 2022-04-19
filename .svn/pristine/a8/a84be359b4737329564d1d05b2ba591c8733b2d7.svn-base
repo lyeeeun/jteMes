@@ -1,0 +1,349 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.basMgt.codeMgt.CodeMgtMapper">
+
+	<select id="selectGrpCodeList"
+		parameterType="jin.mes.form.basMgt.codeMgt.CodeGroupDto"
+		resultType="jin.mes.form.basMgt.codeMgt.CodeGroupDto">
+		SELECT 
+			* 
+		FROM (
+			SELECT *,ROWNUM AS RNUM 
+			FROM (
+				SELECT 
+					CD_GROUP_ID AS cdGroupId,
+					CD_GROUP_NM AS cdGroupNm,
+					CD_GROUP_ENG_NM AS cdGroupEngNm,
+					FIRST_CRET_TRTR_ID AS firstCretTrtrId,
+					LAST_CHG_TRTR_ID AS lastChgTrtrId,
+					to_char(CRET_DT, 'YYYY-MM-DD HH24:MI:SS') AS cretDt,
+					to_char(CHG_DT, 'YYYY-MM-DD HH24:MI:SS') AS chgDt,
+					SRC_SYS_CD AS srcSysCd
+				FROM CW_COMN_CD_GROUP_BAS
+				WHERE SRC_SYS_CD= #{srcSysCd}
+				AND EFCT_FNS_DT BETWEEN SYSDATE and TO_DATE('9999-12-31 00:00:00','YYYY-MM-DD hh:mi:ss')
+				<if test="cdGroupId != '' ">
+				AND CD_GROUP_ID LIKE '%'||#{cdGroupId}||'%'
+				</if>
+				<if test="cdGroupNm != '' ">
+				AND CD_GROUP_NM LIKE '%'||#{cdGroupNm}||'%'
+				</if>
+				ORDER BY CRET_DT desc
+				)
+			)
+			<where>
+			<choose>
+				<when
+					test='rownum != null and rownum > 0'>
+					RNUM <![CDATA[ <= ]]>
+					#{rownum}
+				</when>
+				<otherwise>
+					RNUM <![CDATA[ <= ]]>
+					#{lastIndex} AND RNUM <![CDATA[ >= ]]>
+					#{firstIndex}
+				</otherwise>
+			</choose>
+			</where>
+	</select>
+
+	<select id="selectGrpCodeListCount"
+		parameterType="jin.mes.form.basMgt.codeMgt.CodeGroupDto"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM CW_COMN_CD_GROUP_BAS
+		WHERE SRC_SYS_CD= #{srcSysCd}
+		AND EFCT_FNS_DT BETWEEN SYSDATE and TO_DATE('9999-12-31 00:00:00',
+		'YYYY-MM-DD hh:mi:ss')
+		<if test="cdGroupId != '' ">
+			AND CD_GROUP_ID LIKE '%'||#{cdGroupId}||'%'
+		</if>
+		<if test="cdGroupNm != '' ">
+			AND CD_GROUP_NM LIKE '%'||#{cdGroupNm}||'%'
+		</if>
+	</select>
+
+	<select id="readCode"
+		parameterType="jin.mes.form.basMgt.codeMgt.CodeDto"
+		resultType="jin.mes.form.basMgt.codeMgt.CodeDto">
+		SELECT *
+			from (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER() AS RNUM,
+						</otherwise>
+					</choose>
+					CD_ID AS cdId,
+					CD_NM AS cdNm,
+					cd_num AS cdNum,
+					cd_val AS caVal,
+					description,
+					creator_id AS creatorId,
+					updator_id AS updatorId, 
+					created_at AS createdAt,
+					updated_at AS updatedAt,
+					up_cd_id
+				FROM cw_comn_code
+				WHERE 1=1
+				AND use_yn = 'Y' 
+				<choose>
+					<when test="upCdId == ''">
+						AND up_cd_id is null
+					</when>
+					<otherwise>
+						AND up_cd_id = #{upCdId}
+					</otherwise>
+				</choose>
+				<if test="cdId != '' ">
+				AND CD_ID LIKE '%'||#{cdId}||'%'
+				</if>
+				<if test="cdNm != '' ">
+				AND CD_NM LIKE '%'||#{cdNm}||'%'
+				</if>
+				)s_table
+				<where>
+					<choose>
+						<when
+							test='rownum != null and rownum > 0'>
+							RNUM <![CDATA[ <= ]]>
+							#{rownum}
+						</when>
+						<otherwise>
+							RNUM <![CDATA[ <= ]]>
+							#{lastIndex} AND RNUM <![CDATA[ >= ]]>
+							#{firstIndex}
+						</otherwise>
+					</choose>
+				</where>
+	</select>
+
+	<select id="codeCount"
+		parameterType="jin.mes.form.basMgt.codeMgt.CodeDto"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM cw_comn_code
+		WHERE 1=1
+		AND use_yn = 'Y'
+		<choose>
+			<when test="upCdId == ''">
+				AND up_cd_id is null
+			</when>
+			<otherwise>
+				AND up_cd_id = #{upCdId}
+			</otherwise>
+		</choose>
+		<if test="cdId != '' ">
+			AND CD_ID LIKE '%'||#{cdId}||'%'
+		</if>
+		<if test="cdNm != '' ">
+			AND CD_NM LIKE '%'||#{cdNm}||'%'
+		</if>
+	</select>
+	
+	<update id="codeUpdate"
+		parameterType="jin.mes.form.basMgt.codeMgt.CodeDto">
+		UPDATE cw_comn_code
+		SET
+			CD_ID=#{cdId},
+			CD_NM=#{cdNm},
+			cd_num=#{cdNum},
+			cd_val=#{cdVal},
+			description=#{description},
+			updator_id=#{updatorId},
+			updated_at = now()
+		WHERE CD_ID = #{cdId}
+	</update>
+	
+	<update id="codeAdd"
+		parameterType="jin.mes.form.basMgt.codeMgt.CodeDto">
+		INSERT INTO cw_comn_code(
+			CD_ID,
+			created_at,
+			updated_at,
+			creator_id,
+			updator_id,
+			CD_NM,
+			cd_num,
+			cd_val,
+			description,
+			up_cd_id
+		)
+		VALUES(
+			#{cdId},
+			now(),
+			now(),
+			#{creatorId},
+			#{creatorId},
+			#{cdNm},
+			#{cdNum},
+			#{cdVal},
+			#{description},
+			#{upCdId}
+		)
+	</update>
+	
+	<delete id="codeDelete" parameterType="string">
+		UPDATE cw_comn_code
+		SET
+			updator_id = #{loginId},
+			updated_at = now(),
+			use_yn = 'N'
+		WHERE 1=1
+		AND CD_ID = #{cdId}
+	</delete>
+	
+	
+
+
+
+
+	<update id="groupAdd"
+		parameterType="jin.mes.form.basMgt.codeMgt.CodeGroupDto">
+		INSERT INTO CW_COMN_CD_GROUP_BAS(
+			CD_GROUP_ID,
+			FIRST_CRET_TRTR_ID,
+			CRET_DT,
+			CD_GROUP_NM,
+			CD_GROUP_ENG_NM,
+			EFCT_ST_DT,
+			EFCT_FNS_DT,
+			SRC_SYS_CD
+		)
+		VALUES(
+			/*SQ_CW_COMN_CD_GROUP_BAS01.NEXTVAL,*/
+			'N'|| lpad(SQ_CW_COMN_CD_GROUP_BAS01.NEXTVAL + 100, 9, '0'),
+			#{loginId},
+			SYSDATE,
+			#{cdGroupNm},
+			#{cdGroupEngNm},
+			SYSDATE,
+			TO_DATE('9999-12-31', 'YYYY-MM-DD'),
+			#{srcSysCd}
+		)
+	</update>
+
+	<update id="groupUpdate"
+		parameterType="jin.mes.form.basMgt.codeMgt.CodeGroupDto">
+		UPDATE CW_COMN_CD_GROUP_BAS
+		SET
+		CD_GROUP_NM=#{cdGroupNm},
+		CD_GROUP_ENG_NM=#{cdGroupEngNm},
+		SRC_SYS_CD=#{srcSysCd},
+		LAST_CHG_TRTR_ID=#{loginId},
+		CHG_DT = SYSDATE
+		WHERE CD_GROUP_ID = #{cdGroupId}
+	</update>
+
+	<delete id="codeGroupDelete" parameterType="string">
+		UPDATE CW_COMN_CD_GROUP_BAS
+		SET
+		LAST_CHG_TRTR_ID=#{loginId},
+		CHG_DT = SYSDATE,
+		EFCT_FNS_DT=SYSDATE
+		WHERE CD_GROUP_ID = #{cdGroupId}
+	</delete>
+
+	<delete id="groupLowCodeDelete" parameterType="string">
+		UPDATE CW_COMN_CD_BAS
+		SET
+			LAST_CHG_TRTR_ID=#{loginId},
+			CHG_DT = SYSDATE,
+			EFCT_FNS_DT=SYSDATE
+		WHERE CD_GROUP_ID = #{cdGroupId}
+	</delete>
+
+	
+    <insert id="codeAdd2" parameterType="jin.mes.form.basMgt.codeMgt.CodeDto">
+        INSERT INTO CW_COMN_CD_BAS(
+            CD_GROUP_ID
+            ,CD_ID
+            ,CD_NM
+			<if test="cdOtputOdrg != null">
+				CD_OTPUT_ODRG,
+			</if>
+            ,CD_DESC_SBST
+            ,EFCT_ST_DT
+            ,EFCT_FNS_DT
+            ,SRC_SYS_CD
+            ,EXPNSN_STR_VAL_1
+            ,EXPNSN_STR_VAL_2
+            ,EXPNSN_STR_VAL_3
+            ,FIRST_CRET_TRTR_ID
+            ,CRET_DT)
+        VALUES(
+            #{cdGroupId},
+            #{cdId},
+            #{cdNm},
+			<if test="cdOtputOdrg != null">
+				#{cdOtputOdrg},
+			</if>
+            #{cdDescSbst},
+            SYSDATE,
+            TO_DATE('9999-12-31', 'YYYY-MM-DD'),
+            #{srcSysCd},
+            #{expnsnStrVal1},
+            #{expnsnStrVal2},
+            #{expnsnStrVal3},
+            #{loginId},
+            NOW()
+            )
+    </insert>
+
+	
+	
+	<update id="codeUpdate2" parameterType="jin.mes.form.basMgt.codeMgt.CodeDto">
+		UPDATE CW_COMN_CD_BAS
+		SET
+			LAST_CHG_TRTR_ID	= #{loginId},
+			<if test="cdNm != null">
+				CD_NM				= #{cdNm},
+			</if>
+			<if test="cdOtputOdrg != null">
+				CD_OTPUT_ODRG=#{cdOtputOdrg},
+			</if>
+			<if test="cdDescSbst != null">
+				CD_DESC_SBST		= #{cdDescSbst},
+			</if>
+			<if test="expnsnStrVal1 != null">
+				EXPNSN_STR_VAL_1	= #{expnsnStrVal1},
+			</if>
+			<if test="expnsnStrVal2 != null">
+				EXPNSN_STR_VAL_2	= #{expnsnStrVal2},
+			</if>
+			<if test="expnsnStrVal3 != null">
+				EXPNSN_STR_VAL_3	= #{expnsnStrVal3},
+			</if>
+			CHG_DT 				= SYSDATE
+		WHERE CD_GROUP_ID		= #{cdGroupId}
+		AND CD_ID				= #{cdId}
+	</update>
+
+	<select id="codeCheck"
+		parameterType="jin.mes.form.basMgt.codeMgt.CodeDto"
+		resultType="int">
+		SELECT Count(*)
+		FROM CW_COMN_CD_BAS
+		WHERE CD_GROUP_ID = #{cdGroupId}
+		AND CD_ID = #{cdId}
+	</select>
+
+	<select id="codeGroupGet" parameterType="string"
+		resultType="jin.mes.form.basMgt.codeMgt.CodeGroupDto">
+		SELECT CD_GROUP_ID, CD_GROUP_NM, CD_GROUP_ENG_NM, SRC_SYS_CD
+		FROM CW_COMN_CD_GROUP_BAS
+		WHERE CD_GROUP_ID = #{cdGroupId}
+	</select>
+
+	<select id="codeGet" parameterType="string"
+		resultType="jin.mes.form.basMgt.codeMgt.CodeDto">
+		SELECT CD_GROUP_ID, CD_ID, CD_NM, SRC_SYS_CD
+		FROM CW_COMN_CD_BAS
+		WHERE CD_GROUP_ID = #{cdGroupId}
+		AND CD_ID = #{cdId}
+	</select>
+    
+</mapper> -->

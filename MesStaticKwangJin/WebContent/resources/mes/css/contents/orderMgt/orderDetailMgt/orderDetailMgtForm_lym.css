@@ -1,0 +1,172 @@
+@CHARSET "UTF-8";
+
+/**200507 CSS 파일 생성_LYM**/
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.orderDetailMgtForm {
+	margin-top: 0.8em;
+}
+
+
+/*********수주 관리 그리드 더블클릭 시의 팝업창**********/
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.orderDetailMgtForm .search-btn {
+	width: 100%;
+}
+
+.orderDetailMgtForm .center-input {
+	width: 100%;
+}
+
+.orderDetailMgtForm .col-left-title {
+	width: 14%;
+}
+
+.orderDetailMgtForm .col-left-content-1 {
+	width: 24%;
+}
+
+.orderDetailMgtForm .col-left-content-2 {
+	width: 10%;
+}
+
+.orderDetailMgtForm .col-right-title {
+	width: 18%;
+}
+
+.orderDetailMgtForm .col-right-content-1 {
+	width: 20%;
+}
+
+.orderDetailMgtForm .col-right-content-2 {
+	width: 12%;
+}
+
+.orderDetailMgtForm div.k-window-content{
+	overflow: unset; /*팝업창의 스크롤 없앰*/
+}
+
+.orderDetailMgtForm .grid-content {
+	width: 100%;
+}
+.orderDetailMgtForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+.orderDetailMgtForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 0px;
+}
+
+.orderDetailMgtForm .jtePopForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.orderDetailMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.orderDetailMgtForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+
+.orderDetailMgtForm_jtePopForm_form .left-caret:before {
+	padding-left: 25px;
+}
+
+.orderDetailMgtForm .left-input {
+	width: 100%;
+}
+
+.orderDetailMgtForm .right-input {
+	width: 100%;
+	float: right;
+}
+
+.orderDetailMgtForm .right-input.btn-input{
+	width: 100%;
+}
+
+#popArea .k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#popArea td {
+	padding: .4em .6em;
+}
+
+#popArea.k-widget.k-treeview.k-window-content.k-content{
+	background : #22364e;
+	color : white;
+}
+
+/*********수주 관리 그리드 더블클릭 → 팝업창 하단 그리드 더블 클릭 혹은 추가 버튼 클릭 시의 팝업창**********/
+
+
+.orderDetailMgtForm .center-input.btn-input{
+	width: 100%;
+}
+
+.orderDetailMgtForm .jtePopAddForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.orderDetailMgtForm .jtePopAddForm_master th {
+	text-align: left;	
+}
+
+.orderDetailMgtForm .jtePopAddForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.orderDetailMgtForm_jtePopAddForm_form .left-caret:before {
+	padding-left: 27.5px;
+}
+
+.orderDetailMgtForm .popsc-col-left-title {
+	width: 17%;
+}
+
+.orderDetailMgtForm .popsc-col-left-content-1 {
+	width: 20%;
+}
+
+.orderDetailMgtForm .popsc-col-left-content-2 {
+	width: 12%;
+}
+
+.orderDetailMgtForm .popsc-col-right-title {
+	width: 19%;
+}
+
+.orderDetailMgtForm .popsc-col-right-content-1 {
+	width: 20%;
+}
+
+.orderDetailMgtForm .popsc-col-right-content-2 {
+	width: 12%;
+}

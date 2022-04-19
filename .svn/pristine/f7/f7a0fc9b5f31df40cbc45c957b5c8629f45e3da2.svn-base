@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.item.itemToolMgt.ItemToolMgtMapper">
+ 	
+ 	<select id="selectRtlEqmtList"
+		parameterType="jin.mes.form.item.itemToolMgt.ItemToolMgtDto"
+		resultType="jin.mes.form.item.itemToolMgt.ItemToolMgtDto">
+		SELECT *
+		FROM (
+			SELECT 
+				a.item_id as itemId,
+				a.process_id as processId,
+				a.process_nm as processNm,
+				c.eqmt_mgt_id as eqmtMgtId,
+				c.eqmt_mgt_nm as eqmtMgtNm,
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER() AS RNUM
+					</otherwise>
+				</choose>
+			FROM bc_routing_info a
+			INNER JOIN bc_rtl_process_equip b
+			ON a.process_id = b.process_id
+			INNER JOIN bc_equipment_mgt c
+			ON b.eqmt_mgt_id = c.eqmt_mgt_id
+			WHERE 1=1
+			<if test="itemId != null">
+				AND a.item_id = #{itemId} 
+			</if>
+			<choose>
+				<when test="searchGubun == 'eqmtMgtId'">
+					AND c.eqmt_mgt_id LIKE CONCAT('%',#{searchText},'%')
+				</when>
+				<when test="searchGubun == 'eqmtMgtNm'">
+					AND c.eqmt_mgt_nm LIKE CONCAT('%',#{searchText},'%')
+				</when>
+			</choose>
+			)s_table
+			<where>
+				RNUM <![CDATA[ <= ]]>
+				#{lastIndex} AND RNUM <![CDATA[ >= ]]>
+				#{firstIndex}
+			</where>
+	</select>
+ 	
+	<select id="rowCount"
+		parameterType="jin.mes.form.item.itemToolMgt.ItemToolMgtDto"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM bc_routing_info a
+		INNER JOIN bc_rtl_process_equip b
+		ON a.process_id = b.process_id
+		INNER JOIN bc_equipment_mgt c
+		ON b.eqmt_mgt_id = c.eqmt_mgt_id
+		WHERE 1=1
+		<if test="itemId != null and itemId != '' ">
+			AND a.item_id = #{itemId} 
+		</if>
+		<choose>
+			<when test="searchGubun == 'eqmtMgtId'">
+				AND c.eqmt_mgt_id LIKE CONCAT('%',#{searchText},'%')
+			</when>
+			<when test="searchGubun == 'eqmtMgtNm'">
+				AND c.eqmt_mgt_nm LIKE CONCAT('%',#{searchText},'%')
+			</when>
+		</choose>
+	</select>
+	
+	
+	<select id="selectRtlToolList"
+		parameterType="jin.mes.form.item.itemToolMgt.ItemToolMgtDto"
+		resultType="jin.mes.form.item.itemToolMgt.ItemToolMgtDto">
+		SELECT
+			a.item_id AS itemId,
+			a.eqmt_mgt_id AS eqmtMgtId, 
+			a.tool_id AS toolId,
+			b.tool_nm AS toolNm
+		FROM bc_rtl_item_tool a
+		INNER JOIN bc_tool_info b
+		ON a.tool_id = b.tool_id
+		WHERE 1=1
+		AND a.item_id = #{itemId}
+		AND a.eqmt_mgt_id = #{eqmtMgtId}
+	</select>
+	
+	<select id="selectRtlToolCount"
+		parameterType="jin.mes.form.item.itemToolMgt.ItemToolMgtDto"
+		resultType="int">
+		SELECT COUNT(*) 
+		FROM bc_rtl_item_tool a
+		INNER JOIN bc_tool_info b
+		ON a.tool_id = b.tool_id
+		WHERE 1=1
+		AND a.item_id = #{itemId}
+		AND a.eqmt_mgt_id = #{eqmtMgtId}
+	</select>
+	
+	<insert id="insertRtlTool" parameterType="jin.mes.form.item.itemToolMgt.ItemToolMgtDto">
+		INSERT INTO bc_rtl_item_tool
+		(
+			item_id,
+			tool_id,
+			eqmt_mgt_id
+		)
+		VALUES
+		(
+			#{itemId},
+			#{toolId},
+			#{eqmtMgtId}
+		)
+	</insert>
+	
+	<delete id="deleteRtlTool" parameterType="jin.mes.form.item.itemToolMgt.ItemToolMgtDto">
+		DELETE FROM bc_rtl_item_tool
+		WHERE 1=1
+		AND item_id = #{itemId}
+		AND tool_id = #{toolId}
+		AND eqmt_mgt_id = #{eqmtMgtId}
+	</delete>
+	
+</mapper>

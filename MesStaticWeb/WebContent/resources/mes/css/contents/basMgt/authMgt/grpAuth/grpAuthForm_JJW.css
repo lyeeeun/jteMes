@@ -1,0 +1,39 @@
+@CHARSET "UTF-8";
+
+.grid-content {
+	width: 100%;
+}
+
+.grpAuthForm {
+	width: 100%;
+	margin: 0 auto;
+/* 	text-align: center; */
+	vertical-align: middle;
+}
+
+.grpAuthForm .left-contents {
+	width: 47%;
+	display: inline-block;
+}
+
+.grpAuthForm .middle-contents {
+	width: 5%;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.grpAuthForm .right-contents {
+	width: 47%;
+	display: inline-block;
+}
+
+.middle-contents .fas.fa-caret-square-right.fa-3x{
+	color: #3367D6;
+	padding-right: 24px;
+	
+}
+
+.grpAuthForm.k-grid th:first-child, .grpAuthForm.k-grid td:first-child {
+	text-align: center;
+}

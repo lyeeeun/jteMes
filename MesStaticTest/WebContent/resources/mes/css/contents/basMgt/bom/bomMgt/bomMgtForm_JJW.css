@@ -1,0 +1,45 @@
+
+/** 메인 화면 형식 관련**/
+
+.bomMgtForm-jteSingleGrid {
+/* 	height:100%; */
+	float:left;
+}
+
+.bomMgtForm-jteSubGrid {
+	height:100%;
+	float:right;
+	border:solid #B9CBF1;	
+}
+
+#bomTree {
+	width: 100%;
+}
+
+.bomMgtForm svg:not(:root) {
+	overflow: auto;
+}
+
+.bomMgtForm .jteBomGrid{  /* 200413 그리드 고정 + 스크롤_LYM */
+	width: 100%;
+	table-layout: fixed;
+}
+
+.bomMgtForm .k-autocomplete .k-input, .k-dropdown-wrap .k-input, .k-multiselect-wrap .k-input, .k-numeric-wrap .k-input, .k-picker-wrap .k-input, .k-selectbox .k-input, .k-textbox>input {
+	text-indent: 0;
+}
+
+/** 메인 화면의 신규 생성 버튼**/
+
+.bomMgtForm .bomAddBtn {
+	display:none;
+	margin: 10px;
+	margin-top: 20px;
+	left: 10px; /* 200911 JJW */
+}
+
+/**20.12.14 메인 그리드의 보기 버튼 가운데 정렬 YUMI*/
+.bomMgtForm-jteSingleGrid.k-grid td:first-child {
+	text-align: center;
+}
+

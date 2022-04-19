@@ -1,0 +1,8 @@
+.costMgtForm .final-btn-area {
+	margin-top: 10px;
+}
+
+/*20.08.06 왼쪽 셀 가운데 정렬 JJW*/
+.costMgtForm.k-grid th:first-child, .costMgtForm.k-grid td:first-child {
+	text-align: center;
+}

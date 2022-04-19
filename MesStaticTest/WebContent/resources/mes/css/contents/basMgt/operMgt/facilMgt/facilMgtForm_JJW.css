@@ -1,0 +1,20 @@
+
+/*20.12.07 설비 등록 팝업 > 설비정보 내용 상단 여백 추가 YUMI*/
+.facilMgtForm #jtePopForm_master {
+	margin-top: 5px;
+}
+
+/*20.08.05 왼쪽 셀 가운데 정렬 JJW*/
+.facilMgtForm.k-grid th:first-child, .facilMgtForm.k-grid td:first-child {
+	text-align: center;
+}
+
+/*20.11.13 메인 그리드의 보기 버튼 가운데 정렬 YUMI*/
+.facilMgtForm.k-grid td:nth-child(2) {
+	text-align: center;
+}
+
+/*20.12.07 final-btn-area 위쪽 여백 조정 YUMI*/
+.facilMgtForm-final-btn-area {
+	margin-top: 0;
+}

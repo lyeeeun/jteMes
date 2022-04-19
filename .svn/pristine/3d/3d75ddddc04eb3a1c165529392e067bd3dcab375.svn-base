@@ -1,0 +1,261 @@
+@CHARSET "UTF-8";
+/* 전역 설정 */
+* {
+    font-family: NanumGothic, "Dotum", "Tahoma";
+    font-size: 15px;
+}
+
+body {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+	display: table;
+	background-color: #f4f4f4;
+	background-image: url(/resources/mes/img/login_bg1.png);
+	background-position: center;
+	background-repeat: no-repeat;
+	position: fixed;
+    background-attachment: fixed;
+}
+
+.login-back {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.login-box {
+    display: block;
+    width: 730px;
+    height: 980px;
+    margin: auto;
+    background-image: url(/resources/mes/img/login_bg2.png);
+    background-size: contain !imfortant;
+	background-repeat: no-repeat;
+	position: relative;
+    margin-bottom: 50px;
+    margin-right: 700px;
+    
+}
+
+.login-input-area {
+    display: inline-block;
+    width: 300px;
+    height :130px; 
+    margin: auto;
+    margin-top: 395px;
+    margin-left: 425px;
+}
+
+.input-id-area div input {
+	padding-left:  10px;
+	width: 265px;
+	height: 28px;
+	font-size: 17px;
+    border-radius: 4px;
+	border: 1px solid #505050;
+    margin-bottom: 42px;
+}
+
+.input-pw-area div input {
+	padding-left:  10px;
+	width: 265px;
+	height: 28px;
+	font-size: 17px;
+    border-radius: 4px;
+	border: 1px solid #505050;
+    margin-bottom: 16px;
+    
+}
+
+.regi{
+    margin-left: 205px;
+	color: #0d2056;
+	font-size: 15pt;    
+    text-decoration: none;
+    font-weight: 900;
+}
+
+
+.input-id-area div input {
+	margin-top:12px;
+}
+
+.input-pw-area div input {
+    margin-top: 10px;
+}
+
+.login-btn-area {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    position: absolute; top: -10px;
+
+}
+
+.login_btn {
+    display: inline-block;
+	cursor: pointer;
+	background-color: #081332;
+	font-size: 28pt;
+	border-radius: 20px;
+	min-width: 190px;
+	height: 125px;
+	color: white;
+	font-weight: 800;
+	border: none;
+	padding: unset !important;
+    
+    margin-left: 25px;
+    margin-top: 412px;
+}
+
+.copy {
+    width: 100%;
+    text-align: center;
+    padding-top: 15px;
+    color: #606060;
+    font-size: 12px;
+    margin: 0 auto;
+}
+
+.copy span {
+    color: #081332;
+	font-weight: 900;
+	font-size: 12px;
+}
+
+
+/*mediaquery*/
+@media screen and (max-width: 800px){
+    
+    body {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+	display: table;
+    background-image: url(/resources/mes/img/login_app_bg1.png), linear-gradient(180deg, #dedede 0%, #ffffff 55%);
+	background-position: top, center;
+	background-repeat: no-repeat, no-repeat;
+}
+    
+	.login-back {
+		display: table-cell;
+		vertical-align: middle;
+	}
+	
+	.login-box {
+		width: 450px;
+        height: 800px;
+		margin: auto;
+		border-radius: 10px;
+		background: url(/resources/mes/img/login_app_bg2.png) center 15px no-repeat;	
+		position: relative;
+        margin-top: -20px;
+	}	
+		
+	.login-input-area {	
+		width: 100%;
+		position: absolute; top: 260px ;left:0px;right:0;
+		margin:  0 auto;
+		text-align: center;
+	
+	}
+	
+	.input-id-area div input {
+		/*background: url(/resources/mes/img/username.png) 210px no-repeat  ;*/
+		padding:  3px 10px;
+		width: 90%;
+		height: 38px;
+		font-size:  1.8em;
+		border: 1px solid #a6a6a6;
+		margin: 0 auto;
+        margin-top: 26px;
+        margin-bottom: 33px;
+	}
+	
+	.input-pw-area div input {
+		/*background: url(/resources/mes/img/password.png) 210px no-repeat  ;*/
+		padding:  3px 10px;
+		width: 90%;
+		height: 38px;
+		font-size:  1.8em;
+		margin-top: 10px;
+		border: 1px solid #a6a6a6;
+	
+	}
+	.text-area {
+		display: inline-block;
+		font-weight: bold;
+		text-align: center;	
+		float: none;
+		width: 90%;
+	
+	}
+    
+	.login_btn {
+        margin: -200px;
+        cursor: pointer;
+        background-color: #081332;
+        font-size: 28pt;
+        border-radius: 20px;
+        width: 400px;
+        height: 80px;
+        color: white;
+        font-weight: 800;
+        border: none;
+        margin-top: 470px;
+        margin-right: 2000px;
+	}
+    
+    .input-bottom-area{
+        margin-top: 150px;
+
+    }
+    
+    /*.regi {
+        margin: -200px;
+        padding: 20px;
+        padding-left: 130px;
+        padding-right: 130px;
+        cursor: pointer;
+        background-color: #081332;
+        font-size: 28pt;
+        border-radius: 23px;
+        width: 800px;
+        height: 80px;
+        color: white;
+        font-weight: 800;
+        opacity: 0.85;
+    
+    }*/
+
+    
+	.copy {
+		width: 100%;
+		text-align: center;
+		padding-top: 15px;
+		color: #393939;
+		font-size: 12px;
+		margin: 0 auto;
+        margin-bottom: 20px;
+	}
+}
+
+/*mediaquery*/
+@media screen and (min-width:801px) and (max-width: 955px){
+    	.login_btn {
+        margin: -200px;
+        cursor: pointer;
+        background-color: #081332;
+        font-size: 24pt;
+        border-radius: 20px;
+        width: 300px;
+        height: 60px;
+        color: white;
+        font-weight: 800;
+        border: none;
+        margin-top: 580px;
+        margin-right: 2500px;
+        margin-left: -300px;
+	}
+}

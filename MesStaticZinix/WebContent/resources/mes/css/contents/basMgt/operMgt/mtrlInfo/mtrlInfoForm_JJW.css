@@ -1,0 +1,15 @@
+
+/*20.12.14 자재 등록 팝업 > 자재정보 내용 상단 여백 추가 YUMI*/
+.mtrlInfoForm #jtePopForm_master {
+	margin-top: 5px;
+}
+
+/*20.08.05 왼쪽 셀 가운데 정렬 JJW*/
+.mtrlInfoForm.k-grid th:first-child, .mtrlInfoForm.k-grid td:first-child {
+	text-align: center;
+}
+
+/*20.12.11 메인 그리드의 보기 버튼 가운데 정렬 YUMI*/
+.mtrlInfoForm.k-grid td:nth-child(2) {
+	text-align: center;
+}

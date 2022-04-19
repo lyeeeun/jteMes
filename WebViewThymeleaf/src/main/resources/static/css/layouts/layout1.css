@@ -1,0 +1,13 @@
+@charset "UTF-8";
+*{
+	font-family:'맑은 고딕',Malgun Gothic;
+}
+html,body{
+	height:100%;
+	background:#c9d0d3;
+	margin:0px; 
+	padding:0px;
+}
+body{
+	padding:75px 15px 15px 235px;
+}

@@ -1,0 +1,45 @@
+@CHARSET "UTF-8";
+
+/* 메인 그리드의 레이아웃 관련 */
+
+.grpAuthForm {
+	width: 100%;
+	margin: 0 auto;
+/* 	text-align: center; */
+	vertical-align: middle;
+}
+
+.grpAuthForm .left-contents {
+	width: 47%;
+	display: inline-block;
+}
+
+.grpAuthForm .middle-contents {
+	width: 5%;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.grpAuthForm .right-contents {
+	width: 47%;
+	display: inline-block;
+}
+
+.middle-contents .fas.fa-caret-square-right.fa-3x{
+	color: #3367D6;
+	padding-right: 24px;
+	
+}
+
+/*20.12.09 YUMI 왼쪽 체크박스 가운데 정렬*/
+
+.grpAuthForm.left-contents.k-grid th:first-child, .grpAuthForm.left-contents.k-grid td:first-child {
+	text-align: center;
+}
+
+/*20.12.09 YUMI 좌측 그리드의 수정 버튼, 권한보기 버튼 가운데 정렬*/
+.grpAuthForm.left-contents.k-grid td:nth-child(2) {
+	text-align: center;
+}
+

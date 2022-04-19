@@ -1,0 +1,29 @@
+
+.infergodsMgtForm #jtePopAddForm_master {
+	width:100%;
+}
+
+.infergodsMgtspecProcMgtFormForm .jtePopForm_master {
+	width: 100%;
+}
+
+.specProcMgtForm #jtePopForm_form {
+	text-align: left;
+}
+
+.specProcMgtForm .select-btn-area input[type='radio'],
+.specProcMgtForm .select-btn-area input[type='radio']:checked {/** 라디오 버튼 여백을 위해 추가_200810 youmi **/
+	margin-left: 10px;
+	margin-right: 5px;  
+}
+
+.k-grid-toolbar .jte-search-aria #history_grid_shSelTxt{ /** 팝업 검색창 좌우의 여백을 위해 추가_200810 youmi **/
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+/*********************************************/
+
+.specProcMgtForm .final-btn-area {
+	margin-bottom: 40px;
+}

@@ -1,0 +1,37 @@
+Version 1.2.x
+-------------
+* Bug
+ * DateBoxComponent: Clicking on the calendar does not close the drop-down panel.
+ * DataGridComponent: Focusing on the filter bar does not trigger the body to scroll.
+* Improvement
+ * GridBaseComponent: Add 'columnResizing' property.
+ 
+Version 1.2.0
+-------------
+* Bug
+ * LayoutPanelComponent: The 'class' can't be applied on the host element.
+ * LinkButtonComponent: The large icon can't display with a normal height.
+ * DataGridComponent: The virtual scrolling flashes in IE browser.
+ * MaskedBoxComponent: The inputing box can't set integer constraint in Firefox.
+
+* Improvement
+ * MessageService: The message dialog can be dragged by setting 'draggable' to true.
+ * PanelComponent: Add 'animate' property.
+ * AccordionComponent: Add 'animate' property.
+ * TreeComponent: Add 'animate' property.
+
+* New Component
+ * SideMenuComponent: The SideMenuComponent is a vertical side menu that allows the user to do navigation.
+ * ComboTreeGridComponent: Combines combobox with drop-down treegrid component.
+
+Version 1.1.0
+-------------
+* Bug
+ * GridViewComponent: The 'headerHeight' property returns wrong value when the header is hidden.
+
+* Improvement
+ * TabsComponent: Add 'scrollable' and 'scrollIncrement' properties.
+ * TabsComponent: Add 'scrollBy' method.
+ 
+* New Component
+ * MaskedBoxComponent: The MaskedBoxComponent enforces its structure as the user types.

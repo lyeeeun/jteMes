@@ -1,0 +1,92 @@
+@CHARSET "UTF-8";
+
+.bomMgtForm {
+	margin-top: 0.8em;	
+}
+
+.bomMgtForm .bomAddBtn {
+	display:none;
+	padding: 0.4em 3em;
+}
+
+.bomMgtForm .bomTargetInfo {
+	width: 100%;
+	text-align: center;
+}
+
+.bomMgtForm .col-left-title{
+	width:21%;
+}
+
+.bomMgtForm .col-left-content{
+	width:29%;
+}
+
+.bomMgtForm .col-center-content{
+	width:20%;
+}
+
+.bomMgtForm .col-right-content{
+	width:30%;
+}
+
+.bomMgtForm .grid-content {
+	width:100%;
+}
+
+.bomMgtForm .jtePopForm_master{
+	width:100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.bomMgtForm .jtePopForm_master th {
+	text-align: left;
+}
+
+.bomMgtForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.bomMgtForm .jteBomGrid{  /* 200413 그리드 고정 + 스크롤_LYM */
+     width: 100%;
+     table-layout: fixed;
+     vertical-align: top;
+}
+
+.bomMgtForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 0px;
+}
+
+.bomMgtForm .normal-input{
+	width: 100%;
+}
+
+.bomMgtForm .normal-input.btn-input{
+	width: 100%;
+}
+
+.bomMgtForm .right-content-box {
+	border-style: solid; 
+	border-image: linear-gradient(180deg, rgba(8,19,50,1) 0%, rgba(79,98,121,1) 50%, rgba(150,166,186,1) 100%);
+	border-image-slice:1;
+	padding: 0px 26px;
+}
+
+.bomMgtForm .tb-col-left-content{  /* 200413 그리드 고정 + 스크롤_LYM */
+     width: 31%;
+     overflow: auto;
+}
+
+.bomMgtForm .tb-col-right-content{
+	width:69%;
+}
+
+#popItemGrid .k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#popItemGrid td {
+	padding: .4em .6em;
+}

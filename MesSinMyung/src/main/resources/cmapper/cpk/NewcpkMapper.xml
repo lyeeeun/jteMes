@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.cpk.cpkBase.NewCpkMapper">
+  	<select id="selectCpkList"
+  	parameterType="jin.mes.cform.cpk.cpkExcel.NewCpkExcelDto"
+		resultType="jin.mes.cform.cpk.cpkExcel.NewCpkExcelDto">
+		SELECT 
+			transfer_dt AS transferDt,
+			item_cd AS itemCd,
+			op_no AS opNo,
+			dim_no AS dimNo,
+			axies_no AS axiesNo,
+			half_value AS halfValue,
+			MAX_VALUE AS 'maxValue',
+			min_value AS minValue,
+			ga_value AS gaValue,
+			distance_value AS distanceValue,
+			out_value AS outValue,
+			lot_no AS lotNo,
+			offset_no AS offsetNo,
+			shop_order AS shopOrder,
+			gu_offset AS guOffset,
+			offset_before AS offsetBefore,
+			offset_adjust AS offsetAdjust,
+			offset_after AS offsetAfter,
+			machine_no AS machineNo,
+			gage_dt AS gageDt,
+			NULLIF(limiterror, " ") AS limitError,
+			NULLIF(defect_yn, " ") AS defectYn,
+			NULLIF(graph_yn, " ") AS graphYn,
+			graph_value AS graphValue,
+			graph_desc AS graphDesc,
+			graph_disp AS graphDisp,
+			NULLIF(transfer_yn, " ") AS transferYn
+		FROM cpk_loffset
+		WHERE item_cd = #{itemCd}
+			AND Graph_YN = 'Y'
+			AND OP_NO = #{opNo}
+			AND DIM_NO = #{dimNo}
+			AND Out_value = 'OK'
+		ORDER BY transfer_dt DESC
+		LIMIT 25
+	</select>
+	
+	<select id="selectCpkAggregation"
+  	parameterType="jin.mes.cform.cpk.cpkExcel.NewCpkExcelDto"
+		resultType="jin.mes.cform.cpk.cpkExcel.NewCpkExcelDto">
+		SELECT COUNT(*), STDDEV_SAMP(graphValue) as stddevCpk, AVG(graphValue) as avgCpk
+		FROM (
+			SELECT 
+					transfer_dt AS transferDt,
+					item_cd AS itemCd,
+					op_no AS opNo,
+					dim_no AS dimNo,
+					axies_no AS axiesNo,
+					half_value AS halfValue,
+					MAX_VALUE AS 'maxValue',
+					min_value AS minValue,
+					ga_value AS gaValue,
+					distance_value AS distanceValue,
+					out_value AS outValue,
+					lot_no AS lotNo,
+					offset_no AS offsetNo,
+					shop_order AS shopOrder,
+					gu_offset AS guOffset,
+					offset_before AS offsetBefore,
+					offset_adjust AS offsetAdjust,
+					offset_after AS offsetAfter,
+					machine_no AS machineNo,
+					gage_dt AS gageDt,
+					NULLIF(limiterror, " ") AS limitError,
+					NULLIF(defect_yn, " ") AS defectYn,
+					NULLIF(graph_yn, " ") AS graphYn,
+					graph_value AS graphValue,
+					graph_desc AS graphDesc,
+					graph_disp AS graphDisp,
+					NULLIF(transfer_yn, " ") AS transferYn
+				FROM cpk_loffset
+				WHERE item_cd = #{itemCd}
+					AND Graph_YN = 'Y'
+					AND OP_NO = #{opNo}
+					AND DIM_NO = #{dimNo}
+					AND Out_value = 'OK'
+				ORDER BY transfer_dt DESC 
+				LIMIT 25
+		) agg_table;
+	</select>
+	
+	<select id="selectVaneMonitorList"
+		parameterType="jin.mes.cform.cpk.cpkVaneMonitor.NewCpkVaneMonitorDto"
+		resultType="jin.mes.cform.cpk.cpkVaneMonitor.NewCpkVaneMonitorDto">
+		SELECT 
+			a.machine_cd AS machineCd,
+			CASE machine_status WHEN 'start' THEN 'RUN' ELSE machine_status END machineStatus,
+			item_cd AS partNo,
+			b.op_no AS opNo,
+			target_qty AS planedQty,
+			work_qt AS actQty, 
+			(work_qt /target_qty) * 100  AS performance,
+			(haveTime /dueTime) * 100  AS elapsedTime,
+			(runTime /haveTime) * 100  AS utilizationRate,
+			runTime,
+			haveTime,
+			dueTime,
+			ip_add AS ipAdd,
+			mcno_disp AS mcnoDisp 
+		FROM cpk_machine a LEFT JOIN (
+			SELECT
+				IFNULL(Target_QTY,0) Target_QTY,
+				item_cd,
+				op_no,
+				machine_cd
+			FROM cpk_product_target
+			WHERE shift_cd = #{shiftCd}
+			) b
+		ON a.machine_cd = b.machine_cd
+		LEFT JOIN (
+			SELECT
+				IFNULL(SUM(IFNULL(Work_qt,0)),0) work_qt,
+				IFNULL(SUM(IFNULL(defect_qt,0)),0) defect_qt,
+				machine_cd
+			FROM cpk_work_act
+			WHERE work_dt BETWEEN '2020-03-05 00:00:00' AND '2020-03-05 12:00:00'
+			GROUP BY machine_cd
+			) c
+		ON a.machine_cd = c.machine_cd
+		LEFT JOIN (
+			SELECT 
+				SUM(CASE machine_status WHEN 'Start' THEN 1 ELSE 0 END) runTime, 
+				TIMESTAMPDIFF(MINUTE, '2020-03-05 00:00:00', '2020-03-05 10:00:00') haveTime,
+				TIMESTAMPDIFF(MINUTE, '2020-03-05 00:00:00', '2020-03-05 12:00:00') dueTime,
+				machine_cd
+			FROM cpk_machine_status
+			WHERE transfer_dt BETWEEN '2020-03-05 00:00:00' AND '2020-03-05 12:00:00'
+			GROUP BY machine_cd
+			) d
+		ON a.machine_cd = d.machine_cd
+		WHERE dept_cd = 'SAFRAN'
+		
+
+		<!-- 
+		ORDER BY machine_cd -->
+	</select>
+
+	<select id="vaneMonitorCount"
+		parameterType="jin.mes.cform.cpk.cpkVaneMonitor.NewCpkVaneMonitorDto"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM cpk_machine a LEFT JOIN (
+			SELECT
+				IFNULL(Target_QTY,0) Target_QTY,
+				item_cd,
+				op_no,
+				machine_cd
+			FROM cpk_product_target
+			WHERE shift_cd = #{shiftCd}
+			) b
+		ON a.machine_cd = b.machine_cd
+		LEFT JOIN (
+			SELECT
+				IFNULL(SUM(IFNULL(Work_qt,0)),0) work_qt,
+				IFNULL(SUM(IFNULL(defect_qt,0)),0) defect_qt,
+				machine_cd
+			FROM cpk_work_act
+			WHERE work_dt BETWEEN '2020-03-05 00:00:00' AND '2020-03-05 12:00:00'
+			GROUP BY machine_cd
+			) c
+		ON a.machine_cd = c.machine_cd
+		LEFT JOIN (
+			SELECT 
+				SUM(CASE machine_status WHEN 'Start' THEN 1 ELSE 0 END) runTime, 
+				TIMESTAMPDIFF(MINUTE, '2020-03-05 00:00:00', '2020-03-05 10:00:00') haveTime,
+				TIMESTAMPDIFF(MINUTE, '2020-03-05 00:00:00', '2020-03-05 12:00:00') dueTime,
+				machine_cd
+			FROM cpk_machine_status
+			WHERE transfer_dt BETWEEN '2020-03-05 00:00:00' AND '2020-03-05 12:00:00'
+			GROUP BY machine_cd
+			) d
+		ON a.machine_cd = d.machine_cd
+		WHERE dept_cd = 'SAFRAN'
+	</select>
+	
+	<select id="selectVaneOffsetList"
+		parameterType="jin.mes.cform.cpk.cpkVaneMonitor.NewCpkVaneOffsetDto" 
+		resultType="jin.mes.cform.cpk.cpkVaneMonitor.NewCpkVaneOffsetDto">
+		SELECT
+			a.ITEM_CD as itemCd,
+			a.OP_NO as opNo,
+			a.DIM_NO as dimNo,
+			IFNULL(a.OFFSET_NO,'') as offsetNo,
+			IFNULL(GU_OFFSET,'') as offsetGu,
+			IFNULL(a.DIM_DESC,'') as dimDesc ,
+			IFNULL(a.CAL_DESC,'') as calDesc,
+			IFNULL(a.Graph_desc,'') as graphDesc,
+			IFNULL(a.Graph_disp,'') as graphDisp
+		FROM cpk_loffset_master a
+		WHERE a.ITEM_CD = #{itemCd}
+			AND a.op_no = #{opNo}
+			AND graph_yn = 'Y'
+		ORDER BY a.ITEM_CD,a.OP_NO,a.DIM_NO
+		<!-- 
+		ORDER BY machine_cd -->
+	</select>
+	
+	<select id="vaneOffsetCount"
+		parameterType="jin.mes.cform.cpk.cpkVaneMonitor.NewCpkVaneOffsetDto"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM cpk_loffset_master
+		WHERE ITEM_CD = #{itemCd}
+			AND op_no = #{opNo}
+			AND graph_yn = 'Y'
+	</select>
+	
+	<select id="selectCpkReportList"
+		parameterType="jin.mes.cform.cpk.cpkVaneMonitor.NewCpkVaneMonitorDto"
+		resultType="jin.mes.cform.cpk.cpkVaneMonitor.NewCpkVaneMonitorDto">
+		SELECT 
+			a.machine_cd AS machineCd,
+			CASE machine_status WHEN 'start' THEN 'RUN' ELSE machine_status END machineStatus,
+			item_cd AS partNo,
+			b.op_no AS opNo,
+			target_qty AS planedQty,
+			work_qt AS actQty, 
+			(work_qt /target_qty) * 100  AS performance,
+			(haveTime /dueTime) * 100  AS elapsedTime,
+			(runTime /haveTime) * 100  AS utilizationRate,
+			runTime,
+			haveTime,
+			dueTime,
+			ip_add AS ipAdd,
+			mcno_disp AS mcnoDisp 
+		FROM cpk_machine a LEFT JOIN (
+			SELECT
+				SUM(IFNULL(Target_QTY,0)) * TIMESTAMPDIFF(DAY, #{startDate}, #{endDate}) AS Target_QTY,
+				item_cd,
+				op_no,
+				machine_cd
+			FROM cpk_product_target
+			GROUP BY machine_cd
+			) b
+		ON a.machine_cd = b.machine_cd
+		LEFT JOIN (
+			SELECT
+				IFNULL(SUM(IFNULL(Work_qt,0)),0) work_qt,
+				IFNULL(SUM(IFNULL(defect_qt,0)),0) defect_qt,
+				machine_cd
+			FROM cpk_work_act
+			WHERE work_dt BETWEEN #{startDate} AND #{endDate}
+			GROUP BY machine_cd
+			) c
+		ON a.machine_cd = c.machine_cd
+		LEFT JOIN (
+			SELECT 
+				SUM(CASE machine_status WHEN 'Start' THEN 1 ELSE 0 END) runTime, 
+				TIMESTAMPDIFF(DAY, #{startDate}, #{endDate}) haveTime,
+				TIMESTAMPDIFF(DAY, #{startDate}, #{endDate}) dueTime,
+				machine_cd
+			FROM cpk_machine_status
+			WHERE transfer_dt BETWEEN #{startDate} AND #{endDate}
+			GROUP BY machine_cd
+			) d
+		ON a.machine_cd = d.machine_cd
+		WHERE dept_cd = 'SAFRAN'
+	</select>
+	<select id="CpkReportCount"
+		parameterType="jin.mes.cform.cpk.cpkVaneMonitor.NewCpkVaneMonitorDto"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM cpk_machine a LEFT JOIN (
+			SELECT
+				SUM(IFNULL(Target_QTY,0)) * TIMESTAMPDIFF(DAY, #{startDate}, #{endDate}) AS Target_QTY,
+				item_cd,
+				op_no,
+				machine_cd
+			FROM cpk_product_target
+			GROUP BY machine_cd
+			) b
+		ON a.machine_cd = b.machine_cd
+		LEFT JOIN (
+			SELECT
+				IFNULL(SUM(IFNULL(Work_qt,0)),0) work_qt,
+				IFNULL(SUM(IFNULL(defect_qt,0)),0) defect_qt,
+				machine_cd
+			FROM cpk_work_act
+			WHERE work_dt BETWEEN #{startDate} AND #{endDate}
+			GROUP BY machine_cd
+			) c
+		ON a.machine_cd = c.machine_cd
+		LEFT JOIN (
+			SELECT 
+				SUM(CASE machine_status WHEN 'Start' THEN 1 ELSE 0 END) runTime, 
+				TIMESTAMPDIFF(DAY, #{startDate}, #{endDate}) haveTime,
+				TIMESTAMPDIFF(DAY, #{startDate}, #{endDate}) dueTime,
+				machine_cd
+			FROM cpk_machine_status
+			WHERE transfer_dt BETWEEN #{startDate} AND #{endDate}
+			GROUP BY machine_cd
+			) d
+		ON a.machine_cd = d.machine_cd
+		WHERE dept_cd = 'SAFRAN'
+	</select>
+	
+</mapper>

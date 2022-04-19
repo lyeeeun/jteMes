@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.common.excelUtil.ExcelUtilMapper">
+	
+	<sql id="tableInfo">
+		TABLE_NAME AS tableId, 
+		COLUMN_NAME AS columnId, 
+		COLUMN_COMMENT, 
+		COLUMN_TYPE AS columnType, 
+		IF(IS_NULLABLE = "YES", TRUE, FALSE) AS nullAble,
+		COLUMN_DEFAULT, 
+		COLUMN_KEY
+	<if test='action != "C"'>
+		,excelUtil.table_id				AS tableId
+		,excelUtil.column_id			AS columnId
+		,excelUtil.column_nm			AS columnNm
+		,excelUtil.auto_key_yn			AS autoKeyYn
+		,excelUtil.auto_key				AS autoKey
+		,excelUtil.list_yn				AS listYn
+		,excelUtil.cd_id 				AS cdId
+		,excelUtil.rtl_table_yn			AS rtlTableYn
+		,excelUtil.rtl_table_id			AS rtlTableId
+		,excelUtil.rtl_table_pk			AS rtlTablePk
+		,excelUtil.rtl_table_pk_nm 		AS rtlTablePkNm
+		,excelUtil.rtl_system_yn 		AS rtlSystemYn
+		,excelUtil.rtl_system_svc 		AS rtlSystemSvc
+		,excelUtil.rtl_system_method 	AS rtlSystemMethod
+		,excelUtil.order
+		,excelUtil.check_yn		AS checkYn
+	</if>
+	FROM INFORMATION_SCHEMA.COLUMNS sColumn
+	<if test='action != "C"'>
+		INNER JOIN sys_excel_util excelUtil ON sColumn.TABLE_NAME = excelUtil.table_id AND sColumn.COLUMN_NAME = excelUtil.column_id
+	</if>
+	WHERE TABLE_SCHEMA = (SELECT DATABASE())
+	<if test='action == "C"'>
+		AND TABLE_NAME = #{tableId}
+		ORDER BY TABLE_SCHEMA, TABLE_NAME, ORDINAL_POSITION;
+	</if>
+	<if test='action == "U"'>
+		AND excelUtil.menu_id = #{menuId}
+		ORDER BY excelUtil.order;
+	</if>
+	
+	
+	</sql>
+	
+	<select id="selectTableInfo" 
+		parameterType="jin.mes.common.excelUtil.ExcelUtilDto"
+		resultType="jin.mes.common.excelUtil.ExcelUtilDto">
+		SELECT	
+			<include refid="tableInfo"/>
+	</select>
+	
+	<select id="selectIsSet" 
+		parameterType="jin.mes.common.excelUtil.ExcelUtilDto"
+		resultType="java.lang.Integer">
+		SELECT COUNT(*) 
+		FROM sys_excel_util
+		WHERE menu_id = #{menuId}
+	</select>
+	
+	<select id="selectCodeList" 
+		parameterType="String"
+		resultType="String">
+		SELECT 
+			cd_nm as cdNm 
+		FROM cw_comn_code
+		WHERE up_cd_id = #{cdId}
+	</select>
+	
+	
+	<select id="selectRtlTableCodeList" 
+		parameterType="jin.mes.common.excelUtil.ExcelUtilDto"
+		resultType="String">
+		SELECT 
+			${rtlTablePkNm} AS rtlTablePkNm
+		FROM ${rtlTableId}
+	</select>
+	
+	
+		
+		
+		
+	<insert id="insertExcelSetting" parameterType="jin.mes.common.excelUtil.ExcelUtilDto">
+		INSERT INTO sys_excel_util (
+			menu_id,
+			table_id,
+			column_id,
+			column_nm,
+			auto_key_yn,
+			auto_key,
+			list_yn,
+			cd_id,
+			rtl_table_yn,
+			rtl_table_id,
+			rtl_table_pk,
+			rtl_table_pk_nm,
+			rtl_system_yn,
+			rtl_system_svc,
+			rtl_system_method,
+			`order`,
+			check_yn
+		) VALUES (
+			#{menuId},
+			#{tableId},
+			#{columnId},
+			#{columnNm},
+			#{autoKeyYn},
+			#{autoKey},
+			#{listYn},
+			#{cdId},
+			#{rtlTableYn},
+			#{rtlTableId},
+			#{rtlTablePk},
+			#{rtlTablePkNm},
+			#{rtlSystemYn},
+			#{rtlSystemSvc},
+			#{rtlSystemMethod},
+			#{order},
+			#{checkYn}
+		)
+	</insert>
+	
+	
+	<sql id="tableTestInfo">
+		testOrder.order_id			AS orderId,
+		testOrder.comp_id			AS compId,
+		compInfo.comp_std_str02		AS compStdStr02,
+		compInfo.comp_nm			AS compNm,
+		testOrder.slip_num			AS slipNum,
+		testOrder.order_stdt		AS orderStdt,
+		testOrder.order_eddt		AS orderEeddt,
+		testOrder.order_manager		AS orderManager,
+		urInfo.user_nm				AS orderManagerNm,
+		testOrder.item_std_str02	AS itemStdStr02,
+		itemInfo.item_id			AS itemId,
+		itemInfo.item_nm			AS itemNm,
+		itemInfo.item_std_str01		AS itemStdStr01,
+		testOrder.order_state		AS orderState,
+		testOrder.lot_qty			AS lotQty,
+		testOrder.ship_qty			AS shipQty,
+		testOrder.created_at		AS createdAt,
+		testOrder.creator_id		AS creatorId,
+		testOrder.updator_id		AS updatorId
+	FROM test_order_info testOrder
+	LEFT OUTER JOIN bc_company_info compInfo ON compInfo.comp_id = testOrder.comp_id
+	LEFT OUTER JOIN bc_item_info itemInfo ON itemInfo.item_id = testOrder.item_id
+	LEFT OUTER JOIN mb_user_info urInfo ON urInfo.user_id = testOrder.order_manager
+	WHERE 1=1
+	</sql>
+	
+	<select id="selectTableTestInfo" 
+		parameterType="jin.mes.common.excelUtil.ExcelUtilDto"
+		resultType="jin.mes.common.excelUtil.ExcelUtilDto">
+		SELECT	
+			<include refid="tableTestInfo"/>
+	</select>
+	
+	<insert id="insertOrderMgt" parameterType="jin.mes.common.excelUtil.ExcelUtilDto">
+	<selectKey keyProperty="orderId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('ORD') AS orderId
+	</selectKey>
+		INSERT INTO test_order_info (
+			order_id,
+			slip_num,
+			order_nm,
+			order_manager,
+			order_stdt,
+			order_eddt,
+			created_at,
+			updated_at,
+			creator_id,
+			updator_id,
+			description
+			order_state,
+			lot_qty,
+			comp_id,
+			comp_nm,
+			comp_std_str02,
+			item_id,
+			item_nm,
+			item_std_str01,
+			item_std_str02,
+			ship_qty
+		) VALUES (
+			#{orderId},
+			#{slipNum},
+			#{orderNm},
+			#{orderManager},
+			#{orderStdt},
+			#{orderEddt},
+			NOW(),
+			NOW(),
+			#{creatorId},
+			#{updatorId},
+			#{description},
+			#{orderState},
+			#{lotQty},
+			#{compId},
+			#{compNm},
+			#{compStdStr02},
+			#{itemId},
+			#{itemNm},
+			#{itemStdStr01},
+			#{itemStdStr02},
+			#{shipQty}
+		)
+	</insert>
+	
+	<update id="updateOrderMgt" parameterType="jin.mes.common.excelUtil.ExcelUtilDto">
+		UPDATE test_order_info
+		SET order_id = orderId
+			<if test="orderNm != null and orderNm != '' ">
+				,order_nm = #{orderNm}
+			</if>
+			<if test="orderManager != null and orderManager != '' ">
+				,order_manager = #{orderManager}
+			</if>
+			<if test="orderStdt != null and orderStdt != '' ">
+				,order_stdt = #{orderStdt}
+			</if>
+			<if test="orderEddt != null and orderEddt != '' ">
+				,order_eddt = #{orderEddt}
+			</if>
+			<if test="lotQty != null and lotQty != '' ">
+				,lot_qty = #{lotQty}
+			</if>
+			<if test="itemId != null and itemId != '' ">
+				,item_id = #{itemId}
+			</if>
+			<if test="itemNm != null and itemNm != '' ">
+				,item_nm = #{itemNm}
+			</if>
+			<if test="itemStdStr01 != null and itemStdStr01 != '' ">
+				,item_std_str01 = #{itemStdStr01}
+			</if>
+			<if test="itemStdStr02 != null and itemStdStr02 != '' ">
+				,item_std_str02 = #{itemStdStr02}
+			</if>
+			<if test="compId != null and compId != '' ">
+				,comp_id = #{compId}
+			</if>
+			<if test="compNm != null and compNm != '' ">
+				,comp_nm = #{compNm}
+			</if>
+			<if test="compStdStr02 != null and compStdStr02 != '' ">
+				,comp_std_str02 = #{compStdStr02}
+			</if>
+			<if test="shipQty != null and shipQty != '' ">
+				,ship_qty = #{shipQty}
+			</if>
+	</update>
+	
+	<delete id="deleteOrderMgt" parameterType="jin.mes.common.excelUtil.ExcelUtilDto">
+		DELETE FROM test_order_info
+		WHERE order_id  = #{orderId}
+	</delete>
+	
+	<update id="updateExcelSetting" parameterType="jin.mes.common.excelUtil.ExcelUtilDto">
+		UPDATE sys_excel_util
+		SET menu_id = menu_id
+			<if test="columnNm != null and columnNm != ''">
+				,column_nm = #{columnNm}
+			</if>
+			<if test="autoKeyYn != null and autoKeyYn != ''">
+				,auto_key_yn = #{autoKeyYn}
+			</if>
+			<if test="autoKey != null and autoKey != ''">
+				,auto_key = #{autoKey}
+			</if>
+			<if test="listYn != null and listYn != ''">
+				,list_yn = #{listYn}
+			</if>
+			<if test="cdId != null and cdId != ''">
+				,cd_id = #{cdId}
+			</if>
+			<if test="rtlTableYn != null and rtlTableYn != ''">
+				,rtl_table_yn = #{rtlTableYn}
+				,rtl_table_id = #{rtlTableId}
+				,rtl_table_pk = #{rtlTablePk}
+				,rtl_table_pk_nm = #{rtlTablePkNm}
+			</if>
+			<if test="rtlSystemYn != null and rtlSystemYn != ''">
+				,rtl_system_yn = #{rtlSystemYn}
+				,rtl_system_svc = #{rtlSystemSvc}
+				,rtl_system_method = #{rtlSystemMethod}
+			</if>
+			<if test="order != null and order != ''">
+				,`order` = #{order}
+			</if>
+			<if test="checkYn != null and checkYn != ''">
+				,check_yn = #{checkYn}
+			</if>
+		WHERE menu_id = #{menuId}
+		AND column_id = #{columnId}
+	</update>
+	
+	<delete id="deleteExcelSetting" parameterType="jin.mes.common.excelUtil.ExcelUtilDto">
+		DELETE FROM sys_excel_util
+		WHERE menu_id  = #{menuId}
+	</delete>
+	
+	<insert id="insertExcelData" parameterType="jin.mes.common.excelUtil.ExcelUtilDto">
+		
+		INSERT INTO ${tableId}(
+			<foreach collection="columnList" item="item" separator="," >
+				${item.columnId}
+			</foreach>
+		)VALUES(
+			<foreach collection="valueList" item="item" separator="," >
+				<choose>
+					<when test="item.autoKeyYn == true">
+						(SELECT CREATE_PK(#{item.autoKey}))
+					</when>
+					<when test="item.stringValue != null and item.stringValue != ''">
+						<if test="item.listYn == true">
+							(SELECT cd_id FROM cw_comn_code WHERE cd_nm = #{item.stringValue} AND up_cd_id = #{item.cdId})
+						</if>
+						<if test="item.rtlTableYn == true">
+							(SELECT ${item.rtlTablePk} FROM ${item.rtlTableId} WHERE ${item.rtlTablePkNm} = #{item.stringValue} LIMIT 1)
+						</if>
+						<if test="item.listYn == false and item.rtlTableYn == false">
+							#{item.stringValue}
+						</if>
+					</when>
+					<when test="item.intValue != null and item.intValue != ''">
+						#{item.intValue}
+					</when>
+					<when test="item.floatValue != null and item.floatValue != ''">
+						#{item.floatValue}
+					</when>
+					<when test="item.checkYn == false and item.nullAble == true">
+						NULL
+					</when>
+					<when test="item.checkYn == false and item.nullAble == false">
+						DEFAULT
+					</when>
+				</choose>
+			</foreach>
+		)
+	</insert>
+	
+</mapper>

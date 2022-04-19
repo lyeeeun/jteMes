@@ -1,0 +1,65 @@
+
+@CHARSET "UTF-8";
+
+/** 위치 정보 메인 화면 - 전체적인 형식 관련 **/
+
+.rlehoMgtForm {
+	width: 100%;
+	margin: 0 auto;
+/* 	text-align: center; */
+	vertical-align: middle;
+}
+
+.rlehoMgtForm .left-contents {
+	width: 20%;
+	display: inline-block;
+	height: 100%;
+}
+
+.rlehoMgtForm .middle-contents {
+	width: 5%;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.rlehoMgtForm .right-contents {
+	width: 74%;
+	display: inline-block;
+}
+
+.middle-contents .fas.fa-caret-square-right.fa-3x{
+	color: #3367D6;
+	padding-right: 24px;
+	
+}
+
+/* 위치 정보 메인 화면 - 왼쪽 트리 구조 관련 */
+
+.rlehoMgtForm #jteMasterTree {
+	font-size: 16px;
+	border: 2px solid #8aafff;
+	background:#ffffff;
+}
+
+/** 20.08.10 JJW 왼쪽 트리 구조 여백 따로 주기 위함**/
+.rlehoMgtForm.k-treeview .k-item {
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+/*20.08.05 왼쪽 셀 가운데 정렬 JJW*/
+.rlehoMgtForm.k-grid th:first-child, .rlehoMgtForm.k-grid td:first-child {
+	text-align: center;
+}
+
+/*20.12.11 YUMI 메인 그리드의 보기 버튼 가운데 정렬 YUMI*/
+.rlehoMgtForm.k-grid td:nth-child(2) {
+	text-align: center;
+}
+
+/**20.12.11 YUMI 위치 상세수정 팝업 - final-btn-area 위쪽 여백 조정**/
+
+.rlehoMgtForm-final-btn-area {
+	margin-top: 0;	
+}

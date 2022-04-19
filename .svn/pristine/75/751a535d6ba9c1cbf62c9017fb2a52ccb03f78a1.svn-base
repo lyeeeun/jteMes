@@ -1,0 +1,12 @@
+package jin.mes.form.perform.prodStaMgt.facilProdMgt;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.co.itcall.jte.common.mvc.BaseController;
+
+@Controller
+@RequestMapping("/form/perform/prodStaMgt/facilProdMgt")
+public class FacilProdMgtController extends BaseController {
+
+}

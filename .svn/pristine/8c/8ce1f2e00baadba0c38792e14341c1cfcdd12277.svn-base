@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.qualMgt.qualPec.finalQualMgt.ZinixFinalQualMgtMapper">
+	
+	<!-- 검사목록(PLC) base -->
+	<sql id="plcEqmtLog_base"> 
+			plc_eqmt_id 	AS plcEqmtId,
+			plc_eqmt_date   AS plcEqmtDate,
+			plc_eqmt_bolt01 AS plcEqmtBolt01,
+			plc_eqmt_bolt02 AS plcEqmtBolt02,
+			plc_eqmt_bolt03 AS plcEqmtBolt03,
+			plc_eqmt_bolt04 AS plcEqmtBolt04,
+			plc_eqmt_chk01  AS plcEqmtChk01,
+			plc_eqmt_chk02  AS plcEqmtChk02,
+			plc_eqmt_chk03  AS plcEqmtChk03,
+			plc_eqmt_chk04  AS plcEqmtChk04,
+			plc_eqmt_pass   AS plcEqmtPass,
+			eqmtLog.bad_chk	AS badChk,
+			eqmtLog.created_at AS createdAt,
+			eqmtLog.creator_id AS creatorId,
+			eqmtLog.updated_at AS updatedAt,
+			eqmtLog.updator_id AS updatorId,
+			eqmtLog.lot_id  AS lotId,
+			lot.lot_nm		AS lotNm,
+			eqmtLog.item_id	AS itemId,
+			item.item_nm	AS itemNm,
+			eqmtLog.prod_asm_id	AS prodAsmId,
+			asgn.prod_asm_nm	AS prodAsmNm,
+			up_plc_eqmt_id		AS upPlcEqmtId,
+			plc_eqmt_state		AS plcEqmtState,
+			plc_eqmt_desc		AS plcEqmtDesc,
+			barcode_id		AS barcodeId
+		FROM plc_eqmt_log eqmtLog
+		LEFT OUTER JOIN prs_lot_info lot ON eqmtLog.lot_id = lot.lot_id 
+		LEFT OUTER JOIN bc_item_info item ON eqmtLog.item_id = item.item_id
+		LEFT OUTER JOIN prs_product_assignment asgn ON eqmtLog.prod_asm_id = asgn.prod_asm_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="prodAsmId != null and prodAsmId != '' ">
+			AND eqmtLog.prod_asm_id = #{prodAsmId}
+		</if>
+		<if test="plcEqmtState != null and plcEqmtState != '' ">
+			AND plc_eqmt_state = #{plcEqmtState}
+		</if>
+		<if test="upPlcEqmtId != null and upPlcEqmtId != '' ">
+			AND up_plc_eqmt_id = #{upPlcEqmtId}
+		</if>
+		<if test="barcodeId != null and barcodeId != '' ">
+			AND barcode_id = #{barcodeId}
+		</if>
+	</sql>
+	
+	<!-- 검사목록 조회(page) -->
+	<select id="selectPlcEqmtLogList"
+		parameterType="jin.mes.cform.qualMgt.qualPec.finalQualMgt.ZinixFinalQualMgtDto"
+		resultType="jin.mes.cform.qualMgt.qualPec.finalQualMgt.ZinixFinalQualMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY plcEqmtDate desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="plcEqmtLog_base" />
+			)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+	
+	<!-- 검사목록 조회(page) -->
+	<select id="selectPlcEqmtLogCount"
+		parameterType="jin.mes.cform.qualMgt.qualPec.finalQualMgt.ZinixFinalQualMgtDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="plcEqmtLog_base" />
+			)c_table
+	</select>
+	
+	<!-- 검사목록  매핑  -->
+	<update id="updateEqmtLog" parameterType="jin.mes.cform.ship.shipPlanMgt.ZinixShipPlanMgtDto">
+		UPDATE plc_eqmt_log 
+			SET
+				updated_at = now(),
+				updator_id = #{updatorId}
+				<if test="lotId != null">
+					,lot_id = #{lotId}
+				</if>
+				<if test="itemId != null">
+					,item_id = #{itemId}
+				</if>
+				<if test="prodAsmId != null">
+					,prod_asm_id = #{prodAsmId}
+				</if>
+				<if test="badChk != null">
+					,bad_chk = #{badChk}
+				</if>
+				<if test="plcEqmtState != null">
+					,plc_eqmt_state = #{plcEqmtState}
+				</if>
+				<if test="plcEqmtDesc != null">
+					,plc_eqmt_desc = #{plcEqmtDesc}
+				</if>
+				<if test="upPlcEqmtId != null">
+					,up_plc_eqmt_id = #{upPlcEqmtId}
+				</if>
+				<if test="barcodeId != null">
+					,barcode_id = #{barcodeId}
+				</if>
+			WHERE plc_eqmt_id = #{plcEqmtId}
+	</update>
+	
+	<!-- 기존 조치내역  조회 하여 상위 검사내역 변경 -->
+	<update id="updateEqmtLogChange" parameterType="jin.mes.cform.ship.shipPlanMgt.ZinixShipPlanMgtDto">
+		UPDATE plc_eqmt_log 
+			SET
+				updated_at = now(),
+				updator_id = #{updatorId}
+				,up_plc_eqmt_id = #{upPlcEqmtId}
+			WHERE up_plc_eqmt_id = #{plcEqmtId}
+	</update>
+	
+	<!-- 최종검사 데이터 삭제  -->
+	<delete  id="deleteEqmtLog" parameterType="jin.mes.cform.ship.shipPlanMgt.ZinixShipPlanMgtDto">
+		DELETE FROM plc_eqmt_log
+		WHERE plc_eqmt_id = #{plcEqmtId}
+	</delete>
+</mapper>

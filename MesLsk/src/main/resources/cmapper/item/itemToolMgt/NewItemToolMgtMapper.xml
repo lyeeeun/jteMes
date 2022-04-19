@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.item.itemToolMgt.NewItemToolMgtMapper">
+	
+	<sql id="rtlToolInfo_base">
+			itemInfo.item_id				AS itemId,
+			itemInfo.item_nm				AS itemNm,
+			placeInfo.place_id				AS placeId, 
+			placeInfo.place_nm				AS placeNm,
+			eqmtMgt.eqmt_mgt_id				AS eqmtMgtId,
+			eqmtMgt.eqmt_mgt_nm				AS eqmtMgtNm
+		<if test="eqmtMgtId != null and eqmtMgtId != '' ">
+			,
+			rtlItemTool.tool_mgt_id			AS toolMgtId,
+			rtlItemTool.inspect_standard	AS inspectStandard,
+			rtlItemTool.tool_change			AS toolChange,
+			rtlItemTool.question_id			AS questionId
+		</if>
+		FROM bc_item_info itemInfo
+		INNER JOIN bc_place_info placeInfo ON itemInfo.item_std_str02 = placeInfo.place_parent AND placeInfo.place_parent != ""
+		INNER JOIN bc_equipment_mgt eqmtMgt ON placeInfo.place_id = eqmtMgt.place_id
+		<if test="eqmtMgtId != null and eqmtMgtId != '' ">
+			INNER JOIN bc_rtl_item_tool rtlItemTool ON itemInfo.item_id = rtlItemTool.item_id AND eqmtMgt.eqmt_mgt_id = rtlItemTool.eqmt_mgt_id
+		</if>
+		WHERE itemInfo.item_id = #{itemId}
+		<if test="eqmtMgtId != null and eqmtMgtId != '' ">
+			AND eqmtMgt.eqmt_mgt_id = #{eqmtMgtId}
+		</if>
+	</sql>
+	
+	<select id="selectRtlToolInfo"
+		parameterType="jin.mes.cform.item.itemToolMgt.NewItemToolMgtDto"
+		resultType="jin.mes.cform.item.itemToolMgt.NewItemToolMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY rtlItemTool.question_id desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="rtlToolInfo_base"></include>
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<select id="selectRtlToolInfoCount"
+		parameterType="jin.mes.cform.item.itemToolMgt.NewItemToolMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="rtlToolInfo_base"></include>
+		)c_table
+	</select>
+	
+	<select id="selectAllRtlToolInfo"
+		parameterType="jin.mes.cform.item.itemToolMgt.NewItemToolMgtDto"
+		resultType="jin.mes.cform.item.itemToolMgt.NewItemToolMgtDto">
+		SELECT 
+		<include refid="rtlToolInfo_base"></include>
+	</select>
+	
+	
+	<insert id="insertRtlToolInfo" parameterType="jin.mes.cform.item.itemToolMgt.NewItemToolMgtDto">
+		INSERT INTO bc_rtl_item_tool(
+			item_id,
+			eqmt_mgt_id,
+			tool_mgt_id,
+			question_id,
+			inspect_standard,
+			tool_change
+		)VALUES(
+			#{itemId},
+			#{eqmtMgtId},
+			#{toolMgtId},
+			#{questionId},
+			#{inspectStandard},
+			#{toolChange}
+		)
+	</insert>
+	
+	<update id="updateRtlToolInfo" parameterType="jin.mes.cform.item.itemToolMgt.NewItemToolMgtDto">
+		UPDATE bc_rtl_item_tool
+		SET item_id = item_id
+			<if test="inspectStandard != null and inspectStandard != '' ">
+				,inspect_standard = #{inspectStandard}
+			</if>
+			<if test="toolChange != null and toolChange != '' ">	
+				,tool_change = #{toolChange}
+			</if>	
+		WHERE item_id = #{itemId}
+		AND eqmt_mgt_id = #{eqmtMgtId}
+		AND question_id = #{questionId}
+	</update>
+	
+	<delete id="deleteRtlToolInfo" parameterType="jin.mes.cform.item.itemToolMgt.NewItemToolMgtDto">
+		DELETE FROM bc_rtl_item_tool
+		WHERE item_id = #{itemId}
+		AND eqmt_mgt_id = #{eqmtMgtId}
+		AND question_id = #{questionId}
+	</delete>
+	
+	<select id="selectDupleKeyCheck"
+		parameterType="jin.mes.cform.techMgt.mqsToolMgt.NewMqsToolMgtDto"
+		resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM bc_rtl_item_tool
+		WHERE item_id = #{itemId}
+		AND eqmt_mgt_id = #{eqmtMgtId}
+		AND question_id = #{questionId}
+	</select>
+	
+</mapper>

@@ -1,0 +1,112 @@
+.facilMgtForm .jte-msgBox {
+	width: 100%;
+}
+
+.facilMgtForm .search-btn {
+	width: 100%;
+}
+
+.facilMgtForm .center-input {
+	width: 100%;
+}
+
+.facilMgtForm .col-left-title {
+	width: 18%;
+}
+
+.facilMgtForm .col-left-content-1 {
+	width: 20%;
+}
+
+.facilMgtForm .col-left-content-2 {
+	width: 10%;
+}
+
+.facilMgtForm .col-right-title {
+	width: 22%;
+}
+
+.facilMgtForm .col-right-content-1 {
+	width: 20%;
+}
+
+.facilMgtForm .col-right-content-2 {
+	width: 10%;
+}
+
+.facilMgtForm .fa-info-circle:before {
+	color:#3367D6;
+}
+
+/* .facilMgtForm div.k-window-content{
+	overflow: unset; 팝업창의 스크롤 없앰
+} */
+
+.facilMgtForm .grid-content {
+	width: 100%;
+}
+.facilMgtForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+/* .facilMgtForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 0px;
+} */
+
+.facilMgtForm .jtePopForm_master {
+	width: 100%;
+}
+
+.facilMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.facilMgtForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.facilMgtForm .left-input {
+	width: 100%;
+}
+
+.facilMgtForm .right-input {
+	width: 100%;
+	float: right;
+}
+
+.facilMgtForm .left-input.btn-input{
+	width: 100%;
+}
+
+.facilMgtForm .right-input.btn-input{
+	width: 100%;
+}
+
+/* .facilMgtForm .jte-msgBox {
+	width: 95%;
+	float: left;
+} */
+
+.facilMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.facilMgtForm .k-dropdown {
+	width: 100%;
+}
+
+.k-widget .k-treeview .k-window-content .k-content {
+	padding: 20px;
+}
+
+/*20.08.05 왼쪽 셀 가운데 정렬 JJW*/
+.facilMgtForm.k-grid th:first-child, .facilMgtForm.k-grid td:first-child {
+	text-align: center;
+}

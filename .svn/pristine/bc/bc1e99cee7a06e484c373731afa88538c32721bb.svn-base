@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.mfgMgt.mfgplanMgt.eqmtOperationPlan.EqmtOperationPlanMapper">
+	
+	<select id="selectEqmtOperationPlan"
+		parameterType="jin.mes.form.mfgMgt.mfgplanMgt.eqmtOperationPlan.EqmtOperationPlanDto"
+		resultType="jin.mes.form.mfgMgt.mfgplanMgt.eqmtOperationPlan.EqmtOperationPlanDto">
+			SELECT 
+				eqmtMgt.eqmt_mgt_id AS eqmtMgtId,
+				eqmtMgt.eqmt_mgt_nm AS eqmtMgtNm,
+				DATE_FORMAT(workAssign.prod_asm_date, '%Y-%m-%d') AS prodAsmDate,
+				placeInfo.place_id AS placeId,
+				placeInfo.place_nm AS placeNm
+			FROM prs_work_info workInfo
+			INNER JOIN prs_product_assignment workAssign
+			ON workInfo.prod_asm_id = workAssign.prod_asm_id
+			INNER JOIN bc_equipment_mgt eqmtMgt
+			ON workInfo.eqmt_mgt_id = eqmtMgt.eqmt_mgt_id
+			INNER JOIN bc_place_info placeInfo
+			ON eqmtMgt.place_id = placeInfo.place_id
+			WHERE placeInfo.place_id = #{placeId}
+			ORDER BY eqmtMgt.eqmt_mgt_id
+	</select>
+</mapper>

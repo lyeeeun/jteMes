@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "jin.mes.form.basMgt.codMgt.pageSet.PageSetMapper">
+
+	<!-- 페이지설정 - 그리드 조회 기본 -->
+	<sql id="pageSet_base">
+			grid_no, 
+			grid_db, 
+			grid_id, 
+			grid_class, 
+			grid_style, 
+			grid_title, 
+			grid_url_base, 
+			grid_url_read, 
+			grid_url_create, 
+			grid_url_update, 
+			grid_url_destroy,
+			grid_pop_id,  
+			grid_pop_width, 
+			grid_pop_height, 
+			grid_pop_class, 
+			grid_pop_col, 
+			grid_pop_title, 
+			grid_function, 
+			grid_div, 
+			up_grid_id,
+			menu_id
+		FROM cw_page_grid
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="gridNo != null">
+			AND grid_no = #{gridNo}
+		</if>
+		<if test="upGridId != null">
+			AND up_grid_id = #{upGridId}
+		</if>
+		<if test="menuId != null">
+			AND menu_id = #{menuId}
+		</if>
+	</sql>
+	
+	<!-- 페이지설정 - 그리드 조회  -->
+	<select id="selectPageSetList" parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto"
+		resultType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto" >
+		SELECT
+		<include refid="pageSet_base"/>	
+	</select>
+	
+	<!-- 페이지설정 - 그리드 저장 -->
+	<insert id="insertPageSetSave" parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto">
+		INSERT INTO cw_page_grid
+		(
+			grid_db, 
+			grid_id, 
+			grid_class, 
+			grid_style, 
+			grid_title, 
+			grid_url_base, 
+			grid_url_read, 
+			grid_url_create, 
+			grid_url_update, 
+			grid_url_destroy, 
+			grid_pop_id, 
+			grid_pop_width, 
+			grid_pop_height, 
+			grid_pop_class, 
+			grid_pop_col, 
+			grid_pop_title, 
+			grid_function, 
+			grid_div, 
+			up_grid_id,
+			menu_id
+		)
+		VALUES
+		(
+			#{gridDb},
+			#{gridId},
+			#{gridClass},
+			#{gridStyle},
+			#{gridTitle},
+			#{gridUrlBase},
+			#{gridUrlRead},
+			#{gridUrlCreate},
+			#{gridUrlUpdate},
+			#{gridUrlDestroy},
+			#{gridPopId},
+			#{gridPopWidth},
+			#{gridPopHeight},
+			#{gridPopClass},
+			#{gridPopCol},
+			#{gridPopTitle},
+			#{gridFunction},
+			#{gridDiv},
+			#{upGridId},
+			#{menuId}
+		)
+		<selectKey keyProperty="gridNo" resultType="String" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<!-- 페이지설정 - 그리드 수정 -->
+	<update id="updatePageSetSave" parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto">
+		UPDATE cw_page_grid
+			SET grid_no = #{gridNo}
+			<if test="gridDb != null">
+				,grid_db = #{gridDb}
+			</if>
+			<if test="gridId != null">
+				,grid_id = #{gridId}
+			</if>
+			<if test="gridClass != null">
+				,grid_class = #{gridClass}
+			</if>
+			<if test="gridStyle != null">
+				,grid_style = #{gridStyle}
+			</if>
+			<if test="gridTitle != null">
+				,grid_title = #{gridTitle}
+			</if>
+			<if test="gridUrlBase != null">
+				,grid_url_base = #{gridUrlBase}
+			</if>
+			<if test="gridUrlRead != null">
+				,grid_url_read = #{gridUrlRead}
+			</if>
+			<if test="gridUrlCreate != null">
+				,grid_url_create = #{gridUrlCreate}
+			</if>
+			<if test="gridUrlUpdate != null">
+				,grid_url_update = #{gridUrlUpdate}
+			</if>
+			<if test="gridUrlDestroy != null">
+				,grid_url_destroy = #{gridUrlDestroy}
+			</if>
+			<if test="gridPopId != null">
+				,grid_pop_id = #{gridPopId}
+			</if>
+			<if test="gridPopWidth != null">
+				,grid_pop_width = #{gridPopWidth}
+			</if>
+			<if test="gridPopHeight != null">
+				,grid_pop_height = #{gridPopHeight}
+			</if>
+			<if test="gridPopClass != null">
+				,grid_pop_class = #{gridPopClass}
+			</if>
+			<if test="gridPopCol != null">
+				,grid_pop_col = #{gridPopCol}
+			</if>
+			<if test="gridPopTitle != null">
+				,grid_pop_title = #{gridPopTitle}
+			</if>
+			<if test="gridFunction != null">
+				,grid_function = #{gridFunction}
+			</if>
+			<if test="gridDiv != null">
+				,grid_div = #{gridDiv}
+			</if>
+			<if test="upGridId != null">
+				,up_grid_id = #{upGridId}
+			</if>
+			<if test="menuId != null">
+				,menu_id = #{menuId}
+			</if>
+		WHERE grid_no = #{gridNo}
+	</update>
+	<!-- 페이지설정 - 그리드 삭제-->
+	<delete id="deletePageSet"
+		parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto">
+		DELETE FROM cw_page_grid
+		WHERE grid_no = #{gridNo}
+	</delete>
+	
+	<!-- 페이지 필드설정 - 필드 조회 기본 -->
+	<sql id="pageField_base">
+			field_no, 
+			field_db, 
+			field_id, 
+			field_name,
+			field_type, 
+			field_pop, 
+			field_grid, 
+			field_search, 
+			field_validation, 
+			field_excel, 
+			grid_no
+		FROM cw_page_field
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="gridNo != null">
+			AND grid_no = #{gridNo}
+		</if>
+		<if test="fieldNo != null and fieldNo != ''">
+			AND field_no = #{fieldNo}
+		</if>
+	</sql>
+	
+	<!-- 페이지 필드설정 - 필드 조회 -->
+	<select id="selectPageFieldList" parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto"
+		resultType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto" >
+		SELECT
+		<include refid="pageField_base"/>	
+	</select>
+	
+	<!-- 페이지 필드설정 - 필드 저장 -->
+	<insert id="insertPageField" parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto">
+		INSERT INTO cw_page_field
+		(
+			field_db, 
+			field_id,
+			field_name,
+			field_type, 
+			field_pop, 
+			field_grid, 
+			field_search, 
+			field_validation, 
+			field_excel, 
+			grid_no
+		)
+		VALUES
+		(
+			#{fieldDb},
+			#{fieldId},
+			#{fieldName},
+			#{fieldType},
+			#{fieldPop},
+			#{fieldGrid},
+			#{fieldSearch},
+			#{fieldValidation},
+			#{fieldExcel},
+			#{gridNo}
+		)
+		<selectKey keyProperty="fieldNo" resultType="String" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<!-- 페이지 필드설정 - 필드 수정 -->
+	<update id="updatePageField" parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto">
+		UPDATE cw_page_field
+			SET field_no = #{fieldNo}
+			<if test="fieldDb != null">
+				,field_db = #{fieldDb}
+			</if>
+			<if test="fieldId != null">
+				,field_id = #{fieldId}
+			</if>
+			<if test="fieldName != null">
+				,field_name = #{fieldName}
+			</if>
+			<if test="fieldType != null">
+				,field_type = #{fieldType}
+			</if>
+			<if test="fieldPop != null">
+				,field_pop = #{fieldPop}
+			</if>
+			<if test="fieldGrid != null">
+				,field_grid = #{fieldGrid}
+			</if>
+			<if test="fieldSearch != null">
+				,field_search = #{fieldSearch}
+			</if>
+			<if test="fieldValidation != null">
+				,field_validation = #{fieldValidation}
+			</if>
+			<if test="fieldExcel != null">
+				,field_excel = #{fieldExcel}
+			</if>
+		WHERE field_no = #{fieldNo} AND grid_no = #{gridNo}
+		
+	</update>
+	
+	<!-- 페이지 필드설정 - 필드 삭제 -->
+	<delete id="deletePageField"
+		parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto">
+		DELETE FROM cw_page_field
+		WHERE field_no = #{fieldNo}
+	</delete>
+	
+</mapper>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+<title>security</title>
+<script type="text/javascript" src="/util/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+function securityEncData(){
+	var data = {"sec_text":$("#enc_text").val(),"sec_key":$("#enc_key").val()};
+	try{
+	$.ajax({
+		url: "/web-security-enc",
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify(data),
+		success: function(result){
+			$("#enc_result").val(result);
+		}
+	});
+	}catch(err){
+		if (err.status === 404) {
+			alert("error 404" );
+		} else {
+			alert("error : " + err );
+		}
+	}
+}
+
+function securityDecData(){
+	var data = {"sec_text":$("#dec_text").val(),"sec_key":$("#dec_key").val()};
+	try{
+	$.ajax({
+		url: "/web-security-dec",
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify(data),
+		success: function(result){
+			$("#dec_result").val(result);
+		}
+	});
+	}catch(err){
+		if (err.status === 404) {
+			alert("error 404" );
+		} else {
+			alert("error : " + err );
+		}
+	}
+}
+
+function jsayptEncData(){
+	var data = {"sec_text":$("#jsaypt_enc_text").val(),"sec_key":$("#jsaypt_enc_key").val()};
+	try{
+	$.ajax({
+		url: "/web-jsaypt-enc",
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify(data),
+		success: function(result){
+			$("#jsaypt_enc_result").val(result);
+		}
+	});
+	}catch(err){
+		if (err.status === 404) {
+			alert("error 404" );
+		} else {
+			alert("error : " + err );
+		}
+	}
+}
+
+function jsayptDecData(){
+	var data = {"sec_text":$("#jsaypt_dec_text").val(),"sec_key":$("#jsaypt_dec_key").val()};
+	try{
+	$.ajax({
+		url: "/web-jsaypt-dec",
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify(data),
+		success: function(result){
+			$("#jsaypt_dec_result").val(result);
+		}
+	});
+	}catch(err){
+		if (err.status === 404) {
+			alert("error 404" );
+		} else {
+			alert("error : " + err );
+		}
+	}
+}
+
+function rsaEncData(){
+	var data = {"sec_text":$("#rsa_enc_text").val()};
+	try{
+	$.ajax({
+		url: "/web-rsa-enc",
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify(data),
+		success: function(result){
+			$("#rsa_enc_result").val(result);
+		}
+	});
+	}catch(err){
+		if (err.status === 404) {
+			alert("error 404" );
+		} else {
+			alert("error : " + err );
+		}
+	}
+}
+
+function rsaDecData(){
+	var data = {"sec_text":$("#rsa_dec_text").val()};
+	try{
+	$.ajax({
+		url: "/web-rsa-dec",
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify(data),
+		success: function(result){
+			$("#rsa_dec_result").val(result);
+		}
+	});
+	}catch(err){
+		if (err.status === 404) {
+			alert("error 404" );
+		} else {
+			alert("error : " + err );
+		}
+	}
+}
+function rsaKeyEncData(){
+	var data = {"sec_text":$("#rsaKey_enc_text").val()};
+	try{
+	$.ajax({
+		url: "/web-rsakey-enc",
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify(data),
+		success: function(result){
+			$("#rsaKey_enc_result").val(result);
+		}
+	});
+	}catch(err){
+		if (err.status === 404) {
+			alert("error 404" );
+		} else {
+			alert("error : " + err );
+		}
+	}
+}
+
+function rsaKeyDecData(){
+	var data = {"sec_text":$("#rsaKey_dec_text").val()};
+	try{
+	$.ajax({
+		url: "/web-rsakey-dec",
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify(data),
+		success: function(result){
+			$("#rsaKey_dec_result").val(result);
+		}
+	});
+	}catch(err){
+		if (err.status === 404) {
+			alert("error 404" );
+		} else {
+			alert("error : " + err );
+		}
+	}
+}
+</script>
+</head>
+<body style="width:100%;">
+	<table style="width:100%;">
+		<tr>
+		<td colspan="2">
+			AES 암복호화
+			<hr>
+		</td>
+		</tr>
+		<tr>
+			<td style="width:50%; padding:10px;">
+				평문 : <input type="text" id="enc_text" style="width:400px;"><br/><br/>
+				key : <input type="text" id="enc_key" style="width:400px;">
+				<input type="button" value="암호화" onclick="securityEncData()"><br/><br/>
+				result : <textarea id="enc_result" rows="3" style="width:400px; resize:none;"></textarea>
+			</td>
+			<td style="width:50%; border-left:1px solid #BDBDDB; padding:10px;">
+				암호문 : <input type="text" id="dec_text" style="width:400px;"><br/><br/>
+				key : <input type="text" id="dec_key" style="width:400px;">
+				<input type="button" value="복호화" onclick="securityDecData()"><br/><br/>
+				result : <textarea id="dec_result" rows="3" style="width:400px; resize:none;"></textarea>
+			</td>
+		</tr>
+		<tr>
+		<td colspan="2">
+			Jsaypt 암복호화
+			<hr>
+		</td>
+		</tr>
+		<tr>
+			<td style="width:50%; padding:10px;">
+				평문 : <input type="text" id="jsaypt_enc_text" style="width:400px;"><br/><br/>
+				key : <input type="text" id="jsaypt_enc_key" style="width:400px;">
+				<input type="button" value="암호화" onclick="jsayptEncData()"><br/><br/>
+				result : <textarea id="jsaypt_enc_result" rows="3" style="width:400px; resize:none;"></textarea>
+			</td>
+			<td style="width:50%; border-left:1px solid #BDBDDB; padding:10px;">
+				암호문 : <input type="text" id="jsaypt_dec_text" style="width:400px;"><br/><br/>
+				key : <input type="text" id="jsaypt_dec_key" style="width:400px;">
+				<input type="button" value="복호화" onclick="jsayptDecData()"><br/><br/>
+				result : <textarea id="jsaypt_dec_result" rows="3" style="width:400px; resize:none;"></textarea>
+			</td>
+		</tr>
+		<tr>
+		<td colspan="2">
+			Rsa 암복호화
+			<hr>
+		</td>
+		</tr>
+		<tr>
+			<td style="width:50%; padding:10px;">
+				평문 : <input type="text" id="rsa_enc_text" style="width:400px;">
+				<input type="button" value="암호화" onclick="rsaEncData()"><br/><br/>
+				result : <textarea id="rsa_enc_result" rows="3" style="width:400px; resize:none;"></textarea>
+			</td>
+			<td style="width:50%; border-left:1px solid #BDBDDB; padding:10px;">
+				암호문 : <input type="text" id="rsa_dec_text" style="width:400px;">
+				<input type="button" value="복호화" onclick="rsaDecData()"><br/><br/>
+				result : <textarea id="rsa_dec_result" rows="3" style="width:400px; resize:none;"></textarea>
+			</td>
+		</tr>
+		<tr>
+		<td colspan="2">
+			Rsa key 암복호화
+			<hr>
+		</td>
+		</tr>
+		<tr>
+			<td style="width:50%; padding:10px;">
+				평문 : <input type="text" id="rsaKey_enc_text" style="width:400px;">
+				<input type="button" value="암호화" onclick="rsaKeyEncData()"><br/><br/>
+				result : <textarea id="rsaKey_enc_result" rows="3" style="width:400px; resize:none;"></textarea>
+			</td>
+			<td style="width:50%; border-left:1px solid #BDBDDB; padding:10px;">
+				암호문 : <input type="text" id="rsaKey_dec_text" style="width:400px;">
+				<input type="button" value="복호화" onclick="rsaKeyDecData()"><br/><br/>
+				result : <textarea id="rsaKey_dec_result" rows="3" style="width:400px; resize:none;"></textarea>
+			</td>
+		</tr>
+	</table>
+	<span id="hid_key" style="display:none;">..rnlgo12JinTechEng@EncriptorKey.s</span>
+</body>
+</html>

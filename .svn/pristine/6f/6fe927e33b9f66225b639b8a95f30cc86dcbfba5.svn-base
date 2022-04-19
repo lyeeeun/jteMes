@@ -1,0 +1,8 @@
+package jin.mes.form.perform.prodStaMgt.facilProdMgt;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class FacilProdMgtService {
+
+}

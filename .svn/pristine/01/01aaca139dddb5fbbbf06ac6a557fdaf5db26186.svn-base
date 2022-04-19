@@ -1,0 +1,53 @@
+@CHARSET "UTF-8";
+
+/** 메인 그리드의 레이아웃 관련 **/
+
+.menuAuthForm {
+	width: 100%;
+	margin: 0 auto;
+/* 	text-align: center; */
+	vertical-align: middle;
+}
+
+.menuAuthForm .left-contents {
+	width: 59%;
+	display: inline-block;
+}
+
+.menuAuthForm .middle-contents {
+	width: 5%;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.menuAuthForm .right-contents {
+	width: 35%;
+	display: inline-block;
+	height: 100%;
+}
+
+.middle-contents .fas.fa-caret-square-right.fa-3x{
+	color: #3367D6;
+	padding-right: 24px;
+	
+}
+
+/** 오른쪽 트리 구조 형식 관련 **/
+
+.menuAuthForm #jteSubTree {
+	font-size: 16px;
+	border: 2px solid #8aafff;
+	background:#ffffff;
+}
+
+/** 20.08.10 JJW 오른쪽 트리 구조 여백 따로 주기 위함**/
+.menuAuthForm.k-treeview .k-item {
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+/** 20.11.12 YUMI 오른쪽 트리 구조의 버튼 좌측 여백 추가**/
+.menuAuthForm.k-treeview .k-item .k-in a img {
+	margin-left: 10px;
+}

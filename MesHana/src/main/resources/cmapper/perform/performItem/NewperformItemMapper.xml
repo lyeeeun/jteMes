@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.perform.performItem.NewPerformItemMapper">
+	<sql id="performItem_base">	 
+			itemInfo.item_id AS itemId, 
+			itemInfo.item_nm AS itemNm,
+			IFNULL(itemInfo.item_deduction,0) AS itemDeduction,
+			IFNULL(itemInfo.item_day_target,0) AS itemDayTarget, 
+			IFNULL(lotQty,0) AS itemOrderQty, 
+			IFNULL(lotInfo.prodAsmQty,0) AS itemAsmQty,
+			IFNULL(lotDefect,0) AS itemDefectQty, 
+			IFNULL(lotAchieve,0) AS itemAchieveQty,
+			-- IFNULL(lotAchieve/lotQty*100,0) AS itemAchieveRate,
+			IFNULL(lotAchieve/prodAsmQty*100,0) AS itemAchieveRate,
+			IFNULL(lotDefect/(IFNULL(lotDefect,0)+IFNULL(lotAchieve,0))*100,0) AS itemDefectRate,
+			IFNULL(((lotOriginalQty*itemInfo.item_price)-(lotOriginalQty*item_person_cost))/lotInfo.itemTotalRevenue*100,0) AS itemSalesShare
+		FROM bc_item_info itemInfo
+		LEFT JOIN (
+				SELECT 
+					lotInfo.item_id, 
+					SUM(lot_qty) AS lotQty,
+					SUM(lot_original_qty) AS lotOriginalQty, 
+					SUM(badItem.lotDefect) AS lotDefect, 
+					SUM(qmItem.lotAchieve) AS lotAchieve,
+					SUM(assignItem.prodAsmQty) AS prodAsmQty,
+					(
+						SELECT SUM(itemRevenue) AS itemTotalRevenue 
+						FROM (
+							SELECT (SUM(lot_original_qty)*itemInfo.item_price)-(SUM(lot_original_qty)*item_person_cost) AS itemRevenue
+							FROM prs_lot_info lotInfo
+							INNER JOIN bc_item_info itemInfo
+							ON lotInfo.item_id = itemInfo.item_id
+							INNER JOIN prs_order_info orderInfo
+							ON lotInfo.order_id = orderInfo.order_id
+							WHERE 1=1
+							AND orderInfo.order_stdt BETWEEN #{startDate} and #{endDate}
+							GROUP BY lotInfo.item_id
+						) sub 
+					) AS itemTotalRevenue
+				FROM prs_lot_info lotInfo
+				LEFT JOIN (
+						SELECT lot_id, SUM(bad_qty) AS lotDefect
+						FROM prs_bad_product
+						WHERE 1=1
+						AND chk_date BETWEEN #{startDate} and #{endDate}
+						GROUP BY lot_id
+					) badItem
+				ON lotInfo.lot_id = badItem.lot_id
+				LEFT JOIN (
+						SELECT item_mgt_id, SUM(item_qty_total) lotAchieve
+						FROM qm_item_mgt
+						WHERE 1=1
+						AND item_qty_target != 'prod_tagt02'
+						AND item_qty_date BETWEEN #{startDate} and #{endDate}
+						GROUP BY item_mgt_id
+					) qmItem
+				ON lotInfo.lot_id = qmItem.item_mgt_id
+				LEFT JOIN (
+						SELECT plan.lot_id , SUM(prod_asm_qty) as prodAsmQty
+						FROM prs_product_assignment assignment
+						INNER JOIN prs_product_plan plan
+						ON assignment.prod_plan_id = plan.prod_plan_id
+						WHERE 1=1
+						AND prod_asm_date BETWEEN #{startDate} and #{endDate}
+						group BY plan.lot_id
+				) assignItem
+				ON lotInfo.lot_id = assignItem.lot_id
+				WHERE 1=1
+				GROUP BY lotInfo.item_id
+		) lotInfo
+		ON itemInfo.item_id = lotInfo.item_id
+		WHERE IFNULL(lotAchieve,0) > 0
+		GROUP BY itemInfo.item_id
+		HAVING 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<select id="selectPerformItem"
+		parameterType="jin.mes.cform.perform.performItem.NewPerformItemDto"
+		resultType="jin.mes.cform.perform.performItem.NewPerformItemDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY itemSalesShare desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="performItem_base"></include>
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<!-- 수주정보 select -->
+	<select id="selectPerformItemCount"
+	parameterType="jin.mes.cform.perform.performItem.NewPerformItemDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="performItem_base"></include>
+		)c_table
+	</select>
+	
+	<select id="selectKpiDefect"
+		parameterType="jin.mes.cform.perform.performItem.NewPerformItemDto"
+		resultType="jin.mes.cform.perform.performItem.NewPerformItemDto">
+				SELECT
+					item_id AS itemId,
+					""	AS itemNm,
+					DATE_FORMAT(kpi_date, '%Y-%c') AS monthDate,
+					""	AS lotDefect,
+					""	AS total,
+					kpi_value AS itemDefectRate
+				FROM rpt_kpi_info
+				WHERE 1=1 
+				AND kpi_target='kpi_defect'
+				AND item_id = #{itemId}
+				
+				UNION
+				
+				SELECT
+					itemInfo.item_id AS itemId,
+					itemInfo.item_nm AS itemNm,
+					DATE AS monthDate,
+					lotDefect,
+					IFNULL(Total,0),
+					(lotDefect/(IFNULL(Total,0)+lotDefect))*100 AS itemDefectRate
+				FROM bc_item_info itemInfo
+				LEFT JOIN
+				(
+					SELECT 
+						bad.item_id,
+						bad.DATE,
+						bad.lotDefect,
+						qm.Total
+					FROM 
+					(
+						SELECT 
+							lotInfo.item_id,
+							SUM(badItem.lotDefect) AS lotDefect,
+							badItem.DATE
+						FROM prs_lot_info lotInfo
+						INNER JOIN (
+								SELECT lot_id, CONCAT(YEAR(chk_date), '-', MONTH(chk_date)) AS DATE, SUM(bad_qty) AS lotDefect
+								FROM prs_bad_product
+								WHERE 1=1
+								AND lot_id IS NOT NULL
+								AND lot_id != ''
+								GROUP BY lot_id, DATE
+							) badItem
+						ON lotInfo.lot_id = badItem.lot_id
+						GROUP BY lotInfo.item_id, badItem.Date
+					) bad
+					LEFT OUTER JOIN 
+					(
+						SELECT 
+							lotInfo.item_id,
+							qmItem.Date AS DATE,
+							SUM(qmItem.Total) Total
+						FROM prs_lot_info lotInfo
+						INNER JOIN (
+							SELECT item_mgt_id, CONCAT(YEAR(item_qty_date), '-', MONTH(item_qty_date)) AS DATE, SUM(item_qty_total) Total, item_id
+							FROM qm_item_mgt
+							WHERE 1=1
+							AND item_qty_target != 'prod_tagt02'
+							GROUP BY item_mgt_id, DATE
+							
+						) qmItem
+						ON lotInfo.lot_id = qmItem.item_mgt_id
+						GROUP BY lotInfo.item_id, qmItem.Date
+					) qm
+					ON bad.item_id = qm.item_id AND bad.DATE = qm.DATE
+					
+					UNION
+					
+					SELECT 
+						qm.item_id,
+						qm.Date,
+						bad.lotDefect,
+						qm.Total
+					FROM 
+					(
+						SELECT 
+							lotInfo.item_id,
+							SUM(badItem.lotDefect) AS lotDefect,
+							badItem.DATE
+						FROM prs_lot_info lotInfo
+						INNER JOIN (
+								SELECT lot_id, CONCAT(YEAR(chk_date), '-', MONTH(chk_date)) AS DATE, SUM(bad_qty) AS lotDefect
+								FROM prs_bad_product
+								WHERE 1=1
+								AND lot_id IS NOT NULL
+								AND lot_id != ''
+								GROUP BY lot_id, DATE
+							) badItem
+						ON lotInfo.lot_id = badItem.lot_id
+						GROUP BY lotInfo.item_id, badItem.Date
+					) bad
+					RIGHT OUTER JOIN 
+					(
+						SELECT 
+							lotInfo.item_id,
+							qmItem.Date AS DATE,
+							SUM(qmItem.Total) Total
+						FROM prs_lot_info lotInfo
+						INNER JOIN (
+							SELECT item_mgt_id, CONCAT(YEAR(item_qty_date), '-', MONTH(item_qty_date)) AS DATE, SUM(item_qty_total) Total, item_id
+							FROM qm_item_mgt
+							WHERE 1=1
+							AND item_qty_target != 'prod_tagt02'
+							GROUP BY item_mgt_id, DATE
+							
+						) qmItem
+						ON lotInfo.lot_id = qmItem.item_mgt_id
+						GROUP BY lotInfo.item_id, qmItem.Date
+					) qm
+					ON bad.item_id = qm.item_id AND bad.DATE = qm.DATE
+				) sub
+				ON itemInfo.item_id = sub.item_id
+				WHERE 1=1
+				AND DATE IS NOT NULL
+				AND itemInfo.item_id = #{itemId}
+				ORDER BY monthDate ASC
+		
+	</select>
+</mapper>

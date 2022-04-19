@@ -1,0 +1,25 @@
+company.domain = jintech2ng
+
+server.port=8080
+
+# \uc138\uc158\ub2f9 \ub85c\uadf8\uc778 \uc720\uc9c0 \uc2dc\uac04(\ucd08\ub2e8\uc704)
+session.timeout=32400
+
+# \ud55c \uc138\uc158 \ub2f9 \uc911\ubcf5 \ub85c\uadf8\uc778 \uac1c\uc218 
+session.duplicated.max.count=10
+
+
+web.resources.path=file:../MesStaticZinix/WebContent/resources/
+
+web.attach.path=file:////app/server/mes.web.app/Attach/
+
+#\ub9c8\ub9ac\uc544DB
+#org.mariadb.jdbc.Driver
+#jdbc:mariadb://127.0.0.1/zinix
+#jte
+#jte1234!
+
+spring.datasource.driver-name=ENC(K2Ba8UN2uBsN2pruDWZKa8sJwhYVN13NptzPbHLVdXWrJPpgYY+QGOxzyMZj3rp/)
+spring.datasource.url=ENC(4VJuJgdDHDDNq3SaEfageDNjdFbd1pgEicKAtgg30fXLb+yVhzglWw8hxDjLKN50VMyH05+HQtg=)
+spring.datasource.username=ENC(lt2GcFEOZarih20ZURlzuFFDPnCpba0YdxrNzst6obc=)
+spring.datasource.password=ENC(tOxrk8FnjV6Gqs1iFHcV4oYqIQnPBxT6AZT5ue4PnG1+sZAwOyQk3g==)

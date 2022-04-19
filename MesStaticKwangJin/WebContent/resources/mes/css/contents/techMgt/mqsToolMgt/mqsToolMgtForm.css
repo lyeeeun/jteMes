@@ -1,0 +1,5 @@
+/***** PC 관련 공구 설정 > 추가 버튼 / 수정 버튼 클릭 시 팝업 관련_200805 youmi *****/
+
+.mqsToolMgtForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 8px;
+}

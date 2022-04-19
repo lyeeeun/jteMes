@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/rms_layout_menu}" lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/css/rms/TrendView/engine_trend.css" />
+<title>TrendViewer</title>
+</head>
+<body>
+	<div id="container">
+		<div class="content" layout:fragment="content">
+			<!-- 검색 -->
+			<div th:insert="fragments/search_trend :: search" class="search"></div>
+			<!-- 본문 영역 -->
+
+			<div class="content_layer">
+				<div id="myDiv" style="width:100%"></div>
+			</div>
+		</div>
+	</div>
+</body>
+<th:block layout:fragment="script">
+	<!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
+	<script src="/util/plotly-latest.min.js"></script>
+
+	<script src="/js/rms/TrendView/engine_trend.js"></script>
+	<script type="text/javascript" src="/js/fragments/search_repeat.js"></script>
+</th:block>
+</html>

@@ -1,0 +1,45 @@
+
+.mtrlMgtForm .mtrlMgtForm .k-grid-toolbar div input { /**200810 youmi 메인 그리드 상단의 라디오 버튼 정렬을 위해 추가**/
+	vertical-align: sub;
+}
+
+/*********** 0507 JJW 펼치기/접기 버튼 ***********/
+.mtrlMgtForm.popfr-mtrlMgtForm .pop_detail_btn_area {
+	text-align:center;
+	padding-top: 10px; /*버튼 영역에 먹이면 안먹여서 td에 클래스 새로 만들어서 준거임*/
+}
+
+.mtrlMgtForm.popfr-mtrlMgtForm .pop_detail_btn.pop_detail_hide {
+	cursor: pointer;
+	
+	padding-top: 6px;
+	padding-bottom: 6px;
+	padding-left: 12px;
+	padding-right: 12px;
+	border: 2px solid #ffffff;
+	border-radius: 10px;
+	background-color: #0685EB;
+	color: #ffffff;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.mtrlMgtForm.popfr-mtrlMgtForm .pop_detail_btn.pop_detail_show {
+	cursor: pointer;
+	
+	padding-top: 6px;
+	padding-bottom: 6px;
+	padding-left: 12px;
+	padding-right: 12px;
+	border: 2px solid #92B5FC;
+	border-radius: 10px;
+	background-color: #C7D5F4;
+	color: #1b56cf;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+/*20.08.06 왼쪽 셀 가운데 정렬 JJW*/
+/* .mtrlMgtForm.k-grid th:first-child, .mtrlMgtForm.k-grid td:first-child {
+	text-align: center;
+} */

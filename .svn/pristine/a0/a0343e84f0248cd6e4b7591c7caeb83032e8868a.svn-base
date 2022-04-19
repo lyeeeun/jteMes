@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.mapper.basMgt.operMgt.facilMgt.FacilMgtMapper">
+
+<!-- 설비 관리정보 -->
+	<sql id="eqmtMgt_base">
+			eqmtMgt.eqmt_mgt_id			AS eqmtMgtId,
+			eqmtMgt.eqmt_mgt_gbn		AS eqmtMgtGbn,
+			eqmtMgt.eqmt_mgt_Mtnc		AS eqmtMgtMtnc,
+			eqmtMgt.eqmt_mgt_nm			AS eqmtMgtNm,
+			eqmtMgt.eqmt_mgt_purchase	AS eqmtMgtPurchase,
+			eqmtMgt.eqmt_mgt_verif		AS eqmtMgtVerif,
+			eqmtMgt.eqmt_mgt_desc		AS eqmtMgtDesc,
+			eqmtMgt.eqmt_mgt_file		AS eqmtMgtFile,
+			eqmtMgt.is_use				AS isUse,
+			eqmtMgt.creator_id			AS creatorId,
+			eqmtMgt.created_at			AS createdAt,
+			eqmtMgt.updator_id			AS updatorId,
+			eqmtMgt.updated_at			AS updatedAt,
+			eqmtMgt.place_id			AS placeId,
+			place.place_nm				AS placeNm,
+			eqmtMgt.comp_id				AS compId,
+			comp.comp_nm				AS compNm,
+			eqmtMgt.day_target			AS dayTarget
+		FROM bc_equipment_mgt eqmtMgt
+		LEFT OUTER JOIN bc_company_info comp ON comp.comp_id = eqmtMgt.comp_id 
+		LEFT OUTER JOIN bc_place_info place ON place.place_id = eqmtMgt.place_id 
+		WHERE 1=1
+		
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="eqmtMgtId != null and eqmtMgtId != '' ">
+			AND eqmtMgt.eqmt_mgt_id = #{eqmtMgtId}
+		</if>
+		<if test="placeId != null and placeId != '' ">
+			AND eqmtMgt.place_id = #{placeId}
+		</if>
+		<if test="compId != null and compId != '' ">
+			AND eqmtMgt.comp_id = #{compId}
+		</if>
+		<if test="isUse != null and isUse != '' ">
+			AND eqmtMgt.is_use = #{isUse}
+		</if>
+	</sql>
+	
+	<!-- 설비 관리정보(Page) select -->
+	<select id="selectEqmtMgtList"
+		parameterType="jin.mes.form.basMgt.operMgt.facilMgt.FacilMgtDto"
+		resultType="jin.mes.form.basMgt.operMgt.facilMgt.FacilMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="eqmtMgt_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 설비 관리정보 Count -->
+	<select id="selectEqmtMgtCount"
+		parameterType="jin.mes.form.basMgt.operMgt.facilMgt.FacilMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="eqmtMgt_base" />
+				)c_table
+	</select>
+	
+	<!--설비상세조회 전체-->
+	<select id="selectEqmtMgtListAll"
+		parameterType="jin.mes.form.basMgt.operMgt.facilMgt.FacilMgtDto"
+		resultType="jin.mes.form.basMgt.operMgt.facilMgt.FacilMgtDto">
+		SELECT 
+		<include refid = "eqmtMgt_base" />
+		AND eqmtMgt.is_use = true
+	</select>
+	
+	<!-- 설비 관리정보 입력 -->
+	<insert id="insertEqmtMgt" parameterType="jin.mes.form.basMgt.operMgt.facilMgt.FacilMgtDto">
+	<selectKey keyProperty="eqmtMgtId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('EQUMG') AS eqmtMgtId
+	</selectKey>
+		INSERT INTO bc_equipment_mgt(
+			eqmt_mgt_id,
+			eqmt_mgt_gbn,
+			eqmt_mgt_mtnc,
+			eqmt_mgt_nm,
+			eqmt_mgt_purchase,
+			eqmt_mgt_verif,
+			eqmt_mgt_desc,
+			eqmt_mgt_file,
+			is_use,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at,
+			place_id,
+			comp_id,
+			day_target
+		)VALUES(
+			#{eqmtMgtId},
+			#{eqmtMgtGbn},
+			#{eqmtMgtMtnc},
+			#{eqmtMgtNm},
+			#{eqmtMgtPurchase},
+			#{eqmtMgtVerif},
+			#{eqmtMgtDesc},
+			#{eqmtMgtFile},
+			TRUE,
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			NOW(),
+			#{placeId},
+			#{compId},
+			#{dayTarget}
+		)
+	</insert>
+	
+	<!-- 설비 관리 정보수정 -->
+	<update id="updateEqmtMgt" parameterType="jin.mes.form.basMgt.operMgt.facilMgt.FacilMgtDto">
+		UPDATE bc_equipment_mgt
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="eqmtMgtNm != null">	
+				,eqmt_mgt_nm = #{eqmtMgtNm}
+			</if>
+			<if test="eqmtMgtGbn != null">	
+				,eqmt_mgt_gbn = #{eqmtMgtGbn}
+			</if>
+			<if test="eqmtMgtMtnc != null">	
+				,eqmt_mgt_mtnc = #{eqmtMgtMtnc}
+			</if>
+			<if test="eqmtMgtPurchase != null">	
+				,eqmt_mgt_purchase = #{eqmtMgtPurchase}
+			</if>
+			<if test="eqmtMgtVerif != null">	
+				,eqmt_mgt_verif = #{eqmtMgtVerif}
+			</if>
+			<if test="eqmtMgtDesc != null">	
+				,eqmt_mgt_desc = #{eqmtMgtDesc}
+			</if>
+			<if test="eqmtMgtFile != null">	
+				,eqmt_mgt_file = #{eqmtMgtFile}
+			</if>
+			<if test="isUse != null">	
+				,is_use = #{isUse}
+			</if>
+			<if test="placeId != null">	
+				,place_id = #{placeId}
+			</if>
+			<if test="compId != null">	
+				,comp_id = #{compId}
+			</if>
+			<if test="dayTarget != null">	
+				,day_target = #{dayTarget}
+			</if>
+		WHERE eqmt_mgt_id  = #{eqmtMgtId}
+	</update>
+	
+	<!-- 설비 관리정보 삭제 -->
+	<delete id="deleteEqmtMgt" parameterType="jin.mes.form.basMgt.operMgt.facilMgt.FacilMgtDto">
+		DELETE FROM bc_equipment_mgt
+		WHERE eqmt_mgt_id  = #{eqmtMgtId}
+	</delete>
+	
+</mapper>

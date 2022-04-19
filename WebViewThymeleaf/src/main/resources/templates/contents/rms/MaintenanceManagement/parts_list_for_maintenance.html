@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/rms_layout}" lang="ko">
+<head>
+<meta charset="UTF-8">
+<!-- <link rel="stylesheet" href="/css/rms/MaintenanceManagement/maintenance_list.css" /> -->
+<title></title>
+</head>
+<body>
+	<div id="container">
+		<div class="content" layout:fragment="content">
+			<!-- 검색 -->
+			<div class="main_search">
+				<table class="search_table">
+					<colgroup>
+						<col style="width: 15%;" />
+						<col style="width: 85%;" />
+					</colgroup>
+					<tr>
+						<td>
+							<span class="search_title1" th:text="${Title}"></span>
+						</td>
+						<td>
+							<div id="works_search">
+								<span class="search_title2">Search</span>
+								<input name="searchGubun" id="partsCombo" class="easyui-combobox" style="width: 120px;" />
+								<input name="searchText" type="text" class="easyui-textbox" id="partsText"/>
+								<a id="partsSearchBtn" class="easyui-linkbutton" onclick="doSearch();" data-options="iconCls:'icon-search'">Search</a>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<!-- 본문 영역 -->
+			<div class="content_layer">
+				<table id="partsGridTable" style="width:99%; min-height:300px;"
+					class="easyui-datagrid"
+					url="/getGridPartsForMainList"
+					rownumbers="true"
+					pagination="true"
+					fitColumns="true"
+					singleSelect="true">
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+<th:block layout:fragment="script">
+	<script src="/js/rms/MaintenanceManagement/parts_list_for_maintenance.js"></script>
+	
+	<script type="text/javascript" src="/util/jquery-easyui/extension/datagrid-filter.js"></script>
+</th:block>
+</html>

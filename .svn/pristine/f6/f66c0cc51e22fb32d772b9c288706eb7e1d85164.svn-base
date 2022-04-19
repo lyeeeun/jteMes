@@ -1,0 +1,20 @@
+
+.k-autocomplete .k-input, .k-dropdown-wrap .k-input, .k-multiselect-wrap .k-input, .k-numeric-wrap .k-input, .k-picker-wrap .k-input, .k-selectbox .k-input, .k-textbox>input {
+	text-indent: 0;
+}
+
+/*20.08.05 왼쪽 셀 가운데 정렬 JJW*/
+.compMgtForm.k-grid th:first-child, .compMgtForm.k-grid td:first-child {
+	text-align: center;
+}
+
+/*20.12.11 YUMI 메인 그리드의 보기 버튼 가운데 정렬 YUMI*/
+.compMgtForm.k-grid td:nth-child(2) {
+	text-align: center;
+}
+
+/** 20.12.11 YUMI 업체주소 등록 팝업 - final-btn-area 위쪽 여백 조정 **/
+
+#jtePopAddForm .compMgtForm-final-btn-area {
+	margin-top: 0;
+}

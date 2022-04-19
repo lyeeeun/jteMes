@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.basMgt.userMgt.userInfo.ZinixUserInfoMapper">
+	
+	<!-- 유저 조회 -->
+	<sql id = "userInfoSql">
+			ur.user_id		AS userId,
+			ur.user_nm		AS userNm,
+			ur.is_lock		AS isLock, 
+			ur.lang_cd		AS langCd,
+			ur.description	AS description, 
+			dept.dept_id	AS deptId,
+			dept.dept_nm	AS deptNm,
+			pos.position_id	AS positionId,
+			pos.position_nm	AS positionNm,
+			ur.user_std01	AS userStd01,
+			ur.user_std02	AS userStd02,
+			ur.user_std03	AS userStd03,
+			ur.user_std04	AS userStd04,
+			ur.user_std05	AS userStd05,
+			ur.user_std_str01	AS userStdStr01,
+			ur.user_std_str02	AS userStdStr02,
+			ur.user_std_str03	AS userStdStr03,
+			ur.user_std_str04	AS userStdStr04,
+			ur.user_std_str05	AS userStdStr05,
+			ur.pw_change_at		AS pwChangeAt
+		FROM mb_user_info ur
+		LEFT OUTER JOIN mb_position_info pos ON ur.position_id = pos.position_id AND pos.is_use = TRUE
+		LEFT OUTER JOIN mb_dept_info dept ON ur.dept_id = dept.dept_id AND dept.is_use = TRUE
+		WHERE ur.is_del = FALSE
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="userId != null and userId != '' ">
+			AND ur.user_id = #{userId}
+		</if>
+		<if test="isLock != null and isLock != '' ">
+			AND ur.is_lock = #{lock}
+		</if>
+	</sql>
+	
+	<!-- 유저 조회 List -->
+	<select id="selectUserList"
+		parameterType="jin.mes.cform.basMgt.userMgt.userInfo.ZinixUserInfoDto"
+		resultType="jin.mes.cform.basMgt.userMgt.userInfo.ZinixUserInfoDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER() AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="userInfoSql" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 유저조회 Count-->
+	<select id="selectUserListCount"
+	parameterType="jin.mes.cform.basMgt.userMgt.userInfo.ZinixUserInfoDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="userInfoSql" />
+				)c_table
+	</select>
+	
+	<!-- 사용자 권한 조회 -->
+	<select id="selectUserRoleList"
+	parameterType="jin.mes.cform.basMgt.userMgt.userAuth.ZinixUserAuthDto"
+		resultType="jin.mes.cform.basMgt.userMgt.userAuth.ZinixUserAuthDto">
+			SELECT 
+				rol.role_id			AS roleId,
+				rol.role_nm			AS roleNm,	
+				rol.description		AS description,
+				rol.created_at		AS createdAt,
+				rol.updated_at 		AS updatedAt,
+				rol.creator_id 		AS creatorId,
+				rol.updator_id 		AS updatorId
+				<if test="userId != null and userId != '' ">
+				, rtl.user_id		AS userId
+				</if>
+			FROM mb_role_info rol
+			<if test="userId != null and userId != '' ">
+			LEFT OUTER JOIN mb_rtl_user_role rtl ON rtl.role_id = rol.role_id
+				AND rtl.user_id = #{userId}
+			</if>
+	</select>
+	
+	<insert id="insertUserInfo" parameterType="jin.mes.cform.basMgt.userMgt.userInfo.ZinixUserInfoDto">
+		INSERT INTO mb_user_info(
+			user_id, 
+			password,	
+			user_nm, 
+			lang_cd, 	
+			fail_cnt, 
+			is_del, 
+			is_lock, 	
+			description, 
+			creator_id,
+			created_at, 
+			updator_id,
+			updated_at, 
+			dept_id, 
+			position_id,
+			user_std01,
+			user_std02,
+			user_std03,
+			user_std04,
+			user_std05,
+			user_std_str01,
+			user_std_str02,
+			user_std_str03,
+			user_std_str04,
+			user_std_str05,
+			pw_change_at
+		)VALUES(
+			#{userId},
+			#{password},
+			#{userNm},
+			#{langCd},
+			0,
+			FALSE,
+			FALSE,
+			#{description},
+			#{creatorId},
+			NOW(),
+			#{updatorId},		
+			NOW(),
+			#{deptId},
+			#{positionId},
+			#{userStd01},
+			#{userStd02},
+			#{userStd03},
+			#{userStd04},
+			#{userStd05},
+			#{userStdStr01},
+			#{userStdStr02},
+			#{userStdStr03},
+			#{userStdStr04},
+			#{userStdStr05},
+			NOW()
+		)
+	</insert>
+	
+	<update id="updateUserInfo" parameterType="jin.mes.cform.basMgt.userMgt.userInfo.ZinixUserInfoDto">
+		UPDATE mb_user_info
+		SET updator_id = #{updatorId}, 
+			updated_at = now()
+			<if test="password != null and password != '' ">
+				,password = #{password}
+			</if>
+			<if test="userNm != null">
+				,user_nm = #{userNm}
+			</if>
+			<if test="langCd != null">
+				,lang_cd = #{langCd}
+			</if>
+			<if test="failCnt != null">
+				,fail_cnt = #{failCnt}
+			</if>
+			<if test="isDel != null">
+				,is_del = #{isDel}
+			</if>
+			<if test="isLock != null">
+				,is_lock = #{isLock}
+			</if>
+			<if test="description != null">
+				,description = #{description}
+			</if>
+			<if test="deptId != null">
+				,dept_id = #{deptId}
+			</if>
+			<if test="positionId != null">
+				,position_id = #{positionId}
+			</if>
+			<if test="userStd01 != null">
+				,user_std01 = #{userStd01}
+			</if>
+			<if test="userStd02 != null">
+				,user_std02 = #{userStd02}
+			</if>
+			<if test="userStd03 != null">
+				,user_std03 = #{userStd03}
+			</if>
+			<if test="userStd04 != null">
+				,user_std04 = #{userStd04}
+			</if>
+			<if test="userStd05 != null">
+				,user_std05 = #{userStd05}
+			</if>
+			<if test="userStdStr01 != null">
+				,user_std_str01 = #{userStdStr01}
+			</if>
+			<if test="userStdStr02 != null">
+				,user_std_str02 = #{userStdStr02}
+			</if>
+			<if test="userStdStr03 != null">
+				,user_std_str03 = #{userStdStr03}
+			</if>
+			<if test="userStdStr04 != null">
+				,user_std_str04 = #{userStdStr04}
+			</if>
+			<if test="userStdStr05 != null">
+				,user_std_str05 = #{userStdStr05}
+			</if>
+			<if test="action == 'PW' or action == 'MYCFG'">
+				,pw_change_at = NOW()
+			</if>
+		WHERE user_id = #{userId}
+	</update>
+	
+	<insert id="insertUserRole" parameterType="jin.mes.cform.basMgt.userMgt.userInfo.ZinixUserInfoDto">
+		INSERT INTO mb_rtl_user_role(
+			user_id, 
+			role_id
+		)
+		<foreach collection="role" item="roleUnit" separator="UNION ALL ">
+			SELECT #{userId} AS user_id, #{roleUnit} AS role_id FROM DUAL
+		</foreach>
+	</insert>
+	
+	<delete id="deleteUserRole" parameterType="jin.mes.cform.basMgt.userMgt.userInfo.ZinixUserInfoDto">
+		DELETE FROM mb_rtl_user_role
+		WHERE user_id = #{userId}
+	</delete>
+	
+</mapper>

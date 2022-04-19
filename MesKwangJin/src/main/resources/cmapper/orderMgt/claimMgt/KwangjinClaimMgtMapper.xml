@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.orderMgt.claimMgt.KwangjinClaimMgtMapper">
+
+	<sql id="claim_base">
+		claim.claim_id				AS claimId,
+		claim.claim_nm				AS claimNm, 
+		claim.claim_qty				AS claimQty,
+		claim.claim_state			AS claimState,
+		claim.claim_desc			AS claimDesc,
+		claim.claim_cause			AS claimCause,
+		claim.claim_result			AS claimResult,
+		claim.lot_id				AS lotId,
+		claim.comp_id				AS compId,
+		compInfo.comp_nm			AS compNm,
+		compInfo.comp_std_str02		AS compStdStr02,
+		compInfo.comp_number		AS compNumber,
+		claim.created_at			AS createdAt,
+		claim.creator_id			AS creatorId
+		
+		FROM prs_claim_info claim
+		LEFT OUTER JOIN bc_company_info compInfo on claim.comp_id = compInfo.comp_id
+		WHERE 1=1
+		<if test="claimId != null and claimId != '' "> 
+			AND claim.claim_id = #{claimId}
+		</if>
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != '' ">
+			AND DATE_FORMAT(claim.created_at,'%Y-%m-%d') between #{searchStartDate} AND #{searchEndDate}
+		</if>
+	</sql>
+	
+	<!-- 해당 수주에 포함된 Lot 조회 select -->
+	<select id="selectLotClaimList"
+		parameterType="jin.mes.cform.orderMgt.claimMgt.KwangjinClaimMgtDto"
+		resultType="jin.mes.cform.orderMgt.claimMgt.KwangjinClaimMgtDto">
+			SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY claimId desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="claim_base"></include>
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 해당 수주에 포함된 Lot 조회 select(Count) -->
+	<select id="selectLotClaimListCount"
+	parameterType="jin.mes.cform.orderMgt.claimMgt.KwangjinClaimMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*) 
+			FROM(
+				SELECT
+				<include refid="claim_base"></include>
+			)c_table
+	</select>
+
+	<!-- 클레임정보 입력 -->
+	<insert id="insertClaimInfo" parameterType="jin.mes.cform.orderMgt.claimMgt.KwangjinClaimMgtDto">
+	<selectKey keyProperty="claimId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('CLM') as claimId
+	</selectKey>
+		INSERT INTO prs_claim_info(
+			claim_id,
+			claim_nm,
+			claim_qty,
+			claim_state,
+			claim_desc,
+			claim_cause,
+			claim_result,
+			lot_id,
+			comp_id,
+			creator_id,
+			created_at
+		)VALUES(
+			#{claimId},
+			#{claimNm},
+			#{claimQty},
+			#{claimState},
+			#{claimDesc},
+			#{claimCause},
+			#{claimResult},
+			#{lotId},
+			#{compId},
+			#{creatorId},
+			NOW()
+		)
+	</insert>
+	
+	<!-- 클레임정보 수정 -->
+	<update id="updateClaimInfo" parameterType="jin.mes.cform.orderMgt.claimMgt.KwangjinClaimMgtDto">
+		UPDATE prs_claim_info
+		SET claim_id = claim_id
+			<if test="claimNm != null and claimNm != ''">	
+				,claim_nm = #{claimNm}
+			</if>
+			<if test="claimQty != null and claimQty != ''">	
+				,claim_qty = #{claimQty}
+			</if>
+			<if test="claimState != null and claimState != ''">	
+				,claim_state = #{claimState}
+			</if>
+			<if test="claimDesc != null and claimDesc != ''">	
+				,claim_desc = #{claimDesc}
+			</if>
+			<if test="claimCause != null and claimCause != ''">	
+				,claim_cause = #{claimCause}
+			</if>
+			<if test="claimResult != null and claimResult != ''">	
+				,claim_result = #{claimResult}
+			</if>
+		WHERE claim_id  = #{claimId}
+	</update>
+	
+	<!-- 클레임정보 삭제 -->
+	<delete id="deleteClaimInfo" parameterType="jin.mes.cform.orderMgt.claimMgt.KwangjinClaimMgtDto">
+		DELETE FROM prs_claim_info
+		WHERE claim_id  = #{claimId}
+	</delete>
+</mapper>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/rms_layout}" lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/css/rms/OverView/overview.css" />
+<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Insert title here</title>
+</head>
+<body>
+	<div id="container">
+		<!-- 본문내용 -->
+		<div class="content" layout:fragment="content">
+			<!-- 검색 -->
+			<div th:insert="fragments/search_repeat :: search" class="search"></div>
+			<!-- 본문 영역 -->
+			<div class="content_layer">
+				<table class="ov_table">
+					<colgroup>
+						<col style="width:25%;"/>
+						<col style="width:25%;"/>
+						<col style="width:15%;"/>
+						<col style="width:35%;"/>
+					</colgroup>
+					<tr class="ovDash_head">
+						<td><span th:text="#{title1.OverView.lbl}"></span></td>
+						<td>Availability</td>
+						<td>Next PMS</td>
+						<td>R/H</td>
+					</tr>
+					<tr>
+						<td class="ovHour_CanWrap">
+							<canvas id="cv_ovHour" width="250" height="450"></canvas>
+							<span id="ovHour_text" class="ovCan_dashText"></span>
+						</td>
+						<td class="ovHour_CanWrap">
+							<canvas id="cv_ovRun" width="250" height="450"></canvas>
+							<span id="ovRun_text" class="ovCan_dashText"></span>
+						</td>
+						<td class="ovHour_CanWrap">
+							<table id="ovOper_table">
+								<colgroup>
+									<col style="width:70%;"/>
+									<col style="width:30%;"/>
+								</colgroup>
+								<tbody id="ovOper_body">
+<!-- 									<tr><td>No.01 GE</td><td>D-540</td></tr> -->
+<!-- 									<tr><td>No.02 GE</td><td>D-600</td></tr> -->
+<!-- 									<tr><td>No.03 GE</td><td>D-510</td></tr> -->
+<!-- 									<tr><td>No.04 GE</td><td>D-510</td></tr> -->
+<!-- 									<tr><td>No.05 GE</td><td>D-510</td></tr> -->
+<!-- 									<tr><td>No.06 GE</td><td>D-510</td></tr> -->
+<!-- 									<tr><td>No.07 GE</td><td>D-600</td></tr> -->
+<!-- 									<tr><td>No.08 GE</td><td>D-540</td></tr> -->
+<!-- 									<tr><td>No.09 GE</td><td>D-510</td></tr> -->
+<!-- 									<tr><td>No.10 GE</td><td>D-540</td></tr> -->
+								</tbody>
+							</table>
+						</td>
+						<td class="ovHour_CanWrap">
+							 <div id="ovPms_chart">
+							 </div>
+						</td>
+					</tr>
+				</table>
+				<table class="ov_table">
+					<colgroup>
+						<col style="width:50%">
+						<col style="width:50%">
+					</colgroup>
+					<tr>
+						<td>
+							<div id="output_year_graph"></div>
+						</td>
+						<td>
+							<table class="ov_table">
+								<tr>
+									<td>No.01 GE</td>
+									<td>No.02 GE</td>
+									<td>No.03 GE</td>
+									<td>No.04 GE</td>
+									<td>No.05 GE</td>
+								</tr>
+								<tr>
+									<td class="ovEngine_CanWrap"><canvas id="myCanvas0" width="100" height="100"></canvas> <span id="procent0" class="ovCan_text"></span></td>
+									<td class="ovEngine_CanWrap"><canvas id="myCanvas1" width="100" height="100"></canvas> <span id="procent1" class="ovCan_text"></span></td>
+									<td class="ovEngine_CanWrap"><canvas id="myCanvas2" width="100" height="100"></canvas> <span id="procent2" class="ovCan_text"></span></td>
+									<td class="ovEngine_CanWrap"><canvas id="myCanvas3" width="100" height="100"></canvas> <span id="procent3" class="ovCan_text"></span></td>
+									<td class="ovEngine_CanWrap"><canvas id="myCanvas4" width="100" height="100"></canvas> <span id="procent4" class="ovCan_text"></span></td>
+								</tr>
+								<tr>
+									<td><span id="ovEngine_KW0"></span></td>
+									<td><span id="ovEngine_KW1"></span></td>
+									<td><span id="ovEngine_KW2"></span></td>
+									<td><span id="ovEngine_KW3"></span></td>
+									<td><span id="ovEngine_KW4"></span></td>
+								</tr>
+								<tr>
+									<td>No.06 GE</td>
+									<td>No.07 GE</td>
+									<td>No.08 GE</td>
+									<td>No.09 GE</td>
+									<td>No.10 GE</td>
+								</tr>
+								<tr>
+									<td class="ovEngine_CanWrap"><canvas id="myCanvas5" width="100" height="100"></canvas> <span id="procent5" class="ovCan_text"></span></td>
+									<td class="ovEngine_CanWrap"><canvas id="myCanvas6" width="100" height="100"></canvas> <span id="procent6" class="ovCan_text"></span></td>
+									<td class="ovEngine_CanWrap"><canvas id="myCanvas7" width="100" height="100"></canvas> <span id="procent7" class="ovCan_text"></span></td>
+									<td class="ovEngine_CanWrap"><canvas id="myCanvas8" width="100" height="100"></canvas> <span id="procent8" class="ovCan_text"></span></td>
+									<td class="ovEngine_CanWrap"><canvas id="myCanvas9" width="100" height="100"></canvas> <span id="procent9" class="ovCan_text"></span></td>
+								</tr>
+								<tr>
+									<td><span id="ovEngine_KW5"></span></td>
+									<td><span id="ovEngine_KW6"></span></td>
+									<td><span id="ovEngine_KW7"></span></td>
+									<td><span id="ovEngine_KW8"></span></td>
+									<td><span id="ovEngine_KW9"></span></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+				<div id="LOSS_DATA"></div>
+			</div>
+		</div>
+	</div>
+</body>
+<!-- 각 페이지의 스크립트가 작성될 위치 -->
+<th:block layout:fragment="script">
+	<script src="/util/plotly-latest.min.js"></script>
+	
+	<script src="/js/rms/OverView/overview.js"></script>
+	<script type="text/javascript" src="/js/fragments/search_repeat.js"></script>
+</th:block>
+</html>

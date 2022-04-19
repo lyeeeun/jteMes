@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/rms_layout}" lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+<link rel="stylesheet" href="/css/rms/MaintenanceManagement/works_spare.css" />
+<title></title>
+</head>
+<body>
+	<div id="container">
+		<div class="content" layout:fragment="content">
+			<!-- 검색 -->
+			<div class="main_search">
+				<table class="search_table">
+					<colgroup>
+						<col style="width: 15%;" />
+						<col style="width: 85%;" />
+					</colgroup>
+					<tr>
+						<td>
+							<span class="search_title1" th:text="${Title}"></span>
+						</td>
+						<td>
+							<div id="works_search">
+								<form id="worksSearchForm" action="/works_spare" method="get">
+									<span class="search_title2">Works Search</span>
+									<input name="searchGubun" id="worksCombo" class="easyui-combobox" style="width: 120px;" />
+									<input type="hidden" th:value="${search.searchGubun != null} ? ${search.searchGubun} : null" id="hidCombo">
+									<input name="searchText" type="text" class="easyui-textbox" id="worksText" th:value="${search.searchText != null} ? ${search.searchText} : null"/>
+									<a id="worksSearchBtn" class="easyui-linkbutton" onclick="searchBtn();" data-options="iconCls:'icon-search'">Search</a>
+								</form>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<!-- 본문 영역 -->
+			<div class="content_layer">
+				<div class="orderListDiv">
+					<span class="orderListItem" th:each="key : ${searchResult}" onclick="" 
+					th:attr="onclick=|worksItemSelectOne('${key[0]}','${key[1]}','${key[2]}','${key[3]}','${key[4]}'),orderListSelected(this)|">
+						<span th:text="${key[0]}+' '+${key[1]}+' '+${key[2]}+' '+${key[3]}+' '+${key[4]}+' '+${key[5]}" ></span>
+					</span>
+				</div>
+				<table id="pms_order_table" style="width: 100%; display:none;">
+					<colgroup>
+						<col style="width: 15%">
+						<col style="width: 25%">
+						<col style="width: 20%">
+						<col style="width: 10%">
+						<col style="width: 10%">
+						<col style="width: 5%">
+						<col style="width: 5%">
+						<col style="width: 5%">
+						<col style="width: 5%">
+					</colgroup>
+					<thead>
+						<tr>
+							<th>PMS Code</th>
+							<th>PMS Description</th>
+							<th>Part Name</th>
+							<th>Plate no</th>
+							<th>Customer<br />PMS Parts Code</th>
+							<th>Q`ty</th>
+							<th>Unit</th>
+							<th>Stock</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody id="pms_order_body"></tbody>
+				</table>
+				
+				<table id="history_table" style="display: none;">
+					<colgroup>
+						<col style="width: 10%">
+						<col style="width: 9%">
+						<col style="width: 9%">
+						<col style="width: 9%">
+						<col style="width: 9%">
+						<col style="width: 9%">
+						<col style="width: 9%">
+						<col style="width: 9%">
+						<col style="width: 9%">
+						<col style="width: 9%">
+						<col style="width: 9%">
+					</colgroup>
+					<thead>
+						<tr>
+							<th colspan="11">Additional Information</th>
+						</tr>
+					</thaed>
+					<!-- 엔진영역 -->
+					<tbody id="history_engine_body"></tbody>
+					<!-- 실린더영역 -->
+					<tbody id="history_cylinder_body"></tbody>
+				</table>
+				
+				<div id="history_detail_div" style="display:none;">
+					<table style="width: 100%; margin-top: 20px;">
+						<colgroup>
+							<col style="width: 4%">
+							<col style="width: 15%">
+							<col style="width: 4%">
+							<col style="width: 7%">
+							<col style="width: 4%">
+							<col style="width: 6%">
+							<col style="width: 6%">
+							<col style="width: 6%">
+							<col style="width: 4%">
+							<col style="width: 44%">
+						</colgroup>
+						<tr>
+							<th colspan="10">Last History</th>
+						</tr>
+						<tr>
+							<td class="histFieldName">Date</td>
+							<td><span id="spnHisDetailDate"></span></td>
+							<td class="histFieldName">Register</td>
+							<td><span id="spnHisDetailRegister"></span></td>
+							<td class="histFieldName">OverHaul</td>
+							<td><span id="spnHisDetailOverhaul"></span></td>
+							<td class="histFieldName">RunningHour</td>
+							<td><span id="spnHisDetailRunTime"></span></td>
+							<td class="histFieldName">Notice</td>
+							<td><span id="spnHisDetailNotice"></span></td>
+						</tr>
+					</table>
+					<table id ="historyRegistTable">
+						<colgroup>
+							<col style="width: 4%;">
+							<col style="width: 46%;">
+							<col style="width: 4%;">
+							<col style="width: 46%;">
+						</colgroup>
+						<tr>
+							<th colspan="4">Last Regist Maintenance</th>
+						</tr>
+						<tr>
+							<td class="histFieldName">
+								Target
+							</td>
+							<td colspan="3">
+								<form>
+									Additional Infomation( target : <span id="historyTargetBase" style="margin:0 5px 0 5px; font-weight:bold;"></span>) :
+									<input class="easyui-radiobutton" name="historyTarget" value="AddInfo" checked>
+									<span style="margin-left:50px;">Unit :</span> 
+									<input class="easyui-radiobutton" name="historyTarget" value="Unit">
+									<input name="histTargetCombo" id="targetCombo" class="easyui-combobox" style="width: 120px;" disabled/>
+								</form>
+							</td>
+						</tr>
+						<tr>
+							<td class="histFieldName">Date</td>
+							<td>
+								<input id="historyDateCombo" class="easyui-combobox" style="width: 180px;"/>
+								<span id="historyDateArea" style="display:none;">
+									<input jintFormat="DATE" id="history_DATE" type="text" class="easyui-datebox jint_date" style="width: 120px;" />&nbsp;
+									<input jintFormat="HOUR" id="history_HOUR" class="easyui-combobox" style="width: 60px;" />Hour&nbsp;
+									<input jintFormat="MIN" id="history_MIN" class="easyui-combobox" style="width: 60px;" />Min
+								</span> 
+							</td>
+							<td class="histFieldName">OverHaul</td>
+							<td>
+								<input id="overHaulCombo" class="easyui-combobox" style="width: 180px;"/>
+								<span id="historyOverHaulArea" style="display:none;">
+									<input id="history_OverHaul" class="easyui-numberbox"/>
+								</span> 
+							</td>
+						</tr>
+						<tr>
+						<td class="histFieldName">Notice</td>
+							<td colspan="3">
+								<input type="text" class="easyui-textbox" id="historyNotice" style="width:450px;"/>
+								<a id="historyBtn" class="easyui-linkbutton" onclick="historySaveBtn();" data-options="iconCls:'icon-save'">Save</a>
+							</td>
+						</tr>
+					</table>
+				</div>
+<!-- 				<div class="search_view_div" style="margin: 60px 0px 0px 0px; display: none;"> -->
+<!-- 					<span>검색화면&emsp;&emsp;&emsp;</span>  -->
+<!-- 					<span>Description & Name&emsp;&emsp;&emsp;<input type="text" id="search_view_name" />&emsp;&emsp;&emsp;</span>  -->
+<!-- 					<span>Plate no.&emsp;&emsp;&emsp;<input type="text"	id="search_plate_no" />&emsp;&emsp;&emsp;</span> -->
+<!-- 					<table id="search_view" style="width: 100%; margin-top: 20px; text-align:center;"> -->
+<!-- 					</table> -->
+<!-- 				</div> -->
+			</div>
+			<input type="hidden" id = "hidPmsCd01">
+			<input type="hidden" id = "hidPmsCd02">
+			<input type="hidden" id = "hidPmsCd03">
+			<input type="hidden" id = "hidPmsCd04">
+			<input type="hidden" id = "hidPmsCd05">
+			<input type="hidden" id = "hidEngineId">
+			<input type="hidden" id = "hidParentId">
+		</div>
+	</div>
+</body>
+<th:block layout:fragment="script">
+	<script src="/js/rms/MaintenanceManagement/works_spare.js"></script>
+</th:block>
+</html>

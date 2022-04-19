@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.perform.prodStaMgt.facilProdMgt.FacilProdMgtMapper">
+
+	<sql id="facilProd_base">	 
+			itemInfo.item_id AS itemId, 
+			itemInfo.item_nm AS itemNm,
+			workInfo.eqmt_mgt_id AS eqmtMgtId,
+			eqmt.eqmt_mgt_nm AS eqmtMgtNm,
+			IFNULL(lotQty,0) AS itemOrderQty, 
+			IFNULL(lotInfo.prodAsmQty,0) AS itemAsmQty,
+			IFNULL(lotDefect,0) AS itemDefectQty, 
+			IFNULL(lotAchieve,0) AS itemAchieveQty,
+			IFNULL(lotAchieve/lotQty*100,0) AS itemAchieveRate,
+			IFNULL(lotDefect/(IFNULL(lotDefect,0)+IFNULL(lotAchieve,0))*100,0) AS itemDefectRate
+		FROM prs_work_info workInfo
+		JOIN bc_equipment_mgt eqmt ON eqmt.eqmt_mgt_id = workInfo.eqmt_mgt_id
+		LEFT JOIN prs_lot_info lot ON lot.lot_id = workInfo.lot_id
+		JOIN bc_item_info itemInfo ON lot.item_id = itemInfo.item_id 
+		LEFT JOIN (
+				SELECT 
+					lotInfo.item_id, 
+					SUM(lot_qty) AS lotQty,
+					SUM(lot_original_qty) AS lotOriginalQty, 
+					SUM(badItem.lotDefect) AS lotDefect, 
+					SUM(qmItem.lotAchieve) AS lotAchieve,
+					SUM(assignItem.prodAsmQty) AS prodAsmQty,
+					(
+						SELECT SUM(itemRevenue) AS itemTotalRevenue 
+						FROM (
+							SELECT (SUM(lot_original_qty)*itemInfo.item_price)-(SUM(lot_original_qty)*item_person_cost) AS itemRevenue
+							FROM prs_lot_info lotInfo
+							INNER JOIN bc_item_info itemInfo
+							ON lotInfo.item_id = itemInfo.item_id
+							INNER JOIN prs_order_info orderInfo
+							ON lotInfo.order_id = orderInfo.order_id
+							WHERE 1=1
+							GROUP BY lotInfo.item_id
+						) sub 
+					) AS itemTotalRevenue
+				FROM prs_lot_info lotInfo
+				LEFT JOIN (
+						SELECT lot_id, SUM(bad_qty) AS lotDefect
+						FROM prs_bad_product
+						WHERE 1=1
+						GROUP BY lot_id
+					) badItem
+				ON lotInfo.lot_id = badItem.lot_id
+				LEFT JOIN (
+						SELECT item_mgt_id, SUM(item_qty_total) lotAchieve
+						FROM qm_item_mgt
+						WHERE 1=1
+						AND item_qty_target != 'prod_tagt02'
+						GROUP BY item_mgt_id
+					) qmItem
+				ON lotInfo.lot_id = qmItem.item_mgt_id
+				LEFT JOIN (
+						SELECT plan.lot_id , SUM(prod_asm_qty) AS prodAsmQty
+						FROM prs_product_assignment assignment
+						INNER JOIN prs_product_plan plan
+						ON assignment.prod_plan_id = plan.prod_plan_id
+						WHERE 1=1
+						GROUP BY plan.lot_id
+				) assignItem
+				ON lotInfo.lot_id = assignItem.lot_id
+				WHERE 1=1
+				GROUP BY lotInfo.item_id
+		) lotInfo
+		ON itemInfo.item_id = lotInfo.item_id
+		WHERE 1=1
+		<if test="eqmtMgtId != null">
+			AND workInfo.eqmt_mgt_id = #{eqmtMgtId}
+		</if>		
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		GROUP BY itemInfo.item_id
+	</sql>
+	
+	<select id="selectFacilProdList"
+		parameterType="jin.mes.form.perform.prodStaMgt.facilProdMgt.FacilProdMgtDto"
+		resultType="jin.mes.form.perform.prodStaMgt.facilProdMgt.FacilProdMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY itemId desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="facilProd_base"></include>
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<!-- 수주정보 select -->
+	<select id="selectFacilProdCount"
+	parameterType="jin.mes.form.perform.prodStaMgt.facilProdMgt.FacilProdMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="facilProd_base"></include>
+		)c_table
+	</select>
+</mapper>

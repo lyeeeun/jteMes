@@ -1,0 +1,28 @@
+
+
+/* 퀵메뉴 시작*/
+.quick-menu-area{
+	width:100%;
+	height:80px;
+	lign-height:80px;
+	background:#192534;
+	color:#ffffff;
+}
+.quick-menu-area ul{
+	height:100%;
+	margin:0px;
+	padding:0px;
+	
+	list-style:none;
+}
+.quick-menu-area ul li{
+	height:100%;
+	margin:0px;
+	padding:0px;
+	display:inline;
+	line-height:80px;
+}
+.quick-menu-area ul li img{
+vertical-align:middle;
+}
+/* 퀵메뉴 종료*/

@@ -1,0 +1,47 @@
+
+
+# 실행옵션에서 처리
+# cache=false 정보는 운영환경에서는 제거해야 한다.
+-Djavaagent:D:/JTE/Tools/springloaded-1.2.5.RELEASE.jar -Dnoverify -Dspring.profiles.active=local -Dspring.thymeleaf.check-template-location=false -Dspring.thymeleaf.cache=false -Dspring.freemarker.cache=false -Dspring.groovy.template.cache=false -Dspring.output.ansi.enabled=ALWAYS -Dspring.datasource.url=jdbc:postgresql://ojooy.iptime.org:5432/JinTechEng -Dspring.datasource.username=jte -Dspring.datasource.password=ENC(N3kKIZqB2Eg0D0YyBcSYGQ==) -Dspring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect -Dspring.jpa.hibernate.ddl-auto=update -Dspring.jpa.show-sql=true -Dspring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults=false -Dspring.jpa.properties.hibernate.show_sql=true -Dspring.jpa.properties.hibernate.format_sql=true -Dtest.enc.data=ENC(Kp4e/iI7M177RuORMbpa6Q==)
+
+
+# application.properties에서 처리 
+# cache=false 정보는 운영환경에서는 제거해야 한다.
+spring.profiles.active=local
+spring.thymeleaf.check-template-location=false
+spring.thymeleaf.cache=false
+spring.freemarker.cache=false
+spring.groovy.template.cache=false
+spring.output.ansi.enabled=ALWAYS
+spring.datasource.url=jdbc:postgresql://ojooy.iptime.org:5432/JinTechEng
+spring.datasource.username=jte
+spring.datasource.password=ENC(N3kKIZqB2Eg0D0YyBcSYGQ==)
+# The SQL dialect makes Hibernate generate better SQL for the chosen database
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+# Hibernate ddl auto (create, create-drop, validate, update)
+# The ddl-auto property is used to automatically create the tables based on the entity classes in the application.
+spring.jpa.hibernate.ddl-auto=update
+# spring.jpa.generate-ddl=true
+spring.jpa.show-sql=true
+# Fix Postgres JPA Error: # Method org.postgresql.jdbc.PgConnection.createClob() is not yet implemented.
+spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults=false
+# 로그출력
+spring.jpa.properties.hibernate.show_sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+
+# Hibernate additional native properties to set on the JPA provider.
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.current_session_context_class=thread
+spring.jpa.properties.hibernate.format_sql=true
+
+# Fix Postgres JPA Error (Method org.postgresql.jdbc.PgConnection.createClob() is not yet implemented).
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
+
+
+# 실행옵션 원복하기
+configuration폴더 안에 org.eclipse.debug.core_.launches.7z 의 압축을 풀어서 .launches 폴더를
+.\Workspace\.metadata\.plugins\org.eclipse.debug.core\.launches
+로 복사한다.
+
+

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/rms_layout}" lang="ko">
+<head>
+<meta charset="UTF-8">
+<!-- <link rel="stylesheet" href="/css/rms/MaintenanceManagement/maintenance_list.css" /> -->
+<title></title>
+</head>
+<body>
+	<div id="container">
+		<div class="content" layout:fragment="content">
+			<!-- 검색 -->
+			<div class="main_search">
+				<table class="search_table">
+					<colgroup>
+						<col style="width: 15%;" />
+						<col style="width: 35%;" />
+						<col style="width: 50%;" />
+					</colgroup>
+					<tr>
+						<td>
+							<span class="search_title1" th:text="${Title}"></span>
+						</td>
+						<td>
+							<div id="works_search">
+								<span class="search_title2">Search</span>
+								<input name="searchGubun" id="orderCombo" class="easyui-combobox" style="width: 120px;" />
+								<input name="searchText" type="text" class="easyui-textbox" id="orderText"/>
+								<a id="orderSearchBtn" class="easyui-linkbutton" onclick="doSearch();" data-options="iconCls:'icon-search'">Search</a>
+							</div>
+						</td>
+						<td>
+							<form action= "setOrderUpload" id="excelUploadForm" name="excelUploadForm" enctype="multipart/form-data" method="POST" >
+								<span>
+									<span class="search_title2">Excel Import</span>
+									<label>
+										<span id="fileSearchBtn" class="easyui-linkbutton">File Search</span>
+										<input id="file" type="file" name="file" style="display:none;" 
+										onchange="this.select(); $('#fileName').textbox('setValue',document.getElementById('file').files[0].name);"/>
+									</label>
+									<input type="text" id="fileName"class="easyui-textbox" style="width: 250px;" readonly/>
+								</span>
+								<input type="hidden" name = "nationId" value="Columbia">
+								<input type="hidden" name = "areaId" value="Termonorte">
+								<input type="hidden" name = "companyId" value="Axia">
+								<input type="hidden" name = "engineModel" value="20H35DFV">
+								<a id="excelUploadBtn" class="easyui-linkbutton" onclick="excelImport()">Import</a>
+								<a id="excelDownloadBtn" class="easyui-linkbutton" href="/fileDown/OrderSample">Sample Download</a>
+
+							</form>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<!-- 본문 영역 -->
+			<div class="content_layer">
+				<table id="orderGridTable" style="width:99%; min-height:300px;"
+					class="easyui-datagrid"
+					url="/getGridOrderList"
+					rownumbers="true"
+					pagination="true"
+					fitColumns="true"
+					singleSelect="true">
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+<th:block layout:fragment="script">
+	<script src="/js/rms/MaintenanceManagement/maintenance_list.js"></script>
+	<script src="http://malsup.github.com/jquery.form.js"></script>
+	
+</th:block>
+</html>

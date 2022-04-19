@@ -1,0 +1,840 @@
+
+/*********** 원래 있었던 내부 스타일 ***********/
+
+	#jteProdWorkForm_form table td{
+		height:35px;
+	}
+	
+	#jteWorkStartPop td{
+		font-size:20px;
+		padding: 10px;
+	}
+	
+	#jteWorkStartPop .pop_title td{
+		font-size:25px;
+		padding: 25px 10px 0px 10px;
+	}
+	#jteMtrlChkPop button{
+		
+	}
+	
+	
+	
+/*********** 거의 공통 스타일 ***********/
+
+#popArea .k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#popArea td {
+	padding: .4em .6em;
+}
+
+.k-widget.k-window div.k-window-content.k-content{
+	overflow: auto;   /* 팝업창의 스크롤 */
+} 
+
+.wrkinWrkerMgtForm {
+	margin-top: 0.8em;
+}
+
+.wrkinWrkerMgtForm .center-input {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .center-input.btn-input {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .fa-info-circle:before {
+	color:#081332;
+}
+
+.wrkinWrkerMgtForm .grid-content {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .left-input {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .right-input {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .left-input.btn-input{
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .right-input.btn-input{
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .jtePopForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.wrkinWrkerMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.wrkinWrkerMgtForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.wrkinWrkerMgtForm .jte-msgBox {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+.wrkinWrkerMgtForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 0px;
+}
+
+.wrkinWrkerMgtForm .search-btn {
+	width: 100%;
+}
+
+
+
+/*********** 4~152번째 줄 - 첫페이지 ***********/
+
+.wrkinWrkerMgtForm-left-content-box {
+/* 	display:inline-block;  */
+	width:39%; 
+	height:100%;
+	float: left;
+}
+
+
+.wrkinWrkerMgtForm-right-content-box {
+/* 	display:inline-block; */ 
+	width:59%; 
+	height:100%;
+	float: right;
+}
+
+.wrkinWrkerMgtForm.right-content-table {
+	height:100%; 
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_form {
+	height:100%; 
+	display:none;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_1 {
+	width:100%; 
+/* 	background:#f9fafb;  */
+/* 	border: 4px solid #eef1f4; */
+	padding:20px 30px 20px 30px; 
+	margin:20px 0 40px 0;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_1 .full-search-btn {
+	width: 71%;
+	float: right;
+	margin-right: 5%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_2 {
+	width:100%;
+	background:#eef1f4; 	
+	padding:20px 30px 20px 30px; 
+	margin:20px 0 40px 0;
+}
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table .col-left-title {
+	width: 13%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table .col-left-content {
+	width: 37%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table .col-right-title {
+	width: 13%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table .col-right-content {
+	width: 37%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table .left-input {
+	width: 90%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table .right-input {
+	width: 90%;
+	float: right;
+}
+
+/* .wrkinWrkerMgtForm .jteProdWorkForm_table .left-caret:before {
+	padding-left: 50px;
+}
+ */
+
+.wrkinWrkerMgtForm .top_pop_title {
+	margin-top: 5px;
+}
+
+
+
+
+/*********** 154~160번째 줄 - 라우팅 전체조회 POP(같은 작업지시에 포함된 라우팅만 조회한다.) ***********/
+
+#jteRoutingAllPop {
+	height:100%;
+}
+
+#jteRoutingAllPop_grid {
+	height:430px;
+}
+
+
+
+/*********** 162~236번째 줄 - 작업시작 팝업 ***********/
+
+#jteWorkStartPop {
+	height:100%;
+}
+
+#jteWorkStartPop_form {
+	height:100%;
+}
+
+.wrkinWrkerMgtForm.jteWorkStartPop_form {
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.wrkinWrkerMgtForm .jteWorkStartPop_table {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .jteWorkStartPop_table .col-left{ /*임의로 정함*/
+	width: 50%;
+}
+
+.wrkinWrkerMgtForm .jteWorkStartPop_table .col-right { /*임의로 정함*/
+	width: 50%;	
+}
+
+.wrkinWrkerMgtForm .jteWorkStartPop_table .center-input { /*임의로 정함*/
+	width: 100%;			
+}
+
+.wrkinWrkerMgtForm .jteWorkStartPop_table_left {
+	width: 49%;
+}
+
+.wrkinWrkerMgtForm .jteWorkStartPop_table_right {
+	width: 49%;	
+}
+
+.wrkinWrkerMgtForm .jteWorkStartPop_table_bottom {
+	width: 100%;	
+}
+
+.wrkinWrkerMgtForm .jteWorkStartPop_table td.not_pop_title{
+	border-left: none;
+	padding: 0em;
+}
+
+.wrkinWrkerMgtForm .jteWorkStartPop_table .k-link.k-link-date {
+	padding: 0px 28px;
+	padding-bottom: 32px;
+	border-right: 1px solid #ffffff;
+}
+
+.wrkinWrkerMgtForm .jteWorkStartPop_table .k-link.k-link-time {
+	padding: 0px 28px;
+	padding-bottom: 32px;
+}
+
+.wrkinWrkerMgtForm #toolReady {
+	color:#00bd26;
+	border:2px solid red;
+	background-color:#ffdbdb;
+	border-radius:4px;
+	padding-top:4px;
+	padding-bottom:4px;
+	padding-left:13px;
+	padding-right:14px;
+	text-align:center;
+	font-size: 17px;
+	margin-left: 7px;
+	
+}
+
+
+
+
+/******** 230-283번째 줄 - 작업종료 팝업 ********/
+#jteWorkEndPop {
+	height:100%; width:100%;
+}
+
+#mtrlUseTotal_grid .mtrlUseTotal-single-grid {
+	display : none;
+	width:100%;
+	height:200px;
+	min-height : 200px;
+}
+
+.wrkinWrkerMgtForm.jteWorkEndPop_form {
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table_left {
+	width: 49%;
+	float: left;
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table_right {
+	width: 49%;
+	float: right;
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table_bottom {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table .col-left {
+	width: 50%;	
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table .col-right {
+	width: 50%;		
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table .left-input {
+	width: 100%;		
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table .right-input.btn-input {
+	width: 100%;		
+}
+
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table .search-btn {
+	width: 100%;		
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table .center-input {
+	
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table .not_pop_title{
+	border-left: none;
+	padding-left: 0.2em;
+	padding: 0em;	
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table .k-link.k-link-date {
+	padding: 0px 28px;
+	padding-bottom: 32px;
+	border-right: 1px solid #ffffff;
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table .k-link.k-link-time {
+	padding: 0px 28px;
+	padding-bottom: 32px;
+}
+
+
+
+/******** 295-305번째 줄 - 현재 설비에 장착되어 있는 팝업 조회 ********/
+#jteEquipToolPop {
+	height:100%;
+	margin-top: 0em;
+}
+
+.wrkinWrkerMgtForm .jteEquipToolPop-single-grid {
+	height:410px;
+}
+
+#jteEquipToolPop .final-btn-area {
+	font-size:20px;
+}
+
+/******** 307-316번째 줄 - 장착가능한 공구 조회 ********/
+#jteToolPosForm {
+	height:100%;
+}
+
+.wrkinWrkerMgtForm .jteToolPosForm-single-grid {
+	height:430px;
+}
+
+/******** 318-329번째 줄 - 자재 재고 파악 팝업 ********/
+#jteMtrlChkPop {
+	height:100%;
+}
+
+.wrkinWrkerMgtForm .jteMtrlChkPop-left-grid {
+	display: inline-block; width:43%; height:345px;
+}
+
+.wrkinWrkerMgtForm .jteMtrlChkPop-right-grid {
+	display:inline-block; width:55%; height:345px;
+}
+
+/******** 331-342번째 줄 - 자재 재고 파악 팝업 ********/
+#mtrlUseDetailPop {
+	height:100%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseDetailPop-top-grid {
+	width:100%; height:250px; min-height:250px; padding-top:20px;
+}
+
+.wrkinWrkerMgtForm .mtrlUseDetailPop-bottom-grid {
+	display:none; width:100%; height:250px; min-height:250px; padding-top:20px;
+}
+
+/******** 344-401번째 줄 - 자재투입 등록/조회 팝업 ********/
+#mtrlUseSavePop {
+	height:100%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table .col-left-title {
+	
+}
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table .col-left-content {
+	
+}
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table .col-right-content {
+	
+}
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table .center-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table .left-input.btn-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table .search-btn {
+	width:100%;
+}
+
+/******** 403-488번째 줄 - 불량 등록/확인팝업 ********/
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table .col-left-title {
+	
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table .col-left-content {
+	
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table .col-right-title {
+	
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table .col-right-content {
+	
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table .center-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table .left-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table .right-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table .td-right-title {
+	
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table .left-caret {
+	
+}
+
+/******** 491-500번째 줄 - 품목 불량 리스트  팝업 ********/
+#itemBadListPop {
+	height:100%;
+}
+
+.wrkinWrkerMgtForm .itemBadListPop-single-grid {
+	width:100%;
+	height:280px;
+	min-height:280px;
+}
+
+/******** 503-586번째 줄 - 품목 불량 등록/확인팝업 ********/
+.wrkinWrkerMgtForm .itemBadSavePop_table {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .col-left-title {
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .col-left-content {
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .col-right-title {
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .col-right-content {
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .center-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .left-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .right-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .td-right-title {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .left-caret {
+	
+}
+
+
+
+
+
+
+
+/**********************************mediaquery**********************************/
+
+/*************************************POP**************************************/
+
+
+
+@media screen and (max-width: 1400px) and (max-height: 800px){
+   
+   
+   
+/*********** 원래 있었던 내부 스타일 ***********/
+
+	#jteProdWorkForm_form table td{
+		height:35px;
+	}
+	
+	#jteWorkStartPop td{
+		font-size:20px;
+		padding: 10px;
+	}
+	
+	#jteWorkStartPop .pop_title td{
+		font-size:25px;
+		padding: 25px 10px 0px 10px;
+	}
+	#jteMtrlChkPop button{
+		
+	}
+		
+	
+	
+/*********** 거의 공통 스타일 ***********/
+
+#popArea .k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#popArea td {
+	padding: .4em .6em;
+}
+
+.k-widget.k-window div.k-window-content.k-content{
+	overflow: auto;   /* 팝업창의 스크롤*/
+} 
+
+.wrkinWrkerMgtForm {
+	margin-top: 0.8em;
+}
+
+.wrkinWrkerMgtForm .center-input {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .center-input.btn-input {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .fa-info-circle:before {
+	color:#081332;
+}
+
+.wrkinWrkerMgtForm .grid-content {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .left-input {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .right-input {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .left-input.btn-input{
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .right-input.btn-input{
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .jtePopForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.wrkinWrkerMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.wrkinWrkerMgtForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.wrkinWrkerMgtForm .jte-msgBox {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+.wrkinWrkerMgtForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 0px;
+}
+
+.wrkinWrkerMgtForm .search-btn {
+	width: 100%;
+}
+
+
+
+/*********** 4~152번째 줄 - 첫페이지 ***********/
+
+.wrkinWrkerMgtForm-left-content-box {
+/* 	display:inline-block;  */
+	width:39%; 
+	height:100%;
+	float: left;
+}
+
+
+.wrkinWrkerMgtForm-right-content-box {
+/* 	display:inline-block; */ 
+	width:59%; 
+	height:100%;
+	float: right;
+}
+
+.wrkinWrkerMgtForm.right-content-table {
+	height:100%; 
+	width:100%;
+	margin-top:0em;
+}
+
+.wrkinWrkerMgtForm.jteProdWorkForm_form {
+	height:100%; 
+	display:none;
+	margin-top:0em;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_1 {
+	width:100%; 
+/* 	background:#f9fafb;  */
+/* 	border: 4px solid #eef1f4; */
+	padding:5px 20px 5px 20px;
+	margin:15px 0 18px 0;
+}
+
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_1 .full-search-btn {
+	width: 59%;
+	float: right;
+	margin-right: 5%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_2 {
+	width:100%;
+	background:#eef1f4; 
+	padding: 5px 20px 5px 20px; 
+	margin:15px 0 0 0;
+}
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table .col-left-title {
+	width: 18%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table .col-left-content {
+	width: 32%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table .col-right-title {
+	width: 18%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table .col-right-content {
+	width: 32%;
+}
+
+/* .wrkinWrkerMgtForm .jteProdWorkForm_table .left-caret:before {
+	padding-left: 20px;
+}
+ */
+}
+
+
+
+
+
+
+
+/*********** 154~160번째 줄 - 라우팅 전체조회 POP(같은 작업지시에 포함된 라우팅만 조회한다.) ***********/
+
+
+
+
+/*********** 162~236번째 줄 - 작업시작 팝업 ***********/
+
+#jteWorkStartPop.wrkinWrkerMgtForm .jteWorkStartPop_table td.not_pop_title{
+	border-left: none;
+	padding: 0em;
+}
+
+
+
+
+
+
+
+/******** 230-283번째 줄 - 작업종료 팝업 ********/
+
+
+
+
+
+
+
+
+
+/******** 295-305번째 줄 - 현재 설비에 장착되어 있는 팝업 조회 ********/
+
+
+
+
+
+
+
+
+/******** 307-316번째 줄 - 장착가능한 공구 조회 ********/
+
+
+
+
+
+
+
+
+/******** 318-329번째 줄 - 자재 재고 파악 팝업 ********/
+
+
+
+
+
+
+
+
+/******** 331-342번째 줄 - 자재 재고 파악 팝업 ********/
+
+
+
+
+
+
+
+/******** 344-401번째 줄 - 자재투입 등록/조회 팝업 ********/
+
+
+
+
+
+
+
+/******** 403-488번째 줄 - 불량 등록/확인팝업 ********/
+
+
+
+
+
+
+
+
+/******** 491-500번째 줄 - 품목 불량 리스트  팝업 ********/
+
+
+
+
+
+
+
+/******** 503-586번째 줄 - 품목 불량 등록/확인팝업 ********/
+
+
+
+	
+}
+
+
+
+

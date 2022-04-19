@@ -1,0 +1,134 @@
+
+/***** 200824 youmi 불량 조회 팝업, 불량자재 정보등록 팝업 관련 추가*******/
+
+.k-grid-toolbar .jte-search-aria #jteBadItemChkPop_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.finalQualMgtForm #jteBadItemChkPop_form td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+ #jteBadItemChkPop_master {
+	padding-left: 20px;
+	padding-right: 20px;/
+} 
+
+.finalQualMgtForm #jteBadItemChkPop_master th {
+	text-align: left;	
+}
+
+.finalQualMgtForm #jteBadItemChkPop_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.finalQualMgtForm #jteBadItemChkPop_master {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+/***** 200511JJW 오른쪽 그리드 - 추가버튼 팝업 *******/
+
+#jtePopToolUse {
+	height: 100%;
+}
+
+.finalQualMgtForm-jteSingleGrid {
+	width:100%;
+	height:100%;
+	float:left;
+}
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.finalQualMgtForm .fa-info-circle:before {
+	color:#3367D6;
+}
+
+.finalQualMgtForm .jtePopForm_master {
+	width: 100%;
+}
+
+.finalQualMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.finalQualMgtForm .col-left-title {
+	width: 20%;
+}
+
+.finalQualMgtForm .col-left-content-1 {
+	width: 20%;
+}
+
+.finalQualMgtForm .col-left-content-2 {
+	width: 10%;
+}
+
+.finalQualMgtForm .col-right-title {
+	width: 22%;
+}
+
+.finalQualMgtForm .col-right-content {
+	width: 28%;
+}
+
+.finalQualMgtForm .normal-input{
+	width: 100%;
+}
+
+.finalQualMgtForm .center-input{
+	width: 100%;
+}
+
+.finalQualMgtForm .left-input {
+	width: 100%;
+}
+
+.finalQualMgtForm .right-input {
+	width: 100%;
+}
+
+.finalQualMgtForm .left-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.finalQualMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.finalQualMgtForm .search-btn {
+	width: 100%;
+}
+
+#jtePopQcDocAdd_form {
+	/* font-size: 16px; */
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+#jtePopQcDocAdd_form td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+/*20.11.20 불량 조회 팝업 체크박스 가운데 정렬 YUMI*/
+#jteBadItemChkPop_grid.finalQualMgtForm.k-grid th:first-child {
+	text-align: center;
+}
+
+#jteBadItemChkPop_grid.finalQualMgtForm.k-grid td:first-child {
+	text-align: center;
+}
+

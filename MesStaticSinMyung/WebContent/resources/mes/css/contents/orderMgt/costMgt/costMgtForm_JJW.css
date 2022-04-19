@@ -1,0 +1,72 @@
+
+.costMgtForm #jtePopForm_master {
+	padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.costMgtForm .col-left-title {
+	width: 17%;
+}
+
+.costMgtForm .col-left-content {
+	width: 30%;
+}
+
+.costMgtForm .col-right-title {
+	width: 23%;
+}
+
+.costMgtForm .col-right-content {
+	width: 30%;
+}
+
+.costMgtForm .grid-content {
+	width: 100%;
+}
+
+.costMgtForm .normal-input {
+	width: 100%;
+}
+
+.costMgtForm .left-input {
+	width: 100%;
+}
+
+.costMgtForm .right-input {
+	width: 100%;
+}
+
+.costMgtForm .center-input {
+	width: 100%;
+}
+
+.costMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.costMgtForm .jtePopAddForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.costMgtForm .td-right-title {
+	width: 80%;
+	float: right;
+	margin-top: 5px;
+}
+
+.costMgtForm .final-btn-area {
+	margin-top: 10px;
+}

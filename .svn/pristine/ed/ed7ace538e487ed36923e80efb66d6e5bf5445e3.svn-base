@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.basMgt.devtol.svcLog.SvcLogMapper">
+	<!-- 사용자접속기록 -->
+	<sql id="svcLog_base">
+			svc.svc_log_id 			AS svcLogId,
+			svc.svc_log_at          AS svcLogAt,
+			svc.svc_log_time        AS svcLogTime,
+			svc.svc_log_part        AS svcLogPart,
+			svc.svc_log_method      AS svcLogMethod, 
+			svc.svc_log_path        AS svcLogPath, 
+			svc.svc_log_prmt        AS svcLogPrmt, 
+			svc.svc_log_success     AS svcLogSuccess, 
+			svc.svc_log_msg         AS svcLogMsg, 
+			svc.svc_log_user        AS svcLogUser,
+			userInfo.user_nm		AS svcLogUserNm,
+			svc.svc_err_user        AS svcErrUser,
+			errUser.user_nm         AS svcErrUserNm,
+			svc.svc_err_at          AS svcErrAt,
+			svc.svc_err_result      AS svcErrResult, 
+			svc.svc_log_ip          AS svcLogIp,
+			svc.svc_log_device      AS svcLogDevice,
+			svc.svc_log_result      AS svcLogResult
+		FROM his_service_log svc
+		LEFT OUTER JOIN mb_user_info userInfo ON svc.svc_log_user = userInfo.user_id
+		LEFT OUTER JOIN mb_user_info errUser ON svc.svc_err_user = errUser.user_id
+		WHERE 1=1
+		<if test="menuGbn != null and menuGbn != '' ">
+		AND svc_log_part IN(WITH RECURSIVE menu_view AS ( 
+				SELECT root.menu_id 
+				FROM cw_menu_bas root 
+				WHERE root.menu_id = #{menuGbn} 
+				UNION ALL 
+				SELECT menu.menu_id FROM cw_menu_bas menu 
+				INNER JOIN cw_menu_view rtl ON menu.menu_id = rtl.menu_id AND menu.is_del = FALSE AND menu.is_lock = FALSE 
+				INNER JOIN menu_view mView ON menu.up_menu_id = mView.menu_id 
+				)SELECT DISTINCT menu_id FROM menu_view
+			)
+		</if>
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != '' ">
+			AND pageLog.pageLogAt between #{searchStartDate} AND DATE_ADD(#{searchEndDate},INTERVAL 1 DAY)
+		</if>
+		<if test="svcLogId != null and svcLogId != '' ">
+			AND svc.svc_log_id = #{svcLogId}
+		</if>
+		<if test="svcLogResult != null and svcLogResult != '' ">
+			AND svc.svc_log_result = #{svcLogResult}
+		</if>
+	</sql>
+	
+	<!-- 서비스 로그 조회 (List) -->
+	<select id="selectSvcLogList"
+		parameterType="jin.mes.form.basMgt.devtol.svcLog.SvcLogDto"
+		resultType="jin.mes.form.basMgt.devtol.svcLog.SvcLogDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY svcLogAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="svcLog_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 서비스 로그 조회 (count) -->
+	<select id="selectSvcLogCount"
+	parameterType="jin.mes.form.basMgt.devtol.svcLog.SvcLogDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="svcLog_base" />
+				)c_table
+	</select>
+	
+	<!-- 서비스 로그 등록 -->
+	<insert id="insertSvcLog" parameterType="jin.mes.form.basMgt.devtol.svcLog.SvcLogDto">
+		INSERT INTO his_service_log(
+			svc_log_at,
+			svc_log_time, 
+			svc_log_part, 
+			svc_log_method, 
+			svc_log_path, 
+			svc_log_prmt, 
+			svc_log_success, 
+			svc_log_msg, 
+			svc_log_user,
+			svc_log_ip,
+			svc_log_device,
+			svc_log_result
+		)VALUES(
+			NOW(),
+			#{svcLogTime},
+			#{svcLogPart},
+			#{svcLogMethod},
+			#{svcLogPath},
+			#{svcLogPrmt},
+			#{svcLogSuccess},
+			#{svcLogMsg},
+			#{svcLogUser},
+			#{svcLogIp},
+			#{svcLogDevice},
+			#{svcLogResult}
+		)
+	</insert>
+	
+	<!-- 서비스 로그 수정 -->
+	<update id="updateSvcLog" parameterType="jin.mes.form.basMgt.devtol.svcLog.SvcLogDto">
+		UPDATE his_service_log
+		SET svc_log_result = #{svcLogResult},
+			svc_err_at = NOW(),
+			svc_err_user = #{svcErrUser},
+			svc_err_result = #{svcErrResult}
+		WHERE svc_log_id  = #{svcLogId}
+	</update>
+</mapper>

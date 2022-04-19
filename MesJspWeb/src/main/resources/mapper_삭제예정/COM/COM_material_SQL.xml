@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="COM_material">
+	<!-- FN_CM_GETCOMNM('ATOS_MES', 'MTRLTYPE', MTRLTYPE) AS MTRLTYPE_NM ,  -->
+
+	<select id="selectInList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			    SELECT	 MTRLID, 		
+			    	   	 MTGRID,			
+			           	 MTRLNAME,			
+						 MTRLUNIT_CD,	
+			          	 MTRLDESC,			
+						 MTRLTYPE,			
+						 MTRLTYPE AS MTRLTYPE_NM , 
+						 MTRLSPEC,		
+						 PRD_LEN,			
+			    		 PRD_WTH,		
+			    		 PRD_HIG,			
+			    		 MTRLCMPT,             	 
+						 MTRLIUSE			
+				 FROM 	 TB_MATERIAL
+				WHERE    1=1
+				  AND    DEL_GBN = 'N'		
+		]]>
+		<if test='DEL_GBN != "N"'>
+				AND DEL_GBN ='N'
+			</if>
+		<if test='MTRLNAME != null and MTRLNAME != ""'>
+			AND MTRLNAME LIKE CONCAT("%" #{MTRLNAME} "%") 
+		</if>
+		<if test='MTRLTYPE != null and MTRLTYPE != ""'>
+			AND MTRLTYPE = #{MTRLTYPE}
+		</if>
+		<if test='MTRLIUSE != null and MTRLIUSE != ""'>
+			AND MTRLIUSE =#{MTRLIUSE}
+		</if>
+		ORDER BY MTRLID
+	
+	</select>
+	
+		<!-- MTRLIUSE 사용여부 중복제거 후 조회(콤보박스 이용) -->
+	<select id="mtrlIUseList" parameterType="hashmap"
+		resultType="hashmap">
+		    SELECT DISTINCT MTRLIUSE
+			  FROM TB_MATERIAL
+	</select>
+
+<!--  FN_CM_SEQ('MTRLID', NULL, NULL) -->
+	<select id="insertMaterialList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[   
+		INSERT 
+			INTO TB_MATERIAL(
+  					MTRLID,          
+					MTGRID,           
+					MTRLNAME, 
+					MTRLUNIT_CD,          
+					MTRLDESC,
+					MTRLTYPE,
+					MTRLSPEC,
+					PRD_LEN,
+			    	PRD_WTH,
+			    	PRD_HIG,
+			    	MTRLCMPT,                
+					MTRLIUSE, 
+					DEL_GBN,          
+					REG_USER_ID,       
+					REG_PGM_ID,            
+					REG_DT,                 
+					UPD_USER_ID,           
+					UPD_PGM_ID,            
+					UPD_DT                 
+					)
+			VALUES(
+				   (SELECT SUB_TABLE.MTRLID + 1 AS MTRLID FROM tb_material AS SUB_TABLE ORDER BY MTRLID DESC LIMIT 1) 
+				   ,#{MTGRID}
+				   ,#{MTRLNAME}
+				   ,#{MTRLUNIT_CD}    
+				   ,#{MTRLDESC}
+				   ,#{MTRLTYPE}
+				   ,#{MTRLSPEC}
+				   ,#{PRD_LEN}
+				   ,#{PRD_WTH}
+				   ,#{PRD_HIG}
+				   ,#{MTRLCMPT}
+				   ,'Y'
+				   ,'N'
+				   ,#{REG_USER_ID}
+				   ,#{REG_PGM_ID}
+				   ,now()
+				   ,#{UPD_USER_ID}
+				   ,#{UPD_PGM_ID}
+				   ,now()
+				   )
+			]]>
+	</select>
+
+	<select id="selectMaterialTypeList" resultType="hashmap">
+		SELECT 	 COM_CD,
+			     COM_NM 
+		  FROM   TB_COMCDINF 
+		 WHERE   GRP_CD = 'MTRLTYPE' 
+
+	</select>
+	
+	<select id="selectMaterialUnitList" resultType="hashmap">
+		SELECT 	 COM_CD,
+			     COM_NM 
+		  FROM   TB_COMCDINF 
+		 WHERE   GRP_CD = 'MTRLUNITCD' 
+
+	</select>
+
+
+	<select id="updateMaterialList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		UPDATE	 TB_MATERIAL
+		   SET   MTGRID = #{MTGRID},
+				 MTRLNAME= #{MTRLNAME},
+				 MTRLUNIT_CD = #{MTRLUNIT_CD},
+				 MTRLDESC = #{MTRLDESC},
+				 MTRLTYPE = #{MTRLTYPE},
+				 MTRLSPEC = #{MTRLSPEC},
+				 PRD_LEN = #{PRD_LEN},
+	    		 PRD_WTH = #{PRD_WTH},
+	    		 PRD_HIG = #{PRD_HIG},
+	    		 MTRLCMPT = #{MTRLCMPT},
+	    		 MTRLIUSE = #{MTRLIUSE}
+		 WHERE   MTRLID = #{MTRLID}
+
+	</select>
+	<!-- 자재입고 삭제 -->
+	<select id="deleteMaterialList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		UPDATE	 TB_MATERIAL
+		   SET   DEL_GBN = 'Y' 
+		 WHERE   MTRLID= #{MTRLID}
+	</select>
+	
+</mapper>

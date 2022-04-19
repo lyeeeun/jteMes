@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<TAG>
+		<PMS_CODE>C-3</PMS_CODE>
+		<PMS_DESC>Fuel Injection Valve</PMS_DESC>
+		<PART_NAME>O-RING(M69831360)</PART_NAME>
+		<PLATE_NO>LDF52000-108</PLATE_NO>
+		<QTY>1</QTY>
+		<UNIT>Per Cylinder</UNIT>
+		<STOCK>1</STOCK>
+	</TAG>
+	<TAG>
+		<PMS_CODE>C-3</PMS_CODE>
+		<PMS_DESC>Fuel Injection Valve</PMS_DESC>
+		<PART_NAME>O-RING(M69831630)</PART_NAME>
+		<PLATE_NO>LDF52000-109</PLATE_NO>
+		<QTY>1</QTY>
+		<UNIT>Per Cylinder</UNIT>
+		<STOCK>1</STOCK>
+	</TAG>
+	<TAG>
+		<PMS_CODE>C-3</PMS_CODE>
+		<PMS_DESC>Fuel Injection Valve</PMS_DESC>
+		<PART_NAME>O-RING(M69831640)</PART_NAME>
+		<PLATE_NO>LDF52000-110</PLATE_NO>
+		<QTY>1</QTY>
+		<UNIT>Per Cylinder</UNIT>
+		<STOCK>0</STOCK>
+	</TAG>
+	<TAG>
+		<PMS_CODE>C-3</PMS_CODE>
+		<PMS_DESC>Fuel Injection Valve</PMS_DESC>
+		<PART_NAME>GASKET</PART_NAME>
+		<PLATE_NO>LDF52000-196</PLATE_NO>
+		<QTY>1</QTY>
+		<UNIT>Per Cylinder</UNIT>
+		<STOCK>1</STOCK>
+	</TAG>
+	<TAG>
+		<PMS_CODE>C-3</PMS_CODE>
+		<PMS_DESC>Fuel Injection Valve</PMS_DESC>
+		<PART_NAME>O-RING d26.00 X 5.70</PART_NAME>
+		<PLATE_NO>LDF52300-116</PLATE_NO>
+		<QTY>1</QTY>
+		<UNIT>Per Cylinder</UNIT>
+		<STOCK>1</STOCK>
+	</TAG>
+	<TAG>
+		<PMS_CODE>C-3</PMS_CODE>
+		<PMS_DESC>Fuel Injection Valve</PMS_DESC>
+		<PART_NAME>O-RING d27.70 X 3.80</PART_NAME>
+		<PLATE_NO>LDF52000-117</PLATE_NO>
+		<QTY>1</QTY>
+		<UNIT>Per Cylinder</UNIT>
+		<STOCK>1</STOCK>
+	</TAG>
+</DOC>

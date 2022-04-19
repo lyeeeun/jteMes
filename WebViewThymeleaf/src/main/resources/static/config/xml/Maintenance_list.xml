@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<TAG>
+		<PMS_CODE>I-1</PMS_CODE>
+		<PMS_DESC>Fuel Oil Properties </PMS_DESC>
+		<METHOD>Sampling analyze</METHOD>
+		<INTERVAL>Every Bunkering</INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-2</PMS_CODE>
+		<PMS_DESC>Turbocharger - Compressor</PMS_DESC>
+		<METHOD>Check &amp; adjustment (Water-washing)</METHOD>
+		<INTERVAL>24~50 Day</INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-3</PMS_CODE>
+		<PMS_DESC>Starting &amp; Stop Syatem</PMS_DESC>
+		<METHOD>Function test</METHOD>
+		<INTERVAL>Weekly</INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-4</PMS_CODE>
+		<PMS_DESC>Fuel Control Linkage</PMS_DESC>
+		<METHOD>Function test (Movement check)</METHOD>
+		<INTERVAL>Weekly</INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-5</PMS_CODE>
+		<PMS_DESC>Exhaust Gas Waste Gate</PMS_DESC>
+		<METHOD>Function test</METHOD>
+		<INTERVAL>Weekly</INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-6</PMS_CODE>
+		<PMS_DESC>Air Running</PMS_DESC>
+		<METHOD>Function test</METHOD>
+		<INTERVAL>Monthly</INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-7</PMS_CODE>
+		<PMS_DESC>Safety Device</PMS_DESC>
+		<METHOD>Function test</METHOD>
+		<INTERVAL>Monthly</INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-8</PMS_CODE>
+		<PMS_DESC>Cooling Water Properties</PMS_DESC>
+		<METHOD>Sampling analyze</METHOD>
+		<INTERVAL>Weekly</INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-9</PMS_CODE>
+		<PMS_DESC>Cooling Water Properties</PMS_DESC>
+		<METHOD>Sampling analyze</METHOD>
+		<INTERVAL> 3 Month </INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-10</PMS_CODE>
+		<PMS_DESC>Lub. Oil Properties</PMS_DESC>
+		<METHOD>Sampling analyze</METHOD>
+		<INTERVAL> 3 Month </INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-11</PMS_CODE>
+		<PMS_DESC>Fuel Gas Properties</PMS_DESC>
+		<METHOD>Sampling analyze</METHOD>
+		<INTERVAL> 3 Month </INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-12</PMS_CODE>
+		<PMS_DESC>Governor Oil Level (for Hydraulic Governor)</PMS_DESC>
+		<METHOD>Visual Inspection </METHOD>
+		<INTERVAL>6 Month</INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-13</PMS_CODE>
+		<PMS_DESC>Flexible Coupling </PMS_DESC>
+		<METHOD>Visual Inspection</METHOD>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>C-28</PMS_CODE>
+		<PMS_DESC>Temperature / Pressure Sensor</PMS_DESC>
+		<METHOD>Function test</METHOD>
+		<INTERVAL>Observation</INTERVAL>
+		<PARTS>included</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>E-1</PMS_CODE>
+		<PMS_DESC>Fuel Oil Filter</PMS_DESC>
+		<METHOD>Overhaul inspection</METHOD>
+		<INTERVAL>Observation</INTERVAL>
+		<PARTS>included</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>E-4</PMS_CODE>
+		<PMS_DESC>Lubricating Oil Filter (Cartridge Type)</PMS_DESC>
+		<METHOD>Overhaul inspection</METHOD>
+		<INTERVAL>Observation</INTERVAL>
+		<PARTS>included</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>C-1</PMS_CODE>
+		<PMS_DESC>Crank case relief valve</PMS_DESC>
+		<METHOD>Overhaul inspection</METHOD>
+		<INTERVAL>Observation</INTERVAL>
+		<PARTS>included</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>E-2</PMS_CODE>
+		<PMS_DESC>THERMOSTATIC VALVE ELEMENT(L.O)</PMS_DESC>
+		<METHOD>Overhaul inspection</METHOD>
+		<INTERVAL>Observation</INTERVAL>
+		<PARTS>included</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>E-3</PMS_CODE>
+		<PMS_DESC>THERMOSTATIC VALVE ELEMENT(C.W)</PMS_DESC>
+		<METHOD>Overhaul inspection</METHOD>
+		<INTERVAL>Observation</INTERVAL>
+		<PARTS>included</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-14</PMS_CODE>
+		<PMS_DESC>Micro Pilot Oil Filter</PMS_DESC>
+		<METHOD>Overhaul inspection</METHOD>
+		<INTERVAL>Observation</INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-15</PMS_CODE>
+		<PMS_DESC>Bolt for Base Frame and Resilient Mount</PMS_DESC>
+		<METHOD>Visual Inspection</METHOD>
+		<INTERVAL>200</INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-16</PMS_CODE>
+		<PMS_DESC>Nut for Resilient Mount and Foundation</PMS_DESC>
+		<METHOD>Visual Inspection</METHOD>
+		<INTERVAL>200</INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-17</PMS_CODE>
+		<PMS_DESC>Bolt and Nut for Camshaft</PMS_DESC>
+		<METHOD>Visual Inspection</METHOD>
+		<INTERVAL>200</INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-18</PMS_CODE>
+		<PMS_DESC>Bolt and Nut for Timing Gear</PMS_DESC>
+		<METHOD>Visual Inspection</METHOD>
+		<INTERVAL>200</INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+	<TAG>
+		<PMS_CODE>I-19</PMS_CODE>
+		<PMS_DESC>Bolt and Nut for Turbocharger Mounting</PMS_DESC>
+		<METHOD>Visual Inspection</METHOD>
+		<INTERVAL>200</INTERVAL>
+		<PARTS>none</PARTS>
+	</TAG>
+</DOC>

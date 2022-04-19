@@ -1,0 +1,799 @@
+
+
+
+/*********** 원래 있었던 내부 스타일 ***********/
+
+/* 	#jteProdWorkForm_form table td{
+		height:35px;
+	} */
+	
+	#jteWorkStartPop td{
+		font-size:20px;
+		padding: 10px;
+	}
+	
+	#jteWorkStartPop .pop_title td{
+		font-size:25px;
+		padding: 25px 10px 0px 10px;
+	}
+	#jteMtrlChkPop button{
+		
+	}
+	
+	
+	
+/*********** 거의 공통 스타일 ***********/
+
+#popArea .k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#popArea td {
+	padding: .4em .6em;
+}
+
+/* .k-widget.k-window div.k-window-content.k-content{
+	overflow: unset;   팝업창의 스크롤 없앰
+}  */
+
+/* .wrkinWrkerMgtForm {
+	margin-top: 0.8em;
+} */
+
+.wrkinWrkerMgtForm .center-input {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .center-input.btn-input {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .fa-info-circle:before {
+	color:#3367D6;
+}
+
+.wrkinWrkerMgtForm .grid-content {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .left-input {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .right-input {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .center-input {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .left-input.btn-input{
+	width: 95%;
+	float: left;
+}
+
+.wrkinWrkerMgtForm .right-input.btn-input{
+	width: 95%;
+	float: left;
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .td-right-title {
+	width:90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.wrkinWrkerMgtForm .jte-msgBox {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+.wrkinWrkerMgtForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 8px;
+}
+
+.wrkinWrkerMgtForm .search-btn {
+	width: 100%;
+}
+
+
+
+/*********** 4~152번째 줄 - 첫페이지 ***********/
+
+.wrkinWrkerMgtForm-left-content-box {
+/* 	display:inline-block;  */
+	width:39%; 
+	height:70%;
+	float: left;
+}
+
+
+.wrkinWrkerMgtForm-right-content-box {
+/* 	display:inline-block; */ 
+	width:59%; 
+	height:100%;
+	float: right;
+}
+
+.wrkinWrkerMgtForm.right-content-table {
+	height:100%; 
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_form {
+	height:100%; 
+	display:none;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_1 {
+	width:100%; 
+	padding-top: 10px;
+	padding-bottom: 10px;
+	margin: 10px 0 10px 0;
+/* 	background: #E2ECFF; */
+	border: 1px solid #92B5FC;
+	border-radius: 10px;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_2 {
+	width:100%;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	margin: 10px 0 10px 0;
+	background: #E2ECFF;
+	border: 1px solid #92B5FC;
+	border-radius: 10px;
+}
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.wrkinWrkerMgtForm .pop_title.bottom_pop_title{
+	padding: 0;
+	border-left: 5px solid #92B5FC;
+	padding-left: 8px;
+	margin-top: 15px;
+}
+
+.wrkinWrkerMgtForm .pop_title.top_pop_title {
+	padding: 0;
+	border-left: 5px solid #92B5FC;
+	padding-left: 8px;
+}
+
+.wrkinWrkerMgtForm .full-search-btn-left {
+	width: 95%;
+	float: left;
+}
+
+.wrkinWrkerMgtForm .full-search-btn-right {
+	width: 95%;
+	float: right;
+}
+
+.jteProdWorkForm_table_2 .custom-label-success {
+	color: #00e02d;
+	font-weight: bold;
+}
+
+.jteProdWorkForm_table_2 .custom-label-fail {
+	color: red;
+	font-weight: bold;
+}
+
+.wrkinWrkerMgtForm.jteProdWorkForm_form .final-btn-area > .k-button.k-primary.final-btn {
+	margin-top: 4px;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_1 .col-left-title {
+	width: 19%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_1 .col-left-content-1 {
+	width: 20%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_1 .col-left-content-2 {
+	width: 11%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_1 .col-right-title {
+	width: 19%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_1 .col-right-content-1 {
+	width: 20%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_1 .col-right-content-2 {
+	width: 11%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_2 .col-left-title {
+	width: 18%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_2 .col-left-content {
+	width: 32%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_2 .col-right-title {
+	width: 18%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_2 .col-right-content {
+	width: 32%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_3 .col-left-title {
+	width: 12%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_3 .col-left-content {
+	width: 35%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_3 .col-right-title {
+	width: 18%;
+}
+
+.wrkinWrkerMgtForm .jteProdWorkForm_table_3 .col-right-content {
+	width: 35%;
+}
+
+
+
+
+/*********** 154~160번째 줄 - 라우팅 전체조회 POP(같은 작업지시에 포함된 라우팅만 조회한다.) ***********/
+
+#jteRoutingAllPop {
+	height:100%;
+}
+
+
+
+
+/*********** 162~236번째 줄 - 작업시작 팝업 ***********/
+
+#jteWorkStartPop {
+	height:100%;
+}
+
+#jteWorkStartPop_form {
+	height:100%;
+}
+
+.jteWorkStartPop_table {
+	width:100%;
+}
+.jteWorkStartPop_table .col-left{ /*임의로 정함*/
+	width: 60%;
+}
+
+.jteWorkStartPop_table .col-right { /*임의로 정함*/
+	width: 40%;	
+}
+
+.jteWorkStartPop_table .center-input {
+	width: 100%;
+}
+
+.jteWorkStartPop_table .left-input.btn-input {
+	width: 90%;
+	float: left;
+}
+
+.jteWorkStartPop_table .search-btn {
+	width: 100%;
+}
+
+
+.jteWorkStartPop_table_left {
+	width: 49%;
+	float: left;
+}
+
+.jteWorkStartPop_table_right {
+	width: 49%;	
+	float: right;
+}
+
+.jteWorkStartPop_table_bottom {
+	width: 100%;	
+}
+
+
+
+
+
+
+
+/* 200513 JJW */
+
+/******** 230-283번째 줄 - 작업종료 팝업 ********/
+#jteWorkEndPop {
+	height:100%; width:100%;
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table_left {
+	width: 49%;
+	float: left;
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table_right {
+	width: 49%;
+	float: right;
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table_bottom {
+	width: 100%;
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table .col-left {
+	width: 50%;
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table .col-right {
+	width: 50%;
+}
+
+
+.wrkinWrkerMgtForm.jteWorkEndPop_table .left_title {
+	width: 49%;
+	float: left;
+	
+	font-weight: 600;
+    font-size: 20px;
+    padding: 5px;
+}
+
+.wrkinWrkerMgtForm.jteWorkEndPop_table .right_title {
+	width: 49%;
+	float: left;
+	
+	font-weight: 600;
+    font-size: 20px;
+    padding: 5px;
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table_left .left-input {
+	margin-top: 2px;
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table .left-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table .right-input.btn-input {
+	width:95%;
+	float: left;
+}
+
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table .search-btn {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table .center-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table .pop_title.not_pop_title {
+	font-size: 16px;
+}
+
+/******** 295-305번째 줄 - 현재 설비에 장착되어 있는 팝업 조회 ********/
+#jteEquipToolPop {
+	height:100%;
+}
+
+#jteEquipToolPop .final-btn-area {
+	font-size:20px;
+}
+
+/******** 307-316번째 줄 - 장착가능한 공구 조회 ********/
+#jteToolPosForm {
+	height:100%;
+}
+
+
+/******** 318-329번째 줄 - 자재 재고 파악 팝업 ********/
+#jteMtrlChkPop {
+	height:100%;
+}
+
+
+/******** 331-342번째 줄 - 자재 재고 파악 팝업 ********/
+#mtrlUseDetailPop {
+	height:100%;
+}
+
+
+/******** 344-401번째 줄 - 자재투입 등록/조회 팝업 ********/
+#mtrlUseSavePop {
+	height:100%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table .col-left-title {
+	width:22%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table .col-left-content {
+	width:48%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table .col-right-content {
+	width:30%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table .center-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table .left-input.btn-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table .search-btn {
+	width:100%;
+}
+
+/******** 403-488번째 줄 - 불량 등록/확인팝업 ********/
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table {
+	width:100%;
+	x-overflow: none;
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table .col-left-title {
+	width:24%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table .col-left-content {
+	width:28%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table .col-right-title {
+	width:20%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table .col-right-content {
+	width:28%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table .center-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table .left-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table .right-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+
+/******** 491-500번째 줄 - 품목 불량 리스트  팝업 ********/
+#itemBadListPop {
+	height:100%;
+}
+
+
+/******** 503-586번째 줄 - 품목 불량 등록/확인팝업 ********/
+.wrkinWrkerMgtForm .itemBadSavePop_table {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .col-left-title {
+	width:25%;
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .col-left-content {
+	width:27%;
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .col-right-title {
+	width:21%;
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .col-right-content {
+	width:27%;
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .center-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .left-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .right-input {
+	width:100%;
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table .td-right-title {
+	width: 85%;
+	float: right;
+	margin-top: 5px;
+}
+
+/** 팝업 여백 **/
+
+.jteProdWorkForm_table td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.jteProdWorkForm_table th {
+	text-align: left;	
+}
+
+.jteProdWorkForm_table {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 5px;
+/* 	padding-bottom: 2px; */
+}
+
+
+#jteRoutingAllPop td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+#jteRoutingAllPop th {
+	text-align: left;	
+}
+
+/* #jteRoutingAllPop {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+} */
+
+
+.wrkinWrkerMgtForm .jteWorkStartPop_table td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.wrkinWrkerMgtForm .jteWorkStartPop_table th {
+	text-align: left;	
+}
+
+.wrkinWrkerMgtForm .jteWorkStartPop_table {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table th {
+	text-align: left;	
+}
+
+.wrkinWrkerMgtForm .jteWorkEndPop_table {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+/* .wrkinWrkerMgtForm .jteEquipToolPop td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+} */
+
+.wrkinWrkerMgtForm .jteEquipToolPop th {
+	text-align: left;	
+}
+
+/* .wrkinWrkerMgtForm .jteEquipToolPop {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+} */
+
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table th {
+	text-align: left;	
+}
+
+.wrkinWrkerMgtForm .mtrlUseBadSavePop_table {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+
+.wrkinWrkerMgtForm .jteToolPosForm td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.wrkinWrkerMgtForm .jteToolPosForm th {
+	text-align: left;	
+}
+
+.wrkinWrkerMgtForm .jteToolPosForm {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+
+.wrkinWrkerMgtForm .jteMtrlChkPop td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.wrkinWrkerMgtForm .jteMtrlChkPop th {
+	text-align: left;	
+}
+
+.wrkinWrkerMgtForm .jteMtrlChkPop {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+
+/* .wrkinWrkerMgtForm .mtrlUseDetailPop-top-grid td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.wrkinWrkerMgtForm .mtrlUseDetailPop-top-grid th {
+	text-align: left;	
+}
+
+.wrkinWrkerMgtForm .mtrlUseDetailPop-top-grid {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+} */
+
+
+/* .wrkinWrkerMgtForm .mtrlUseSavePop_table-top-grid td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+} */
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table th {
+	text-align: left;	
+}
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table th {
+	text-align: left;	
+}
+
+.wrkinWrkerMgtForm .mtrlUseSavePop_table {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+
+/* .wrkinWrkerMgtForm .itemBadListPop-top-grid td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+} */
+
+.wrkinWrkerMgtForm .itemBadListPop th {
+	text-align: left;	
+}
+
+.wrkinWrkerMgtForm .itemBadListPop {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+
+.wrkinWrkerMgtForm .itemBadSavePop_table td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table th {
+	text-align: left;	
+}
+
+.wrkinWrkerMgtForm .itemBadSavePop_table {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+
+
+
+
+
+#toolReady {
+	border: 2px solid red;
+	background-color: rgba(255, 74, 74, 0.25);
+	border-radius: 4px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	padding-left: 4px;
+	padding-right: 5px;
+	text-align:center;
+}
+
+#mtrlReady {
+	border: 2px solid red;
+	background-color: rgba(255, 74, 74, 0.25);
+	border-radius: 4px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	padding-left: 4px;
+	padding-right: 5px;
+	text-align:center;
+}
+
+.wrkinWrkerMgtForm .k-datetimepicker .k-select .k-link {
+	display: flex;
+}
+.wrkinWrkerMgtForm .k-datetimepicker .k-select .k-link-date {
+	border-right: 1px solid #ffffff;
+}
+
+/* 선택한 버튼 활성화 2020-05-20 jkkim 추가 */
+#jteSingleGrid .pop-on{
+	color:white;
+	background : #a3c1ff;
+	border-color : #a3c1ff;
+}

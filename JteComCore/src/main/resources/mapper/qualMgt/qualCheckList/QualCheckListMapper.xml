@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.qualMgt.qualCheckList.QualCheckListMapper">
+<!-- 자주 검사 -->
+	
+	<sql id="checkList_base">
+				inspect_id AS inspectId,
+				target_id AS targetId,
+				inspect_date AS inspectDate,
+				inspector_id AS inspectorId,
+				user_nm AS inspectorNm
+			FROM his_inspect_info inspInfo
+			INNER JOIN mb_user_info  userInfo
+			ON inspInfo.inspector_id = userInfo.user_id
+			WHERE category = #{category}
+			<if test="searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != '' ">
+				AND inspect_date between #{searchStartDate} AND DATE_ADD(#{searchEndDate},INTERVAL 1 DAY)
+			</if>
+			GROUP BY inspect_id
+	</sql>
+	
+	<select id="selectCheckListHistory"
+		parameterType="jin.mes.form.qualMgt.qualCheckList.QualCheckListDto"
+		resultType="jin.mes.form.qualMgt.qualCheckList.QualCheckListDto">
+		SELECT * FROM (
+		SELECT
+		<choose>
+			<when test="sort != null and sort != '' ">
+				ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+			</when>
+			<otherwise>
+				ROW_NUMBER() OVER(ORDER BY inspectDate desc) AS RNUM,
+			</otherwise>
+		</choose>
+		<include refid="checkList_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>
+	</select>
+
+	<select id="selectCheckListHistoryCount"
+		parameterType="jin.mes.form.qualMgt.qualCheckList.QualCheckListDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM (
+		SELECT
+		<include refid="checkList_base" />
+		)c_table
+	</select>
+	
+	<select id = "selectCheckList"
+		parameterType="jin.mes.form.qualMgt.qualCheckList.QualCheckListDto"
+		resultType="jin.mes.form.qualMgt.qualCheckList.QualCheckListDto">
+		
+		SELECT 
+			question_id as questionId,
+			question_value as questionValue, 
+			inspect_id as inspectId
+		FROM his_inspect_info
+		WHERE 1=1
+		<if test="inspectId != null and inspectId != '' ">
+			AND inspect_id = #{inspectId}
+		</if>
+		<if test="targetId != null and targetId != '' ">
+			AND target_id = #{targetId}
+		</if>
+	</select>
+	
+	<select id="selectInspectId" resultType="string">
+		SELECT CREATE_PK('INSP') AS inspectId
+	</select>
+	
+	<insert id="insertCheckList" parameterType="jin.mes.form.qualMgt.qualCheckList.QualCheckListDto">
+		INSERT INTO his_inspect_info
+		(
+			inspect_id,
+			question_id,
+			question_value,
+			target_id,
+			inspect_date,
+			inspector_id,
+			category
+		)
+		VALUES
+		(
+			#{inspectId},
+			#{questionId},
+			#{questionValue},
+			#{targetId},
+			#{inspectDate},
+			#{inspectorId},
+			#{category}
+		)
+	</insert>
+	
+	<update id="updateCheckList" parameterType="jin.mes.form.qualMgt.qualCheckList.QualCheckListDto">
+		UPDATE his_inspect_info
+		SET question_value = #{questionValue}
+		WHERE 1=1
+		<if test="inspectId != null and inspectId != '' ">
+			AND inspect_id = #{inspectId}
+		</if>
+		<if test="targetId != null and targetId != '' ">
+			AND target_id = #{targetId}
+		</if>
+		AND question_id = #{questionId}
+	</update>
+	
+</mapper>

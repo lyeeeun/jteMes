@@ -1,0 +1,15 @@
+
+/*20.08.06 왼쪽 셀 가운데 정렬 JJW*/
+.claimMgtForm.k-grid th:first-child, .claimMgtForm.k-grid td:first-child {
+	text-align: center;
+}
+
+/*20.12.23 LoT정보 팝업 보기 버튼 가운데 정렬 YUMI*/
+#jtePopForm_gridArea .claimMgtForm.k-grid td:nth-child(2) {
+	text-align: center;
+}
+
+/*20.12.23 클레임 등록 팝업 final-btn-area 위쪽 여백 조정 YUMI*/
+.claimMgtForm.final-btn-area {
+	margin-top: 0;
+}

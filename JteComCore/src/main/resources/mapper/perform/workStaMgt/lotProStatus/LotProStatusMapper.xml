@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.perform.workStaMgt.lotProStatus.LotProStatusMapper">
+	
+	<sql id="lotProgress_base">
+				lotInfo.lot_seq										AS lotSeq,
+				lotInfo.lot_id										AS lotId,
+				lotInfo.lot_nm										AS lotNm,
+				lotInfo.lot_qty										AS lotQty,
+				IFNULL(shipMgt.ship_qty,0)							AS shipQty,
+				(lotInfo.lot_qty - IFNULL(shipMgt.ship_qty,0))		AS lotShipQty,
+				IFNULL(shipMgt.ship_qty/lotInfo.lot_qty*100,0)		AS lotShipRate,
+				lotInfo.lot_pm										AS lotPm,
+				urInfo.user_nm										AS lotPmNm,
+				lotInfo.lot_state									AS lotState,
+				lotInfo.created_at									AS createdAt,
+				lotInfo.creator_id									AS creatorId,
+				lotInfo.updated_at									AS updatedAt,
+				lotInfo.updator_id									AS updatorId,
+				lotInfo.item_id										AS itemId,
+				itemInfo.item_nm									AS itemNm,
+				lotInfo.order_id									AS orderId
+			FROM prs_lot_info lotInfo
+			LEFT OUTER JOIN bc_item_info itemInfo on lotInfo.item_id = itemInfo.item_id
+			LEFT OUTER JOIN mb_user_info urInfo on lotInfo.lot_pm = urInfo.user_id
+			LEFT OUTER JOIN prs_order_info orInfo on orInfo.order_id = lotInfo.order_id
+			LEFT OUTER JOIN prs_ship_mgt shipMgt ON lotInfo.lot_id = shipMgt.lot_id
+			WHERE lotInfo.lot_state != 'ord_sta06'
+		<if test="orderId != null">	 
+			AND lotInfo.order_id = #{orderId}
+		</if>
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+			GROUP BY lotId
+	</sql>
+
+
+	<select id="selectLotProgressList"
+		parameterType="jin.mes.form.perform.workStaMgt.lotProStatus.LotProStatusDto"
+		resultType="jin.mes.form.perform.workStaMgt.lotProStatus.LotProStatusDto">
+			SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="lotProgress_base" />
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+
+	<select id="selectLotProgressCount"
+	parameterType="jin.mes.form.perform.workStaMgt.lotProStatus.LotProStatusDto"
+		resultType="java.lang.Integer">
+		SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="lotProgress_base" />
+			)c_table
+	</select>
+</mapper>

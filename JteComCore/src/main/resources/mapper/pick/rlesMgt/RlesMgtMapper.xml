@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.pick.rlesMgt.RlesMgtMapper">
+	<!-- 출고 계획 정보 -->
+	<sql id="rlesPlans_base">
+			rlesPlan.rles_plan_id		AS rlesPlanId,
+			rlesPlan.rles_plan_qty		AS rlesPlanQty,
+			rlesPlan.rles_plan_date		AS rlesPlanDate,
+			rlesPlan.rles_plan_state	AS rlesPlanState,
+			rlesPlan.creator_id			AS creatorId, 
+			rlesPlan.created_at			AS createdAt, 
+			rlesPlan.updator_id			AS updatorId, 
+			rlesPlan.updated_at			AS updatedAt,
+			lot.lot_id					AS lotId,
+			itemInfo.item_id			AS itemId,
+			itemInfo.item_nm			AS itemNm,
+			itemMgt.item_mgt_id			AS itemMgtId,
+			itemMgt.item_stock			AS itemStock,
+			rlesMgt.rles_mgt_id			AS rlesMgtId,
+			rlesMgt.rles_mgt_qty		AS rlesMgtQty,
+			rlesMgt.rles_mgt_desc		AS rlesMgtDesc,
+			rlesMgt.rles_work_start		AS rlesWorkStart,
+			rlesMgt.rles_work_end		AS rlesWorkEnd
+		FROM prs_rles_plan rlesPlan
+		LEFT OUTER JOIN prs_lot_info lot ON rlesPlan.lot_id = lot.lot_id
+		LEFT OUTER JOIN bc_item_info itemInfo ON lot.item_id = itemInfo.item_id
+		LEFT OUTER JOIN cm_item_mgt itemMgt ON rlesPlan.lot_id = itemMgt.item_mgt_id
+		LEFT OUTER JOIN prs_rles_mgt rlesMgt ON rlesPlan.rles_plan_id = rlesMgt.rles_plan_id
+		WHERE rles_plan_state != "rlesSta03"
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="rlesPlanId != null and rlesPlanId != '' ">
+			AND rlesPlan.rles_plan_id = #{rlesPlanId}
+		</if>
+	</sql>
+	
+	
+	<!-- 출고 계획 조회 -->
+	<select id="selectRlesPlansList"
+		parameterType="jin.mes.form.pick.rlesMgt.RlesMgtDto"
+		resultType="jin.mes.form.pick.rlesMgt.RlesMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY rlesPlanId desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="rlesPlans_base" />
+				)s_table
+		WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 출고 계획 Count -->
+	<select id="selectRlesPlansCount"
+		parameterType="jin.mes.form.pick.rlesMgt.RlesMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="rlesPlans_base" />
+				)c_table
+	</select>
+	
+	
+	<!-- 출고 작업 시작 -->
+	<insert id="insertRlesWork" parameterType="jin.mes.form.pick.rlesMgt.RlesMgtDto">
+		<selectKey keyProperty="rlesMgtId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('RLES') AS rlesMgtId
+		</selectKey>
+		INSERT INTO prs_rles_mgt(
+				rles_mgt_id,
+				rles_work_start,
+				rles_plan_id,
+				creator_id,
+				created_at,
+				updator_id,
+				updated_at
+		)VALUES(
+				#{rlesMgtId},
+				NOW(),
+				#{rlesPlanId},
+				#{creatorId}, 
+				NOW(), 
+				#{updatorId}, 
+				NOW() 
+		)
+	</insert>
+	
+	<!-- 출고 작업 종료 및 줄고 작업 정보 입력 -->
+	<update id="updateRlesWork" parameterType="jin.mes.form.pick.rlesMgt.RlesMgtDto">
+		UPDATE prs_rles_mgt
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+		<if test="rlesMgtQty != null and rlesMgtQty != '' ">
+			,rles_mgt_qty = #{rlesMgtQty}
+		</if>
+			,rles_work_end = #{rlesWorkEnd}
+		<if test="rlesWorker != null and rlesWorker != '' ">
+			,rles_worker = #{rlesWorker}
+		</if>
+		<if test="rlesMgtDesc != null and rlesMgtDesc != '' ">
+			,rles_mgt_desc = #{rlesMgtDesc}
+		</if>
+		WHERE 1=1 
+		AND rles_mgt_id = #{rlesMgtId}
+	</update>
+	
+	<!-- 부품 개별 출고 수량 수정 -->
+	<update id="updateRlesStock" parameterType="jin.mes.form.pick.rlesMgt.RlesMgtDto">
+		UPDATE cm_item_mgt
+		SET item_package_stock = item_package_stock + #{rlesMgtQty} 
+		WHERE 1=1
+		AND item_id = #{itemId} 
+		AND item_mgt_id = #{lotId}
+	</update>
+</mapper>

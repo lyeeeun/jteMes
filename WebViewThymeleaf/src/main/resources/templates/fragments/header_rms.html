@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>header- easyui</title>
+</head>
+<header class="main-header" th:fragment="header">
+<table class="header_table">
+	<colgroup>
+		<col style="width:218px;"/>
+		<col style="width:50%;"/>
+		<col style="width:50%;"/>
+	</colgroup>
+	<tr>
+		<td>
+			<!-- <img class="header_logo_before" src="/image/logo.png"/> -->
+			<div class="header_logo">
+				<!-- <span style="color:white; margin:0px 0px 0 8px; font-size:21px; font-weight: bold;">H  Y  U  N  D  A  I</span>
+				<span style="color:#b1b1b1; margin:0px 1px 0 1px; font-size:21px; font-weight: bold;">|</span> -->
+				<!-- <span style="color:hotpink; font-size:25px; font-weight: 400;">HiTS</span>  -->
+				<span style="color:#0054A6; margin:0px 57px 0px 30px; font-size:27px; font-weight: 700;">Hi-TIMMS</span>
+			</div>
+		</td>
+		<td>
+			<ul id="header_engine" class="header_engine"></ul>
+		</td>
+		<td style="text-align:right;">
+			<ul class="header_config">
+				<li><span id="header_KW"></span></li>
+				<li><a href=@{#}><i class="header_icon fas fa-user-cog"></i></a></li>
+				<li><a th:attr="href=@{/login}"><i class="header_icon fas fa-sign-out-alt"></i></a></li>
+			</ul>
+		</td>
+	</tr>
+</table>
+</header>
+</html>

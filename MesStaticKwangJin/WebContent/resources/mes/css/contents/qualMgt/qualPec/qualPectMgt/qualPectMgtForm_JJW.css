@@ -1,0 +1,4 @@
+/*20.08.06 왼쪽 셀 가운데 정렬, 상단 열 제외 JJW*/
+.qualPectMgtForm.k-grid td:first-child {
+	text-align: center;
+}

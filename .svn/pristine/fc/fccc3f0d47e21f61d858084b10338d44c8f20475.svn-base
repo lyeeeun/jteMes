@@ -1,0 +1,109 @@
+.header{
+	position:fixed;
+	top:0;
+	left:0;
+	right:0;
+	height:65px;
+	line-height:56px;
+	background:#1e1e1e;
+	z-index:3000;
+	white-space: nowrap;
+	text-align:right;
+}
+.header_table{
+	width:100%;
+	border:none;
+	border-collapse:collapse;
+	white-space: nowrap;	
+}
+.header_table td{
+	height:100%;
+	line-height:56px;
+}
+.header_logo_before{
+	width: 60px;
+	height:auto;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	Opacity :0.6;
+}
+.header_logo{
+	position: relative;
+	width:218px;
+	float:left;
+}
+
+.header_config{
+	display:inline;
+	margin:0px 30px 0px 0px;
+	height:100%;
+	list-style:none;
+}
+.header_config li{
+	height:100%;
+	display:inline-block;
+	margin-left: 15px;
+}
+.header_config li a{
+	height:100%;
+	text-decoration:none;
+}
+#header_KW{
+	font-weight:bold;
+	font-size:18px;
+	color:#fff;
+	margin-right:20px;
+}
+
+.header_icon{
+	font-size:18px;
+	color:#fff;	
+}
+/* 엔진메뉴 */
+.header_engine{
+	display:inline;
+	height:60px;
+	margin:0px;
+	padding:0px;
+	vertical-align:middle;
+}
+
+.header_engine li{
+	display:inline-block;
+	height:100%;
+	margin:0px;
+	padding:0px;
+}
+
+.header_engine li a{
+	
+	display:block;
+	padding:0 10px 0 10px;
+	margin:0px;
+	height:59px;
+	text-decoration:none;
+	font-size:18px;
+	color:#b1b4b3;
+	font-weight:bold;
+	cursor:pointer;	
+}
+
+.header_engine li span{
+	
+	border-bottom:solid red 3px;
+}
+
+.header_engine li a:hover{
+	height:59px;
+	background:#585b5c;
+	color:#fff;
+}
+ .header_engine .on{
+	height:59px;
+	background:#585b5c;
+	color:#fff;
+}
+.header_engine .engineON{
+	border-bottom:solid blue 3px !important;
+}

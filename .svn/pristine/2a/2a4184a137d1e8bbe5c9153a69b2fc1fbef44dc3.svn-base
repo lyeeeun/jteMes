@@ -1,0 +1,105 @@
+span#procent0::after {
+  content: '%';
+}
+span#procent1::after {
+  content: '%';
+}
+span#procent2::after {
+  content: '%';
+}
+span#procent3::after {
+  content: '%';
+}
+span#procent4::after {
+  content: '%';
+}
+span#procent5::after {
+  content: '%';
+}
+span#procent6::after {
+  content: '%';
+}
+span#procent7::after {
+  content: '%';
+}
+span#procent8::after {
+  content: '%';
+}
+span#procent9::after {
+  content: '%';
+}
+.content_layer{
+	padding:30px 0 30px 0;
+}
+.ov_table{
+	text-align:center;
+	width:100%;
+}
+.ov_table td {
+	border-right:none;
+	border-left:none;
+}
+/* DashBoard*/
+.ovDash_head{
+	font-weight:bold;
+	font-size:20px;
+	margin-top:20px;
+}
+.ovHour_CanWrap{
+	position: relative; 
+	height:450px;
+}
+.ovCan_dashText{
+	display: block; 
+	position: absolute; 
+	left: 50%; 
+	top: 50%; 
+	font-size: 19px; 
+	transform: translate(-50%, -50%); 
+	color: black;
+}
+.ov_dashPercent{
+	margin:0px;
+	font-size: 30px; 
+	font-weight:bold;
+}
+#ovOper_table{
+	width: 100%; 
+	color:#60a8e3;
+	font-size:17.5px;
+	font-weight:600;
+	margin-top:20px;
+}
+#ovOper_table td{
+	padding-bottom: 1px;
+	white-space: nowrap;
+}
+#ovPms_chart{
+	width: 100%; 
+}
+
+/* EnginePower */
+.ovEngine_CanWrap{
+	position: relative; 
+	width: 150px; 
+	height: 100px;
+	cursor: pointer;
+}
+.ovCan_text{
+	display: block; 
+	position: absolute; 
+	left: 50%; 
+	top: 48%; 
+	font-size: 20px; 
+	transform: translate(-50%, -50%); 
+	color: #000;
+	width:55px;
+	height:55px;
+	line-height:55px;
+	background:#ffc000;
+	border-radius:50%;
+}
+.ovCan_text.ov_run{
+	background:#00b050;
+	color: #fff;
+}

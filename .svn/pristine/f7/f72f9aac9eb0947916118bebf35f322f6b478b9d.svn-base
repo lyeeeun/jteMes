@@ -1,0 +1,103 @@
+
+.infergodsMgtForm #jtePopAddForm_master {
+	width:100%;
+}
+
+.infergodsMgtForm .jtePopForm_master {
+	width: 100%;
+}
+
+.compMgtForm #jtePopForm_form {
+	text-align: left;
+}
+
+/* .infergodsMgtForm #grid-content {
+	height: 100%
+} */
+
+.infergodsMgtForm .infergodsMgtForm-gird {
+	height: 95%;
+}
+
+.infergodsMgtForm .infergodsMgtForm-gird #jteSingleGrid {
+	height: 720px;
+}
+
+/*mediaquery*/
+@media screen and (max-width: 1380px){
+	.infergodsMgtForm .infergodsMgtForm-gird #jteSingleGrid {
+		height: 420px;
+	}
+}
+
+.infergodsMgtForm .select-btn-area {
+	background-color: #f2f6fc;
+	padding: 15px 10px;
+	margin-bottom: 5px;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.infergodsMgtForm .radio-btn {
+	margin-left: 10px;
+}
+
+input[type='radio'],
+input[type='radio']:checked {
+  appearance: none;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 100%;
+  margin-right: 0.1rem;
+}
+
+input[type='radio'] {
+  background-color: #ffffff;
+  border: 2px solid #3367D6;
+}
+input[type='radio']:checked {
+  background-color: #3367D6;
+}
+
+.infergodsMgtForm .radio-btn:hover {
+	cursor:pointer;
+}
+
+.infergodsMgtForm .col-left-title {
+	width: 20%;
+}
+
+.infergodsMgtForm .col-left-content {
+	width: 30%;
+}
+
+.infergodsMgtForm .col-right-title {
+	width: 20%;
+}
+
+.infergodsMgtForm .col-right-content {
+	width: 30%;
+}
+
+.infergodsMgtForm .left-input {
+	width: 95%;
+	float: left;
+}
+
+.infergodsMgtForm .right-input {
+	width: 95%;
+	float: right;
+}
+
+.infergodsMgtForm .left-input .btn-input {
+	width: 100%;
+}
+
+.infergodsMgtForm .center-input {
+	width: 100%;
+}
+
+.infergodsMgtForm .search-btn {
+	width: 95%;
+	float: right;
+}

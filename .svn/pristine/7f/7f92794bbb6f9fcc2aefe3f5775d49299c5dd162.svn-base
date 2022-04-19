@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+        <listEntry value="/WebAppCore/src/main/java/kr/co/itcall/jte/spring/BootApp.java"/>
+    </listAttribute>
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+        <listEntry value="1"/>
+    </listAttribute>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_EXCLUDE_TEST_CODE" value="true"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_CLASSPATH_ONLY_JAR" value="false"/>
+    <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="kr.co.itcall.jte.spring.starter.BootApp"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="WebViewHandlebars"/>
+    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Djavaagent:D:/JTE/Tools/springloaded-1.2.5.RELEASE.jar -Dnoverify -Dspring.profiles.active=local -Dspring.thymeleaf.check-template-location=false -Dspring.thymeleaf.cache=false -Dspring.freemarker.cache=false -Dspring.groovy.template.cache=false -Dspring.output.ansi.enabled=ALWAYS -Dspring.datasource.url=jdbc:postgresql://ojooy.iptime.org:5432/JinTechEng -Dspring.datasource.username=jte -Dspring.datasource.password=jte1234! -Dspring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect -Dspring.jpa.hibernate.ddl-auto=update -Dspring.jpa.show-sql=true -Dspring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults=false"/>
+</launchConfiguration>

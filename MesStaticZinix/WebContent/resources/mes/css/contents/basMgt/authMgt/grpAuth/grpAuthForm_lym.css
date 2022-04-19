@@ -1,0 +1,18 @@
+@CHARSET "UTF-8";
+
+
+.grpAuthForm {
+	margin-top: 0.8em;
+}
+
+.grpAuthForm .left-content-box {
+	width: 50%;
+}
+
+.grpAuthForm .right-content-box {
+	width:40%; 
+}
+
+.grpAuthForm .center-content-box {
+	padding: 10px;
+} 

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MTRL_inRegSh">
+<!-- 					     , FN_CM_GETCOMNM(mi.CTR_CD , 'MTRLTYPE',mtrl.MTRLTYPE) AS MTRLTYPE        
+						 , FN_CM_GETCOMNM(mi.CTR_CD , 'MTRLUNITCD',mtrl.MTRLUNIT_CD )  AS UNIT_NM   -->
+	
+	<!-- 자재입고 리스트 -->
+	<select id="selectInList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			     SELECT    mi.MTRL_IN_NO                                                      
+					     , DATE_FORMAT(mi.MTRL_IN_DATE,'%Y%m%d') AS MTRL_IN_DATE                 
+					     , s.SUPPLIERNAME                                                        
+					     , mi.SUPPLIERID                                                          
+					     , mtrl.MTRLNAME                                                           
+					     , mi.MTRLID                                                               
+					     , mtrl.MTRLSPEC                                                           
+					     , mtrl.MTRLCMPT                                                          
+					     , mi.MTRL_IN_QTY                                                       
+					     , mi.REMARK                                                             
+					     , mtrl.MTRLTYPE 
+						 , mtrl.MTRLUNIT_CD AS UNIT_NM  
+						 , mi.DEL_GBN                
+					FROM tb_mesmtrlin mi
+					INNER JOIN tb_material mtrl ON mi.MTRLID = mtrl.MTRLID
+					INNER JOIN tb_supplier s ON mi.SUPPLIERID = s.SUPPLIERID
+					WHERE 1 = 1
+			]]>
+			<if test='DEL_GBN != "N"'>
+				AND mi.DEL_GBN ='N'
+			</if>
+			<if test='MTRLNAME != null and MTRLNAME != ""'>
+				AND MTRLNAME LIKE CONCAT("%" #{MTRLNAME} "%") 
+			</if>
+			<if test='SUPPLIERNAME != null and SUPPLIERNAME != ""'>
+				AND SUPPLIERNAME LIKE CONCAT("%" #{SUPPLIERNAME} "%")
+			</if>
+			<if test='STR_DT != null and STR_DT != ""'>
+				AND MTRL_IN_DATE BETWEEN #{STR_DT} AND #{END_DT} 
+			</if>
+			<![CDATA[
+				 ORDER BY mi.MTRL_IN_DATE 
+			]]>
+      
+	</select>
+	
+	
+	<!-- 자재입고 추가 -->
+	<!-- FN_CM_SEQ('MTRL_IN_NO', NULL, NULL) -->
+	<select id="insertMtrlList" parameterType="hashmap"
+	   resultType="java.lang.Integer">
+		<![CDATA[   
+		INSERT 
+			INTO TB_MESMTRLIN(
+  					 CTR_CD             
+  					,MTRL_IN_NO           
+					,MTRL_IN_DATE           
+					,SUPPLIERID           
+					,MTRLID                 
+					,MTRL_IN_QTY           
+					,MTRL_OUT_TOT_QTY      
+					,REMARK                
+					,DEL_GBN           
+					,REG_USER_ID       
+					,REG_PGM_ID            
+					,REG_DT              
+					,UPD_USER_ID         
+					,UPD_PGM_ID            
+					,UPD_DT               
+					)
+			VALUES(
+				    #{CTR_CD}
+				   ,(SELECT SUB_TABLE.MTRL_IN_NO + 1 AS MTRL_IN_NO FROM tb_MESMTRLIN AS SUB_TABLE ORDER BY MTRL_IN_NO DESC LIMIT 1)
+				   ,STR_TO_DATE(#{MTRL_IN_DATE},'%Y%m%d')
+				   ,#{SUPPLIERID}
+				   ,#{MTRLID}
+				   ,#{MTRL_IN_QTY}
+				   ,default
+				   ,#{REMARK}
+				   ,'N'
+				   ,#{REG_USER_ID}
+				   ,#{REG_PGM_ID}
+				   ,now()
+				   ,#{UPD_USER_ID}
+				   ,#{UPD_DT}
+				   ,now()
+				   )
+			]]>	   
+	</select>
+	<!-- 자재입고 수정 -->
+	<select id="updateMtrlList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		UPDATE TB_MESMTRLIN
+			SET SUPPLIERID = #{SUPPLIERID}
+				,MTRLID = #{MTRLID}
+				,MTRL_IN_QTY = #{MTRL_IN_QTY}
+				,REMARK = #{REMARK}
+	 	  WHERE MTRL_IN_NO = #{MTRL_IN_NO}
+	
+	</select>
+
+	
+</mapper>

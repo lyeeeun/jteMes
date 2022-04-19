@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.qualMgt.specProcMgt.NewSpecProcMgtMapper">
+	
+	
+	<sql id="spc_base">
+		spcInfo.spc_id  		As spcId,
+		spcInfo.spc_nm  		As spcNm,
+		spcInfo.spc_pnmn  		As spcPnmn,
+		spcInfo.spc_cause		As spcCause,
+		spcInfo.spc_goal  		As spcGoal,
+		spcInfo.spc_measure 	As spcMeasure,
+		spcInfo.spc_result  	As spcResult,
+		spcInfo.spc_effect  	As spcEffect,
+		spcInfo.spc_standard  	As spcStandard,
+		spcInfo.spc_manager  	As spcManager,
+		spcInfo.spc_file  		As spcFile,
+		spcInfo.spc_users  		As spcUsers,
+		spcInfo.updated_at		As updatedAt,
+		spcInfo.updator_id  	As updatorId,
+		spcInfo.created_at		As createdAt,
+		spcInfo.creator_id		AS creatorId,
+		spcInfo.spc_item		As spcItem,
+		spcInfo.spc_start_dt	As spcStartDt,
+		spcInfo.spc_finish_dt	As spcFinishDt,
+		spcInfo.spc_status		As spcStatus,
+		spcInfo.spc_alarm		As spcAlarm,
+		item.item_id			As itemId,
+		item.item_nm			As itemNm
+		
+		FROM tf_spc_info spcInfo
+			LEFT OUTER JOIN bc_item_info item on spcInfo.spc_item = item.item_id
+		
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="spcId != null and spcId != '' ">
+			AND spcInfo.spc_id = #{spcId}
+		</if>
+				
+	</sql>
+	
+	<!-- spc 팀원 -->
+	<sql id = "spc_user">
+			spcUser.spc_id		AS spcId,
+			spcUser.user_id		As userId,
+			spcUser.updated_at	As updatedAt,
+			spcUser.created_at  As createdAt,
+			userInfo.user_nm	As userNm
+
+			
+		FROM tf_spc_user spcUser
+			LEFT OUTER JOIN mb_user_info userInfo on spcUser.user_id = userInfo.user_id
+		WHERE spcUser.spc_id = #{spcId}
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT ('%', #{searchText}, '%') 
+		</if>
+		<if test="userId != null and userId != '' ">
+			AND spcUser.user_id = #{userId}
+		</if>
+	</sql>
+	
+	<!--  spc (page) select -->
+	<select id = "selectSpcList"
+		parameterType = "jin.mes.cform.qualMgt.specProcMgt.NewSpecProcMgtDto"
+		resultType= "jin.mes.cform.qualMgt.specProcMgt.NewSpecProcMgtDto">
+		
+		SELECT * FROM (
+				SELECT
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER () OVER (ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="spc_base" />
+		)s_table
+		WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<select id="selectSpcCount"
+		parameterType="jin.mes.cform.qualMgt.specProcMgt.NewSpecProcMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="spc_base" />
+				)c_table
+	</select>
+	
+	<!-- spc 입력 -->
+	<insert id="insertSpcInfo" parameterType="jin.mes.cform.qualMgt.specProcMgt.NewSpecProcMgtDto">
+	<selectKey keyProperty="spcId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('SPC') AS spcId
+	</selectKey>
+		INSERT INTO tf_spc_info(
+			spc_id,  
+			spc_nm,  
+			spc_pnmn,  
+			spc_cause,
+			spc_goal,  
+			spc_measure, 
+			spc_result,  
+			spc_effect,  
+			spc_standard,  
+			spc_manager,    
+			spc_users,  
+			updated_at,
+			updator_id,  
+			created_at,
+			creator_id,
+			spc_item,
+			spc_start_dt,
+			spc_finish_dt,
+			spc_status,
+			spc_alarm
+		)VALUES(
+			#{spcId}, 
+			#{spcNm}, 
+			#{spcPnmn},
+			#{spcCause},
+			#{spcGoal},
+			#{spcMeasure},
+			#{spcResult},
+			#{spcEffect},
+			#{spcStandard},
+			#{spcManager},
+			#{spcUsers},
+			NOW(),
+			#{creatorId},
+			NOW(), 
+			#{updatorId},
+			#{spcItem},
+			#{spcStartDt},
+			#{spcFinishDt},
+			#{spcStatus},
+			#{spcAlarm}
+			
+		)
+	</insert>
+	
+	<!-- spc 정보 수정 -->
+	<update id="updateSpcInfo"  parameterType="jin.mes.cform.qualMgt.specProcMgt.NewSpecProcMgtDto">
+		UPDATE tf_spc_info
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+
+			<if test="spcNm != null">	
+				,spc_nm = #{spcNm}
+			</if>
+			<if test="spcPnmn != null">	
+				,spc_pnmn = #{spcPnmn}
+			</if>
+			<if test="spcCause != null">	
+				,spc_cause = #{spcCause}
+			</if>
+			<if test="spcGoal != null">	
+				,spc_goal = #{spcGoal}
+			</if>
+			<if test="spcMeasure != null">	
+				,spc_measure = #{spcMeasure}
+			</if>
+			<if test="spcResult != null">	
+				,spc_result = #{spcResult}
+			</if>
+			<if test="spcEffect != null">	
+				,spc_effect = #{spcEffect}
+			</if>
+			<if test="spcStandard != null">	
+				,spc_standard = #{spcStandard}
+			</if>
+			<if test="spcManager != null">	
+				,spc_manager = #{spcManager}
+			</if>
+			<if test="spcFile != null">	
+				,spc_file = #{spcFile}
+			</if>
+			<if test="spcUsers != null">	
+				,spc_users = #{spcUsers}
+			</if>
+			<if test="spcItem != null">	
+				,spc_item = #{spcItem}
+			</if>
+			<if test="spcStartDt != null">	
+				,spc_start_dt = #{spcStartDt}
+			</if>
+			<if test="spcFinishDt != null">	
+				,spc_finish_dt = #{spcFinishDt}
+			</if>
+			<if test="spcStatus != null">	
+				,spc_status = #{spcStatus}
+			</if>
+			<if test="spcAlarm != null">	
+				,spc_alarm = #{spcAlarm}
+			</if>
+			
+			
+			WHERE spc_id = #{spcId}
+			
+	</update>
+	
+	<!-- spc 삭제 -->
+	<delete id="deleteSpcInfo" parameterType="jin.mes.cform.qualMgt.specProcMgt.NewSpecProcMgtDto">
+		DELETE FROM tf_spc_info
+		WHERE spc_id = #{spcId}
+	</delete>
+	
+	<!-- spc 팀원 조회 -->
+	<select id="selectSpcUserList" 
+			parameterType="jin.mes.cform.qualMgt.specProcMgt.NewSpecProcUserDto"
+			resultType="jin.mes.cform.qualMgt.specProcMgt.NewSpecProcUserDto">
+			SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="spc_user" />
+			)s_table
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			
+	</select>
+	
+	<!-- spc 팀원 Count -->
+	<select id="selectSpcUserCount"
+			parameterType="jin.mes.cform.qualMgt.specProcMgt.NewSpecProcUserDto"
+			resultType="java.lang.Integer">
+				SELECT count(*) 
+			  	FROM (
+					SELECT
+					<include refid="spc_user" />
+				)c_table
+	</select>
+	
+	<!-- spc 팀원 추가 -->
+	<insert id="insertSpcUser" 	parameterType="jin.mes.cform.qualMgt.specProcMgt.NewSpecProcUserDto">
+		INSERT INTO tf_spc_user (
+			updated_at,  
+			created_at,
+			spc_id,
+			user_id
+		)VALUES (
+			NOW(),
+			NOW(),
+			#{spcId},
+			#{userId}			
+		)
+	</insert>
+	
+	<!-- spc 팀원 삭제 -->
+	<delete id="deleteSpcUser" parameterType="jin.mes.cform.qualMgt.specProcMgt.NewSpecProcUserDto">
+		DELETE FROM tf_spc_user
+		WHERE user_id = #{userId} AND spc_id = #{spcId}
+	</delete>
+	
+	
+	<!-- spc 정보 조회(All) -->
+	<select id="selectAllSpcList"
+		resultType="jin.mes.cform.qualMgt.specProcMgt.NewSpecProcMgtDto">
+		SELECT
+		<include refid="spc_base" />
+	</select>
+	
+</mapper>

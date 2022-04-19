@@ -1,0 +1,28 @@
+
+.performItemForm {
+	width:100%;
+}
+
+.performItemForm-gird {
+	width:100%;
+}
+
+.performItemForm #performInfoChart {
+	font-size: 16px;
+}
+
+.performOrderChartForm #performOrderChart {
+	font-size: 16px;
+}
+
+/* 20.10.14 JJW */
+
+.performItemForm .k-radio {
+	margin-left: 10px;
+	margin-right: 5px;
+}
+
+.performItemForm .search-btn-area {
+	font-size: 18px;
+	font-weight: bold;
+}

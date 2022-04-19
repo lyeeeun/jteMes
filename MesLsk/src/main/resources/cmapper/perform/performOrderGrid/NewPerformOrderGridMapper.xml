@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.perform.performOrderGrid.NewPerformOrderGridMapper">
+	<sql id="performOrder_base">
+				lotInfo.order_id AS orderId,
+				lotInfo.item_id AS itemId,
+				itemInfo.item_nm AS itemNm,
+				lotInfo.lot_id AS lotId,
+				lotInfo.lot_nm AS lotNm,
+				lotInfo.lot_type AS lotType,
+				lotInfo.lot_pm AS lotPm,
+				SUM(lotInfo.lot_qty) AS lotQty,
+				IFNULL(qmItem.lotAchieve,0) AS lotAchieve,
+				IFNULL(badItem.lotDefect,0) AS lotDefect,
+				IFNULL(SUM(lotInfo.lot_qty)-IFNULL(qmItem.lotAchieve,0),SUM(lotInfo.lot_qty)) AS lotRemain,
+				IFNULL(IFNULL(qmItem.lotAchieve,0)/SUM(lotInfo.lot_qty)*100,0) AS lotAchieveRate,
+				IFNULL(IFNULL(badItem.lotDefect,0)/(IFNULL(qmItem.lotAchieve,0) + IFNULL(badItem.lotDefect,0))*100,0) AS lotDefectRate
+			FROM prs_lot_info lotInfo
+			LEFT OUTER JOIN bc_item_info itemInfo ON itemInfo.item_id = lotInfo.item_id
+			LEFT JOIN (
+				SELECT lot_id, SUM(bad_qty) AS lotDefect
+				FROM prs_bad_product
+				WHERE 1=1
+				GROUP BY lot_id
+			) badItem
+			ON lotInfo.lot_id = badItem.lot_id
+			LEFT JOIN (
+				SELECT item_mgt_id, SUM(item_qty_total) lotAchieve
+				FROM qm_item_mgt
+				WHERE 1=1
+				AND item_qty_target != 'prod_tagt02'
+				GROUP BY item_mgt_id
+			) qmItem
+			ON lotInfo.lot_id = qmItem.item_mgt_id
+			WHERE 1=1
+			<if test="orderId != null"> 
+				AND lotInfo.order_id = #{orderId}
+			</if> 
+			GROUP BY lotInfo.lot_id
+			HAVING 1=1	
+			<if test="searchText != null and searchText != '' ">
+				AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+			</if>
+	</sql>
+	
+	
+	<select id="selectPerformOrder"
+		parameterType="jin.mes.cform.perform.performOrderGrid.NewPerformOrderGridDto"
+		resultType="jin.mes.cform.perform.performOrderGrid.NewPerformOrderGridDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY lotAchieveRate desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="performOrder_base"></include>
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<select id="selectPerformOrderCount"
+	parameterType="jin.mes.cform.perform.performOrderGrid.NewPerformOrderGridDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="performOrder_base"></include>
+		)c_table
+	</select>
+	
+	
+	<sql id="lotDetail_base">
+		workInfo.routing_id AS routingId, 
+		userInfo.user_nm AS userNm, 
+		prod_work_qty AS prodWorkQty, 
+		prod_work_good AS prodWorkGood,
+		prod_work_bad as prodWorkBad, 
+		prod_work_good/prod_work_qty*100 as prodWorkGoodRate,
+		prod_work_bad/(prod_work_good+prod_work_bad)*100 as prodWorkBadRate,
+		(CASE WHEN prod_work_start is NULL THEN '임시대기'
+		WHEN (prod_work_start is not null and prod_work_end is null) THEN '작업중'
+		WHEN (prod_work_start is not null and prod_work_end is NOT null) THEN '작업완료'
+		 END) AS workState
+	FROM prs_work_info workInfo
+	INNER JOIN mb_user_info userInfo
+	ON workInfo.prod_work_user = userInfo.user_id
+	WHERE workInfo.lot_id = #{lotId}
+	<if test="searchText != null and searchText != '' ">
+	AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+	</if>
+	GROUP BY workInfo.prod_work_id
+	</sql>
+	
+	<select id="selectLotDetail"
+		parameterType="jin.mes.cform.perform.performOrderGrid.NewPerformOrderGridDto"
+		resultType="jin.mes.cform.perform.performOrderGrid.NewPerformOrderGridDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY routingId asc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="lotDetail_base"></include>
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<select id="selectLotDetailCount"
+	parameterType="jin.mes.cform.perform.performOrderGrid.NewPerformOrderGridDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="lotDetail_base"></include>
+		)c_table
+	</select>
+	
+</mapper>

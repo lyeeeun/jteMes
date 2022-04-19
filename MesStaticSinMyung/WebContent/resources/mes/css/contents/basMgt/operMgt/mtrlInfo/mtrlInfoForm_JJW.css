@@ -1,0 +1,70 @@
+#jtePopForm_master {
+	margin-top: 5px;
+}
+
+div.k-window-content{
+   overflow-y: auto;
+}
+
+.mtrlInfoForm .col-left-title {
+	width: 20%;
+}
+
+.mtrlInfoForm .col-right-content {
+	width: 70%;
+}
+
+.mtrlInfoForm .group-checkbox {
+	overflow: auto;
+	height: 150px;
+	background-color: #ffffff;
+	padding-top: 5px;
+	border: 1px solid #C7D5F4;
+}
+
+.mtrlInfoForm .center-input .btn-input {
+	width: 100%;
+}
+
+.mtrlInfoForm .jtePopForm_master th {
+   text-align: left;
+}
+
+.mtrlInfoForm .left-input {
+   width: 90%;
+   float: left;
+}
+
+.mtrlInfoForm .right-input {
+   width: 90%;
+   float: right;
+}
+
+.mtrlInfoForm .center-input {
+	width: 100%;
+}
+
+.mtrlInfoForm .normal-input {
+	width: 100%;
+}
+
+.mtrlInfoForm .col-left-title {
+   width: 18%;
+}
+
+.mtrlInfoForm .col-left-content {
+   width: 32%;
+}
+
+.mtrlInfoForm .col-right-title {
+   width: 18%;
+}
+
+.mtrlInfoForm .col-right-content {
+   width: 32%;
+}
+
+.mtrlInfoForm .jte-msgBox {
+	width: 90%;
+	float: right;
+}

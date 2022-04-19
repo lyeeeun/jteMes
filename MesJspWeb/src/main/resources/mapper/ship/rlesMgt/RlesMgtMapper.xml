@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.mapper.ship.rlesMgt.RlesMgtMapper">
+	<!-- 출고(포장) 대상 정보 -->
+	<sql id="package_base">
+			orderId,
+			orderNm,
+			itemId,
+			itemMgtId,
+			itemMgtType,
+			itemStock,
+			itemPackageStock,
+			itemNm,
+			lotQty
+		FROM (
+			SELECT
+				IFNULL(orderInfo.order_id,'ADMIN')			AS orderId,
+				IFNULL(orderInfo.order_nm,'관리자 입력 재고')	AS orderNm,
+				itemMgt.item_id								AS itemId,
+				itemMgt.item_mgt_id							AS itemMgtId,
+				itemMgt.item_mgt_type						AS itemMgtType,
+				SUM(itemMgt.item_stock)						AS itemStock,
+				SUM(itemMgt.item_package_stock)				AS itemPackageStock,
+				itemInfo.item_nm							AS itemNm,
+				lotInfo.lotQty								AS lotQty
+			FROM cm_item_mgt itemMgt
+			INNER JOIN bc_item_info itemInfo
+			ON itemMgt.item_id = itemInfo.item_id
+			LEFT JOIN
+			(
+				SELECT lot_id, order_id, item_id, SUM(lot_qty) AS lotQty
+				FROM prs_lot_info lotInfo
+				GROUP BY lot_id
+			) lotInfo
+			ON itemMgt.item_mgt_id = lotInfo.lot_id
+			LEFT JOIN prs_order_info orderInfo
+			ON lotInfo.order_id = orderInfo.order_id
+			WHERE 1=1
+			AND itemMgt.item_mgt_type = 'LOT'
+			GROUP BY itemMgt.item_id, itemMgt.item_mgt_id
+			HAVING 1=1
+			<if test="searchText != null and searchText != '' ">
+				AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+			</if>
+		) pkgBase
+	</sql>
+	
+	<!-- 출고(포장) 작업 정보 -->
+	<sql id="packageWork_base">
+			packageWork.pkg_id AS pkgId,
+			packageWork.pkg_work_id AS pkgWorkId,
+			packageWork.pkg_work_user AS pkgWorkUser,
+			packageWork.pkg_work_start AS pkgWorkStart,
+			packageWork.pkg_work_end AS pkgWorkEnd,
+			packageWork.prs_package_qty AS prsPackageQty,
+			packageWork.lot_id AS lotId,
+			packageWork.item_id AS itemId,
+			packageWork.description,
+			IFNULL(itemInfo.item_nm,"") AS itemNm,
+			urInfo.user_nm				AS pkgWorkUserNm
+		FROM prs_package_work packageWork
+		LEFT JOIN bc_item_info itemInfo ON packageWork.item_id = itemInfo.item_id
+		LEFT JOIN mb_user_info urInfo ON packageWork.pkg_work_user = urInfo.user_id
+		WHERE 1=1
+		AND packageWork.pkg_id = #{pkgId}
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<sql id="packagePlan_base">
+			pkgPlan.pkg_id AS pkgId,
+			orderInfo.order_id AS orderId,
+			itemInfo.item_id AS itemId,
+			itemInfo.item_nm AS itemNm,
+			pkgPlan.lot_id AS lotId,
+			itemMgt.item_stock AS itemStock,
+			itemMgt.item_package_stock AS itemPackageStock,
+			pkgPlan.pkg_plan_qty AS pkgPlanQty,
+			pkgPlan.pkg_desc AS pkgDesc,
+			pkgPlan.pkg_state AS pkgState
+		FROM prs_package_plan pkgPlan
+		LEFT JOIN 
+		(
+			SELECT lot_id, order_id, item_id, SUM(lot_qty)
+			FROM prs_lot_info lotInfo
+			GROUP BY lot_id
+		) lotInfo
+		ON pkgPlan.lot_id = lotInfo.lot_id
+		LEFT JOIN prs_order_info orderInfo
+		ON lotInfo.order_id = orderInfo.order_id
+		LEFT JOIN bc_item_info itemInfo
+		ON lotInfo.item_id = itemInfo.item_id
+		LEFT JOIN cm_item_mgt itemMgt
+		ON pkgPlan.lot_id = itemMgt.item_mgt_id
+		WHERE pkgPlan.pkg_state = #{pkgState}
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<!-- 포장 계획 조회 -->
+	<select id="selectPackagePlanList"
+		parameterType="jin.mes.form.ship.rlesMgt.RlesMgtDto"
+		resultType="jin.mes.form.ship.rlesMgt.RlesMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY pkg_id desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="packagePlan_base" />
+				)s_table
+		WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 포장 계획 Count -->
+	<select id="selectPackagePlanCount"
+		parameterType="jin.mes.form.ship.rlesMgt.RlesMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="packagePlan_base" />
+				)c_table
+	</select>
+	
+	
+	<!-- 출고 대상 조회 -->
+	<select id="selectPackageList"
+		parameterType="jin.mes.form.ship.rlesMgt.RlesMgtDto"
+		resultType="jin.mes.form.ship.rlesMgt.RlesMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY orderId desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="package_base" />
+				)s_table
+		WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	<!-- 출고 대상 Count -->
+	<select id="rowCount"
+		parameterType="jin.mes.form.ship.rlesMgt.RlesMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="package_base" />
+				)c_table
+	</select>
+	
+	<!-- 출고 대상 조회 -->
+	<select id="selectPackageWork"
+		parameterType="jin.mes.form.ship.rlesMgt.RlesMgtDto"
+		resultType="jin.mes.form.ship.rlesMgt.RlesMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY pkg_work_end desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="packageWork_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	<!-- 출고 대상 Count -->
+	<select id="selectPackageWorkCount"
+		parameterType="jin.mes.form.ship.rlesMgt.RlesMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="packageWork_base" />
+				)c_table
+	</select>
+	
+	<update id="updatePackageStock" parameterType="jin.mes.form.ship.rlesMgt.RlesMgtDto">
+		UPDATE cm_item_mgt
+		SET item_package_stock = item_package_stock + #{prsPackageQty} 
+		WHERE 1=1
+		AND item_id = #{itemId} 
+		AND item_mgt_id = #{lotId}
+	</update>
+	
+	<insert id="insertPackageWork" parameterType="jin.mes.form.ship.rlesMgt.RlesMgtDto">
+		<selectKey keyProperty="pkgWorkId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('PKGWRK') AS pkg_work_id
+		</selectKey>
+		INSERT INTO prs_package_work(
+				pkg_work_id,
+				pkg_work_user,
+				pkg_work_start,
+				pkg_work_end,
+				prs_package_qty,
+				lot_id,
+				item_id,
+				description,
+				pkg_id
+		)VALUES(
+				#{pkgWorkId},
+				#{pkgWorkUser},
+				#{pkgWorkStart},
+				#{pkgWorkEnd},
+				#{prsPackageQty},
+				#{lotId},
+				#{itemId},
+				#{description},
+				#{pkgId}
+		)
+	</insert>
+	
+	<!-- 불량관리 삭제 -->
+	<delete id="deleteQmBadItemInfo" parameterType="jin.mes.form.ship.rlesMgt.RlesMgtDto">
+		DELETE FROM qmItem
+		USING qm_item_mgt qmItem
+		INNER JOIN prs_bad_product bad
+		ON qmItem.item_qty_target_code = bad.bad_id
+		WHERE bad.bad_target_code = #{pkgWorkId}
+	</delete>
+	
+	<delete id="deleteQmPkgItemInfo" parameterType="jin.mes.form.ship.rlesMgt.RlesMgtDto">
+		DELETE FROM qm_item_mgt
+		WHERE item_qty_target_code = #{pkgWorkId}
+	</delete>
+	
+	
+	<delete id="deleteBadItemInfo" parameterType="jin.mes.form.ship.rlesMgt.RlesMgtDto">
+		DELETE FROM prs_bad_product
+		WHERE bad_target_code = #{pkgWorkId}
+	</delete>
+	
+	<delete id="deletePackageWork" parameterType="jin.mes.form.ship.rlesMgt.RlesMgtDto">
+		DELETE FROM prs_package_work
+		WHERE pkg_work_id = #{pkgWorkId}
+	</delete>
+	
+	<delete id="deleteBundle" parameterType="jin.mes.form.ship.rlesMgt.RlesMgtDto">
+		DELETE FROM his_pkg_bundle
+		WHERE pkg_work_id = #{pkgWorkId}
+	</delete>
+	
+	
+	<select id="selectRtlBundleList"
+		parameterType="jin.mes.form.ship.rlesMgt.RlesMgtDto"
+		resultType="jin.mes.form.ship.rlesMgt.RlesMgtDto">
+		SELECT 
+			pkg_work_id AS pkgWorkId,
+			bundle_unit AS bundleUnit,
+			bundle_qty AS bundleQty
+		FROM his_pkg_bundle
+		WHERE pkg_work_id = #{pkgWorkId}
+	</select>
+	
+	<insert id="insertBundleList" parameterType="jin.mes.form.ship.shipPlanMgt.ShipPlanMgtDto">
+		INSERT INTO his_pkg_bundle
+		(
+			pkg_work_id,
+			bundle_unit,
+			bundle_qty
+		)
+		VALUES
+		(
+			#{pkgWorkId},
+			#{bundleUnit},
+			#{bundleQty}
+		)
+	</insert>
+	
+	<update id="updateBundleList" parameterType="jin.mes.form.ship.shipPlanMgt.ShipPlanMgtDto">
+		UPDATE his_pkg_bundle
+		SET
+			bundle_qty = #{bundleQty}
+		WHERE 1=1 
+		AND pkg_work_id = #{pkgWorkId}
+		AND bundle_unit = #{bundleUnit}
+	</update>
+	
+	<delete id="deleteBundleList" parameterType="jin.mes.form.ship.shipPlanMgt.ShipPlanMgtDto">
+		DELETE FROM his_pkg_bundle
+		WHERE 1=1
+		AND pkg_work_id = #{pkgWorkId}
+		AND bundle_unit = #{bundleUnit}
+	</delete>
+	
+	<delete id="deleteBundleAll" parameterType="jin.mes.form.ship.shipPlanMgt.ShipPlanMgtDto">
+		DELETE FROM his_pkg_bundle
+		WHERE 1=1
+		AND pkg_work_id = #{pkgWorkId}
+	</delete>
+	
+	<update id="updatePkgPlanState" parameterType="jin.mes.form.ship.rlesMgt.RlesMgtDto">
+		UPDATE prs_package_plan
+		SET
+			pkg_state = 'ship_sta02'
+		WHERE 1=1 
+		AND pkg_id = #{pkgId}
+	</update>
+	
+</mapper>

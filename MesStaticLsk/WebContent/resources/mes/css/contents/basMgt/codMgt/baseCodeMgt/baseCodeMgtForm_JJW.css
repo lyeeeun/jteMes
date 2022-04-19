@@ -1,0 +1,4 @@
+/*20.08.05 왼쪽 셀 가운데 정렬 JJW*/
+.baseCodeMgtForm.k-grid th:first-child, .baseCodeMgtForm.k-grid td:first-child {
+	text-align: center;
+}

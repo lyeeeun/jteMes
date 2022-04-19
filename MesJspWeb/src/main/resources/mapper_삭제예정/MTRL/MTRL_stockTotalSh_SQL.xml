@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MTRL_stockTotalSh">
+	<!-- 	            , FN_CM_GETCOMNM(MI.CTR_CD , 'MTRLTYPE', M.MTRLTYPE) AS MTRLTYPE          
+				, FN_CM_GETCOMNM(MI.CTR_CD , 'MTRLUNITCD',M.MTRLUNIT_CD )  AS UNIT_NM   -->
+	<!-- 자재입고 리스트 -->
+	<select id="selectList" parameterType="hashmap"
+		resultType="hashmap">
+			   
+	       SELECT M.MTRLNAME
+	            , M.MTRLCMPT
+	            , M.MTRLSPEC
+	            , SUM(MI.MTRL_IN_QTY) AS MTRL_IN_QTY
+	            , SUM(MTRL_OUT_TOT_QTY) AS MTRL_OUT_TOT_QTY
+	            , M.MTRLTYPE         
+				, M.MTRLUNIT_CD AS UNIT_NM  
+	       FROM (  SELECT MTRLID
+	       				, CTR_CD 
+	                    , MTRL_IN_DATE
+	                    , MTRL_IN_QTY
+	                    , MTRL_OUT_TOT_QTY
+	                    FROM TB_MESMTRLIN 
+	                    WHERE 1=1
+	                   	<if test='DEL_GBN != null and DEL_GBN != ""'>
+	                     AND DEL_GBN='N' 
+	                    </if>
+	                    )AS MI
+	       INNER JOIN TB_MATERIAL M ON M.MTRLID=MI.MTRLID                        
+	       WHERE 1=1
+	       <if test='MTRLNAME != null and MTRLNAME != ""'>
+	       AND MTRLNAME LIKE CONCAT("%" #{MTRLNAME} "%")
+		   </if>
+	     
+	      GROUP BY MI.MTRLID ,M.MTRLNAME ,M.MTRLTYPE,M.MTRLCMPT,M.MTRLSPEC,MI.CTR_CD,M.MTRLUNIT_CD
+    </select>
+
+</mapper>

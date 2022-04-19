@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="search" class="main_search">
+	<table class="search_table">
+		<colgroup>
+			<col style="width: 25%;" />
+			<col style="width: 55%;" />
+			<col style="width: 20%;" />
+		</colgroup>
+		<tr>
+			<td rowspan="1">
+				<div id="search_custom">
+					<input id="tag_id" type="text" class="easyui-combobox" style="width: 300px;" />
+				</div>
+			</td>
+			<td rowspan="2">
+			<!-- 시간 입력 부분 -->
+				<div id="eng_Search" class="main_search_datetime">
+					<span class="search_title2">Input :</span>
+					<input jintFormat="DATE" id="engSearch_DATE" type="text" class="easyui-datebox jint_date" style="width: 120px;" />
+					<input jintFormat="HOUR" id="engSearch_HOUR" class="easyui-combobox" style="width: 60px;" />
+					<input jintFormat="MIN" id="engSearch_MIN" class="easyui-combobox" style="width: 60px;" />
+					<input jintFormat="SEC" id="engSearch_SEC" class="easyui-combobox" style="width: 60px;" />
+					<span class="search_title2">&nbsp;Interval :</span>
+					<input id="interval_sel" type="text" class="easyui-combobox" style="width: 90px;" />
+					<span class="search_title2">&nbsp;Count :</span>
+					<input type="text" id="sizeBox" class="easyui-numberbox" value="150" style="width: 50px;"/>
+					<a id="playBtn" href="#" class="easyui-linkbutton" onclick="play_noRepeat('eng_Search',false)" data-options="iconCls:'icon-search'">Search</a>
+					<a id="excelDownBtn" href="#" class="easyui-linkbutton" onclick="fn_excelDown()" data-options="iconCls:'icon-save'" style="display:hidden;">Save</a>
+					
+				</div>
+			</td>
+			<td class="search_staticTime">
+				<span class="search_title2">Kor :</span>
+				<span id="kor_time"></span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div id="search_custom2">
+					<span class="search_title2">Y-axis :</span>
+					<input type="text" id="yaxis_min" class="easyui-numberbox" style="width: 90px;"/>
+					~ 
+					<input type="text" id="yaxis_max" class="easyui-numberbox" style="width: 90px;" /> 
+					
+					<a id="yaxis_changeBtn" href="#" class="easyui-linkbutton" onclick="Change_yscale()" data-options="iconCls:'icon-reload'">Change</a>
+				</div>
+			</td>
+			<td class="search_staticTime">
+				<span class="search_title2">Local :</span>
+				<span id="trans_time"></span>
+			</td>
+		</tr>
+	</table>
+</div>
+</html>

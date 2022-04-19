@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.mapper.qualMgt.qualPec.shipPectMgt.ShipPectMgtMapper">
+
+	<!--출고 불량 리스트-->
+	<sql id="packageBadList_base">
+			
+			packageWork.pkg_work_id 			AS pkgWorkId,
+			MAX(packageWork.pkg_work_user) 		AS pkgWorkUser,
+			MAX(urInfo.user_nm)		 			AS pkgWorkUserNm,
+			MAX(packageWork.pkg_work_start) 	AS pkgWorkStart,
+			MAX(packageWork.pkg_work_end)	 	AS pkgWorkEnd,
+			MAX(packageWork.prs_package_qty) 	AS prsPackageQty,
+			MAX(packageWork.lot_id) 			AS lotId,
+			MAX(lot.lot_qty) 					AS lotQty,
+			MAX(orderInfo.comp_id)				AS compId,
+			MAX(comp.comp_nm) 					AS compNm,
+			MAX(packageWork.item_id) 			AS itemId,
+			MAX(IFNULL(itemInfo.item_nm,"")) 	AS itemNm,
+			SUM(bad.bad_qty)					AS badQty
+		FROM prs_package_work packageWork
+		LEFT JOIN bc_item_info itemInfo ON packageWork.item_id = itemInfo.item_id
+		LEFT JOIN mb_user_info urInfo ON packageWork.pkg_work_user = urInfo.user_id
+		LEFT OUTER JOIN prs_bad_product bad ON bad.bad_target = 'qual_spec04' AND bad_target_code = packageWork.pkg_work_id
+		LEFT OUTER JOIN prs_lot_info lot ON lot.lot_id = packageWork.lot_id
+		LEFT OUTER JOIN prs_order_info orderInfo ON orderInfo.order_id = lot.order_id
+		LEFT OUTER JOIN bc_company_info comp ON comp.comp_id = orderInfo.comp_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>	
+		GROUP BY pkg_work_id
+	</sql>
+	
+	<!--출고 불량 리스트 조회-->
+	<select id="selectPackageBadList"
+		parameterType="jin.mes.form.ship.rlesMgt.RlesMgtDto"
+		resultType="jin.mes.form.ship.rlesMgt.RlesMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test='sort != null and sort != "" '>
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY pkgWorkId DESC) AS RNUM,
+					</otherwise>
+				</choose>
+				g_table.*
+				FROM(
+					SELECT
+					<include refid="packageBadList_base" />
+			)g_table
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>		
+	</select>
+	
+	<!--출고 불량 카운트-->
+	<select id="selectPackageBadCount"
+		parameterType="jin.mes.form.ship.rlesMgt.RlesMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="packageBadList_base" />
+				)c_table
+	</select>
+</mapper>

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="jin.mes.cform.facilMgt.mtrltoolMgt.KwangjinMtrltoolMgtMapper">
+	<!-- 공구정보 -->
+	<sql id="toolInfo_base">
+			toolInfo.tool_id		AS toolId, 
+			toolInfo.tool_nm     	AS toolNm, 
+			toolInfo.tool_type   	AS toolType,
+			toolInfo.tool_dc		AS toolDc,
+			toolInfo.tool_price  	AS toolPrice, 
+			toolInfo.tool_limit  	AS toolLimit, 
+			toolInfo.tool_desc   	AS toolDesc,
+			toolInfo.is_use      	AS isUse, 
+			toolInfo.creator_id  	AS creatorId, 
+			toolInfo.created_at  	AS createdAt,
+			toolInfo.updator_id  	AS updatorId,
+			toolInfo.updated_at  	AS updatedAt,
+			toolInfo.tool_std01  	AS toolStd01,
+			toolInfo.tool_std02  	AS toolStd02,
+			toolInfo.tool_std03  	AS toolStd03,
+			toolInfo.tool_std04  	AS toolStd04,
+			toolInfo.tool_std05  	AS toolStd05,
+			toolInfo.tool_std_str01  	AS toolStdStr01,
+			toolInfo.tool_std_str02  	AS toolStdStr02,
+			toolInfo.tool_std_str03  	AS toolStdStr03,
+			toolInfo.tool_std_str04  	AS toolStdStr04,
+			toolInfo.tool_std_str05  	AS toolStdStr05,
+			SUM(IFNULL(toolMgt.tool_mgt_qty,0))	AS toolQty
+			
+		FROM bc_tool_info toolInfo
+		LEFT OUTER JOIN	cm_tool_mgt toolMgt ON toolInfo.tool_id = toolMgt.tool_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="toolType != null and toolType != '' ">
+			AND toolInfo.tool_type = #{toolType}
+		</if>
+		<if test="toolId != null and toolId != '' ">
+			AND toolInfo.tool_id = #{toolId}
+		</if>
+		<if test="isUse != null and isUse != '' ">
+			AND toolInfo.is_use = #{isUse}
+		</if>
+		GROUP BY toolInfo.tool_id
+	</sql>
+	<!-- 공구 관리정보 -->
+	<sql id="toolMgt_base">
+		toolMgt.tool_mgt_id 		AS toolMgtId,
+		toolMgt.tool_mgt_gbn 		AS toolMgtGbn,
+		toolMgt.tool_mgt_desc 		AS toolMgtDesc,
+		toolMgt.tool_mgt_qty 		AS toolMgtQty,
+		toolMgt.tool_mgt_date 		AS toolMgtDate,
+		toolMgt.tool_qty_user 		AS toolQtyUser,
+		userInfo.user_nm			AS toolQtyUserNm,
+		toolMgt.creator_id 			AS creatorId,
+		toolMgt.created_at 			AS createdAt,
+		toolMgt.updator_id 			AS updatorId,
+		toolMgt.updated_at 			AS updatedAt,
+		toolMgt.comp_id 			AS compId,
+		compInfo.comp_nm			AS compNm,
+		toolInfo.tool_id 			AS toolId,
+		toolInfo.tool_nm 			AS toolNm,
+		toolInfo.tool_type 			AS toolType,
+		toolInfo.tool_price 		AS toolPrice,
+		toolInfo.tool_limit 		AS toolLimit,
+		toolInfo.tool_desc 			AS toolDesc,
+		toolInfo.is_use 			AS isUse,
+		toolInfo.tool_std01  	AS toolStd01,
+		toolInfo.tool_std02  	AS toolStd02,
+		toolInfo.tool_std03  	AS toolStd03,
+		toolInfo.tool_std04  	AS toolStd04,
+		toolInfo.tool_std05  	AS toolStd05,
+		toolInfo.tool_std_str01  	AS toolStdStr01,
+		toolInfo.tool_std_str02  	AS toolStdStr02,
+		toolInfo.tool_std_str03  	AS toolStdStr03,
+		toolInfo.tool_std_str04  	AS toolStdStr04,
+		toolInfo.tool_std_str05  	AS toolStdStr05
+		FROM cm_tool_mgt toolMgt
+		LEFT OUTER JOIN bc_tool_info toolInfo ON toolMgt.tool_id = toolInfo.tool_id
+		LEFT OUTER JOIN bc_company_info compInfo ON toolMgt.comp_id = compInfo.comp_id
+		LEFT OUTER JOIN mb_user_info userInfo ON toolMgt.tool_qty_user = userInfo.user_id
+		WHERE toolInfo.tool_id = #{toolId}
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="toolMgtId != null and toolMgtId != '' ">
+			AND toolMgt.tool_mgt_id = #{toolMgtId}
+		</if>
+		
+		<if test="toolType != null and toolType != '' ">
+			AND toolInfo.tool_type = #{toolType}
+		</if>
+		<if test="isUse != null and isUse != '' ">
+			AND toolInfo.is_use = #{isUse}
+		</if>
+	</sql>
+	
+	<!-- 공구정보(Page) select -->
+	<select id="selectToolInfoList"
+		parameterType="jin.mes.cform.facilMgt.mtrltoolMgt.KwangjinMtrltoolMgtDto"
+		resultType="jin.mes.cform.facilMgt.mtrltoolMgt.KwangjinMtrltoolMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="toolInfo_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 공구정보 Count -->
+	<select id="selectToolInfoCount"
+		parameterType="jin.mes.cform.facilMgt.mtrltoolMgt.KwangjinMtrltoolMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="toolInfo_base" />
+				)c_table
+	</select>
+	
+	<!-- 공구 수량 정보(Page) select -->
+	<select id="selectToolQtyList"
+		parameterType="jin.mes.cform.facilMgt.mtrltoolMgt.KwangjinMtrltoolMgtDto"
+		resultType="jin.mes.cform.facilMgt.mtrltoolMgt.KwangjinMtrltoolMgtDto">
+		SELECT * FROM (
+			SELECT 
+				ROW_NUMBER() OVER(ORDER BY toolMgtDate desc) AS RNUM,
+				<include refid="toolMgt_base" />
+			)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	<!-- 공구 수량 정보 Count -->
+	<select id="selectToolQtyCount"
+		parameterType="jin.mes.cform.facilMgt.mtrltoolMgt.KwangjinMtrltoolMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="toolMgt_base" />
+				)c_table
+	</select>
+	
+	
+	<!-- 공구 관리정보(Page) select -->
+	<select id="selectToolMgtList"
+		parameterType="jin.mes.cform.facilMgt.mtrltoolMgt.KwangjinMtrltoolMgtDto"
+		resultType="jin.mes.cform.facilMgt.mtrltoolMgt.KwangjinMtrltoolMgtDto">
+		SELECT * FROM (
+		SELECT
+		<choose>
+			<when test="sort != null and sort != '' ">
+				ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+			</when>
+			<otherwise>
+				ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+			</otherwise>
+		</choose>
+		<include refid="toolMgt_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>
+	</select>
+
+	<!-- 공구 관리정보 Count -->
+	<select id="selectToolMgtCount"
+		parameterType="jin.mes.cform.facilMgt.mtrltoolMgt.KwangjinMtrltoolMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM (
+		SELECT
+		<include refid="toolMgt_base" />
+		)c_table
+	</select>
+
+	<!-- 공구 관리정보 입력 -->
+	<insert id="insertToolMgt"
+		parameterType="jin.mes.cform.facilMgt.mtrltoolMgt.KwangjinMtrltoolMgtDto">
+		<selectKey keyProperty="toolMgtId"
+			resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('INTOL') AS toolMgtId
+		</selectKey>
+		INSERT INTO cm_tool_mgt(
+			tool_mgt_id,
+			tool_mgt_qty,
+			tool_mgt_gbn,
+			tool_mgt_desc,
+			tool_mgt_date,
+			tool_qty_user,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at,
+			is_del,
+			comp_id,
+			tool_id,
+			dupl_yn
+		)VALUES(
+			#{toolMgtId},
+			#{toolMgtQty},
+			#{toolMgtGbn},
+			#{toolMgtDesc},
+			#{toolMgtDate},
+			#{toolQtyUser},
+			#{creatorId },
+			NOW(),
+			#{updatorId},
+			NOW(),
+			false,
+			#{compId},
+			#{toolId},
+			false
+		)
+	</insert>
+
+	<!-- 공구 관리 정보수정 -->
+	<update id="updateToolMgt"
+		parameterType="jin.mes.cform.facilMgt.mtrltoolMgt.KwangjinMtrltoolMgtDto">
+		UPDATE cm_tool_mgt
+		SET updator_id = #{updatorId},
+		updated_at = NOW()
+		<if test="toolMgtQty != null">
+			,tool_mgt_qty = #{toolMgtQty}
+		</if>
+		<if test="toolQtyUser != null">
+			,tool_qty_user = #{toolQtyUser}
+		</if>
+		<if test="toolMgtGbn != null">
+			,tool_mgt_gbn = #{toolMgtGbn}
+		</if>
+		<if test="toolMgtDesc != null">
+			,tool_mgt_desc = #{toolMgtDesc}
+		</if>
+		<if test="toolMgtDate != null">
+			,tool_mgt_date = #{toolMgtDate}
+		</if>
+		WHERE tool_mgt_id = #{toolMgtId}
+	</update>
+
+	<!-- 공구 관리 폐기처분 및 삭제 -->
+	<update id="updateToolMgtIsDel"
+		parameterType="jin.mes.cform.facilMgt.mtrltoolMgt.KwangjinMtrltoolMgtDto">
+		UPDATE cm_tool_mgt
+		SET updator_id = #{updatorId},
+		updated_at = NOW()
+		<if test="isDel != null">
+			,is_del = #{isDel}
+		</if>
+		WHERE tool_mgt_id = #{toolMgtId}
+	</update>
+	
+	<!-- 공구 관리정보 삭제 -->
+	<delete id="deleteToolMgt"
+		parameterType="jin.mes.cform.facilMgt.mtrltoolMgt.KwangjinMtrltoolMgtDto">
+		DELETE FROM cm_tool_mgt
+		WHERE tool_mgt_id = #{toolMgtId}
+	</delete>
+</mapper>

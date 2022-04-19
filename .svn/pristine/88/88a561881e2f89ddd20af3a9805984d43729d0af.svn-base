@@ -1,0 +1,123 @@
+<!DOCTYPE>
+<html layout:decorate="~{layouts/rms_layout_menu}" lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/css/rms/EngineStatus/engine_value.css" />
+<title>Insert title here</title>
+</head>
+<body>
+	<div id="container">
+		<!-- 본문내용 -->
+		<div class="content" layout:fragment="content">
+			<!-- 검색 -->
+			<div th:insert="fragments/search_repeat :: search" class="search"></div>
+			<!-- 본문 영역 -->
+			<div class="content_layer">
+				<table class="engMot_Table">
+					<tr class="engMot_Row">
+						<!-- 1번 줄 -->
+						<td>
+							<!-- GENERATOR DATA -->
+							<span class="EM_B">GENERATOR DATA</span>
+							<div class="EM_GROUP">
+								<table id="GENERATOR_DATA" style="width: 100%;">
+								</table>
+							</div>
+							<!-- ENGINE CONTROL FACTOR -->
+							<span class="EM_B">ENGINE CONTROL FACTOR</span>
+							<div class="EM_GROUP">
+								<table id="ENGINE_CONTROL_FACTOR" style="width: 100%">
+								</table>
+							</div>
+							<!-- CYLINDER MONITORING BALANCING -->
+							<span class="EM_B">CYLINDER MONITORING BALANCING</span>
+							<div class="EM_GROUP">
+								<table id="CMB_PMAX" style="width: 100%">
+								</table>
+							</div>
+						</td>
+						<!-- 2번 줄 -->
+						<td>
+							<!-- ENGINE SPEED DATA -->
+							<span class="EM_B">ENGINE SPEED DATA</span>
+							<div class="EM_GROUP">
+								<table id="ENGINE_SPEED_DATA" style="width: 100%">
+								</table>
+							</div>
+							<!-- FUEL GAS SYSTEM -->
+							<span class="EM_B">FUEL GAS SYSTEM</span>
+							<div class="EM_GROUP">
+								<table id="FUEL_GAS_SYSTEM" style="width: 100%">
+								</table>
+							</div>
+							<!-- LUBE OIL SYSTEM -->
+							<span class="EM_B">LUBE OIL SYSTEM</span>
+							<div class="EM_GROUP">
+								<table id="LUBE_OIL_SYSTEM" style="width: 100%">
+								</table>
+							</div>
+							<!-- COMPRESSED AIR SYSTEM -->
+							<span class="EM_B">COMPRESSED AIR SYSTEM</span>
+							<div class="EM_GROUP">
+								<table id="COMPRESSED_AIR_SYSTEM" style="width: 100%">
+								</table>
+							</div>
+							<span class="EM_B">CYLINDER MONITORING BALANCING</span>
+							<div class="EM_GROUP">
+								<table id="CMB_IMEP" style="width: 100%">
+								</table>
+							</div>
+						</td>
+						<!-- 3번 줄 -->
+						<td>
+							<span class="EM_B">GENERATOR_SYSTEM</span>
+							<div class="EM_GROUP">
+								<table id="GENERATOR_SYSTEM" style="width: 100%">
+								</table>
+							</div>
+							<span class="EM_B">FUEL_OIL_SYSTEM</span>
+							<div class="EM_GROUP">
+								<table id="FUEL_OIL_SYSTEM" style="width: 100%">
+								</table>
+							</div>
+							<span class="EM_B">EXH GAS CYLINDER TEMP</span>
+							<div class="EM_GROUP">
+								<table id="EXH_GAS_CYLINDER_TEMP" style="width: 100%">
+								</table>
+							</div>
+						</td>
+						<!-- 4번 줄 -->
+						<td>
+							<span class="EM_B">COOLING WATER SYSTEM</span>
+							<div class="EM_GROUP">
+								<table id="COOLING_WATER_SYSTEM" style="width: 100%">
+								</table>
+							</div>
+							<span class="EM_B">CHARGE AIR SYSTEM</span>
+							<div class="EM_GROUP">
+								<table id="CHARGE_AIR_SYSTEM" style="width: 100%">
+								</table>
+							</div>
+							<span class="EM_B">MAIN BEARING TEMP</span>
+							<div class="EM_GROUP">
+								<table id="MAIN_BEARING_TEMP" style="width: 100%">
+								</table>
+							</div>
+							<span class="EM_B">ENGINE RUN HOUR</span>
+							<div class="EM_GROUP">
+								<table id="ENGINE_RUN_HOUR" style="width: 100%">
+								</table>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+
+<th:block layout:fragment="script">
+	<script src="/js/rms/EngineStatus/engine_value.js"></script>	
+	<script type="text/javascript" src="/js/fragments/search_repeat.js"></script>
+</th:block>
+</html>

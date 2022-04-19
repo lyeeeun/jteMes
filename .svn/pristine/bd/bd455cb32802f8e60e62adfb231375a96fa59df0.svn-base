@@ -1,0 +1,14 @@
+package jin.mes.form.qualMgt.qualPec.shipPectMgt;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import jin.mes.form.pick.rlesMgt.RlesMgtDto;
+
+@Mapper
+public interface ShipPectMgtMapper {
+
+	public List<RlesMgtDto> selectPackageBadList(RlesMgtDto rlesMgtDto);
+	public int selectPackageBadCount(RlesMgtDto rlesMgtDto);
+}

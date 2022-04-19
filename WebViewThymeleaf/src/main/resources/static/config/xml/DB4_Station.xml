@@ -1,0 +1,4975 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<TAG>
+		<id>CA0001</id>
+		<name>#1 OUTGOING VOLTAGE -RS</name>
+		<GROUP>1</GROUP>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0002</id>
+		<name>#1 OUTGOING VOLTAGE -ST</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0003</id>
+		<name>#1 OUTGOING VOLTAGE -TR</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0004</id>
+		<name>#1 OUTGOING CURRENT - R</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0005</id>
+		<name>#1 OUTGOING CURRENT - S</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0006</id>
+		<name>#1 OUTGOING CURRENT - T</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0007</id>
+		<name>#1 OUTGOING FREQUENCY</name>
+		<unit>Hz</unit>
+	</TAG>
+	<TAG>
+		<id>CA0008</id>
+		<name>#1 OUTGOING POWER FACTOR</name>
+		<unit>PF</unit>
+	</TAG>
+	<TAG>
+		<id>CA0009</id>
+		<name>#1 OUTGOING ACTIVE POWER</name>
+		<unit>kW</unit>
+	</TAG>
+	<TAG>
+		<id>CA0010</id>
+		<name>#1 OUTGOING REACTIVE POWER</name>
+		<unit>kvar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0011</id>
+		<name>#1 OUTGOING ACTIVE ENERGY</name>
+		<unit>Mwh</unit>
+	</TAG>
+	<TAG>
+		<id>CA0012</id>
+		<name>#1 OUTGOING REACTIVE ENERGY</name>
+		<unit>Mvarh</unit>
+	</TAG>
+	<TAG>
+		<id>CA0013</id>
+		<name>#2 OUTGOING VOLTAGE -RS</name>
+		<GROUP>1</GROUP>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0014</id>
+		<name>#2 OUTGOING VOLTAGE -ST</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0015</id>
+		<name>#2 OUTGOING VOLTAGE -TR</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0016</id>
+		<name>#2 OUTGOING CURRENT - R</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0017</id>
+		<name>#2 OUTGOING CURRENT - S</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0018</id>
+		<name>#2 OUTGOING CURRENT - T</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0019</id>
+		<name>#2 OUTGOING FREQUENCY</name>
+		<unit>Hz</unit>
+	</TAG>
+	<TAG>
+		<id>CA0020</id>
+		<name>#2 OUTGOING POWER FACTOR</name>
+		<unit>PF</unit>
+	</TAG>
+	<TAG>
+		<id>CA0021</id>
+		<name>#2 OUTGOING ACTIVE POWER</name>
+		<unit>kW</unit>
+	</TAG>
+	<TAG>
+		<id>CA0022</id>
+		<name>#2 OUTGOING REACTIVE POWER</name>
+		<unit>kvar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0023</id>
+		<name>#2 OUTGOING ACTIVE ENERGY</name>
+		<unit>Mwh</unit>
+	</TAG>
+	<TAG>
+		<id>CA0024</id>
+		<name>#2 OUTGOING REACTIVE ENERGY</name>
+		<unit>Mvarh</unit>
+	</TAG>
+	<TAG>
+		<id>CA0025</id>
+		<name>#1 AUX.TR INCOMING VOLTAGE -RS</name>
+		<GROUP>1</GROUP>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0026</id>
+		<name>#1 AUX.TR INCOMING VOLTAGE -ST</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0027</id>
+		<name>#1 AUX.TR INCOMING VOLTAGE -TR</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0028</id>
+		<name>#1 AUX.TR INCOMING CURRENT - R</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0029</id>
+		<name>#1 AUX.TR INCOMING CURRENT - S</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0030</id>
+		<name>#1 AUX.TR INCOMING CURRENT - T</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0031</id>
+		<name>#1 AUX.TR INCOMING FREQUENCY</name>
+		<unit>Hz</unit>
+	</TAG>
+	<TAG>
+		<id>CA0032</id>
+		<name>#1 AUX.TR INCOMING POWER FACTOR</name>
+		<unit>PF</unit>
+	</TAG>
+	<TAG>
+		<id>CA0033</id>
+		<name>#1 AUX.TR INCOMING ACTIVE POWER</name>
+		<unit>kW</unit>
+	</TAG>
+	<TAG>
+		<id>CA0034</id>
+		<name>#1 AUX.TR INCOMING REACTIVE POWER</name>
+		<unit>kvar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0035</id>
+		<name>#2 AUX.TR INCOMING VOLTAGE -RS</name>
+		<GROUP>1</GROUP>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0036</id>
+		<name>#2 AUX.TR INCOMING VOLTAGE -ST</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0037</id>
+		<name>#2 AUX.TR INCOMING VOLTAGE -TR</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0038</id>
+		<name>#2 AUX.TR INCOMING CURRENT - R</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0039</id>
+		<name>#2 AUX.TR INCOMING CURRENT - S</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0040</id>
+		<name>#2 AUX.TR INCOMING CURRENT - T</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0041</id>
+		<name>#2 AUX.TR INCOMING FREQUENCY</name>
+		<unit>Hz</unit>
+	</TAG>
+	<TAG>
+		<id>CA0042</id>
+		<name>#2 AUX.TR INCOMING POWER FACTOR</name>
+		<unit>PF</unit>
+	</TAG>
+	<TAG>
+		<id>CA0043</id>
+		<name>#2 AUX.TR INCOMING ACTIVE POWER</name>
+		<unit>kW</unit>
+	</TAG>
+	<TAG>
+		<id>CA0044</id>
+		<name>#2 AUX.TR INCOMING REACTIVE POWER</name>
+		<unit>kvar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0045</id>
+		<name>#1 LV INCOMING VOLTAGE -RS</name>
+		<GROUP>1</GROUP>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0046</id>
+		<name>#1 LV INCOMING VOLTAGE -ST</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0047</id>
+		<name>#1 LV INCOMING VOLTAGE -TR</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0048</id>
+		<name>#1 LV INCOMING CURRENT - R</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0049</id>
+		<name>#1 LV INCOMING CURRENT - S</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0050</id>
+		<name>#1 LV INCOMING CURRENT - T</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0051</id>
+		<name>#1 LV INCOMING FREQUENCY</name>
+		<unit>Hz</unit>
+	</TAG>
+	<TAG>
+		<id>CA0052</id>
+		<name>#1 LV INCOMING POWER FACTOR</name>
+		<unit>PF</unit>
+	</TAG>
+	<TAG>
+		<id>CA0053</id>
+		<name>#1 LV INCOMING ACTIVE POWER</name>
+		<unit>kW</unit>
+	</TAG>
+	<TAG>
+		<id>CA0054</id>
+		<name>#1 LV INCOMING REACTIVE POWER</name>
+		<unit>kvar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0055</id>
+		<name>#2 LV INCOMING VOLTAGE -RS</name>
+		<GROUP>1</GROUP>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0056</id>
+		<name>#2 LV INCOMING VOLTAGE -ST</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0057</id>
+		<name>#2 LV INCOMING VOLTAGE -TR</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0058</id>
+		<name>#2 LV INCOMING CURRENT - R</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0059</id>
+		<name>#2 LV INCOMING CURRENT - S</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0060</id>
+		<name>#2 LV INCOMING CURRENT - T</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0061</id>
+		<name>#2 LV INCOMING FREQUENCY</name>
+		<unit>Hz</unit>
+	</TAG>
+	<TAG>
+		<id>CA0062</id>
+		<name>#2 LV INCOMING POWER FACTOR</name>
+		<unit>PF</unit>
+	</TAG>
+	<TAG>
+		<id>CA0063</id>
+		<name>#2 LV INCOMING ACTIVE POWER</name>
+		<unit>kW</unit>
+	</TAG>
+	<TAG>
+		<id>CA0064</id>
+		<name>#2 LV INCOMING REACTIVE POWER</name>
+		<unit>kvar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0065</id>
+		<name>#1 COMMON MCC INCOMING VOLTAGE -RS</name>
+		<GROUP>1</GROUP>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0066</id>
+		<name>#1 COMMON MCC INCOMING VOLTAGE -ST</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0067</id>
+		<name>#1 COMMON MCC INCOMING VOLTAGE -TR</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0068</id>
+		<name>#1 COMMON MCC INCOMING CURRENT - R</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0069</id>
+		<name>#1 COMMON MCC INCOMING CURRENT - S</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0070</id>
+		<name>#1 COMMON MCC INCOMING CURRENT - T</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0071</id>
+		<name>#1 COMMON MCC INCOMING FREQUENCY</name>
+		<unit>Hz</unit>
+	</TAG>
+	<TAG>
+		<id>CA0072</id>
+		<name>#1 COMMON MCC INCOMING POWER FACTOR</name>
+		<unit>PF</unit>
+	</TAG>
+	<TAG>
+		<id>CA0073</id>
+		<name>#1 COMMON MCC INCOMING ACTIVE POWER</name>
+		<unit>kW</unit>
+	</TAG>
+	<TAG>
+		<id>CA0074</id>
+		<name>#1 COMMON MCC INCOMING REACTIVE POWER</name>
+		<unit>kvar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0075</id>
+		<name>#2 COMMON MCC INCOMING VOLTAGE -RS</name>
+		<GROUP>1</GROUP>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0076</id>
+		<name>#2 COMMON MCC INCOMING VOLTAGE -ST</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0077</id>
+		<name>#2 COMMON MCC INCOMING VOLTAGE -TR</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0078</id>
+		<name>#2 COMMON MCC INCOMING CURRENT - R</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0079</id>
+		<name>#2 COMMON MCC INCOMING CURRENT - S</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0080</id>
+		<name>#2 COMMON MCC INCOMING CURRENT - T</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0081</id>
+		<name>#2 COMMON MCC INCOMING FREQUENCY</name>
+		<unit>Hz</unit>
+	</TAG>
+	<TAG>
+		<id>CA0082</id>
+		<name>#2 COMMON MCC INCOMING POWER FACTOR</name>
+		<unit>PF</unit>
+	</TAG>
+	<TAG>
+		<id>CA0083</id>
+		<name>#2 COMMON MCC INCOMING ACTIVE POWER</name>
+		<unit>kW</unit>
+	</TAG>
+	<TAG>
+		<id>CA0084</id>
+		<name>#2 COMMON MCC INCOMING REACTIVE POWER</name>
+		<unit>kvar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0085</id>
+		<name>#1 UNIT MCC INCOMING VOLTAGE -RS</name>
+		<GROUP>1</GROUP>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0086</id>
+		<name>#1 UNIT MCC INCOMING VOLTAGE -ST</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0087</id>
+		<name>#1 UNIT MCC INCOMING VOLTAGE -TR</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0088</id>
+		<name>#1 UNIT MCC INCOMING CURRENT - R</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0089</id>
+		<name>#1 UNIT MCC INCOMING CURRENT - S</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0090</id>
+		<name>#1 UNIT MCC INCOMING CURRENT - T</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0091</id>
+		<name>#1 UNIT MCC INCOMING FREQUENCY</name>
+		<unit>Hz</unit>
+	</TAG>
+	<TAG>
+		<id>CA0092</id>
+		<name>#1 UNIT MCC INCOMING POWER FACTOR</name>
+		<unit>PF</unit>
+	</TAG>
+	<TAG>
+		<id>CA0093</id>
+		<name>#1 UNIT MCC INCOMING ACTIVE POWER</name>
+		<unit>kW</unit>
+	</TAG>
+	<TAG>
+		<id>CA0094</id>
+		<name>#1 UNIT MCC INCOMING REACTIVE POWER</name>
+		<unit>kvar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0095</id>
+		<name>#2 UNIT MCC INCOMING VOLTAGE -RS</name>
+		<GROUP>1</GROUP>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0096</id>
+		<name>#2 UNIT MCC INCOMING VOLTAGE -ST</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0097</id>
+		<name>#2 UNIT MCC INCOMING VOLTAGE -TR</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0098</id>
+		<name>#2 UNIT MCC INCOMING CURRENT - R</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0099</id>
+		<name>#2 UNIT MCC INCOMING CURRENT - S</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0100</id>
+		<name>#2 UNIT MCC INCOMING CURRENT - T</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0101</id>
+		<name>#2 UNIT MCC INCOMING FREQUENCY</name>
+		<unit>Hz</unit>
+	</TAG>
+	<TAG>
+		<id>CA0102</id>
+		<name>#2 UNIT MCC INCOMING POWER FACTOR</name>
+		<unit>PF</unit>
+	</TAG>
+	<TAG>
+		<id>CA0103</id>
+		<name>#2 UNIT MCC INCOMING ACTIVE POWER</name>
+		<unit>kW</unit>
+	</TAG>
+	<TAG>
+		<id>CA0104</id>
+		<name>#2 UNIT MCC INCOMING REACTIVE POWER</name>
+		<unit>kvar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0105</id>
+		<name>BSDG INCOMING VOLTAGE -RS</name>
+		<GROUP>1</GROUP>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0106</id>
+		<name>BSDG INCOMING VOLTAGE -ST</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0107</id>
+		<name>BSDG INCOMING VOLTAGE -TR</name>
+		<unit>V</unit>
+	</TAG>
+	<TAG>
+		<id>CA0108</id>
+		<name>BSDG INCOMING CURRENT - R</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0109</id>
+		<name>BSDG INCOMING CURRENT - S</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0110</id>
+		<name>BSDG INCOMING CURRENT - T</name>
+		<unit>A</unit>
+	</TAG>
+	<TAG>
+		<id>CA0111</id>
+		<name>BSDG INCOMING FREQUENCY</name>
+		<unit>Hz</unit>
+	</TAG>
+	<TAG>
+		<id>CA0112</id>
+		<name>BSDG INCOMING POWER FACTOR</name>
+		<unit>PF</unit>
+	</TAG>
+	<TAG>
+		<id>CA0113</id>
+		<name>BSDG INCOMING ACTIVE POWER</name>
+		<unit>kW</unit>
+	</TAG>
+	<TAG>
+		<id>CA0114</id>
+		<name>BSDG INCOMING REACTIVE POWER</name>
+		<unit>kvar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0143</id>
+		<name>#1 AIR RECEIVER TANK A PRESS</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0144</id>
+		<name>#1 AIR RECEIVER TANK B PRESS</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0145</id>
+		<name>#2 AIR RECEIVER TANK A PRESS</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0146</id>
+		<name>#2 AIR RECEIVER TANK B PRESS</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0147</id>
+		<name>#1 CONTROL AIR DRYER PRESS</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0148</id>
+		<name>#2 CONTROL AIR DRYER PRESS</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0404</id>
+		<name>#1 AIR RECEIVER A PRESS HH</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0405</id>
+		<name>#1 AIR RECEIVER A PRESS H</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0406</id>
+		<name>#1 AIR RECEIVER A PRESS L</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0407</id>
+		<name>#1 AIR RECEIVER A PRESS LL</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0408</id>
+		<name>#1 AIR RECEIVER B PRESS HH</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0409</id>
+		<name>#1 AIR RECEIVER B PRESS H</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0410</id>
+		<name>#1 AIR RECEIVER B PRESS L</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0411</id>
+		<name>#1 AIR RECEIVER B PRESS LL</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0412</id>
+		<name>#2 AIR RECEIVER A PRESS HH</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0413</id>
+		<name>#2 AIR RECEIVER A PRESS H</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0414</id>
+		<name>#2 AIR RECEIVER A PRESS L</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0415</id>
+		<name>#2 AIR RECEIVER A PRESS LL</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0416</id>
+		<name>#2 AIR RECEIVER B PRESS HH</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0417</id>
+		<name>#2 AIR RECEIVER B PRESS H</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0418</id>
+		<name>#2 AIR RECEIVER B PRESS L</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0419</id>
+		<name>#2 AIR RECEIVER B PRESS LL</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0494</id>
+		<name>#1 AIR COMPRESSOR A ALARM</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0495</id>
+		<name>#1 AIR COMPRESSOR A SHUTDOWN</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0496</id>
+		<name>#1 AIR COMPRESSOR B ALARM</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0497</id>
+		<name>#1 AIR COMPRESSOR B SHUTDOWN</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0498</id>
+		<name>#2 AIR COMPRESSOR A ALARM</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0499</id>
+		<name>#2 AIR COMPRESSOR A SHUTDOWN</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0500</id>
+		<name>#2 AIR COMPRESSOR B ALARM</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0501</id>
+		<name>#2 AIR COMPRESSOR B SHUTDOWN</name>
+		<GROUP>COMPRESSED AIR 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0119</id>
+		<name>DO STORAGE TANK LEVEL</name>
+		<GROUP>DO 시스템</GROUP>
+		<unit>%</unit>
+	</TAG>
+	<TAG>
+		<id>CA0120</id>
+		<name>DO PILOT TANK LEVEL</name>
+		<GROUP>DO 시스템</GROUP>
+		<unit>%</unit>
+	</TAG>
+	<TAG>
+		<id>CA0136</id>
+		<name>DO UNLOADING PUMP A DISCHARGE PRESS</name>
+		<GROUP>DO 시스템</GROUP>
+		<unit>bar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0137</id>
+		<name>DO UNLOADING PUMP B DISCHARGE PRESS</name>
+		<GROUP>DO 시스템</GROUP>
+		<unit>bar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0138</id>
+		<name>DO SUPPLY PUMP DISCHARGE PRESS</name>
+		<GROUP>DO 시스템</GROUP>
+		<unit>bar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0139</id>
+		<name>DO PILOT PUMP DISCHARGE PRESS</name>
+		<GROUP>DO 시스템</GROUP>
+		<unit>bar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0140</id>
+		<name>DO DUPLEX FILTER OUTLET PRESS</name>
+		<GROUP>DO 시스템</GROUP>
+		<unit>bar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0156</id>
+		<name>DO STORAGE TANK TEMP.</name>
+		<GROUP>DO 시스템</GROUP>
+		<unit>℃</unit>
+	</TAG>
+	<TAG>
+		<id>CA0157</id>
+		<name>DO PILOT TANK TEMP.</name>
+		<GROUP>DO 시스템</GROUP>
+		<unit>℃</unit>
+	</TAG>
+	<TAG>
+		<id>CA0158</id>
+		<name>DO DUPLEX FILTER OUTLET TEMP.</name>
+		<GROUP>DO 시스템</GROUP>
+		<unit>℃</unit>
+	</TAG>
+	<TAG>
+		<id>CA0162</id>
+		<name>DO PILOT PUMP DISCHARGE FLOW METER (L)</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0172</id>
+		<name>DO SUPPLY PUMP DISCHARGE CONTROL VALVE POSITION (%)</name>
+		<GROUP>DO 시스템</GROUP>
+		<unit>%</unit>
+	</TAG>
+	<TAG>
+		<id>CA0173</id>
+		<name>DO PILOT PUMP DISCHARGE CONTROL VALVE POSITION (%)</name>
+		<GROUP>DO 시스템</GROUP>
+		<unit>%</unit>
+	</TAG>
+	<TAG>
+		<id>CD0055</id>
+		<name>DO UNLOADING PUMP A RUN STATUS</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_UNLOADING_A</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0056</id>
+		<name>DO UNLOADING PUMP A STOP STATUS</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0057</id>
+		<name>DO UNLOADING PUMP A STOP COMMAND</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0058</id>
+		<name>DO UNLOADING PUMP B RUN STATUS</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_UNLOADING_B</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0059</id>
+		<name>DO UNLOADING PUMP B STOP STATUS</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0060</id>
+		<name>DO UNLOADING PUMP B STOP COMMAND</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0061</id>
+		<name>DO SUPPLY PUMP A RUN STATUS</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_SUPPLY_A</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0062</id>
+		<name>DO SUPPLY PUMP A STOP STATUS</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0063</id>
+		<name>DO SUPPLY PUMP A REMOTE POSITION</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_SUPPLY_A</mode>
+		<mode2>REMOTE</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0064</id>
+		<name>DO SUPPLY PUMP A RLOCAL POSITION</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0065</id>
+		<name>DO SUPPLY PUMP A AUTO MODE</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_SUPPLY_A</mode>
+		<mode2>AUTO</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0066</id>
+		<name>DO SUPPLY PUMP A MANU MODE</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0067</id>
+		<name>DO SUPPLY PUMP A DUTY MODE</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_SUPPLY_A</mode>
+		<mode2>DUTY</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0068</id>
+		<name>DO SUPPLY PUMP A STNBY MODE</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0069</id>
+		<name>DO SUPPLY PUMP A START COMMAND</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0070</id>
+		<name>DO SUPPLY PUMP A STOP COMMAND</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0071</id>
+		<name>DO SUPPLY PUMP B RUN STATUS</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_SUPPLY_B</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0072</id>
+		<name>DO SUPPLY PUMP B STOP STATUS</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0073</id>
+		<name>DO SUPPLY PUMP B REMOTE POSITION</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_SUPPLY_B</mode>
+		<mode2>REMOTE</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0074</id>
+		<name>DO SUPPLY PUMP B RLOCAL POSITION</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0075</id>
+		<name>DO SUPPLY PUMP B AUTO MODE</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_SUPPLY_B</mode>
+		<mode2>AUTO</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0076</id>
+		<name>DO SUPPLY PUMP B MANU MODE</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0077</id>
+		<name>DO SUPPLY PUMP B DUTY MODE</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_SUPPLY_B</mode>
+		<mode2>DUTY</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0078</id>
+		<name>DO SUPPLY PUMP B STNBY MODE</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0079</id>
+		<name>DO SUPPLY PUMP B START COMMAND</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0080</id>
+		<name>DO SUPPLY PUMP B STOP COMMAND</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0081</id>
+		<name>DO PILOT PUMP A RUN STATUS</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_PILOT_A</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0082</id>
+		<name>DO PILOT PUMP A STOP STATUS</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0083</id>
+		<name>DO PILOT PUMP A REMOTE POSITION</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_PILOT_A</mode>
+		<mode2>REMOTE</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0084</id>
+		<name>DO PILOT PUMP A RLOCAL POSITION</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0085</id>
+		<name>DO PILOT PUMP A AUTO MODE</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_PILOT_A</mode>
+		<mode2>AUTO</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0086</id>
+		<name>DO PILOT PUMP A MANU MODE</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0087</id>
+		<name>DO PILOT PUMP A DUTY MODE</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_PILOT_A</mode>
+		<mode2>DUTY</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0088</id>
+		<name>DO PILOT PUMP A STNBY MODE</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0089</id>
+		<name>DO PILOT PUMP A START COMMAND</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0090</id>
+		<name>DO PILOT PUMP A STOP COMMAND</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0091</id>
+		<name>DO PILOT PUMP B RUN STATUS</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_PILOT_B</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0092</id>
+		<name>DO PILOT PUMP B STOP STATUS</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0093</id>
+		<name>DO PILOT PUMP B REMOTE POSITION</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_PILOT_B</mode>
+		<mode2>REMOTE</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0094</id>
+		<name>DO PILOT PUMP B RLOCAL POSITION</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0095</id>
+		<name>DO PILOT PUMP B AUTO MODE</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_PILOT_B</mode>
+		<mode2>AUTO</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0096</id>
+		<name>DO PILOT PUMP B MANU MODE</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0097</id>
+		<name>DO PILOT PUMP B DUTY MODE</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_PILOT_B</mode>
+		<mode2>DUTY</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0098</id>
+		<name>DO PILOT PUMP B STNBY MODE</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0099</id>
+		<name>DO PILOT PUMP B START COMMAND</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0100</id>
+		<name>DO PILOT PUMP B STOP COMMAND</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0388</id>
+		<name>DO STORAGE TANK LEVEL HH</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0389</id>
+		<name>DO STORAGE TANK LEVEL H</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0390</id>
+		<name>DO STORAGE TANK LEVEL L</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0391</id>
+		<name>DO STORAGE TANK LEVEL LL</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0392</id>
+		<name>DO PILOT TANK LEVEL HH</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0393</id>
+		<name>DO PILOT TANK LEVEL H</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0394</id>
+		<name>DO PILOT TANK LEVEL L</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0395</id>
+		<name>DO PILOT TANK LEVEL LL</name>
+		<GROUP>DO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0481</id>
+		<name>DO UNLOADING PUMP A FAULT</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_UNLOADING_A</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0482</id>
+		<name>DO UNLOADING PUMP B FAULT</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_UNLOADING_B</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0483</id>
+		<name>DO SUPPLY PUMP A FAULT</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_SUPPLY_A</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0484</id>
+		<name>DO SUPPLY PUMP B FAULT</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_SUPPLY_B</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0485</id>
+		<name>DO PILOT PUMP A FAULT</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_PILOT_A</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0486</id>
+		<name>DO PILOT PUMP B FAULT</name>
+		<GROUP>DO 시스템</GROUP>
+		<mode>DO_PILOT_B</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CA0129</id>
+		<name>#1 EXHAUST GAS BOILER WATER TANK LEVEL</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0130</id>
+		<name>#2 EXHAUST GAS BOILER WATER TANK LEVEL</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0131</id>
+		<name>#3 EXHAUST GAS BOILER WATER TANK LEVEL</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0132</id>
+		<name>#4 EXHAUST GAS BOILER WATER TANK LEVEL</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0152</id>
+		<name>BOILER STEAM HEADER PRESS</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0163</id>
+		<name>#1 EXHAUST GAS BOILER FLOW METER (d/M3)</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0164</id>
+		<name>#2 EXHAUST GAS BOILER FLOW METER (d/M3)</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0165</id>
+		<name>#3 EXHAUST GAS BOILER FLOW METER (d/M3)</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0166</id>
+		<name>#4 EXHAUST GAS BOILER FLOW METER (d/M3)</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0174</id>
+		<name>#1 EXHAUST GAS BOILER DAMP POSITION (%)</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0175</id>
+		<name>#2 EXHAUST GAS BOILER DAMP POSITION (%)</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0176</id>
+		<name>#3 EXHAUST GAS BOILER DAMP POSITION (%)</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0177</id>
+		<name>#4 EXHAUST GAS BOILER DAMP POSITION (%)</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0312</id>
+		<name>BOILER CONDENSATE PUMP A RUN STATUS</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0313</id>
+		<name>BOILER CONDENSATE PUMP A STOP STATUS</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0314</id>
+		<name>BOILER CONDENSATE PUMP B RUN STATUS</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0315</id>
+		<name>BOILER CONDENSATE PUMP B STOP STATUS</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0316</id>
+		<name>BOILER FEED WATER PUMP A RUN STATUS</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0317</id>
+		<name>BOILER FEED WATER PUMP A STOP STATUS</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0318</id>
+		<name>BOILER FEED WATER PUMP B RUN STATUS</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0319</id>
+		<name>BOILER FEED WATER PUMP B STOP STATUS</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0448</id>
+		<name>#1 EXHAUST GAS BOILER WATER TANK LEVEL HH</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0449</id>
+		<name>#1 EXHAUST GAS BOILER WATER TANK LEVEL H</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0450</id>
+		<name>#1 EXHAUST GAS BOILER WATER TANK LEVEL L</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0451</id>
+		<name>#1 EXHAUST GAS BOILER WATER TANK LEVEL LL</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0452</id>
+		<name>#2 EXHAUST GAS BOILER WATER TANK LEVEL HH</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0453</id>
+		<name>#2 EXHAUST GAS BOILER WATER TANK LEVEL H</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0454</id>
+		<name>#2 EXHAUST GAS BOILER WATER TANK LEVEL L</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0455</id>
+		<name>#2 EXHAUST GAS BOILER WATER TANK LEVEL LL</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0456</id>
+		<name>#3 EXHAUST GAS BOILER WATER TANK LEVEL HH</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0457</id>
+		<name>#3 EXHAUST GAS BOILER WATER TANK LEVEL H</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0458</id>
+		<name>#3 EXHAUST GAS BOILER WATER TANK LEVEL L</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0459</id>
+		<name>#3 EXHAUST GAS BOILER WATER TANK LEVEL LL</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0460</id>
+		<name>#4 EXHAUST GAS BOILER WATER TANK LEVEL HH</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0461</id>
+		<name>#4 EXHAUST GAS BOILER WATER TANK LEVEL H</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0462</id>
+		<name>#4 EXHAUST GAS BOILER WATER TANK LEVEL L</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0463</id>
+		<name>#4 EXHAUST GAS BOILER WATER TANK LEVEL LL</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0464</id>
+		<name>BOILER STEAM HEADER PRESS HH</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0465</id>
+		<name>BOILER STEAM HEADER PRESS H</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0466</id>
+		<name>BOILER CONDENSATE TANK LEVEL H</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0467</id>
+		<name>BOILER CONDENSATE TANK LEVEL L</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0468</id>
+		<name>BOILER CONDENSATE TANK LEVEL LL</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0469</id>
+		<name>AUX BOILER WATER TANK LEVEL H</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0470</id>
+		<name>AUX BOILER WATER TANK LEVEL L</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0471</id>
+		<name>AUX BOILER WATER TANK LEVEL LL</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0472</id>
+		<name>BOILER FEED WATER TANK LEVEL H</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0473</id>
+		<name>BOILER FEED WATER TANK LEVEL L</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0474</id>
+		<name>BOILER FEED WATER TANK LEVEL LL</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0508</id>
+		<name>#1 BOILER FEED WATER FLOW TRANSMITTER FAIL ALARM</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0509</id>
+		<name>#1 BOILER DAMPER ACTURATOR CONTROLLER FAIL ALARM</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0510</id>
+		<name>#1 BOILER FEED WATER VALVE POSITION TRANSMITTER FAIL ALARM</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0511</id>
+		<name>#1 BOILER FEED WATER VALVE MOTION ERROR ALARM</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0512</id>
+		<name>#2 BOILER FEED WATER FLOW TRANSMITTER FAIL ALARM</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0513</id>
+		<name>#2 BOILER DAMPER ACTURATOR CONTROLLER FAIL ALARM</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0514</id>
+		<name>#2 BOILER FEED WATER VALVE POSITION TRANSMITTER FAIL ALARM</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0515</id>
+		<name>#2 BOILER FEED WATER VALVE MOTION ERROR ALARM</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0516</id>
+		<name>#3 BOILER FEED WATER FLOW TRANSMITTER FAIL ALARM</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0517</id>
+		<name>#3 BOILER DAMPER ACTURATOR CONTROLLER FAIL ALARM</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0518</id>
+		<name>#3 BOILER FEED WATER VALVE POSITION TRANSMITTER FAIL ALARM</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0519</id>
+		<name>#3 BOILER FEED WATER VALVE MOTION ERROR ALARM</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0520</id>
+		<name>#4 BOILER FEED WATER FLOW TRANSMITTER FAIL ALARM</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0521</id>
+		<name>#4 BOILER DAMPER ACTURATOR CONTROLLER FAIL ALARM</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0522</id>
+		<name>#4 BOILER FEED WATER VALVE POSITION TRANSMITTER FAIL ALARM</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0523</id>
+		<name>#4 BOILER FEED WATER VALVE MOTION ERROR ALARM</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0524</id>
+		<name>BOILER CONDENSATE PUMP D001 FAULT</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0525</id>
+		<name>BOILER CONDENSATE PUMP D002 FAULT</name>
+		<GROUP>EXH. GAS BOILER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0001</id>
+		<name>MAIN SHUT-OFF VALVE A OPEN STATUS</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0002</id>
+		<name>MAIN SHUT-OFF VALVE A CLOSE STATUS</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0003</id>
+		<name>MAIN SHUT-OFF VALVE A OPEN COMMAND</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0004</id>
+		<name>MAIN SHUT-OFF VALVE A CLOSE COMMAND</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0005</id>
+		<name>MAIN SHUT-OFF VALVE B OPEN STATUS</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0006</id>
+		<name>MAIN SHUT-OFF VALVE B CLOSE STATUS</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0007</id>
+		<name>MAIN SHUT-OFF VALVE B OPEN COMMAND</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0008</id>
+		<name>MAIN SHUT-OFF VALVE B CLOSE COMMAND</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0587</id>
+		<name>#1 VENTILATION FAN UNIT FOR GEN. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0588</id>
+		<name>#2 VENTILATION FAN UNIT FOR GEN. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0589</id>
+		<name>#3 VENTILATION FAN UNIT FOR GEN. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0590</id>
+		<name>#4 VENTILATION FAN UNIT FOR GEN. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0591</id>
+		<name>#5 VENTILATION FAN UNIT FOR GEN. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0592</id>
+		<name>#6 VENTILATION FAN UNIT FOR GEN. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0593</id>
+		<name>#7 VENTILATION FAN UNIT FOR GEN. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0594</id>
+		<name>#8 VENTILATION FAN UNIT FOR GEN. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0595</id>
+		<name>#9 VENTILATION FAN UNIT FOR GEN. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0596</id>
+		<name>#10 VENTILATION FAN UNIT FOR GEN. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0597</id>
+		<name>#1 VENTILATION FAN UNIT FOR ENG. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0598</id>
+		<name>#2 VENTILATION FAN UNIT FOR ENG. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0599</id>
+		<name>#3 VENTILATION FAN UNIT FOR ENG. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0600</id>
+		<name>#4 VENTILATION FAN UNIT FOR ENG. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0601</id>
+		<name>#5 VENTILATION FAN UNIT FOR ENG. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0602</id>
+		<name>#6 VENTILATION FAN UNIT FOR ENG. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0603</id>
+		<name>#7 VENTILATION FAN UNIT FOR ENG. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0604</id>
+		<name>#8 VENTILATION FAN UNIT FOR ENG. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0605</id>
+		<name>#9 VENTILATION FAN UNIT FOR ENG. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0606</id>
+		<name>#10 VENTILATION FAN UNIT FOR ENG. SIDE FAULT</name>
+		<GROUP>EXH. GAS 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0115</id>
+		<name>HFO STORAGE TANK A LEVEL</name>
+		<GROUP>HFO 시스템</GROUP>
+		<unit>%</unit>
+	</TAG>
+	<TAG>
+		<id>CA0116</id>
+		<name>HFO STORAGE TANK B LEVEL</name>
+		<GROUP>HFO 시스템</GROUP>
+		<unit>%</unit>
+	</TAG>
+	<TAG>
+		<id>CA0117</id>
+		<name>HFO SETTLING TANK LEVEL</name>
+		<GROUP>HFO 시스템</GROUP>
+		<unit>%</unit>
+	</TAG>
+	<TAG>
+		<id>CA0118</id>
+		<name>HFO SERVICE TANK LEVEL</name>
+		<GROUP>HFO 시스템</GROUP>
+		<unit>%</unit>
+	</TAG>
+	<TAG>
+		<id>CA0133</id>
+		<name>HFO UNLOADING PUMP DISCHARGE PRESS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<unit>bar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0134</id>
+		<name>HFO TRANSFER PUMP DISCHARGE PRESS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<unit>bar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0135</id>
+		<name>HFO SUPPLY PUMP DISCHARGE PRESS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<unit>bar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0153</id>
+		<name>HFO TRANSFER PUMP INLET TEMP.</name>
+		<GROUP>HFO 시스템</GROUP>
+		<unit>℃</unit>
+	</TAG>
+	<TAG>
+		<id>CA0154</id>
+		<name>HFO SETTLING TANK TEMP.</name>
+		<GROUP>HFO 시스템</GROUP>
+		<unit>℃</unit>
+	</TAG>
+	<TAG>
+		<id>CA0155</id>
+		<name>HFO SERVICE TANK TEMP.</name>
+		<GROUP>HFO 시스템</GROUP>
+		<unit>℃</unit>
+	</TAG>
+	<TAG>
+		<id>CA0168</id>
+		<name>#1 HFO PURIFIER FLOW METER (L/H)</name>
+		<GROUP>HFO 시스템</GROUP>
+		<unit></unit>
+	</TAG>
+	<TAG>
+		<id>CA0169</id>
+		<name>#2 HFO PURIFIER FLOW METER (L/H)</name>
+		<GROUP>HFO 시스템</GROUP>
+		<unit></unit>
+	</TAG>
+	<TAG>
+		<id>CA0170</id>
+		<name>#3 HFO PURIFIER FLOW METER (L/H)</name>
+		<GROUP>HFO 시스템</GROUP>
+		<unit></unit>
+	</TAG>
+	<TAG>
+		<id>CA0171</id>
+		<name>#4 HFO PURIFIER FLOW METER (L/H)</name>
+		<GROUP>HFO 시스템</GROUP>
+		<unit></unit>
+	</TAG>
+	<TAG>
+		<id>CD0009</id>
+		<name>HFO UNLOADING PUMP A RUN STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_UNLOADING_A</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0010</id>
+		<name>HFO UNLOADING PUMP A STOP STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0011</id>
+		<name>HFO UNLOADING PUMP A STOP COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0012</id>
+		<name>HFO UNLOADING PUMP B RUN STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_UNLOADING_B</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0013</id>
+		<name>HFO UNLOADING PUMP B STOP STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0014</id>
+		<name>HFO UNLOADING PUMP B STOP COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0015</id>
+		<name>HFO TRANSFER PUMP A RUN STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_TRANSFER_A</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0016</id>
+		<name>HFO TRANSFER PUMP A STOP STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0017</id>
+		<name>HFO TRANSFER PUMP A REMOTE POSITION</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_TRANSFER_A</mode>
+		<mode2>REMOTE</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0018</id>
+		<name>HFO TRANSFER PUMP A RLOCAL POSITION</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0019</id>
+		<name>HFO TRANSFER PUMP A AUTO MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_TRANSFER_A</mode>
+		<mode2>AUTO</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0020</id>
+		<name>HFO TRANSFER PUMP A MANU MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0021</id>
+		<name>HFO TRANSFER PUMP A DUTY MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_TRANSFER_A</mode>
+		<mode2>DUTY</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0022</id>
+		<name>HFO TRANSFER PUMP A STNBY MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0023</id>
+		<name>HFO TRANSFER PUMP A START COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0024</id>
+		<name>HFO TRANSFER PUMP A STOP COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0025</id>
+		<name>HFO TRANSFER PUMP B RUN STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_TRANSFER_B</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0026</id>
+		<name>HFO TRANSFER PUMP B STOP STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0027</id>
+		<name>HFO TRANSFER PUMP B REMOTE POSITION</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_TRANSFER_B</mode>
+		<mode2>REMOTE</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0028</id>
+		<name>HFO TRANSFER PUMP B RLOCAL POSITION</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0029</id>
+		<name>HFO TRANSFER PUMP B AUTO MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_TRANSFER_B</mode>
+		<mode2>AUTO</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0030</id>
+		<name>HFO TRANSFER PUMP B MANU MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0031</id>
+		<name>HFO TRANSFER PUMP B DUTY MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_TRANSFER_B</mode>
+		<mode2>DUTY</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0032</id>
+		<name>HFO TRANSFER PUMP B STNBY MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0033</id>
+		<name>HFO TRANSFER PUMP B START COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0034</id>
+		<name>HFO TRANSFER PUMP B STOP COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0035</id>
+		<name>HFO SUPPLY PUMP A RUN STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_SUPPLY_A </mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0036</id>
+		<name>HFO SUPPLY PUMP A STOP STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0037</id>
+		<name>HFO SUPPLY PUMP A REMOTE POSITION</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_SUPPLY_A </mode>
+		<mode2>REMOTE</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0038</id>
+		<name>HFO SUPPLY PUMP A RLOCAL POSITION</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0039</id>
+		<name>HFO SUPPLY PUMP A AUTO MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_SUPPLY_A </mode>
+		<mode2>AUTO</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0040</id>
+		<name>HFO SUPPLY PUMP A MANU MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0041</id>
+		<name>HFO SUPPLY PUMP A DUTY MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_SUPPLY_A </mode>
+		<mode2>DUTY</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0042</id>
+		<name>HFO SUPPLY PUMP A STNBY MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0043</id>
+		<name>HFO SUPPLY PUMP A START COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0044</id>
+		<name>HFO SUPPLY PUMP A STOP COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0045</id>
+		<name>HFO SUPPLY PUMP B RUN STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_SUPPLY_B</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0046</id>
+		<name>HFO SUPPLY PUMP B STOP STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0047</id>
+		<name>HFO SUPPLY PUMP B REMOTE POSITION</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_SUPPLY_B</mode>
+		<mode2>REMOTE</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0048</id>
+		<name>HFO SUPPLY PUMP B RLOCAL POSITION</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0049</id>
+		<name>HFO SUPPLY PUMP B AUTO MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_SUPPLY_B</mode>
+		<mode2>AUTO</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0050</id>
+		<name>HFO SUPPLY PUMP B MANU MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0051</id>
+		<name>HFO SUPPLY PUMP B DUTY MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_SUPPLY_B</mode>
+		<mode2>DUTY</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0052</id>
+		<name>HFO SUPPLY PUMP B STNBY MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0053</id>
+		<name>HFO SUPPLY PUMP B START COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0054</id>
+		<name>HFO SUPPLY PUMP B STOP COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0320</id>
+		<name>HFO STORAGE TANK VALVE A OPEN STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_STORAGE_A</mode>
+		<mode2>OPEN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0321</id>
+		<name>HFO STORAGE TANK VALVE A CLOSE STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0322</id>
+		<name>HFO STORAGE TANK VALVE A AUTO MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_STORAGE_A</mode>
+		<mode2>AUTO</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0323</id>
+		<name>HFO STORAGE TANK VALVE A MANU MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0324</id>
+		<name>HFO STORAGE TANK VALVE A DUTY MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_STORAGE_A</mode>
+		<mode2>DUTY</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0325</id>
+		<name>HFO STORAGE TANK VALVE A STNBY MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0326</id>
+		<name>HFO STORAGE TANK VALVE A AUTO MODE COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0327</id>
+		<name>HFO STORAGE TANK VALVE A MANU MODE COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0328</id>
+		<name>HFO STORAGE TANK VALVE A DUTY MODE COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0329</id>
+		<name>HFO STORAGE TANK VALVE A STNBY MODE COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0330</id>
+		<name>HFO STORAGE TANK VALVE A OPEN COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0331</id>
+		<name>HFO STORAGE TANK VALVE A CLOSE COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0332</id>
+		<name>HFO STORAGE TANK VALVE B OPEN STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_STORAGE_B</mode>
+		<mode2>OPEN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0333</id>
+		<name>HFO STORAGE TANK VALVE B CLOSE STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0334</id>
+		<name>HFO STORAGE TANK VALVE B AUTO MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_STORAGE_B</mode>
+		<mode2>AUTO</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0335</id>
+		<name>HFO STORAGE TANK VALVE B MANU MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0336</id>
+		<name>HFO STORAGE TANK VALVE B DUTY MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_STORAGE_B</mode>
+		<mode2>DUTY</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0337</id>
+		<name>HFO STORAGE TANK VALVE B STNBY MODE</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0338</id>
+		<name>HFO STORAGE TANK VALVE B AUTO MODE COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0339</id>
+		<name>HFO STORAGE TANK VALVE B MANU MODE COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0340</id>
+		<name>HFO STORAGE TANK VALVE B DUTY MODE COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0341</id>
+		<name>HFO STORAGE TANK VALVE B STNBY MODE COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0342</id>
+		<name>HFO STORAGE TANK VALVE B OPEN COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0343</id>
+		<name>HFO STORAGE TANK VALVE B CLOSE COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0344</id>
+		<name>#1 HFO FURIFIER RUN STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_FURI_1</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0345</id>
+		<name>#1 HFO FURIFIER STOP STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0346</id>
+		<name>#1 HFO FURIFIER STOP COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0347</id>
+		<name>#1 HFO FURIFIER FEED PUMP RUN STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_FURI_FEED_1</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0348</id>
+		<name>#1 HFO FURIFIER FEED PUMP STOP STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0349</id>
+		<name>#1 HFO FURIFIER 3WAY VALVE ON (FEEDING)</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_FURI_FEED_3WAY_1</mode>
+		<mode2>ON</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0350</id>
+		<name>#1 HFO FURIFIER 3WAY VALVE OFF (NOT FEEDING)</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0351</id>
+		<name>#2 HFO FURIFIER RUN STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_FURI_2</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0352</id>
+		<name>#2 HFO FURIFIER STOP STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0353</id>
+		<name>#2 HFO FURIFIER STOP COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0354</id>
+		<name>#2 HFO FURIFIER FEED PUMP RUN STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_FURI_FEED_2</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0355</id>
+		<name>#2 HFO FURIFIER FEED PUMP STOP STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0356</id>
+		<name>#2 HFO FURIFIER 3WAY VALVE ON (FEEDING)</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_FURI_FEED_3WAY_2</mode>
+		<mode2>ON</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0357</id>
+		<name>#2 HFO FURIFIER 3WAY VALVE OFF (NOT FEEDING)</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0358</id>
+		<name>#3 HFO FURIFIER RUN STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_FURI_3</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0359</id>
+		<name>#3 HFO FURIFIER STOP STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0360</id>
+		<name>#3 HFO FURIFIER STOP COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0361</id>
+		<name>#3 HFO FURIFIER FEED PUMP RUN STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_FURI_FEED_3</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0362</id>
+		<name>#3 HFO FURIFIER FEED PUMP STOP STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0363</id>
+		<name>#3 HFO FURIFIER 3WAY VALVE ON (FEEDING)</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_FURI_FEED_3WAY_3</mode>
+		<mode2>ON</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0364</id>
+		<name>#3 HFO FURIFIER 3WAY VALVE OFF (NOT FEEDING)</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0365</id>
+		<name>#4 HFO FURIFIER RUN STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_FURI_4</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0366</id>
+		<name>#4 HFO FURIFIER STOP STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0367</id>
+		<name>#4 HFO FURIFIER STOP COMMAND</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0368</id>
+		<name>#4 HFO FURIFIER FEED PUMP RUN STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_FURI_FEED_4</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0369</id>
+		<name>#4 HFO FURIFIER FEED PUMP STOP STATUS</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0370</id>
+		<name>#4 HFO FURIFIER 3WAY VALVE ON (FEEDING)</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_FURI_FEED_3WAY_4</mode>
+		<mode2>ON</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0371</id>
+		<name>#4 HFO FURIFIER 3WAY VALVE OFF (NOT FEEDING)</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0372</id>
+		<name>HFO STORAGE TANK A LEVEL HH</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0373</id>
+		<name>HFO STORAGE TANK A LEVEL H</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0374</id>
+		<name>HFO STORAGE TANK A LEVEL L</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0375</id>
+		<name>HFO STORAGE TANK A LEVEL LL</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0376</id>
+		<name>HFO STORAGE TANK B LEVEL HH</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0377</id>
+		<name>HFO STORAGE TANK B LEVEL H</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0378</id>
+		<name>HFO STORAGE TANK B LEVEL L</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0379</id>
+		<name>HFO STORAGE TANK B LEVEL LL</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0380</id>
+		<name>HFO SETTLING TANK LEVEL HH</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0381</id>
+		<name>HFO SETTLING TANK LEVEL H</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0382</id>
+		<name>HFO SETTLING TANK LEVEL L</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0383</id>
+		<name>HFO SETTLING TANK LEVEL LL</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0384</id>
+		<name>HFO SERVICE TANK LEVEL HH</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0385</id>
+		<name>HFO SERVICE TANK LEVEL H</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0386</id>
+		<name>HFO SERVICE TANK LEVEL L</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0387</id>
+		<name>HFO SERVICE TANK LEVEL LL</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0420</id>
+		<name>HFO PURIFIER HOUSE PIT LEVEL H</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0421</id>
+		<name>HFO PURIFIER HOUSE PIT LEVEL L</name>
+		<GROUP>HFO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0475</id>
+		<name>HFO UNLOADING PUMP A FAULT</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_UNLOADING_A</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0476</id>
+		<name>HFO UNLOADING PUMP B FAULT</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_UNLOADING_B</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0477</id>
+		<name>HFO TRANSFER PUMP A FAULT</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_TRANSFER_A</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0478</id>
+		<name>HFO TRANSFER PUMP B FAULT</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_TRANSFER_B</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0479</id>
+		<name>HFO SUPPLY PUMP A FAULT</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_SUPPLY_A </mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0480</id>
+		<name>HFO SUPPLY PUMP B FAULT</name>
+		<GROUP>HFO 시스템</GROUP>
+		<mode>HFO_SUPPLY_B</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CA0121</id>
+		<name>LO STORAGE TANK LEVEL</name>
+		<GROUP>LO 시스템</GROUP>
+		<unit>%</unit>
+	</TAG>
+	<TAG>
+		<id>CA0122</id>
+		<name>LO USED TANK LEVEL</name>
+		<GROUP>LO 시스템</GROUP>
+		<unit>%</unit>
+	</TAG>
+	<TAG>
+		<id>CA0141</id>
+		<name>LO UNLOADING PUMP DISCHARGE PRESS</name>
+		<GROUP>LO 시스템</GROUP>
+		<unit>bar</unit>
+	</TAG>
+	<TAG>
+		<id>CA0142</id>
+		<name>LO TRANSFER PUMP DISCHARGE PRESS</name>
+		<GROUP>LO 시스템</GROUP>
+		<unit>bar</unit>
+	</TAG>
+	<TAG>
+		<id>CD0101</id>
+		<name>LO UNLOADING PUMP A RUN STATUS</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_UNLOADING_A</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0102</id>
+		<name>LO UNLOADING PUMP A STOP STATUS</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0103</id>
+		<name>LO UNLOADING PUMP A STOP COMMAND</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0104</id>
+		<name>LO UNLOADING PUMP B RUN STATUS</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_UNLOADING_B</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0105</id>
+		<name>LO UNLOADING PUMP B STOP STATUS</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0106</id>
+		<name>LO UNLOADING PUMP B STOP COMMAND</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0107</id>
+		<name>LO TRANSFER PUMP A RUN STATUS</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_TRANSFER_A</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0108</id>
+		<name>LO TRANSFER PUMP A STOP STATUS</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0109</id>
+		<name>LO TRANSFER PUMP A REMOTE POSITION</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_TRANSFER_A</mode>
+		<mode2>REMOTE</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0110</id>
+		<name>LO TRANSFER PUMP A RLOCAL POSITION</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0111</id>
+		<name>LO TRANSFER PUMP A DUTY MODE</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_TRANSFER_A</mode>
+		<mode2>DUTY</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0112</id>
+		<name>LO TRANSFER PUMP A STNBY MODE</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0113</id>
+		<name>LO TRANSFER PUMP A START COMMAND</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0114</id>
+		<name>LO TRANSFER PUMP A STOP COMMAND</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0115</id>
+		<name>LO TRANSFER PUMP B RUN STATUS</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_TRANSFER_B</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0116</id>
+		<name>LO TRANSFER PUMP B STOP STATUS</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0117</id>
+		<name>LO TRANSFER PUMP B REMOTE POSITION</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_TRANSFER_B</mode>
+		<mode2>REMOTE</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0118</id>
+		<name>LO TRANSFER PUMP B RLOCAL POSITION</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0119</id>
+		<name>LO TRANSFER PUMP B DUTY MODE</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_TRANSFER_B</mode>
+		<mode2>DUTY</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0120</id>
+		<name>LO TRANSFER PUMP B STNBY MODE</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0121</id>
+		<name>LO TRANSFER PUMP B START COMMAND</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0122</id>
+		<name>LO TRANSFER PUMP B STOP COMMAND</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0123</id>
+		<name>USED LO PUMP RUN STATUS</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_USED_LO</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0124</id>
+		<name>USED LO PUMP STOP STATUS</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0125</id>
+		<name>USED LO PUMP STOP COMMAND</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0126</id>
+		<name>#1 LO MAINTENANCE PUMP RUN STATUS</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_MAIN_1</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0127</id>
+		<name>#1 LO MAINTENANCE PUMP STOP STATUS</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0128</id>
+		<name>#1 LO MAINTENANCE PUMP STOP COMMAND</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0129</id>
+		<name>#2 LO MAINTENANCE PUMP RUN STATUS</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_MAIN_2</mode>
+		<mode2>RUN</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0130</id>
+		<name>#2 LO MAINTENANCE PUMP STOP STATUS</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0131</id>
+		<name>#2 LO MAINTENANCE PUMP STOP COMMAND</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0396</id>
+		<name>LO STORAGE TANK LEVEL HH</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0397</id>
+		<name>LO STORAGE TANK LEVEL H</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0398</id>
+		<name>LO STORAGE TANK LEVEL L</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0399</id>
+		<name>LO STORAGE TANK LEVEL LL</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0400</id>
+		<name>LO USED TANK LEVEL HH</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0401</id>
+		<name>LO USED TANK LEVEL H</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0402</id>
+		<name>LO USED TANK LEVEL L</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0403</id>
+		<name>LO USED TANK LEVEL LL</name>
+		<GROUP>LO 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0487</id>
+		<name>LO UNLOADING PUMP A FAULT</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_UNLOADING_A</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0488</id>
+		<name>LO UNLOADING PUMP B FAULT</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_UNLOADING_B</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0489</id>
+		<name>LO TRANSFER PUMP A FAULT</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_TRANSFER_A</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0490</id>
+		<name>LO TRANSFER PUMP B FAULT</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_TRANSFER_B</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0491</id>
+		<name>USED LO PUMP FAULT</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_USED_LO</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0492</id>
+		<name>#1 LO MINTENANCE PUMP FAULT</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_MAIN_1</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CD0493</id>
+		<name>#2 LO MINTENANCE PUMP FAULT</name>
+		<GROUP>LO 시스템</GROUP>
+		<mode>LO_MAIN_2</mode>
+		<mode2>FAULT</mode2>
+	</TAG>
+	<TAG>
+		<id>CA0123</id>
+		<name>SLUDGE STORAGE TANK A LEVEL</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0124</id>
+		<name>SLUDGE STORAGE TANK B LEVEL</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0159</id>
+		<name>SLUDGE STORAGE TANK A TEMP.</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0160</id>
+		<name>SLUDGE STORAGE TANK B TEMP.</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0161</id>
+		<name>OWS OIL TEMP.</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0167</id>
+		<name>OWS FLOW METER (L/H)</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0138</id>
+		<name>HFO PURIFIER HOUSE PIT PUMP RUN STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0139</id>
+		<name>HFO PURIFIER HOUSE PIT PUMP STOP STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0140</id>
+		<name>HFO PURIFIER HOUSE PIT PUMP REMOTE POSITION</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0141</id>
+		<name>HFO PURIFIER HOUSE PIT PUMP LOCAL POSITION</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0142</id>
+		<name>HFO PURIFIER HOUSE PIT PUMP AUTO MODE</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0143</id>
+		<name>HFO PURIFIER HOUSE PIT PUMP MANU MODE</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0144</id>
+		<name>HFO PURIFIER HOUSE PIT PUMP START COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0145</id>
+		<name>HFO PURIFIER HOUSE PIT PUMP STOP COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0146</id>
+		<name>OIL FIRED BOILER &amp; CW DRAIN PIT PUMP RUN STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0147</id>
+		<name>OIL FIRED BOILER &amp; CW DRAIN PIT PUMP STOP STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0148</id>
+		<name>OIL FIRED BOILER &amp; CW DRAIN PIT PUMP REMOTE POSITION</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0149</id>
+		<name>OIL FIRED BOILER &amp; CW DRAIN PIT PUMP LOCAL POSITION</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0150</id>
+		<name>OIL FIRED BOILER &amp; CW DRAIN PIT PUMP AUTO MODE</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0151</id>
+		<name>OIL FIRED BOILER &amp; CW DRAIN PIT PUMP MANU MODE</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0152</id>
+		<name>OIL FIRED BOILER &amp; CW DRAIN PIT PUMP START COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0153</id>
+		<name>OIL FIRED BOILER &amp; CW DRAIN PIT PUMP STOP COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0154</id>
+		<name>TANK FARM PIT PUMP RUN STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0155</id>
+		<name>TANK FARM PIT PUMP STOP STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0156</id>
+		<name>TANK FARM PIT PUMP REMOTE POSITION</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0157</id>
+		<name>TANK FARM PIT PUMP LOCAL POSITION</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0158</id>
+		<name>TANK FARMPIT PUMP AUTO MODE</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0159</id>
+		<name>TANK FARMPIT PUMP MANU MODE</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0160</id>
+		<name>TANK FARM PIT PUMP START COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0161</id>
+		<name>TANK FARM PIT PUMP STOP COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0162</id>
+		<name>#1 POWER HOUSE PIT PUMP RUN STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0163</id>
+		<name>#1 POWER HOUSE PIT PUMP STOP STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0164</id>
+		<name>#1 POWER HOUSE PIT PUMP REMOTE POSITION</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0165</id>
+		<name>#1 POWER HOUSE PIT PUMP LOCAL POSITION</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0166</id>
+		<name>#1 POWER HOUSE PIT PUMP AUTO MODE</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0167</id>
+		<name>#1 POWER HOUSE PIT PUMP MANU MODE</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0168</id>
+		<name>#1 POWER HOUSE PIT PUMP START COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0169</id>
+		<name>#1 POWER HOUSE PIT PUMP STOP COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0170</id>
+		<name>#2 POWER HOUSE PIT PUMP RUN STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0171</id>
+		<name>#2 POWER HOUSE PIT PUMP STOP STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0172</id>
+		<name>#2 POWER HOUSE PIT PUMP REMOTE POSITION</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0173</id>
+		<name>#2 POWER HOUSE PIT PUMP LOCAL POSITION</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0174</id>
+		<name>#2 POWER HOUSE PIT PUMP AUTO MODE</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0175</id>
+		<name>#2 POWER HOUSE PIT PUMP MANU MODE</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0176</id>
+		<name>#2 POWER HOUSE PIT PUMP START COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0177</id>
+		<name>#2 POWER HOUSE PIT PUMP STOP COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0178</id>
+		<name>CW DRAIN PIT PUMP RUN STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0179</id>
+		<name>CW DRAIN PIT PUMP STOP STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0180</id>
+		<name>CW DRAIN PIT PUMP REMOTE POSITION</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0181</id>
+		<name>CW DRAIN PIT PUMP LOCAL POSITION</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0182</id>
+		<name>CW DRAIN PIT PUMP AUTO MODE</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0183</id>
+		<name>CW DRAIN PIT PUMP MANU MODE</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0184</id>
+		<name>CW DRAIN PIT PUMP START COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0185</id>
+		<name>CW DRAIN PIT PUMP STOP COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0186</id>
+		<name>PUMP HOUSE PIT PUMP RUN STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0187</id>
+		<name>PUMP HOUSE PIT PUMP STOP STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0188</id>
+		<name>PUMP HOUSE PIT PUMP REMOTE POSITION</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0189</id>
+		<name>PUMP HOUSE PIT PUMP LOCAL POSITION</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0190</id>
+		<name>PUMP HOUSE PIT PUMP AUTO MODE</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0191</id>
+		<name>PUMP HOUSE PIT PUMP MANU MODE</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0192</id>
+		<name>PUMP HOUSE PIT PUMP START COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0193</id>
+		<name>PUMP HOUSE PIT PUMP STOP COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0194</id>
+		<name>STEP-UP TR PIT PUMP RUN STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0195</id>
+		<name>STEP-UP TR PIT PUMP STOP STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0196</id>
+		<name>STEP-UP TR PIT PUMP REMOTE POSITION</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0197</id>
+		<name>STEP-UP TR PIT PUMP LOCAL POSITION</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0198</id>
+		<name>STEP-UP TR PIT PUMP AUTO MODE</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0199</id>
+		<name>STEP-UP TR PIT PUMP MANU MODE</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0200</id>
+		<name>STEP-UP TR PIT PUMP START COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0201</id>
+		<name>STEP-UP TR PIT PUMP STOP COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0202</id>
+		<name>SLUDGE UNLOADING PUMP A RUN STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0203</id>
+		<name>SLUDGE UNLOADING PUMP A STOP STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0204</id>
+		<name>SLUDGE UNLOADING PUMP A STOP COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0205</id>
+		<name>SLUDGE UNLOADING PUMP B RUN STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0206</id>
+		<name>SLUDGE UNLOADING PUMP B STOP STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0207</id>
+		<name>SLUDGE UNLOADING PUMP B STOP COMMAND</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0306</id>
+		<name>OWS FEED PUMP A RUN STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0307</id>
+		<name>OWS FEED PUMP A STOP STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0308</id>
+		<name>OWS FEED PUMP B RUN STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0309</id>
+		<name>OWS FEED PUMP B STOP STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0310</id>
+		<name>OWS MOTOR RUN STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0311</id>
+		<name>OWS MOTOR STOP STATUS</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0422</id>
+		<name>OIL FIRED BOILER &amp; CW DRAIN PIT LEVEL H</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0423</id>
+		<name>OIL FIRED BOILER &amp; CW DRAIN PIT LEVEL L</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0424</id>
+		<name>TANK FARM PIT LEVEL H</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0425</id>
+		<name>TANK FARM PIT LEVEL L</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0426</id>
+		<name>#1 POWER HOUSE PIT LEVEL H</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0427</id>
+		<name>#1 POWER HOUSE PIT LEVEL L</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0428</id>
+		<name>#2 POWER HOUSE PIT LEVEL H</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0429</id>
+		<name>#2 POWER HOUSE PIT LEVEL L</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0430</id>
+		<name>CW DRAIN PIT LEVEL H</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0431</id>
+		<name>CW DRAIN PIT LEVEL L</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0432</id>
+		<name>PUMP HOUSE PIT LEVEL H</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0433</id>
+		<name>PUMP HOUSE PIT LEVEL L</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0434</id>
+		<name>STEP-UP TR PIT LEVEL H</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0435</id>
+		<name>STEP-UP TR PIT LEVEL L</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0436</id>
+		<name>SLUDGE STORAGE TANK A LEVEL HH</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0437</id>
+		<name>SLUDGE STORAGE TANK A LEVEL H</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0438</id>
+		<name>SLUDGE STORAGE TANK A LEVEL L</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0439</id>
+		<name>SLUDGE STORAGE TANK A LEVEL LL</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0440</id>
+		<name>SLUDGE STORAGE TANK B LEVEL HH</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0441</id>
+		<name>SLUDGE STORAGE TANK B LEVEL H</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0442</id>
+		<name>SLUDGE STORAGE TANK B LEVEL L</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0443</id>
+		<name>SLUDGE STORAGE TANK B LEVEL LL</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0502</id>
+		<name>OWS FIRE &amp; SMOKE ALARM</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0503</id>
+		<name>OWS AC/DC CONVETER SOURCE FAIL ALARM</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0504</id>
+		<name>OWS DC/DC CONVETER SOURCE FAIL ALARM</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0505</id>
+		<name>OWS PPM ALARM</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0506</id>
+		<name>OWS COMMON ALARM</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0507</id>
+		<name>OWS MOTOR OVERLOAD ALARM</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0582</id>
+		<name>#1 POWER HOUSE PIT PUMP FAULT</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0583</id>
+		<name>#2 POWER HOUSE PIT PUMP FAULT</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0584</id>
+		<name>OIL FIRED BOILER &amp; CW DRAIN PIT PUMP FAULT</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0607</id>
+		<name>CW DRAIN PIT PUMP FAULT</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0610</id>
+		<name>HFO PURIFIER HOUDE PIT PUMP FAULT</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0611</id>
+		<name>STEMP-UP TR PIT PUMP FAULT</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0612</id>
+		<name>#1 OILY WATER INTERCEPTER LEVEL HH</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0613</id>
+		<name>#1 OILY WATER INTERCEPTER LEVEL H</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0614</id>
+		<name>#1 OILY WATER INTERCEPTER LEVEL L</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0615</id>
+		<name>#1 OILY WATER INTERCEPTER LEVEL LL</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0616</id>
+		<name>PUMP HOUSE PIT PUMP FAULT</name>
+		<GROUP>SLUDGE 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0125</id>
+		<name>RAW WATER STORAGE TANK LEVEL</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0126</id>
+		<name>FIRE FIGHTING WATER TANK LEVEL</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0127</id>
+		<name>CONCENTRATED WATER TANK LEVEL</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0128</id>
+		<name>TREATED WATER TANK LEVEL</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0149</id>
+		<name>R/O UNIT PRESS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0150</id>
+		<name>TREATED WATER TRANSFE PUMP DISCHARGE PRESS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CA0151</id>
+		<name>RAW WATER TRANSFER PUMP DISCHARGE PRESS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0132</id>
+		<name>#1 CW MAINTENANCE PUMP RUN STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0133</id>
+		<name>#1 CW MAINTENANCE PUMP STOP STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0134</id>
+		<name>#1 CW MAINTENANCE PUMP STOP COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0135</id>
+		<name>#2 CW MAINTENANCE PUMP RUN STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0136</id>
+		<name>#2 CW MAINTENANCE PUMP STOP STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0137</id>
+		<name>#2 CW MAINTENANCE PUMP STOP COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0208</id>
+		<name>RAW WATER UNLOADING PUMP A RUN STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0209</id>
+		<name>RAW WATER UNLOADING PUMP A STOP STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0210</id>
+		<name>RAW WATER UNLOADING PUMP A STOP COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0211</id>
+		<name>RAW WATER UNLOADING PUMP B RUN STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0212</id>
+		<name>RAW WATER UNLOADING PUMP B STOP STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0213</id>
+		<name>RAW WATER UNLOADING PUMP B STOP COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0214</id>
+		<name>RAW WATER TRANSFER PUMP A RUN STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0215</id>
+		<name>RAW WATER TRANSFER PUMP A STOP STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0216</id>
+		<name>RAW WATER TRANSFER PUMP A REMOTE POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0217</id>
+		<name>RAW WATER TRANSFER PUMP A RLOCAL POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0218</id>
+		<name>RAW WATER TRANSFER PUMP A AUTO MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0219</id>
+		<name>RAW WATER TRANSFER PUMP A MANU MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0220</id>
+		<name>RAW WATER TRANSFER PUMP A DUTY MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0221</id>
+		<name>RAW WATER TRANSFER PUMP A STNBY MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0222</id>
+		<name>RAW WATER TRANSFER PUMP A START COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0223</id>
+		<name>RAW WATER TRANSFER PUMP A STOP COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0224</id>
+		<name>RAW WATER TRANSFER PUMP B RUN STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0225</id>
+		<name>RAW WATER TRANSFER PUMP B STOP STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0226</id>
+		<name>RAW WATER TRANSFER PUMP B REMOTE POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0227</id>
+		<name>RAW WATER TRANSFER PUMP B RLOCAL POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0228</id>
+		<name>RAW WATER TRANSFER PUMP B AUTO MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0229</id>
+		<name>RAW WATER TRANSFER PUMP B MANU MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0230</id>
+		<name>RAW WATER TRANSFER PUMP B DUTY MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0231</id>
+		<name>RAW WATER TRANSFER PUMP B STNBY MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0232</id>
+		<name>RAW WATER TRANSFER PUMP B START COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0233</id>
+		<name>RAW WATER TRANSFER PUMP B STOP COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0234</id>
+		<name>CONCENTRATED WATER TRANSFER PUMP RUN STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0235</id>
+		<name>CONCENTRATED WATER PUMP STOP STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0236</id>
+		<name>CONCENTRATED WATER PUMP REMOTE POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0237</id>
+		<name>CONCENTRATED WATER PUMP LOCAL POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0238</id>
+		<name>CONCENTRATED WATER PUMP AUTO MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0239</id>
+		<name>CONCENTRATED WATER PUMP MANU MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0240</id>
+		<name>CONCENTRATED WATER PUMP START COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0241</id>
+		<name>CONCENTRATED WATER PUMP STOP COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0242</id>
+		<name>R/O H.P PUMP A RUN STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0243</id>
+		<name>R/O H.P PUMP A STOP STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0244</id>
+		<name>R/O H.P PUMP A REMOTE POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0245</id>
+		<name>R/O H.P PUMP A RLOCAL POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0246</id>
+		<name>R/O H.P PUMP A AUTO MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0247</id>
+		<name>R/O H.P PUMP A MANU MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0248</id>
+		<name>R/O H.P PUMP A DUTY MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0249</id>
+		<name>R/O H.P PUMP A STNBY MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0250</id>
+		<name>R/O H.P PUMP A START COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0251</id>
+		<name>R/O H.P PUMP A STOP COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0252</id>
+		<name>R/O H.P PUMP B RUN STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0253</id>
+		<name>R/O H.P PUMP B STOP STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0254</id>
+		<name>R/O H.P PUMP B REMOTE POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0255</id>
+		<name>R/O H.P PUMP B RLOCAL POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0256</id>
+		<name>R/O H.P PUMP B AUTO MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0257</id>
+		<name>R/O H.P PUMP B MANU MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0258</id>
+		<name>R/O H.P PUMP B DUTY MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0259</id>
+		<name>R/O H.P PUMP B STNBY MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0260</id>
+		<name>R/O H.P PUMP B START COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0261</id>
+		<name>R/O H.P PUMP B STOP COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0262</id>
+		<name>CIP PUMP RUN STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0263</id>
+		<name>CIP PUMP STOP STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0264</id>
+		<name>CIP PUMP REMOTE POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0265</id>
+		<name>CIP PUMP LOCAL POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0266</id>
+		<name>CIP PUMP AUTO MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0267</id>
+		<name>CIP PUMP MANU MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0268</id>
+		<name>CIP PUMP START COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0269</id>
+		<name>CIP PUMP STOP COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0270</id>
+		<name>ANTI SCALANT FEED PUMP RUN STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0271</id>
+		<name>ANTI SCALANT FEED PUMP STOP STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0272</id>
+		<name>ANTI SCALANT FEED PUMP REMOTE POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0273</id>
+		<name>ANTI SCALANT FEED PUMP LOCAL POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0274</id>
+		<name>ANTI SCALANT FEED PUMP AUTO MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0275</id>
+		<name>ANTI SCALANT FEED PUMP MANU MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0276</id>
+		<name>ANTI SCALANT FEED PUMP START COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0277</id>
+		<name>ANTI SCALANT FEED PUMP STOP COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0278</id>
+		<name>NaOH FEED PUMP RUN STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0526</id>
+		<name>#1 OUTGOING PANEL COMMON TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0527</id>
+		<name>#1 OUTGOING PANEL FAN MOTOR FAIL ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0528</id>
+		<name>#1 OUTGOING PANEL LOSS OF AC POWER ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0529</id>
+		<name>#1 OUTGOING PANEL PROTECTIVE RELAY (OLTC) ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0530</id>
+		<name>#1 OUTGOING PANEL OIL LEVEL (MAIN) LOW ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0531</id>
+		<name>#1 OUTGOING PANEL PRESSURE RELIEF TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0532</id>
+		<name>#1 OUTGOING PANEL OIL LEVEL (OLTC) LOW ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0533</id>
+		<name>#1 OUTGOING PANEL BUCHHOLZ RELAY TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0534</id>
+		<name>#1 OUTGOING PANEL BUCHHOLZ RELAY ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0535</id>
+		<name>#1 OUTGOING PANEL OIL TEMP. INDICATOR TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0536</id>
+		<name>#1 OUTGOING PANEL OIL TEMP. INDICATOR ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0537</id>
+		<name>#1 OUTGOING PANEL WINDING TEMP. INDICATOR TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0538</id>
+		<name>#1 OUTGOING PANEL WINDING TEMP. INDICATOR ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0539</id>
+		<name>#1 OUTGOING PANEL OIL LEVEL (MAIN) LOW TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0540</id>
+		<name>#1 OUTGOING PANEL PRESSURE RELIEF (OLTC) TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0541</id>
+		<name>#1 OUTGOING PANEL OIL LEVEL (OLTC) LOW TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0542</id>
+		<name>#2 OUTGOING PANEL COMMON TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0543</id>
+		<name>#2 OUTGOING PANEL FAN MOTOR FAIL ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0544</id>
+		<name>#2 OUTGOING PANEL LOSS OF AC POWER ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0545</id>
+		<name>#2 OUTGOING PANEL PROTECTIVE RELAY (OLTC) ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0546</id>
+		<name>#2 OUTGOING PANEL OIL LEVEL (MAIN) LOW ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0547</id>
+		<name>#2 OUTGOING PANEL PRESSURE RELIEF TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0548</id>
+		<name>#2 OUTGOING PANEL OIL LEVEL (OLTC) LOW ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0549</id>
+		<name>#2 OUTGOING PANEL BUCHHOLZ RELAY TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0550</id>
+		<name>#2 OUTGOING PANEL BUCHHOLZ RELAY ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0551</id>
+		<name>#2 OUTGOING PANEL OIL TEMP. INDICATOR TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0552</id>
+		<name>#2 OUTGOING PANEL OIL TEMP. INDICATOR ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0553</id>
+		<name>#2 OUTGOING PANEL WINDING TEMP. INDICATOR TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0554</id>
+		<name>#2 OUTGOING PANEL WINDING TEMP. INDICATOR ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0555</id>
+		<name>#2 OUTGOING PANEL OIL LEVEL (MAIN) LOW TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0556</id>
+		<name>#2 OUTGOING PANEL PRESSURE RELIEF (OLTC) TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0557</id>
+		<name>#2 OUTGOING PANEL OIL LEVEL (OLTC) LOW TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0558</id>
+		<name>#1 AUX. TR. VCB PANEL COMMON TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0559</id>
+		<name>#1 AUX. TR. VCB PANEL OIL LEVEL LOW ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0560</id>
+		<name>#1 AUX. TR. VCB PANEL OIL TEMP. INDICATOR ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0561</id>
+		<name>#1 AUX. TR. VCB PANEL OIL TEMP. INDICATOR TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0562</id>
+		<name>#1 AUX. TR. VCB PANEL WINDING TEMP. INDICATOR ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0563</id>
+		<name>#1 AUX. TR. VCB PANEL WINDING TEMP. INDICATOR TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0564</id>
+		<name>#1 AUX. TR. VCB PANEL PRESSURE RELIEF TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0565</id>
+		<name>#1 AUX. TR. VCB PANEL BUCHHOLZ RELAY ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0566</id>
+		<name>#1 AUX. TR. VCB PANEL BUCHHOLZ RELAY TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0567</id>
+		<name>#2 AUX. TR. VCB PANEL COMMON TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0568</id>
+		<name>#2 AUX. TR. VCB PANEL OIL LEVEL LOW ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0569</id>
+		<name>#2 AUX. TR. VCB PANEL OIL TEMP. INDICATOR ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0570</id>
+		<name>#2 AUX. TR. VCB PANEL OIL TEMP. INDICATOR TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0571</id>
+		<name>#2 AUX. TR. VCB PANEL WINDING TEMP. INDICATOR ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0572</id>
+		<name>#2 AUX. TR. VCB PANEL WINDING TEMP. INDICATOR TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0573</id>
+		<name>#2 AUX. TR. VCB PANEL PRESSURE RELIEF TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0574</id>
+		<name>#2 AUX. TR. VCB PANEL BUCHHOLZ RELAY ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0575</id>
+		<name>#2 AUX. TR. VCB PANEL BUCHHOLZ RELAY TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0576</id>
+		<name>#1 SWGR AC/DC CONVERTER FAIL ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0577</id>
+		<name>#1 SWGR DC/DC CONVERTER FAIL ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0578</id>
+		<name>#2 SWGR AC/DC CONVERTER FAIL ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0579</id>
+		<name>#2 SWGR DC/DC CONVERTER FAIL ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0580</id>
+		<name>#1 MCC AC/DC CONVERTER FAIL ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0581</id>
+		<name>#1 MCC DC/DC CONVERTER FAIL ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0279</id>
+		<name>NaOH FEED PUMP STOP STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0280</id>
+		<name>NaOH FEED PUMP REMOTE POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0281</id>
+		<name>NaOH FEED PUMP LOCAL POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0282</id>
+		<name>NaOH FEED PUMP AUTO MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0283</id>
+		<name>NaOH FEED PUMP MANU MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0284</id>
+		<name>NaOH FEED PUMP START COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0285</id>
+		<name>NaOH FEED PUMP STOP COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0286</id>
+		<name>TREATED WATER TRANSFER PUMP A RUN STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0287</id>
+		<name>TREATED WATER TRANSFER PUMP A STOP STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0288</id>
+		<name>TREATED WATER TRANSFER PUMP A REMOTE POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0289</id>
+		<name>TREATED WATER TRANSFER PUMP A RLOCAL POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0290</id>
+		<name>TREATED WATER TRANSFER PUMP A AUTO MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0291</id>
+		<name>TREATED WATER TRANSFER PUMP A MANU MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0292</id>
+		<name>TREATED WATER TRANSFER PUMP A DUTY MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0293</id>
+		<name>TREATED WATER TRANSFER PUMP A STNBY MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0294</id>
+		<name>TREATED WATER TRANSFER PUMP A START COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0295</id>
+		<name>TREATED WATER TRANSFER PUMP A STOP COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0296</id>
+		<name>TREATED WATER TRANSFER PUMP B RUN STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0297</id>
+		<name>TREATED WATER TRANSFER PUMP B STOP STATUS</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0298</id>
+		<name>TREATED WATER TRANSFER PUMP B REMOTE POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0299</id>
+		<name>TREATED WATER TRANSFER PUMP B RLOCAL POSITION</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0300</id>
+		<name>TREATED WATER TRANSFER PUMP B AUTO MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0301</id>
+		<name>TREATED WATER TRANSFER PUMP B MANU MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0302</id>
+		<name>TREATED WATER TRANSFER PUMP B DUTY MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0303</id>
+		<name>TREATED WATER TRANSFER PUMP B STNBY MODE</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0304</id>
+		<name>TREATED WATER TRANSFER PUMP B START COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0608</id>
+		<name>#2 MCC AC/DC CONVERTER FAIL ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0609</id>
+		<name>#2 MCC DC/DC CONVERTER FAIL ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0305</id>
+		<name>TREATED WATER TRANSFER PUMP B STOP COMMAND</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0444</id>
+		<name>CONCENTRATED WATER TANK LEVEL H</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0445</id>
+		<name>CONCENTRATED WATER TANK LEVEL L</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0446</id>
+		<name>TREATED WATE TANK LEVEL H</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0447</id>
+		<name>TREATED WATE TANK LEVEL L</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0585</id>
+		<name>#1 CW MAINTENANCE PUMP FAULT</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0586</id>
+		<name>#2 CW MAINTENANCE PUMP FAULT</name>
+		<GROUP>WATER 시스템</GROUP>
+	</TAG>
+	<TAG>
+		<id>CD0617</id>
+		<name>BSDG FUEL OIL TANK LEVEL L</name>
+	</TAG>
+	<TAG>
+		<id>CD0618</id>
+		<name>BSDG FUEL OIL TANK LEVEL H</name>
+	</TAG>
+	<TAG>
+		<id>CD0619</id>
+		<name>#1 LV INCOMING PANEL ACB COMMON TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0620</id>
+		<name>#2 LV INCOMING PANEL ACB COMMON TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0621</id>
+		<name>#1 UNIT MCC LV FEEDER PANEL COMMON TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0622</id>
+		<name>#2 UNIT MCC LV FEEDER PANEL COMMON TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0623</id>
+		<name>#1 COMMON MCC LV FEEDER PANEL COMMON TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0624</id>
+		<name>#2 COMMON MCC LV FEEDER PANEL COMMON TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0625</id>
+		<name>BSDG INCOMING PANEL COMMON ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0626</id>
+		<name>BSDG INCOMING PANEL COMMON TRIP</name>
+	</TAG>
+	<TAG>
+		<id>CD0627</id>
+		<name>LV AC/DC CONVERTER FAIL ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0628</id>
+		<name>LV DC/DC CONVERTER FAIL ALARM</name>
+	</TAG>
+	<TAG>
+		<id>CD0629</id>
+		<name>#1 OUTGOING VCB CLOSE STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0630</id>
+		<name>#1 OUTGOING VCB OPEN STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0631</id>
+		<name>#1 OUTGOING VCB LOCAL POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0632</id>
+		<name>#1 OUTGOING VCB REMOTE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0633</id>
+		<name>#1 OUTGOING VCB SERVICE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0634</id>
+		<name>#2 OUTGOING VCB CLOSE STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0635</id>
+		<name>#2 OUTGOING VCB OPEN STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0636</id>
+		<name>#2 OUTGOING VCB LOCAL POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0637</id>
+		<name>#2 OUTGOING VCB REMOTE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0638</id>
+		<name>#2 OUTGOING VCB SERVICE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0639</id>
+		<name>#1 AUX.TR VCB CLOSE STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0640</id>
+		<name>#1 AUX.TR VCB OPEN STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0641</id>
+		<name>#1 AUX.TR VCB LOCAL POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0642</id>
+		<name>#1 AUX.TR VCB REMOTE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0643</id>
+		<name>#1 AUX.TR VCB SERVICE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0644</id>
+		<name>#2 AUX.TR VCB CLOSE STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0645</id>
+		<name>#2 AUX.TR VCB OPEN STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0646</id>
+		<name>#2 AUX.TR VCB LOCAL POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0647</id>
+		<name>#2 AUX.TR VCB REMOTE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0648</id>
+		<name>#2 AUX.TR VCB SERVICE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0649</id>
+		<name>LV TIE ACB CLOSE STATUS</name>
+		<GROUP>1</GROUP>
+		<unit>12</unit>
+	</TAG>
+	<TAG>
+		<id>CD0650</id>
+		<name>LV TIE ACB OPEN STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0651</id>
+		<name>LV TIE ACB LOCAL POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0652</id>
+		<name>LV TIE ACB REMOTE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0653</id>
+		<name>LV TIE ACB SERVICE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0654</id>
+		<name>#1 LV INCOMING ACB CLOSE STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0655</id>
+		<name>#1 LV INCOMING ACB OPEN STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0656</id>
+		<name>#1 LV INCOMING ACB LOCAL POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0657</id>
+		<name>#1 LV INCOMING ACB REMOTE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0658</id>
+		<name>#1 LV INCOMING ACB SERVICE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0659</id>
+		<name>#2 LV INCOMING ACB CLOSE STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0660</id>
+		<name>#2 LV INCOMING ACB OPEN STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0661</id>
+		<name>#2 LV INCOMING ACB LOCAL POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0662</id>
+		<name>#2 LV INCOMING ACB REMOTE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0663</id>
+		<name>#2 LV INCOMING ACB SERVICE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0664</id>
+		<name>#1 UNIT MCC LV FEEDER ACB CLOSE STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0665</id>
+		<name>#1 UNIT MCC LV FEEDER ACB OPEN STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0666</id>
+		<name>#1 UNIT MCC LV FEEDER ACB LOCAL POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0667</id>
+		<name>#1 UNIT MCC LV FEEDER ACB REMOTE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0668</id>
+		<name>#1 UNIT MCC LV FEEDER ACB SERVICE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0669</id>
+		<name>#2 UNIT MCC LV FEEDER ACB CLOSE STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0670</id>
+		<name>#2 UNIT MCC LV FEEDER ACB OPEN STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0671</id>
+		<name>#2 UNIT MCC LV FEEDER ACB LOCAL POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0672</id>
+		<name>#2 UNIT MCC LV FEEDER ACB REMOTE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0673</id>
+		<name>#2 UNIT MCC LV FEEDER ACB SERVICE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0674</id>
+		<name>#1 COMMON MCC LV FEEDER ACB CLOSE STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0675</id>
+		<name>#1 COMMON MCC LV FEEDER ACB OPEN STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0676</id>
+		<name>#1 COMMON MCC LV FEEDER ACB LOCAL POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0677</id>
+		<name>#1 COMMON MCC LV FEEDER ACB REMOTE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0678</id>
+		<name>#1 COMMON MCC LV FEEDER ACB SERVICE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0679</id>
+		<name>#2 COMMON MCC LV FEEDER ACB CLOSE STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0680</id>
+		<name>#2 COMMON MCC LV FEEDER ACB OPEN STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0681</id>
+		<name>#2 COMMON MCC LV FEEDER ACB LOCAL POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0682</id>
+		<name>#2 COMMON MCC LV FEEDER ACB REMOTE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0683</id>
+		<name>#2 COMMON MCC LV FEEDER ACB SERVICE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0684</id>
+		<name>BSDG INCOMING ACB CLOSE STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0685</id>
+		<name>BSDG INCOMING ACB OPEN STATUS</name>
+	</TAG>
+	<TAG>
+		<id>CD0686</id>
+		<name>BSDG INCOMING ACB LOCAL POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0687</id>
+		<name>BSDG INCOMING ACB REMOTE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0688</id>
+		<name>BSDG INCOMING ACB SERVICE POSITION</name>
+	</TAG>
+	<TAG>
+		<id>CD0689</id>
+		<name>#1 OUTGOING VCB CLOSE COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0690</id>
+		<name>#1 OUTGOING VCB OPEN COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0691</id>
+		<name>#2 OUTGOING VCB CLOSE COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0692</id>
+		<name>#2 OUTGOING VCB OPEN COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0693</id>
+		<name>#1 AUX. TR. VCB CLOSE COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0694</id>
+		<name>#1 AUX. TR. VCB OPEN COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0695</id>
+		<name>#2 AUX. TR. VCB CLOSE COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0696</id>
+		<name>#2 AUX. TR. VCB OPEN COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0697</id>
+		<name>#1 LV INCOMING ACB CLOSE COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0698</id>
+		<name>#1 LV INCOMING ACB OPEN COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0699</id>
+		<name>#2 LV INCOMING ACB CLOSE COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0700</id>
+		<name>#2 LV INCOMING ACB OPEN COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0701</id>
+		<name>#1 UNIT MCC LV FEEDER ACB CLOSE COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0702</id>
+		<name>#1 UNIT MCC LV FEEDER ACB OPEN COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0703</id>
+		<name>#2 UNIT MCC LV FEEDER ACB CLOSE COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0704</id>
+		<name>#2 UNIT MCC LV FEEDER ACB OPEN COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0705</id>
+		<name>#1 COMMON MCC LV FEEDER ACB CLOSE COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0706</id>
+		<name>#1 COMMON MCC LV FEEDER ACB OPEN COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0707</id>
+		<name>#2 COMMON MCC LV FEEDER ACB CLOSE COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0708</id>
+		<name>#2 COMMON MCC LV FEEDER ACB OPEN COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0709</id>
+		<name>LV TIE ACB CLOSE COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0710</id>
+		<name>LV TIE ACB CLOSE COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0711</id>
+		<name>BSDG MCC TRIP COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0712</id>
+		<name>BSDG INCOMING ACB CLOSE COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0713</id>
+		<name>BSDG INCOMING ACB OPEN COMMAND</name>
+	</TAG>
+	<TAG>
+		<id>CD0714</id>
+	</TAG>
+	<TAG>
+		<id>CD0715</id>
+	</TAG>
+	<TAG>
+		<id>CD0716</id>
+	</TAG>
+	<TAG>
+		<id>CD0717</id>
+	</TAG>
+	<TAG>
+		<id>CD0718</id>
+	</TAG>
+	<TAG>
+		<id>CD0719</id>
+	</TAG>
+	<TAG>
+		<id>CD0720</id>
+	</TAG>
+	<TAG>
+		<id>CD0721</id>
+	</TAG>
+	<TAG>
+		<id>CD0722</id>
+	</TAG>
+	<TAG>
+		<id>CD0723</id>
+	</TAG>
+	<TAG>
+		<id>CD0724</id>
+	</TAG>
+	<TAG>
+		<id>CD0725</id>
+	</TAG>
+	<TAG>
+		<id>CD0726</id>
+	</TAG>
+	<TAG>
+		<id>CD0727</id>
+	</TAG>
+	<TAG>
+		<id>CD0728</id>
+	</TAG>
+	<TAG>
+		<id>CD0729</id>
+	</TAG>
+	<TAG>
+		<id>CD0730</id>
+	</TAG>
+	<TAG>
+		<id>CD0731</id>
+	</TAG>
+	<TAG>
+		<id>CD0732</id>
+	</TAG>
+	<TAG>
+		<id>CD0733</id>
+	</TAG>
+	<TAG>
+		<id>CD0734</id>
+	</TAG>
+	<TAG>
+		<id>CD0735</id>
+	</TAG>
+	<TAG>
+		<id>CD0736</id>
+	</TAG>
+	<TAG>
+		<id>CD0737</id>
+	</TAG>
+	<TAG>
+		<id>CD0738</id>
+	</TAG>
+	<TAG>
+		<id>CD0739</id>
+	</TAG>
+	<TAG>
+		<id>CD0740</id>
+	</TAG>
+	<TAG>
+		<id>CD0741</id>
+	</TAG>
+	<TAG>
+		<id>CD0742</id>
+	</TAG>
+	<TAG>
+		<id>CD0743</id>
+	</TAG>
+	<TAG>
+		<id>CD0744</id>
+	</TAG>
+	<TAG>
+		<id>CD0745</id>
+	</TAG>
+	<TAG>
+		<id>CD0746</id>
+	</TAG>
+	<TAG>
+		<id>CD0747</id>
+	</TAG>
+	<TAG>
+		<id>CD0748</id>
+	</TAG>
+	<TAG>
+		<id>CD0749</id>
+	</TAG>
+	<TAG>
+		<id>CD0750</id>
+	</TAG>
+	<TAG>
+		<id>CD0751</id>
+	</TAG>
+	<TAG>
+		<id>CD0752</id>
+	</TAG>
+	<TAG>
+		<id>CD0753</id>
+	</TAG>
+	<TAG>
+		<id>CD0754</id>
+	</TAG>
+	<TAG>
+		<id>CD0755</id>
+	</TAG>
+	<TAG>
+		<id>CD0756</id>
+	</TAG>
+	<TAG>
+		<id>CD0757</id>
+	</TAG>
+	<TAG>
+		<id>CD0758</id>
+	</TAG>
+	<TAG>
+		<id>CD0759</id>
+	</TAG>
+	<TAG>
+		<id>CD0760</id>
+	</TAG>
+	<TAG>
+		<id>CD0761</id>
+	</TAG>
+	<TAG>
+		<id>CD0762</id>
+	</TAG>
+	<TAG>
+		<id>CD0763</id>
+	</TAG>
+	<TAG>
+		<id>CD0764</id>
+	</TAG>
+	<TAG>
+		<id>CD0765</id>
+	</TAG>
+	<TAG>
+		<id>CD0766</id>
+	</TAG>
+	<TAG>
+		<id>CD0767</id>
+	</TAG>
+	<TAG>
+		<id>CD0768</id>
+	</TAG>
+	<TAG>
+		<id>CD0769</id>
+	</TAG>
+	<TAG>
+		<id>CD0770</id>
+	</TAG>
+	<TAG>
+		<id>CD0771</id>
+	</TAG>
+	<TAG>
+		<id>CD0772</id>
+	</TAG>
+	<TAG>
+		<id>CD0773</id>
+	</TAG>
+	<TAG>
+		<id>CD0774</id>
+	</TAG>
+	<TAG>
+		<id>CD0775</id>
+	</TAG>
+	<TAG>
+		<id>CD0776</id>
+	</TAG>
+	<TAG>
+		<id>CD0777</id>
+	</TAG>
+	<TAG>
+		<id>CD0778</id>
+	</TAG>
+	<TAG>
+		<id>CD0779</id>
+	</TAG>
+	<TAG>
+		<id>CD0780</id>
+	</TAG>
+	<TAG>
+		<id>CD0781</id>
+	</TAG>
+	<TAG>
+		<id>CD0782</id>
+	</TAG>
+	<TAG>
+		<id>CD0783</id>
+	</TAG>
+	<TAG>
+		<id>CD0784</id>
+	</TAG>
+	<TAG>
+		<id>CD0785</id>
+	</TAG>
+	<TAG>
+		<id>CD0786</id>
+	</TAG>
+	<TAG>
+		<id>CD0787</id>
+	</TAG>
+	<TAG>
+		<id>CD0788</id>
+	</TAG>
+	<TAG>
+		<id>CD0789</id>
+	</TAG>
+	<TAG>
+		<id>CD0790</id>
+	</TAG>
+	<TAG>
+		<id>CD0791</id>
+	</TAG>
+	<TAG>
+		<id>CD0792</id>
+	</TAG>
+	<TAG>
+		<id>CD0793</id>
+	</TAG>
+	<TAG>
+		<id>CD0794</id>
+	</TAG>
+	<TAG>
+		<id>CD0795</id>
+	</TAG>
+	<TAG>
+		<id>CD0796</id>
+	</TAG>
+	<TAG>
+		<id>CD0797</id>
+	</TAG>
+	<TAG>
+		<id>CD0798</id>
+	</TAG>
+	<TAG>
+		<id>CD0799</id>
+	</TAG>
+	<TAG>
+		<id>CD0800</id>
+	</TAG>
+	<TAG>
+		<id>CD0801</id>
+	</TAG>
+	<TAG>
+		<id>CD0802</id>
+	</TAG>
+	<TAG>
+		<id>CD0803</id>
+	</TAG>
+	<TAG>
+		<id>CD0804</id>
+	</TAG>
+	<TAG>
+		<id>CD0805</id>
+	</TAG>
+	<TAG>
+		<id>CD0806</id>
+	</TAG>
+	<TAG>
+		<id>CD0807</id>
+	</TAG>
+	<TAG>
+		<id>CD0808</id>
+	</TAG>
+	<TAG>
+		<id>CD0809</id>
+	</TAG>
+	<TAG>
+		<id>CD0810</id>
+	</TAG>
+	<TAG>
+		<id>CD0811</id>
+	</TAG>
+	<TAG>
+		<id>CD0812</id>
+	</TAG>
+	<TAG>
+		<id>CD0813</id>
+	</TAG>
+	<TAG>
+		<id>CD0814</id>
+	</TAG>
+	<TAG>
+		<id>CD0815</id>
+	</TAG>
+	<TAG>
+		<id>CD0816</id>
+	</TAG>
+	<TAG>
+		<id>CD0817</id>
+	</TAG>
+	<TAG>
+		<id>CD0818</id>
+	</TAG>
+	<TAG>
+		<id>CD0819</id>
+	</TAG>
+	<TAG>
+		<id>CD0820</id>
+	</TAG>
+	<TAG>
+		<id>CD0821</id>
+	</TAG>
+	<TAG>
+		<id>CD0822</id>
+	</TAG>
+	<TAG>
+		<id>CD0823</id>
+	</TAG>
+	<TAG>
+		<id>CD0824</id>
+	</TAG>
+	<TAG>
+		<id>CD0825</id>
+	</TAG>
+	<TAG>
+		<id>CD0826</id>
+	</TAG>
+	<TAG>
+		<id>CD0827</id>
+	</TAG>
+	<TAG>
+		<id>CD0828</id>
+	</TAG>
+	<TAG>
+		<id>CD0829</id>
+	</TAG>
+	<TAG>
+		<id>CD0830</id>
+	</TAG>
+	<TAG>
+		<id>CD0831</id>
+	</TAG>
+	<TAG>
+		<id>CD0832</id>
+	</TAG>
+	<TAG>
+		<id>CD0833</id>
+	</TAG>
+	<TAG>
+		<id>CD0834</id>
+	</TAG>
+	<TAG>
+		<id>CD0835</id>
+	</TAG>
+	<TAG>
+		<id>CD0836</id>
+	</TAG>
+	<TAG>
+		<id>CD0837</id>
+	</TAG>
+	<TAG>
+		<id>CD0838</id>
+	</TAG>
+	<TAG>
+		<id>CD0839</id>
+	</TAG>
+	<TAG>
+		<id>CD0840</id>
+	</TAG>
+	<TAG>
+		<id>CD0841</id>
+	</TAG>
+	<TAG>
+		<id>CD0842</id>
+	</TAG>
+	<TAG>
+		<id>CD0843</id>
+	</TAG>
+	<TAG>
+		<id>CD0844</id>
+	</TAG>
+	<TAG>
+		<id>CD0845</id>
+	</TAG>
+	<TAG>
+		<id>CD0846</id>
+	</TAG>
+	<TAG>
+		<id>CD0847</id>
+	</TAG>
+	<TAG>
+		<id>CD0848</id>
+	</TAG>
+	<TAG>
+		<id>CD0849</id>
+	</TAG>
+	<TAG>
+		<id>CD0850</id>
+	</TAG>
+	<TAG>
+		<id>CD0851</id>
+	</TAG>
+	<TAG>
+		<id>CD0852</id>
+	</TAG>
+	<TAG>
+		<id>CD0853</id>
+	</TAG>
+	<TAG>
+		<id>CD0854</id>
+	</TAG>
+	<TAG>
+		<id>CD0855</id>
+	</TAG>
+	<TAG>
+		<id>CD0856</id>
+	</TAG>
+	<TAG>
+		<id>CD0857</id>
+	</TAG>
+	<TAG>
+		<id>CD0858</id>
+	</TAG>
+	<TAG>
+		<id>CD0859</id>
+	</TAG>
+	<TAG>
+		<id>CD0860</id>
+	</TAG>
+	<TAG>
+		<id>CD0861</id>
+	</TAG>
+	<TAG>
+		<id>CD0862</id>
+	</TAG>
+	<TAG>
+		<id>CD0863</id>
+	</TAG>
+	<TAG>
+		<id>CD0864</id>
+	</TAG>
+	<TAG>
+		<id>CD0865</id>
+	</TAG>
+	<TAG>
+		<id>CD0866</id>
+	</TAG>
+	<TAG>
+		<id>CD0867</id>
+	</TAG>
+	<TAG>
+		<id>CD0868</id>
+	</TAG>
+	<TAG/>
+</DOC>

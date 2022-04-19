@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.basMgt.bom.bomMgt.NewBomMgtMapper">
+	<select id="selectBomList"
+		parameterType="jin.mes.cform.basMgt.bom.bomMgt.NewBomMgtDto"
+		resultType="jin.mes.cform.basMgt.bom.bomMgt.NewBomMgtDto">
+		WITH RECURSIVE bomRecursive AS 
+		(
+		SELECT  
+			bom_id AS bomId,
+			bom_target AS bomTarget,
+			bom_target_id AS bomTargetId,
+			bom_target_nm AS bomTargetNm,
+			bom_target_cnt AS bomTargetCnt,
+			IFNULL(description,'') AS DESCRIPTION,
+			bom_seq AS bomSeq,
+			bom_parent_id AS bomParentId,
+			created_at AS createdAt,
+			creator_id AS creatorId, 
+			updated_at AS updatedAt,
+			updator_id AS updatorId,
+			item_id AS itemId,
+		1 lvl
+		FROM bc_bom_info AS bomInfo
+		WHERE bom_parent_id = #{itemId}
+		UNION ALL
+		SELECT
+			bomInfo.bom_id AS bomId,
+			bomInfo.bom_target AS bomTarget,
+			bomInfo.bom_target_id AS bomTargetId,
+			bomInfo.bom_target_nm AS bomTargetNm,
+			bomInfo.bom_target_cnt AS bomTargetCnt,
+			IFNULL(bomInfo.description,'') AS DESCRIPTION,
+			bomInfo.bom_seq AS bomSeq,
+			bomInfo.bom_parent_id AS bomParentId,
+			bomInfo.created_at AS createdAt,
+			bomInfo.creator_id AS creatorId, 
+			bomInfo.updated_at AS updatedAt,
+			bomInfo.updator_id AS updatorId,
+			bomInfo.item_id AS itemId,
+			lvl + 1 lvl
+		FROM bc_bom_info AS bomInfo
+		INNER JOIN bomRecursive bomRec
+		ON bomInfo.bom_parent_id = bomRec.bomId
+		)
+		SELECT 	
+			bomId,
+			bomTarget,
+			bomTargetId,
+			bomTargetNm,
+			bomTargetCnt,
+			bomRec.DESCRIPTION,
+			bomSeq,
+			bomParentId,
+			createdAt,
+			creatorId, 
+			updatedAt,
+			updatorId,
+			itemId,
+			IFNULL(mtrlInfo.description,'') AS mtrlDesc
+		FROM bomRecursive bomRec
+		LEFT JOIN bc_material_info mtrlInfo
+		ON bomRec.bomTargetId = mtrlInfo.mtrl_id;
+	</select>
+	
+	<insert id="insertBom" parameterType="jin.mes.cform.basMgt.bom.bomMgt.NewBomMgtDto">
+		<selectKey keyProperty="bomId" resultType="String" order="BEFORE">
+			SELECT CREATE_PK('BOM') as bomId
+		</selectKey>
+		INSERT INTO bc_bom_info
+		(
+			bom_id,
+			bom_target,
+			bom_target_id,
+			bom_target_nm,
+			bom_target_cnt,
+			description,
+			bom_seq,
+			bom_parent_id,
+			created_at,
+			creator_id,
+			updated_at,
+			updator_id,
+			item_id
+		)
+		VALUES
+		(
+			#{bomId},
+			#{bomTarget},
+			#{bomTargetId},
+			#{bomTargetNm},
+			#{bomTargetCnt},
+			#{description},
+			0,
+			#{bomParentId},
+			now(),
+			#{creatorId},
+			now(),
+			#{updatorId},
+			#{itemId}
+		)
+	</insert>
+	
+	<update id="updateBom"
+		parameterType="jin.mes.cform.basMgt.bom.bomMgt.NewBomMgtDto">
+		UPDATE bc_bom_info
+		SET
+			bom_target_id = #{bomTargetId},
+			bom_target_nm = #{bomTargetNm},
+			bom_target_cnt = #{bomTargetCnt},
+			description = #{description},
+			updated_at = now(),
+			updator_id = #{updatorId}
+		WHERE bom_id = #{bomId}
+	</update>
+	
+	<delete id="deleteBom"
+		parameterType="jin.mes.cform.basMgt.bom.bomMgt.NewBomMgtDto">
+		DELETE FROM bc_bom_info
+		WHERE bom_id IN (
+				WITH RECURSIVE bomRecursive AS 
+					(
+					SELECT bom_id
+					FROM bc_bom_info AS bomInfo
+					WHERE bom_id = #{bomId}
+					UNION ALL
+					SELECT
+						bomInfo.bom_id
+					FROM bc_bom_info AS bomInfo
+					INNER JOIN bomRecursive bomRec
+					ON bomInfo.bom_parent_id = bomRec.bom_id
+					) SELECT * FROM bomRecursive
+				)
+	</delete>
+	
+	<select id="selectBomRoot"
+		parameterType="jin.mes.cform.basMgt.bom.bomMgt.NewBomMgtDto"
+		resultType="jin.mes.cform.basMgt.bom.bomMgt.NewBomMgtDto">
+		SELECT 
+			'prcs_bom01' AS bomTarget,
+			item_id AS bomTargetId,
+			item_nm AS bomTargetNm,
+			1 AS bomTargetCnt,
+			"Root" AS DESCRIPTION,
+			1 AS bomSeq,
+			item_id AS bomParentId,
+			item_id AS itemId
+		FROM bc_item_info
+		WHERE item_id = #{itemId}
+	</select>
+		
+	
+</mapper>

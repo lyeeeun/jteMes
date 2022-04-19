@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.basMgt.operMgt.processInfo.KwangjinProcessInfoMapper">
+	<select id="selectProcessInfo"
+		parameterType="jin.mes.cform.basMgt.operMgt.processInfo.KwangjinProcessInfoDto"
+		resultType="jin.mes.cform.basMgt.operMgt.processInfo.KwangjinProcessInfoDto">
+		SELECT *
+		FROM (
+			SELECT  
+				process_id as processId,
+				process_nm as processNm,
+				process_type as processType,
+				description as description,
+				is_use as isUse,
+				created_at as createdAt,
+				creator_id as creatorId,
+				updated_at as updatedAt,
+				updator_id as updatorId,
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER() AS RNUM
+					</otherwise>
+				</choose>
+			FROM bc_process_info
+			WHERE 1=1
+				<choose>
+					<when test="searchGubun == 'processId'">
+						AND process_id LIKE CONCAT('%',#{searchText},'%')
+					</when>
+					<when test="searchGubun == 'processNm'">
+						AND process_nm LIKE CONCAT('%',#{searchText},'%')
+					</when>
+					<when test="searchGubun == 'processType'">
+						AND process_type LIKE CONCAT('%',#{searchText},'%')
+					</when>
+				</choose>
+			)s_table
+			<where>
+				RNUM <![CDATA[ <= ]]>
+				#{lastIndex} AND RNUM <![CDATA[ >= ]]>
+				#{firstIndex}
+			</where>
+	</select>
+ 	
+	<select id="rowCount"
+		parameterType="jin.mes.cform.basMgt.operMgt.processInfo.KwangjinProcessInfoDto"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM bc_process_info
+		WHERE 1=1
+		<choose>
+			<when test="searchGubun == 'processId'">
+				AND process_id LIKE CONCAT('%',#{searchText},'%')
+			</when>
+			<when test="searchGubun == 'processNm'">
+				AND process_nm LIKE CONCAT('%',#{searchText},'%')
+			</when>
+			<when test="searchGubun == 'processType'">
+				AND process_type LIKE CONCAT('%',#{searchText},'%')
+			</when>
+		</choose>
+	</select>
+	
+	<select id="selectRtlEqmtList"
+		parameterType="jin.mes.cform.basMgt.operMgt.processInfo.KwangjinProcessInfoDto"
+		resultType="jin.mes.cform.basMgt.operMgt.processInfo.KwangjinProcessInfoDto">
+		SELECT * 
+		FROM bc_rtl_process_equip a
+		LEFT JOIN bc_equipment_mgt b
+		ON a.eqmt_mgt_id = b.eqmt_mgt_id
+		WHERE process_id = #{processId}
+	</select>
+	
+	<select id="selectRtlEqmtCount"
+		parameterType="jin.mes.cform.basMgt.operMgt.processInfo.KwangjinProcessInfoDto"
+		resultType="int">
+		SELECT COUNT(*) 
+		FROM bc_rtl_process_equip a
+		LEFT JOIN bc_equipment_mgt b
+		ON a.eqmt_mgt_id = b.eqmt_mgt_id
+		WHERE process_id = #{processId}
+	</select>
+	
+	<insert id="insertProcessInfo" parameterType="jin.mes.cform.basMgt.operMgt.processInfo.KwangjinProcessInfoDto">
+		<selectKey keyProperty="processId" resultType="String" order="BEFORE">
+			SELECT CREATE_PK('PROC') as process_id
+		</selectKey>
+		INSERT INTO bc_process_info
+		(
+			process_id,
+			process_nm,
+			process_type,
+			description,
+			is_use,
+			created_at,
+			creator_id,
+			updated_at,
+			updator_id
+		)
+		VALUES
+		(
+			#{processId},
+			#{processNm},
+			#{processType},
+			#{description},
+			TRUE,
+			now(),
+			#{creatorId},
+			now(),
+			#{updatorId}
+		)
+	</insert>
+	
+	<update id="updateProcessInfo"
+		parameterType="jin.mes.cform.basMgt.operMgt.processInfo.KwangjinProcessInfoDto">
+		UPDATE bc_process_info
+		SET
+			process_nm = #{processNm},
+			process_type = #{processType},
+			description = #{description},
+			updated_at = now(),
+			updator_id = #{updatorId}
+		WHERE process_id = #{processId}
+	</update>
+	
+	<insert id="insertRtlEquipment" parameterType="jin.mes.cform.basMgt.operMgt.processInfo.KwangjinProcessInfoDto">
+		INSERT INTO bc_rtl_process_equip
+		(
+			process_id,
+			eqmt_mgt_id
+		)
+		VALUES
+		(
+			#{processId},
+			#{eqmtMgtId}
+		)
+	</insert>
+	
+	<delete id="deleteRtlEquipment" parameterType="jin.mes.cform.basMgt.operMgt.processInfo.KwangjinProcessInfoDto">
+		DELETE FROM bc_rtl_process_equip
+		WHERE 1=1
+		AND process_id = #{processId}
+		AND eqmt_mgt_id = #{eqmtMgtId} 
+	</delete>
+	
+	<update id="updateIsUse"
+		parameterType="jin.mes.cform.basMgt.operMgt.processInfo.KwangjinProcessInfoDto">
+		UPDATE bc_process_info
+		SET is_use = #{isUse}
+		WHERE process_id = #{processId}
+	</update>
+
+</mapper>

@@ -1,0 +1,25 @@
+<!DOCTYPE>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/rms_layout}" lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet"
+	href="/css/rms/AuxEquipmentStatus/aux_diagram.css" />
+<title>Insert title here</title>
+</head>
+<body>
+	<div id="container">
+		<!-- 본문내용 -->
+		<div class="content" layout:fragment="content">
+			<div th:insert="fragments/search_repeat :: search" class="search"></div>
+			<div class="content_layer">
+					<canvas id="diagram_canvas" width="1920" height="1080" style="width: 100%; height: 100%"></canvas>
+			</div>
+		</div>
+	</div>
+	 
+</body>
+<th:block layout:fragment="script">
+	<script src="/js/rms/AuxEquipmentStatus/aux_diagram.js"></script>
+	<script type="text/javascript" src="/js/fragments/search_repeat.js"></script>
+</th:block>
+</html>

@@ -1,0 +1,64 @@
+@CHARSET "UTF-8";
+
+/**200423 CSS 파일 생성_LYM**/
+
+.itemToolMgtForm .useToolInfo_left {
+	width:49%;
+	float: left;
+	text-align: center;
+	font-weight: bold;
+}
+
+.itemToolMgtForm .useToolInfo_right {
+	width:49%;
+	float: right;
+	padding-right: 2%;
+	text-align: center;
+	font-weight: bold;
+}
+
+.itemToolMgtForm .toolList {
+	width: 45%;
+}
+
+.itemToolMgtForm .selectedTool {
+	width: 40%;
+}
+
+.itemToolMgtForm div.k-window-content{
+	overflow: unset; /*팝업창의 스크롤 없앰*/
+}
+
+.itemToolMgtForm .grid-content {
+	width: 100%;
+}
+.itemToolMgtForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+.itemToolMgtForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 0px;
+}
+
+.itemToolMgtForm .k-listbox.k-listbox-toolbar-right .k-listbox-toolbar {
+    margin-left: 8px;
+    margin-right: 4px; /* 200409 툴바 양옆으로 마진 부여_LYM */
+}
+
+.itemToolMgtForm .jtePopForm_master {
+	width: 100%;
+	padding-left: 2%;
+}
+
+.itemToolMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.itemToolMgtForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}

@@ -1,0 +1,66 @@
+@CHARSET "UTF-8";
+
+/* 메인 화면 전체적인 레이아웃 관련 */
+.productWorkForm {
+	margin: 0 auto;
+/* 	text-align: center; */
+	vertical-align: middle;
+}
+
+#jteSingleGrid.productWorkForm.left-contents {
+	width: 49%;
+	display: inline-block;
+}
+
+#jteDoubleGrid.productWorkForm.right-contents {
+	width: 49.5%;
+	display: inline-block;
+	float: right;
+}
+
+/* k-datetimepicker 관련 */
+.productWorkForm .k-datetimepicker .k-select .k-link {
+	display: flex;
+}
+.productWorkForm .k-datetimepicker .k-select .k-link-date {
+	border-right: 1px solid #ffffff;
+}
+
+/*20.12.23 메인 그리드의 상세정보 버튼 가운데 정렬 YUMI*/
+.productWorkForm.k-grid td:first-child {
+	text-align: center;
+}
+
+/*20.12.23 자재 사용량 팝업의 버튼들 가운데 정렬 YUMI*/
+#mtrlUsePop #mtrlUsePop_grid.k-grid td:nth-child(5) {
+	text-align: center;
+}
+
+/*20.12.23 불량등록 팝업 final-btn-area 위쪽 여백 조정 YUMI*/
+.productWorkForm.final-btn-area {
+	margin-top: 5px;
+}
+
+/* jkkim 작업*/
+
+/* 지시목록 상세정보 선택했을때 버튼색상 - YUMI 변경*/
+.pop-on{
+	color: #3367D6 !important;
+	background : #d7e4ff !important;
+	border-color : #d7e4ff !important;
+	font-weight : bold; 
+	box-shadow :inset 0 0 0 2px rgba(0, 0, 0, 0.13) !important;
+}
+
+/* 지시목록 상세정보 선택했을때 버튼색상 - jkkim 원본*/
+/* 	
+.pop-on{
+	background : #39ff22 !important;
+	border-color : #39ff22 !important;
+	box-shadow : 0 0 2px 1px #39ff22 !important;
+} */
+
+/* 상세정보 form 스타일 */
+#prodWorkDetail_form table td{
+	padding : .45em 0;
+}

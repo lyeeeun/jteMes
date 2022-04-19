@@ -1,0 +1,23 @@
+
+.mtrltoolMgtForm .mtrltoolMgtForm .k-grid-toolbar div input { /**200810 youmi 메인 그리드 상단의 라디오 버튼 정렬을 위해 추가**/
+	vertical-align: sub;
+}
+
+/***** 200511JJW 오른쪽 그리드 - 추가버튼 팝업 *******/
+
+.mtrltoolMgtForm-jteSingleGrid {
+	width:44.5%;
+	height:100%;
+	float:left;
+}
+
+.mtrltoolMgtForm-jteSubGrid {
+	width: 54.5%;
+	height:100%;
+	float:right;
+}
+
+/*20.08.06 왼쪽 셀 가운데 정렬 JJW*/
+/* .mtrltoolMgtForm.k-grid th:first-child, .mtrltoolMgtForm.k-grid td:first-child {
+	text-align: center;
+} */

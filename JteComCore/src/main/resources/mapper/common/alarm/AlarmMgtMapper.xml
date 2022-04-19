@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.common.alarm.AlarmMgtMapper">
+
+	<!-- 나의 신규 알람 갯수 -->
+	<select id="selectMyAlarmCount" 
+		parameterType="jin.mes.common.alarm.AlarmMgtDto"
+		resultType="java.lang.Integer">
+		SELECT	COUNT(*)
+		FROM sys_alarm_info
+		WHERE alarm_receiver = #{alarmReceiver} AND alarm_status = 'NEW' AND <![CDATA[ alarm_send_date <= NOW() ]]>
+	</select>
+	
+	<!-- 나의 알람 리스트 -->
+	<select id="selectMyAlarmList" 
+		parameterType="jin.mes.common.alarm.AlarmMgtDto"
+		resultType="jin.mes.common.alarm.AlarmMgtDto">
+		SELECT	
+			alarm_id 				AS alarmId,
+			alarm_target        	AS alarmTarget,
+			alarm_code          	AS alarmCode,
+			alarm_title          	AS alarmTitle,
+			alarm_content          	AS alarmContent,
+			alarm_url          		AS alarmUrl,
+			alarm_sender        	AS alarmSender,
+			alarm_send_date     	AS alarmSendDate,
+			alarm_receiver      	AS alarmReceiver,
+			alarm_receive_date  	AS alarmReceiveDate,
+			alarm_status           	AS alarmStatus,
+			alarm_device        	AS alarmDevice,
+			creator_id          	AS creatorId,
+			created_at          	AS createdAt,
+			alarm_seq_id			AS alarmSeqId
+		FROM sys_alarm_info
+		WHERE (alarm_receiver = #{alarmReceiver} AND alarm_send_date BETWEEN DATE_ADD(NOW(),INTERVAL -14 DAY) AND NOW()) 
+			OR (alarm_receiver = #{alarmReceiver} AND alarm_status = 'NEW' AND <![CDATA[ alarm_send_date <= NOW() ]]>)
+		ORDER BY alarm_send_date DESC
+	</select>
+	
+	<!-- 알람 조회쿼리 -->
+	<sql id="alarmMgt_base">	
+			alarm.alarm_id 				AS alarmId,
+			alarm.alarm_target        	AS alarmTarget,
+			alarm.alarm_code          	AS alarmCode,
+			alarm.alarm_title          	AS alarmTitle,
+			alarm.alarm_content         AS alarmContent,
+			alarm.alarm_url          	AS alarmUrl,
+			alarm.alarm_sender        	AS alarmSender,
+			sender.user_nm	        	AS alarmSenderNm,
+			alarm.alarm_send_date     	AS alarmSendDate,
+			alarm.alarm_receiver      	AS alarmReceiver,
+			receiver.user_nm      		AS alarmReceiverNm,
+			alarm.alarm_receive_date  	AS alarmReceiveDate,
+			alarm.alarm_status          AS alarmStatus,
+			alarm.alarm_device        	AS alarmDevice,
+			alarm.creator_id          	AS creatorId,
+			alarm.created_at          	AS createdAt
+		FROM sys_alarm_info alarm
+		LEFT OUTER JOIN mb_user_info sender on alarm.alarm_sender = sender.user_id
+		LEFT OUTER JOIN mb_user_info receiver on alarm.alarm_receiver = receiver.user_id
+		WHERE 1=1
+		<if test="alarmId != null and alarmId != '' ">
+			AND alarm_id = #{alarmId}
+		</if>
+		<if test="alarmCode != null and alarmCode != '' ">
+			AND alarm_code = #{alarmCode}
+		</if>
+		<if test="alarmSender != null and alarmSender != '' ">
+			AND alarm_sender = #{alarmSender}
+		</if>
+		<if test="alarmReceiver != null and alarmReceiver != '' ">
+			AND alarm_receiver = #{alarmReceiver}
+		</if>
+		<if test="alarmStatus != null and alarmStatus != '' ">
+			AND alarm_status = #{alarmStatus}
+		</if>
+	</sql>
+	<!-- 알람 리스트 조회(ALL) -->
+	<select id="selectAlarmList" 
+		parameterType="jin.mes.common.alarm.AlarmMgtDto"
+		resultType="jin.mes.common.alarm.AlarmMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY alarmSendDate desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="alarmMgt_base"></include>
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 알람 전체조회 카운트-->
+	<select id="selectAlarmCount" 
+		parameterType="jin.mes.common.alarm.AlarmMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="alarmMgt_base"></include>
+		)c_table
+	</select>
+	
+	<!-- 알람등록 -->
+	<insert id="insertAlarmMgt" parameterType="jin.mes.common.alarm.AlarmMgtDto">
+		<selectKey keyProperty="alarmId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('ALARM') AS alarmId
+		</selectKey>			
+		INSERT INTO sys_alarm_info(
+			alarm_id,
+			alarm_target,
+			alarm_code,
+			alarm_title,
+			alarm_content,
+			alarm_url,
+			alarm_sender,
+			alarm_send_date,
+			alarm_receiver,
+			alarm_receive_date,
+			alarm_status,
+			alarm_device,
+			creator_id,
+			created_at
+		)VALUES(
+			#{alarmId},
+			#{alarmTarget},
+			#{alarmCode},
+			#{alarmTitle},
+			#{alarmContent},
+			#{alarmUrl},
+			#{alarmSender},
+			#{alarmSendDate},
+			#{alarmReceiver},
+			null,
+			'NEW',
+			null,
+			#{creatorId},
+			NOW()
+		)
+	</insert>
+	
+	<!-- 알람 수정 -->
+	<update id="updateAlarmMgt" parameterType="jin.mes.common.alarm.AlarmMgtDto">
+		UPDATE sys_alarm_info
+		SET alarm_id = alarm_id
+			<if test="alarmReceiveDate != null and alarmReceiveDate != ''">	
+				,alarm_receive_date = #{alarmReceiveDate}
+			</if>
+			<if test="alarmStatus != null and alarmStatus != ''">	
+				,alarm_status = #{alarmStatus}
+			</if>
+			<if test="alarmDevice != null and alarmDevice != ''">	
+				,alarm_device = #{alarmDevice}
+			</if>
+		WHERE alarm_id  = #{alarmId}
+	</update>
+	
+	<!-- 알람 읽음 표시 -->
+	<update id="updateAlarmRead" parameterType="jin.mes.common.alarm.AlarmMgtDto">
+		UPDATE sys_alarm_info
+		SET alarm_id = alarm_id
+			,alarm_receive_date = NOW()
+			,alarm_status = #{alarmStatus}
+			,alarm_device = #{alarmDevice}
+		WHERE alarm_id  = #{alarmId}
+	</update>
+	
+	<!-- 알람삭제 -->
+	<delete id="deleteAlarmMgt" parameterType="jin.mes.common.alarm.AlarmMgtDto">
+		DELETE FROM sys_alarm_info
+		WHERE alarm_id  = #{alarmId}
+	</delete>
+	
+	<select id="selectSystemManager"
+		parameterType="String"
+		resultType="String">
+		SELECT 
+			user_id AS userId
+		FROM mb_rtl_user_role RtlUserRole
+		WHERE role_id = #{roleId}
+	</select>
+</mapper>

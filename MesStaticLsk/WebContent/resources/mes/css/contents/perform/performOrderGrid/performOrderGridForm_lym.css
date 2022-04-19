@@ -1,0 +1,220 @@
+
+/****************첫번째 페이지, 기본 관련****************/
+
+.performOrderGridForm {
+	width:100%;
+	margin-top: 0.8em;
+}
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.performOrderGridForm.search-btn-area {
+	background-color: #eaeef2;
+	margin-bottom: 5px;
+}
+
+.performOrderGridForm.search-btn-area #orderNm{
+	margin: 15px 5px 15px 20px;
+}
+
+.performOrderGridForm.performOrderGridForm-gird {
+	width:100%;
+	margin-top: 5px;
+}
+
+.performOrderGridForm-gird .k-grid-content.k-auto-scrollable {
+	height:100px;
+}
+
+.performOrderGridForm .search-btn {
+   width: 100%;
+}
+
+/****************팝업(마스터 그리드 > 더블클릭)****************/
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+
+.performOrderGridForm {
+	margin-top: 0.8em;
+}
+
+.performOrderGridForm .center-input {
+	width: 100%;
+}
+
+.performOrderGridForm .col-left-title {
+	width: 18%;
+}
+
+.performOrderGridForm .col-left-content-1 {
+	width: 22%;
+}
+
+.performOrderGridForm .col-left-content-2 {
+	width: 8%;
+}
+
+.performOrderGridForm .col-right-title {
+	width: 22%;
+}
+
+.performOrderGridForm .col-right-content-1 {
+	width: 22%;
+}
+
+.performOrderGridForm .col-right-content-2 {
+	width: 8%;
+}
+
+.performOrderGridForm .grid-content {
+	width: 100%;
+}
+
+.jte-search-aria .input.k-textbox{
+	margin-left: 0.4em;
+	margin-right: 0.4em;
+}
+
+.performOrderGridForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+.performOrderGridForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 0px;
+}
+
+.performOrderGridForm .jtePopForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.performOrderGridForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.performOrderGridForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.performOrderGridForm .left-caret:before {
+	padding-left: 24px;
+}
+
+.performOrderGridForm .left-input {
+	width: 100%;
+}
+
+.performOrderGridForm .right-input {
+	width: 100%;
+	float: right;
+}
+
+#jtePopForm_grid .k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#jtePopForm_grid td {
+	padding: .4em .6em;	
+}
+
+.performOrderGridForm .final-btn-area {
+	margin-top: 15px;
+}
+
+
+
+/*********** 품목 재고 관리 그리드 더블클릭 혹은 추가 버튼 클릭 시의 팝업창의 펼치기/접기 버튼 ***********/
+
+.performOrderGridForm .pop_detail_btn_area {
+	text-align:center;
+	padding-top: 10px; /*버튼 영역에 먹이면 안먹여서 td에 클래스 새로 만들어서 준거임*/
+}
+
+.performOrderGridForm .pop_detail_btn.pop_detail_hide {
+	cursor: pointer;
+	
+	padding-top: 8px;
+	padding-bottom: 8px;
+	padding-left: 36px;
+	padding-right: 36px;
+	border: rgba(0, 0, 0, 0.08);
+	border-radius: 5px;
+	background-color: #0c2441;
+	background-image: none, linear-gradient(to bottom, rgba(255, 255, 255, .25) 0, rgba(255, 255, 255, 0) 100%);
+	color: #ffffff;
+}
+
+.performOrderGridForm .pop_detail_btn.pop_detail_show {
+	cursor: pointer;
+	
+	padding-top: 8px;
+	padding-bottom: 8px;
+	padding-left: 36px;
+	padding-right: 36px;
+	border: rgba(0, 0, 0, 0.08);
+	border-radius: 5px;
+	background-color: #2f455b;
+	background-image: none, linear-gradient(to bottom, rgba(255, 255, 255, .25) 0, rgba(255, 255, 255, 0) 100%);
+	color: #ffffff;
+}
+
+
+
+/****************팝업(마스터그리드 > 팝업창 내부 그리드 > 더블클릭)****************/
+
+.performOrderGridForm .center-input {
+	width: 100%;
+}
+
+.performOrderGridForm .popsc-col-left-title {
+	width: 18%;
+}
+
+.performOrderGridForm .popsc-col-left-content-1 {
+	width: 22%;
+}
+
+.performOrderGridForm .popsc-col-left-content-2 {
+	width: 8%;
+}
+
+.performOrderGridForm .popsc-col-right-title {
+	width: 22%;
+}
+
+.performOrderGridForm .popsc-col-right-content-1 {
+	width: 22%;
+}
+
+.performOrderGridForm .popsc-col-right-content-2 {
+	width: 8%;
+}
+
+.performOrderGridForm .left-caret:before {
+	padding-left: 24px;
+}
+
+
+.performOrderGridForm .jtePopAddForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.performOrderGridForm .jtePopAddForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}

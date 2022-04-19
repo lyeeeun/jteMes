@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.perform.performEquipment.NewPerformEquipmentMapper">
+	
+	<select id="selectPerformEquipInfo"
+		parameterType="jin.mes.cform.perform.performEquipment.NewPerformEquipmentDto"
+		resultType="jin.mes.cform.perform.performEquipment.NewPerformEquipmentDto">
+		SELECT * 
+		FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY placeId ASC) AS RNUM,
+						</otherwise>
+					</choose> 
+					placeInfo.place_id AS placeId,
+					placeInfo.place_nm AS placeNm,
+					placeInfo.place_parent AS placeParent,
+					itemInfo.item_nm AS itemNm,
+					assign.prod_asm_worker AS workUser,
+					assign.prod_asm_qty AS totalTarget,
+					assign.call_asm_good AS totalOutput,
+					assign.prod_asm_bad AS totalDefect,
+					IF(assign.prod_asm_state IS NULL, "prod_wait", "prod_process") AS eqmtStatus,
+					IFNULL(assign.call_asm_good/assign.prod_asm_qty*100,0) AS eqmtAchieveRate,
+					IFNULL(assign.prod_asm_bad/(IFNULL(assign.call_asm_good,0)+IFNULL(assign.prod_asm_bad,0))*100,0) AS eqmtDefectRate
+				FROM bc_place_info placeInfo
+				LEFT JOIN prs_product_assignment assign ON placeInfo.place_id = assign.place_id	AND assign.prod_asm_state = 'prod_process'
+				LEFT JOIN prs_lot_info lotInfo ON assign.lot_id = lotInfo.lot_id
+				LEFT JOIN bc_item_info itemInfo ON lotInfo.item_id = itemInfo.item_id
+				WHERE 1=1
+				AND placeInfo.place_parent != ''
+				AND placeInfo.is_use = 0
+				) s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<select id="rowCount"
+	parameterType="jin.mes.cform.perform.performEquipment.NewPerformEquipmentDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+				SELECT 
+					placeInfo.place_id AS placeId,
+					placeInfo.place_nm AS placeNm,
+					placeInfo.place_parent AS placeParent,
+					itemInfo.item_nm AS itemNm,
+					assign.prod_asm_worker AS workUser,
+					assign.prod_asm_qty AS totalTarget,
+					assign.call_asm_good AS totalOutput,
+					assign.prod_asm_bad AS totalDefect,
+					IF(assign.prod_asm_state IS NULL, "prod_wait", "prod_process") AS eqmtStatus,
+					IFNULL(assign.call_asm_good/assign.prod_asm_qty*100,0) AS eqmtAchieveRate,
+					IFNULL(assign.prod_asm_bad/(IFNULL(assign.call_asm_good,0)+IFNULL(assign.prod_asm_bad,0))*100,0) AS eqmtDefectRate
+				FROM bc_place_info placeInfo
+				LEFT JOIN prs_product_assignment assign ON placeInfo.place_id = assign.place_id	AND assign.prod_asm_state = 'prod_process'
+				LEFT JOIN prs_lot_info lotInfo ON assign.lot_id = lotInfo.lot_id
+				LEFT JOIN bc_item_info itemInfo ON lotInfo.item_id = itemInfo.item_id
+				WHERE 1=1
+				AND placeInfo.place_parent != ''
+				AND placeInfo.is_use = 0
+		)c_table
+	</select>
+		
+	<select id="selectPlaceAll" resultType="jin.mes.cform.basMgt.operMgt.rlehoMgt.NewRlehoMgtDto">
+		SELECT
+			placeId,
+			placeNm,
+			hasChildren
+		FROM 
+			(
+				SELECT
+					place.place_id		AS placeId,
+					place.place_nm		AS placeNm,
+					place.place_parent	AS placeParent,
+					place.place_manager	AS placeManager,
+					place.is_use		AS isUse,
+					urInfo.user_nm		AS placeManagerNm,
+					IF((SELECT COUNT(1)FROM bc_place_info child  WHERE child.place_parent = place.place_id) > 0 ,TRUE,FALSE) AS hasChildren
+				FROM bc_place_info place
+				LEFT OUTER JOIN mb_user_info urInfo ON place.place_manager = urInfo.user_id
+				WHERE place.is_use = TRUE
+			) placeInfo
+		WHERE hasChildren != 1
+		AND placeNm IS NOT NULL
+	</select>
+</mapper>

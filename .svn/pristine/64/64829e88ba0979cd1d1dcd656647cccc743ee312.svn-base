@@ -1,0 +1,158 @@
+
+.compMgtForm #jtePopAddForm_master {
+	width:100%;
+}
+
+.compMgtForm .jtePopForm_master {
+	width: 100%;
+}
+
+.grid-content {
+   width: 100%;
+}
+
+/*04.09 JJW 내부 스타일 옮김*/
+.compMgtForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /*** listbox inline 표시 위해_gwpark ***/
+    display: inline-flex; 
+}
+
+.compMgtForm #jtePopForm_form {
+	text-align: left;
+	padding-left: 0;
+}
+
+.compMgtForm .jtePopForm_master {
+	padding-top: 0px;
+}
+
+.compMgtForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+/* .k-widget .k-listbox {
+	width: 40%;
+	padding-left: 10px;
+}
+ */
+.k-widget .k-listbox .k-listbox-toolbar-right {
+	width: 45%;
+}
+
+.k-listbox-toolbar {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.final-btn-area {
+	margin-top: 10px;
+	text-align: center;
+	
+}
+
+.k-autocomplete .k-input, .k-dropdown-wrap .k-input, .k-multiselect-wrap .k-input, .k-numeric-wrap .k-input, .k-picker-wrap .k-input, .k-selectbox .k-input, .k-textbox>input {
+	text-indent: 0;
+}
+
+.compMgtForm .btn_company_info {
+   width: 100%
+}
+
+.compMgtForm .center-input {
+   width: 100%;
+}
+
+.compMgtForm .col-left-title {
+   width: 20%;
+}
+
+.compMgtForm .col-left-content {
+   width: 30%;
+}
+
+.compMgtForm .col-right-title {
+   width: 20%;
+}
+
+.compMgtForm .col-right-content {
+   width: 30%;
+}
+
+.compMgtForm .popsc-col-left-title {
+	width:25%;
+}
+
+.compMgtForm .popsc-col-right-content {
+	width:75%;
+}
+
+div.k-window-content{
+   overflow-y: auto;
+}
+
+.compMgtForm .jtePopForm_master th {
+   text-align: left;   
+}
+
+.compMgtForm .left-input {
+   width: 90%;
+   float: left;
+}
+
+.compMgtForm .right-input {
+   width: 90%;
+   float: right;
+}
+
+.compMgtForm .center-input {
+	width: 100%;
+}
+
+.compMgtForm .normal-input {
+	width: 100%;
+}
+
+.compMgtForm .jte-msgBox {
+	width: 90%;
+	float: right;
+}
+
+.k-listbox.k-listbox-toolbar-right .k-listbox-toolbar {
+	margin-left: 9px;
+}
+/*********************************************/
+
+.compMgtForm .popsc-col-left-title {
+	width: 30%;
+}
+
+.compMgtForm .popsc-col-right-content {
+	width: 70%;
+}
+
+.compMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+/*********************************************/
+
+#jtePopAddForm_master {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+#jtePopAddForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.compMgtForm #jtePopAddForm_master th {
+	text-align: left;	
+}

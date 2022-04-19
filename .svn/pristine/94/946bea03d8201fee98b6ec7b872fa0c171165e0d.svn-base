@@ -1,0 +1,234 @@
+/*********** 첫번째 화면의 그리드  ***********/
+
+.mtrltoolMgtForm-jteSingleGrid {
+	width:40%; 
+	height:100%;
+	float: left;
+}
+
+.mtrltoolMgtForm-jteSubGrid {
+	width:59%; 
+	height:100%;
+	float: right;
+}
+
+
+.mtrltoolMgtForm div.k-window-content{
+	overflow: unset; /*팝업창의 스크롤 없앰*/
+}
+
+/*********** 첫번째 오른쪽 그리드 추가버튼 클릭 시의 팝업  ***********/
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.mtrltoolMgtForm {
+	margin-top: 0.8em;
+}
+
+.mtrltoolMgtForm .center-input {
+	width: 100%;
+}
+
+.mtrltoolMgtForm .center-input.btn-input{
+	width: 100%;
+}
+
+.mtrltoolMgtForm .col-left-title {
+	width: 20%;
+}
+
+.mtrltoolMgtForm .col-left-content {
+	width: 30%;
+}
+
+.mtrltoolMgtForm .col-right-title {
+	width: 20%;
+}
+
+.mtrltoolMgtForm .col-right-content {
+	width: 30%;
+}
+
+.mtrltoolMgtForm .grid-content {
+	width: 100%;
+}
+
+.jte-search-aria .input.k-textbox{
+	margin-left: 0.4em;
+	margin-right: 0.4em;
+}
+
+.mtrltoolMgtForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+.mtrltoolMgtForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 0px;
+}
+
+.mtrltoolMgtForm .search-btn {
+	width: 100%;
+}
+
+.mtrltoolMgtForm .jtePopAddForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.mtrltoolMgtForm .jtePopForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.mtrltoolMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.mtrltoolMgtForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.mtrltoolMgtForm .left-caret:before {
+	padding-left: 25px;
+}
+
+.mtrltoolMgtForm .left-input {
+	width: 100%;
+}
+ 
+.mtrltoolMgtForm .jtePopAddForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.mtrltoolMgtForm .right-input {
+	width: 100%;
+}
+
+#jtePopForm_grid .k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#jtePopForm_grid td {
+	padding: .4em .6em;	
+}
+
+
+/***** 오른쪽 그리드 정비이력 버튼 클릭 → 추가 버튼 클릭 시 나타나는 팝업  *******/
+
+.mtrltoolMgtForm .popsc-col-left-title {
+	width: 22%;
+}
+
+.mtrltoolMgtForm .popsc-col-left-content-1 {
+	width: 17%;
+}
+
+.mtrltoolMgtForm .popsc-col-left-content-2 {
+	width: 9%;
+}
+
+.mtrltoolMgtForm .popsc-col-right-title {
+	width: 26%;
+}
+
+.mtrltoolMgtForm .popsc-col-right-content {
+	width: 26%;
+}
+
+.mtrltoolMgtForm .popsc-left-caret {
+	padding-left: 27px;
+}
+
+.mtrltoolMgtForm .fa-info-circle:before {
+	color:#081332;
+}
+
+.mtrltoolMgtForm .center-input{
+	width: 100%;
+}
+
+.mtrltoolMgtForm .jtePopToolAdd_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.mtrltoolMgtForm .jtePopToolAdd_master th {
+	text-align: left;	
+}
+
+.mtrltoolMgtForm .jtePopToolAdd_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.mtrltoolMgtForm .left-input {
+	width: 100%;
+}
+
+.mtrltoolMgtForm .right-input {
+	width: 100%;
+}
+
+.mtrltoolMgtForm .left-input.btn-input {
+	width: 100%;
+}
+
+
+
+/***** 오른쪽 그리드 정비이력 버튼 클릭 시 나타나는 팝업  *******/
+
+#jtePopToolMtnc {
+/* 	height:100%; */
+}
+
+#jtePopToolMtnc #jtePopToolMtnc_grid .k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#jtePopToolMtnc #jtePopToolMtnc_grid td {
+	padding: .4em .6em;
+}
+
+#jtePopToolMtnc #jtePopToolMtnc_grid .k-grid-toolbar #jtePopToolMtnc_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;	
+}
+
+
+
+/***** 오른쪽 그리드 사용정보 버튼 클릭 시 나타나는 팝업  *******/
+
+#jtePopToolUse {
+/* 	height:100%; */
+}
+
+#jtePopToolUse #jtePopToolUse_grid .k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#jtePopToolUse #jtePopToolUse_grid td {
+	padding: .4em .6em;
+}
+
+
+
+
+
+

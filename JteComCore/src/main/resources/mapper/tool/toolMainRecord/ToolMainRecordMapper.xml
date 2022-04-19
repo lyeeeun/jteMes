@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper	namespace="jin.mes.form.tool.toolMainRecord.ToolMainRecordMapper">
+
+	<!-- 공구 관리정보 -->
+	<sql id="toolMgtRecord_base">
+			toolMgt.tool_mgt_id				AS toolMgtId,
+			toolMgt.tool_mgt_purchase		AS toolMgtPurchase,
+			toolMgt.tool_mgt_state			AS toolMgtState,
+			toolMgt.tool_mgt_limit			AS toolMgtLimit,
+			toolMgt.tool_mgt_use			AS toolMgtUse,
+			toolMgt.tool_mgt_verif			AS toolMgtVerif,
+			toolMgt.tool_mgt_gbn			AS toolMgtGbn,
+			toolMgt.tool_mgt_desc			AS toolMgtDesc,
+			toolMgt.is_del					AS isDel,
+			toolMgt.created_at				AS createdAt,
+			toolMgt.creator_id				AS creatorId,
+			toolMgt.updated_at				AS updatedAt,
+			toolMgt.updator_id				AS updatorId,
+			toolMgt.comp_id					AS compId,
+			compInfo.comp_nm				AS compNm,
+			toolMgt.tool_id					AS toolId,
+			toolInfo.tool_nm				AS toolNm
+		FROM cm_tool_mgt toolMgt
+		LEFT JOIN bc_company_info compInfo ON toolMgt.comp_id = compInfo.comp_id
+		LEFT JOIN bc_tool_info toolInfo ON toolMgt.tool_id = toolInfo.tool_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="toolId != null">
+			AND toolInfo.tool_id = #{toolId}
+		</if>
+	</sql>
+
+	<!-- 공구 관리정보(Page) select -->
+	<select id="selectToolRecordList"
+		parameterType="jin.mes.form.tool.toolMainRecord.ToolMainRecordDto"
+		resultType="jin.mes.form.tool.toolMainRecord.ToolMainRecordDto">
+		SELECT * FROM (
+		SELECT
+		<choose>
+			<when test="sort != null and sort != '' ">
+				ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+			</when>
+			<otherwise>
+				ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+			</otherwise>
+		</choose>
+		<include refid="toolMgtRecord_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>
+	</select>
+
+	<!-- 공구 관리정보 Count -->
+	<select id="selectToolRecordCount"
+		parameterType="jin.mes.form.tool.toolMainRecord.ToolMainRecordDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM (
+		SELECT
+		<include refid="toolMgtRecord_base" />
+		)c_table
+	</select>
+
+	<!-- 공구 정비이력 -->
+	<sql id="toolMainRecord_base">
+		toolMtnc.tool_mtnc_id 		AS toolMtncId,
+		toolMtnc.tool_mtnc_start	AS toolMtncStart,
+		toolMtnc.tool_mtnc_end 		AS toolMtncEnd,
+		toolMtnc.tool_mtnc_user		AS toolMtncUser,
+		toolMtnc.tool_mtnc_cost		AS toolMtncCost,
+		toolMtnc.tool_mtnc_desc		AS toolMtncDesc,
+		toolMtnc.creator_id 		AS creatorId,
+		toolMtnc.created_at 		AS createdAt,
+		toolMtnc.updator_id 		AS updatorId,
+		toolMtnc.updated_at 		AS updatedAt,
+		toolMtnc.tool_mgt_id 		AS toolMgtId,
+		urInfo.user_nm				AS toolMtncUserNm
+		FROM his_tool_maintenance toolMtnc
+		LEFT OUTER JOIN mb_user_info urInfo ON toolMtnc.tool_mtnc_user = urInfo.user_id
+		WHERE 1=1
+		AND toolMtnc.tool_mgt_id = #{toolMgtId}
+		<if test="toolMtncId != null and toolMtncId != '' ">
+			AND toolMtnc.tool_mtnc_id = #{toolMtncId}
+		</if>
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+
+	<!-- 공구 정비이력(Page) select -->
+	<select id="selectToolMainRecordList"
+		parameterType="jin.mes.form.tool.toolMainRecord.ToolMainRecordDto"
+		resultType="jin.mes.form.tool.toolMainRecord.ToolMainRecordDto">
+		SELECT * FROM (
+		SELECT
+		<choose>
+			<when test="sort != null and sort != '' ">
+				ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+			</when>
+			<otherwise>
+				ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+			</otherwise>
+		</choose>
+		<include refid="toolMainRecord_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>
+	</select>
+
+	<!-- 공구 정비이력Count -->
+	<select id="selectToolMainRecordCount"
+		parameterType="jin.mes.form.tool.toolMainRecord.ToolMainRecordDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM (
+		SELECT
+		<include refid="toolMainRecord_base" />
+		)c_table
+	</select>
+
+	<!-- 공구 정비이력 입력 -->
+	<insert id="insertToolMainRecord"
+		parameterType="jin.mes.form.tool.toolMainRecord.ToolMainRecordDto">
+		<selectKey keyProperty="toolMtncId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('TOLNC') AS toolMtncId
+		</selectKey>
+		INSERT INTO his_tool_maintenance (
+			tool_mtnc_id,
+			tool_mtnc_start,
+			tool_mtnc_end,
+			tool_mtnc_user,
+			tool_mtnc_cost,
+			tool_mtnc_desc,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at,
+			tool_mgt_id
+		)VALUES(
+			#{toolMtncId},
+			#{toolMtncStart},
+			#{toolMtncEnd},
+			#{toolMtncUser},
+			#{toolMtncCost},
+			#{toolMtncDesc},
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			NOW(),
+			#{toolMgtId}
+		)
+	</insert>
+
+	<!-- 공구 정비이력 수정 -->
+	<update id="updateToolMainRecord"
+		parameterType="jin.mes.form.tool.toolMainRecord.ToolMainRecordDto">
+		UPDATE his_tool_maintenance
+		SET updator_id = #{updatorId},
+		updated_at = NOW()
+		<if test="toolMtncStart != null">
+			,tool_mtnc_start = #{toolMtncStart}
+		</if>
+		<if test="toolMtncEnd != null">
+			,tool_mtnc_end = #{toolMtncEnd}
+		</if>
+		<if test="toolMtncUser != null">
+			,tool_mtnc_user = #{toolMtncUser}
+		</if>
+		<if test="toolMtncCost != null">
+			,tool_mtnc_cost = #{toolMtncCost}
+		</if>
+		<if test="toolMtncDesc != null">
+			,tool_mtnc_desc = #{toolMtncDesc}
+		</if>
+		WHERE tool_mtnc_id = #{toolMtncId}
+	</update>
+
+	<!-- 공구 정비이력 삭제 -->
+	<delete id="deleteToolMainRecord"
+		parameterType="jin.mes.form.tool.toolMainRecord.ToolMainRecordDto">
+		DELETE FROM his_tool_maintenance
+		WHERE tool_mtnc_id = #{toolMtncId}
+	</delete>
+
+</mapper>

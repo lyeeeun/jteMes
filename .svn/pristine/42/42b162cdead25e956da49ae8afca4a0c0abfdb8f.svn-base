@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.mapper.basMgt.menuMgt.menuAuth.MenuMgtMapper">
+
+	<sql id="menuRole_children">
+			menu.menu_id				AS menuId, 
+			menu.dupl_yn 				AS duplYn, 
+			menu.is_del					AS isDel, 
+			menu.is_lock				AS isLock, 
+			menu.menu_cd				AS menuCd, 
+			menu.menu_nm				AS menuNm, 
+			menu.menu_seq				AS menuSeq, 
+			menu.msg_id					AS msgId, 
+			menu.svc_url				AS svcUrl, 
+			menu.up_menu_id				AS ReportsTo,
+			menu.up_menu_id				AS upMenuId, 
+			menu.view_url				AS viewUrl,
+			menu.created_at				AS createdAt, 
+			menu.updated_at				AS updatedAt, 
+			menu.creator_id				AS creatorId, 
+			menu.updator_id				AS updatorId, 
+			menu.description			AS DESCRIPTION,
+			IF((SELECT COUNT(1)FROM cw_menu_bas child  WHERE child.up_menu_id = menu.menu_id) > 0 ,TRUE,FALSE) AS hasChildren,
+			viw.role_id					AS roleId
+		FROM cw_menu_bas menu
+		LEFT OUTER JOIN cw_menu_view viw ON menu.menu_id = viw.menu_id AND viw.role_id = #{roleId}
+		WHERE up_menu_id = IFNULL(#{menuId},'')
+		
+	</sql>
+	
+	<!--트리조회 -->
+	<select id="selectMenuRoleTree"
+	parameterType="jin.mes.form.basMgt.menuMgt.menuInfo.MenuInfoDto"
+		resultType="jin.mes.form.basMgt.menuMgt.menuInfo.MenuInfoDto">
+		SELECT	
+		<include refid="menuRole_children" />
+		ORDER BY menuSeq ASC
+	</select>
+	
+	<insert id="insertMenuRole" parameterType="jin.mes.form.basMgt.menuMgt.menuInfo.MenuInfoDto">
+		INSERT INTO cw_menu_view(
+			menu_id, 
+			role_id,
+			creator_id,
+			created_at, 
+			updator_id,
+			updated_at
+		)VALUES(
+			#{menuId},
+			#{roleId},
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			NOW()
+		)
+	</insert>
+	
+	<delete id="deleteMenuRole" parameterType="jin.mes.form.basMgt.menuMgt.menuInfo.MenuInfoDto">
+		DELETE FROM cw_menu_view
+		WHERE menu_id = #{menuId} AND role_id = #{roleId}  
+	</delete>
+</mapper>

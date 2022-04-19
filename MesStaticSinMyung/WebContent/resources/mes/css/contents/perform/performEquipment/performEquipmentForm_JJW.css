@@ -1,0 +1,35 @@
+
+.performEquipmentForm {
+	width:100%;
+}
+
+.performEquipmentForm.search-btn-area {
+	background-color: #f2f6fc;
+	padding: 15px 10px;
+	margin-bottom: 5px;
+}
+
+.performEquipmentForm.performEquipmentForm-gird {
+	width:100%;
+	margin-top: 5px;
+}
+
+.performEquipmentForm-gird #grid-content {
+	height: 100%;
+	overflow-y: scroll;
+}
+
+.performEquipmentForm-gird #jteSingleGrid {
+	height: 720px;
+}
+
+/*mediaquery*/
+@media screen and (max-width: 1380px){
+	.performEquipmentForm-gird #grid-content {
+		height: 420px;
+	}
+	
+	.performEquipmentForm-gird #jteSingleGrid {
+		height: 420px;
+	}
+}

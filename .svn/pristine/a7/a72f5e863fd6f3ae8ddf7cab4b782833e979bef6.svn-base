@@ -1,0 +1,95 @@
+package jin.mes.form.ship.shipMgt;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import jin.mes.form.ship.pickMgt.PickMgtDto;
+import jin.mes.form.ship.shipPlanMgt.ShipPlanMgtController;
+import kr.co.itcall.jte.common.mvc.BaseController;
+import kr.co.itcall.jte.common.mvc.PageRequestVo;
+import kr.co.itcall.jte.spring.config.exception.BusinessException;
+
+@Controller
+@RequestMapping("/form/ship/shipMgt")
+public class ShipMgtController extends BaseController {
+	private static final Logger logger = LoggerFactory.getLogger(ShipPlanMgtController.class);
+
+	@Resource
+	protected ShipMgtService shipMgtService; 
+	
+	@RequestMapping("/selectShipInfo")
+	public ModelMap selectShipInfo(@ModelAttribute("shipMgtDto") ShipMgtDto shipMgtDto, ModelMap model) {
+		
+		PageRequestVo pageRequestVo = new PageRequestVo();
+		pageRequestVo.setPage(getCurrentPage(Integer.toString(shipMgtDto.getPage())));
+		pageRequestVo.setRows(shipMgtDto.getRows());
+
+		setModelWithkendoList(model, shipMgtService.selectShipInfo(shipMgtDto, pageRequestVo));
+
+		return model;
+	}
+	
+	@RequestMapping("/selectShipRtlBarcode")
+	public ModelMap selectShipRtlBarcode(@ModelAttribute("shipMgtDto") ShipMgtDto shipMgtDto, ModelMap model) {
+		try {
+			model.addAttribute("rows", shipMgtService.selectShipRtlBarcode(shipMgtDto));
+		}catch(Exception ex) {
+			throw new BusinessException("selectShipRtlBarcode  : " + ex.getMessage());
+		}
+
+		return model;
+	}
+	
+	@RequestMapping("/selectBarcodeInfo")
+	public ModelMap selectBarcodeInfo(@ModelAttribute("shipMgtDto") ShipMgtDto shipMgtDto, ModelMap model) {
+		
+		PageRequestVo pageRequestVo = new PageRequestVo();
+		pageRequestVo.setPage(getCurrentPage(Integer.toString(shipMgtDto.getPage())));
+		pageRequestVo.setRows(shipMgtDto.getRows());
+		pageRequestVo.setPagingYN(shipMgtDto.getPagingYN());
+		
+		setModelWithkendoList(model, shipMgtService.selectBarcodeInfo(shipMgtDto, pageRequestVo));
+
+		return model;
+	}
+	
+	@RequestMapping("/setShipInfo")
+	@ResponseBody
+	public void setShipInfo(@RequestBody ShipMgtDto shipMgtDto) {
+		shipMgtService.setShipInfo(shipMgtDto);
+	}
+	
+	@RequestMapping("/deleteShipInfo")
+	@ResponseBody
+	public void deleteShipInfo(@RequestBody List<ShipMgtDto> shipMgtDto) {
+		shipMgtService.deleteShipInfo(shipMgtDto);
+	}
+	
+	@RequestMapping("/selectLotState")
+	public ModelMap selectLotState(@ModelAttribute("shipMgtDto") ShipMgtDto shipMgtDto, ModelMap model) {
+		try {
+			model.addAttribute("rows", shipMgtService.selectLotState(shipMgtDto));
+		}catch(Exception ex) {
+			throw new BusinessException("selectLotState  : " + ex.getMessage());
+		}
+
+		return model;
+	}
+	
+	@RequestMapping("/allShipComplete")
+	@ResponseBody
+	public void allShipComplete(@RequestBody ShipMgtDto shipMgtDto) {
+		shipMgtService.allShipComplete(shipMgtDto);
+	}
+	
+}

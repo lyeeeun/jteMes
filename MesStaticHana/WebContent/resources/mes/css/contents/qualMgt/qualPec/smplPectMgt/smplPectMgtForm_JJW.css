@@ -1,0 +1,14 @@
+
+.smplPectMgtForm.radio-btn-area {
+	width:100%;
+	background:#E2ECFF;
+	padding:15px 0 15px 0;
+	margin:10px 0 10px 0;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+/*20.08.07 왼쪽 셀 가운데 정렬, 상단 열 제외 JJW*/
+.smplPectMgtForm.k-grid td:first-child {
+	text-align: center;
+}

@@ -1,0 +1,48 @@
+@CHARSET "UTF-8";
+
+.grid-content {
+	width: 100%;
+}
+
+.menuAuthForm {
+	width: 100%;
+	margin: 0 auto;
+/* 	text-align: center; */
+	vertical-align: middle;
+}
+
+.menuAuthForm .left-contents {
+	width: 59%;
+	display: inline-block;
+}
+
+.menuAuthForm .middle-contents {
+	width: 5%;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.menuAuthForm .right-contents {
+	width: 35%;
+	display: inline-block;
+	height: 100%;
+}
+
+.middle-contents .fas.fa-caret-square-right.fa-3x{
+	color: #3367D6;
+	padding-right: 24px;
+	
+}
+
+.menuAuthForm #jteSubTree {
+	font-size: 16px;
+	border: 2px solid #8aafff;
+	background:#ffffff;
+}
+
+/** 20.08.10 JJW 왼쪽 트리 구조 여백 따로 주기 위함**/
+.menuAuthForm.k-treeview .k-item {
+	margin-left: 10px;
+	margin-top: 10px;
+}

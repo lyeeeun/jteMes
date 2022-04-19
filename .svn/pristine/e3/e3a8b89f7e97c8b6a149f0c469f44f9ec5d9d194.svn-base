@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.qualMgt.qualPec.toolQualMgt.NewToolQualMgtMapper">
+	<sql id="toolInsp_base">
+			itemInfo.item_id				AS itemId,
+			itemInfo.item_nm				AS itemNm,
+			placeInfo.place_id				AS placeId, 
+			placeInfo.place_nm				AS placeNm,
+			eqmtMgt.eqmt_mgt_id				AS eqmtMgtId,
+			eqmtMgt.eqmt_mgt_nm				AS eqmtMgtNm,
+			rtlItemTool.tool_mgt_id			AS toolMgtId,
+			rtlItemTool.inspect_standard	AS inspectStandard,
+			rtlItemTool.tool_change			AS toolChange,
+			rtlItemTool.question_id			AS questionId
+			<if test="placeId != null and placeId != '' ">
+				,
+				toolInsp.tool_insp_id		AS toolInspId,
+				toolInsp.state_value		AS stateValue,
+				toolInsp.before_value		AS beforeValue,
+				toolInsp.after_value		AS afterValue,
+				toolInsp.inspect_date		AS inspectDate,
+				toolInsp.inspector_id		AS inspectorId,
+				userInfo.user_nm			AS inspectorNm
+			</if>
+		FROM bc_item_info itemInfo
+		INNER JOIN bc_place_info placeInfo ON itemInfo.item_std_str02 = placeInfo.place_parent AND placeInfo.place_parent != ""
+		INNER JOIN bc_equipment_mgt eqmtMgt ON placeInfo.place_id = eqmtMgt.place_id
+		LEFT JOIN bc_rtl_item_tool rtlItemTool ON itemInfo.item_id = rtlItemTool.item_id AND eqmtMgt.eqmt_mgt_id = rtlItemTool.eqmt_mgt_id
+		<if test="placeId != null and placeId != '' ">
+		INNER JOIN his_tool_inspect toolInsp ON itemInfo.item_id = toolInsp.item_id AND eqmtMgt.eqmt_mgt_id = toolInsp.eqmt_mgt_id
+		INNER JOIN mb_user_info userInfo on toolInsp.inspector_id = userInfo.user_id
+		</if>
+		WHERE itemInfo.item_id = #{itemId}
+		<if test="placeId != null and placeId != '' ">
+			AND placeInfo.place_id = #{placeId}
+		</if>
+		<if test="placeId == null or placeId == '' ">
+			GROUP BY placeInfo.place_id
+		</if>
+		<if test="placeId != null and placeId != '' ">
+			GROUP BY toolInsp.tool_insp_id
+		</if>
+	</sql>
+	
+	<select id="selectToolInspInfo"
+		parameterType="jin.mes.cform.qualMgt.qualPec.toolQualMgt.NewToolQualMgtDto"
+		resultType="jin.mes.cform.qualMgt.qualPec.toolQualMgt.NewToolQualMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY toolInsp.inspect_date asc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="toolInsp_base"></include>
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<select id="selectToolInspInfoCount"
+		parameterType="jin.mes.cform.qualMgt.qualPec.toolQualMgt.NewToolQualMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="toolInsp_base"></include>
+		)c_table
+	</select>
+	
+	<select id="selectRtlPlaceInfo"
+		parameterType="jin.mes.cform.qualMgt.qualPec.toolQualMgt.NewToolQualMgtDto"
+		resultType="jin.mes.cform.qualMgt.qualPec.toolQualMgt.NewToolQualMgtDto">
+		SELECT 
+		<include refid="toolInsp_base"></include>
+	</select>
+	
+	<select id="selectToolInspId" resultType="string">
+		SELECT CREATE_PK('TOOLINSP') AS toolInspId
+	</select>
+	
+	<select id="selectInspHistory"
+		parameterType="jin.mes.cform.qualMgt.qualPec.toolQualMgt.NewToolQualMgtDto"
+		resultType="jin.mes.cform.qualMgt.qualPec.toolQualMgt.NewToolQualMgtDto">
+	SELECT 
+		question_id as questionId,
+		state_value AS stateValue,
+		before_value AS beforeValue,
+		after_value as afterValue
+	FROM his_tool_inspect
+	WHERE tool_insp_id = #{toolInspId}
+	</select>
+	
+	<insert id="insertToolInspInfo" parameterType="jin.mes.cform.qualMgt.qualPec.toolQualMgt.NewToolQualMgtDto">
+		INSERT INTO his_tool_inspect(
+			tool_insp_id,
+			item_id,
+			eqmt_mgt_id,
+			question_id,
+			state_value,
+			before_value,
+			after_value,
+			inspect_date,
+			inspector_id
+		)VALUES(
+			#{toolInspId},
+			#{itemId},
+			#{eqmtMgtId},
+			#{questionId},
+			#{stateValue},
+			#{beforeValue},
+			#{afterValue},
+			#{inspectDate},
+			#{inspectorId}
+		)
+	</insert>
+	
+	
+	<update id="updateToolInspInfo" parameterType="jin.mes.cform.qualMgt.qualPec.toolQualMgt.NewToolQualMgtDto">
+		UPDATE his_tool_inspect
+		SET state_value = #{stateValue},
+		before_value = #{beforeValue},
+		after_value = #{afterValue}
+		WHERE tool_insp_id  = #{toolInspId}
+		AND question_id = #{questionId}
+	</update>
+	
+	
+</mapper>

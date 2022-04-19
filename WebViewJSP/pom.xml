@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<properties>
+		<pack.type>war</pack.type>
+	</properties>
+	
+	<!-- <groupId>kr.co.itcall.jte</groupId> -->
+	<artifactId>WebViewJSP</artifactId>
+	<!-- <version>1.0.0</version> -->
+	<packaging>${pack.type}</packaging>
+	<name>${project.artifactId} Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+	
+	<parent>
+		<groupId>kr.co.itcall.jte</groupId>
+		<artifactId>JinTechEngParents</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	
+	<dependencies>
+		<dependency>
+			<groupId>kr.co.itcall.jte</groupId>
+			<artifactId>WebAppCore</artifactId>
+			<version>1.0.0</version>
+<!-- 			<scope>provided</scope> -->
+		</dependency>
+
+
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<finalName>${project.artifactId}</finalName>
+
+<!-- 		<resources> -->
+<!-- 			<resource> -->
+<!-- 				<directory>src/main/resources</directory> -->
+			<!-- 				<excludes> -->
+			<!-- 					<exclude>**/WebAppCore-*.jar</exclude> -->
+			<!-- 				</excludes> -->
+<!-- 			</resource> -->
+<!-- 			<resource> -->
+<!-- 				<directory>${basedir}/../WebAppCore/target/classes</directory> -->
+<!-- 			</resource> -->
+<!-- 		</resources> -->
+<!-- 		<testResources> -->
+<!-- 			<testResource> -->
+<!-- 				<directory>src/test/resources</directory> -->
+<!-- 			</testResource> -->
+<!-- 		</testResources> -->
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<!-- <version>3.1</version> -->
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId> 
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!-- <version>${spring.boot.version}</version> -->
+				<configuration>
+					<downloadSources>false</downloadSources>
+					<downloadJavadocs>false</downloadJavadocs>
+				</configuration>
+				<executions>
+					<execution>
+						<configuration>
+							<mainClass>${start-class}</mainClass>
+						</configuration>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-${pack.type}-plugin</artifactId>
+				<configuration>
+					<warSourceDirectory>/src/main/webapp</warSourceDirectory>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<webResources>
+						<webResource>
+							<directory>${basedir}/src/main/webapp</directory>
+							<!-- 로컬에서 REMARK해야 사용하며, 배포시에는 apache에 별도로 올라가므로 주석을 해제한다. -->
+							<!-- <excludes> -->
+							<!-- <exclude>/static/**</exclude> -->
+							<!-- </excludes> -->
+						</webResource>
+					</webResources>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+</project>

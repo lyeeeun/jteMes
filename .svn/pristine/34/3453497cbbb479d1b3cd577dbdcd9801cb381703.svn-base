@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtMapper">
+								
+<!-- 설비-공구 장착정보 -->
+	<sql id="eqmtTool_base">
+			rtl.eqmt_mgt_id			    	AS eqmtMgtId,
+			rtl.eqip_id                 	AS eqipId,
+			rtl.eqip_nm                 	AS eqipNm,
+			rtl.eqip_position           	AS eqipPosition,
+			rtl.creator_id              	AS creatorId,
+			rtl.created_at              	AS createdAt,
+			rtl.updator_id              	AS updatorId,
+			rtl.updated_at              	AS updatedAt,
+			rtl.is_del		              	AS isDel,
+			rtl.tool_mgt_id             	AS toolMgtId,
+			toolMgt.tool_mgt_purchase   	AS toolMgtPurchase,
+			toolMgt.tool_mgt_state      	AS toolMgtState,
+			toolMgt.tool_mgt_limit      	AS toolMgtLimit,
+			toolMgt.tool_mgt_use        	AS toolMgtUse,
+			toolMgt.tool_mgt_verif      	AS toolMgtVerif,
+			toolMgt.tool_mgt_gbn        	AS toolMgtGbn,
+			toolMgt.tool_mgt_desc       	AS toolMgtDesc,
+			toolMgt.comp_id             	AS compId,
+			comp.comp_nm                	AS compNm,
+			toolMgt.tool_id             	AS toolId,
+			toolInfo.tool_nm            	AS toolNm,
+			routTool.tool_count				AS toolCount
+		FROM bc_rtl_equip_tool rtl
+		LEFT OUTER JOIN cm_tool_mgt toolMgt ON toolMgt.tool_mgt_id = rtl.tool_mgt_id
+		LEFT OUTER JOIN bc_tool_info toolInfo ON toolInfo.tool_id = toolMgt.tool_id
+		LEFT OUTER JOIN bc_company_info comp ON comp.comp_id = toolMgt.comp_id
+		LEFT OUTER JOIN bc_rtl_routing_tool routTool ON routTool.tool_id = toolInfo.tool_id
+		WHERE 1=1 AND rtl.is_del = false
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		
+
+		<if test="eqipId != null and eqipId != '' ">
+			AND rtl.eqip_id = #{eqipId}
+		</if>
+		<if test="toolMgtId != null and toolMgtId != '' ">
+			AND rtl.tool_mgt_id = #{toolMgtId}
+		</if>
+		<if test="routingId != null and routingId != '' ">
+			AND routTool.routing_id = #{routingId}
+		</if>
+	</sql>
+	
+	<!-- 설비-공구 장착정보(Page) select -->
+	<select id="selectEqmtToolList"
+		parameterType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto"
+		resultType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="eqmtTool_base" />
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<!-- 설비-공구 장착정보 Count -->
+	<select id="selectEqmtToolCount"
+		parameterType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="eqmtTool_base" />
+				)c_table
+	</select>
+	
+	<!-- 설비-공구 장착정보(Page) select -->
+	<select id="selectEqmtToolListAll"
+		parameterType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto"
+		resultType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="eqmtTool_base" />
+				)s_table
+	</select>
+	
+	<!-- 설비-공구 장착정보 입력 -->
+	<insert id="insertEqmtTool" parameterType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto">
+		INSERT INTO bc_rtl_equip_tool(
+			eqmt_mgt_id ,
+			eqip_nm,
+			eqip_position,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at,
+			tool_mgt_id,
+			is_del
+		)VALUES(
+			#{eqmtMgtId},
+			#{eqipNm},
+			#{eqipPosition},
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			NOW(),
+			#{toolMgtId},
+			#{isDel}
+		)
+	</insert>
+	<!-- 설비-공구 장착 정보수정 -->
+	<update id="updateEqmtTool" parameterType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto">
+		UPDATE bc_rtl_equip_tool
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="eqipNm != null">	
+				,eqip_nm = #{eqipNm}
+			</if>
+			<if test="eqipPosition != null">	
+				,eqip_position = #{eqipPosition}
+			</if>
+		WHERE eqip_id  = #{eqipId}
+	</update>
+	
+	<!--삭제 is_del 처리 -->
+	<!-- 설비-공구 장착정보 삭제 -->
+	<update id="deleteEqmtTool" parameterType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto">
+		UPDATE bc_rtl_equip_tool
+		SET updator_id = #{updatorId},	
+			updated_at = NOW(),
+			is_del = true
+		WHERE eqip_id  = #{eqipId}
+	</update>
+	
+<!-- 	<delete id="deleteEqmtTool" parameterType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto"> -->
+<!-- 		DELETE FROM bc_rtl_equip_tool -->
+<!-- 		WHERE eqip_id  = #{eqipId} -->
+<!-- 	</delete> -->
+	
+<!-- 	설비에서 생산 가능한 아이템 조회 -->
+	<select id="selectEqmtToolItemList"
+		parameterType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto"
+		resultType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto">
+
+		SELECT 
+			rout.item_id,
+			item.item_nm 		 
+		FROM bc_rtl_routing_equip routEqmt
+		LEFT OUTER JOIN bc_routing_info rout ON rout.routing_id = routEqmt.routing_id
+		LEFT OUTER JOIN bc_item_info item ON item.item_id = rout.item_id
+		WHERE routEqmt.eqmt_mgt_id = #{eqmtMgtId}
+		GROUP BY rout.item_id, item.item_nm
+	</select>
+	
+	<!-- 	설비에서 생산 가능한 라우팅 조회() -->
+	<select id="selectEqmtToolRoutingList"
+		parameterType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto"
+		resultType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto">
+		SELECT 
+			rout.item_id, 
+			item.item_nm, 
+			routEqmt.routing_id, 
+			rout.routing_type 
+		FROM bc_rtl_routing_equip routEqmt
+		LEFT OUTER JOIN bc_routing_info rout ON rout.routing_id = routEqmt.routing_id
+		LEFT OUTER JOIN bc_item_info item ON item.item_id = rout.item_id
+		WHERE routEqmt.eqmt_mgt_id = #{eqmtMgtId} AND item.item_id = #{itemId}
+	</select>
+	
+	<!--장착 가능 공구 -->
+	<sql id="eqmtToolPos_base">
+			routTool.tool_rpm				AS toolRpm,
+			routTool.tool_location			AS toolLocation,
+			routTool.tool_count				AS toolCount,
+			routTool.routing_id				AS routingId,
+			rout.routing_Type				AS routingType,
+			routTool.tool_id             	AS toolId,
+			toolInfo.tool_nm            	AS toolNm,
+			toolMgt.tool_mgt_id             AS toolMgtId,
+			toolMgt.tool_mgt_purchase   	AS toolMgtPurchase,
+			toolMgt.tool_mgt_state      	AS toolMgtState,
+			toolMgt.tool_mgt_limit      	AS toolMgtLimit,
+			toolMgt.tool_mgt_use        	AS toolMgtUse,
+			toolMgt.tool_mgt_verif      	AS toolMgtVerif,
+			toolMgt.tool_mgt_gbn        	AS toolMgtGbn,
+			toolMgt.tool_mgt_desc       	AS toolMgtDesc,
+			toolMgt.comp_id             	AS compId,
+			comp.comp_nm                	AS compNm
+		FROM bc_rtl_routing_tool routTool
+		LEFT OUTER JOIN bc_routing_info rout ON rout.routing_id = routTool.routing_id 		-- 라우팅
+		LEFT OUTER JOIN bc_item_info item ON item.item_id = rout.item_id					-- 아이템
+		LEFT OUTER JOIN bc_tool_info toolInfo ON toolInfo.tool_id = routTool.tool_id		-- 공구정보
+		LEFT OUTER JOIN cm_tool_mgt toolMgt ON toolMgt.tool_id = routTool.tool_id			-- 공구관리
+		LEFT OUTER JOIN bc_company_info comp ON comp.comp_id = toolMgt.comp_id 				-- 회사정보(수입업체)
+		WHERE routTool.routing_id = #{routingId} 
+			AND toolMgt.tool_mgt_id NOT IN(SELECT tool_mgt_id FROM bc_rtl_equip_tool WHERE is_del = FALSE) -- 장착 공구 제외
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="toolId != null and toolId != '' ">
+			AND toolInfo.tool_id = #{toolId}
+		</if>
+	</sql>
+	
+	<!--장착 가능 공구(Page) select -->
+	<select id="selectEqmtToolPosList"
+		parameterType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto"
+		resultType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY toolLocation ASC, toolMgtUse DESC) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="eqmtToolPos_base" />
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<!--장착 가능 공구 Count -->
+	<select id="selectEqmtToolPosCount"
+		parameterType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="eqmtToolPos_base" />
+				)c_table
+	</select>
+	
+	<!-- 공구장착 기준정보 -->
+	<select id="selectRoutingToolCurList"
+		parameterType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto"
+		resultType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY toolLocation ASC, toolMgtUse DESC) AS RNUM,
+					</otherwise>
+				</choose>
+				t_table.tool_id					AS toolId,
+				t_table.tool_location			AS toolLocation,
+				t_table.eqip_id					AS eqipId,
+				eqipTool.eqip_nm				AS eqipNm,
+				routTool.tool_count				AS toolCount,
+				routTool.tool_rpm				AS toolRpm,
+				eqipTool.tool_mgt_id			AS toolMgtId,	
+				toolMgt.tool_mgt_purchase   	AS toolMgtPurchase,
+				toolMgt.tool_mgt_state      	AS toolMgtState,
+				toolMgt.tool_mgt_limit      	AS toolMgtLimit,
+				toolMgt.tool_mgt_use        	AS toolMgtUse,
+				toolMgt.tool_mgt_verif      	AS toolMgtVerif,
+				toolMgt.tool_mgt_gbn        	AS toolMgtGbn,
+				toolMgt.tool_mgt_desc       	AS toolMgtDesc,
+				toolMgt.comp_id             	AS compId,
+				comp.comp_nm                	AS compNm,
+				toolInfo.tool_nm            	AS toolNm,
+				IF(ISNULL(eqipTool.tool_mgt_id), 'eqipState02', -- 장착된 공구 없음, 
+					IF(t_table.tool_id = routTool.tool_id, 'eqipState01', -- 정상
+						IF(t_table.tool_location = eqipRoutTool.tool_location, 'eqipState03', 'eqipState04'))) AS eqipState -- 공구 상태(맞지 않는 공구, 사용되지 않는 공구)
+			FROM(
+				SELECT  tool_id,
+					tool_location,
+					'' AS eqip_id
+				FROM bc_rtl_routing_tool routTool 
+				WHERE routTool.routing_id = #{routingId} AND tool_location NOT IN(
+					SELECT eqip_position AS tool_location FROM bc_rtl_equip_tool rtl WHERE  rtl.eqmt_mgt_id = #{eqmtMgtId} AND rtl.is_del = FALSE
+				) 
+				UNION
+				SELECT  toolMgt.tool_id,
+					eqip_position AS tool_location,
+					eqip_id
+				FROM bc_rtl_equip_tool rtl
+				LEFT OUTER JOIN cm_tool_mgt toolMgt ON toolMgt.tool_mgt_id = rtl.tool_mgt_id
+				LEFT OUTER JOIN bc_tool_info toolInfo ON toolInfo.tool_id = toolMgt.tool_id
+				WHERE  rtl.eqmt_mgt_id = #{eqmtMgtId} AND rtl.is_del = FALSE
+			)t_table 																									-- 공구장착위치 테이블, 설비공구장착 정보 합집합(교집합 부분 설비공구장착 정보 우선)
+			LEFT OUTER JOIN bc_rtl_routing_tool routTool ON routTool.tool_id = t_table.tool_id 
+					AND  routTool.tool_location = t_table.tool_location AND routTool.routing_id = #{routingId} 			-- 공구장착위치
+			LEFT OUTER JOIN bc_rtl_equip_tool eqipTool ON eqipTool.eqip_id = t_table.eqip_id 
+					AND eqipTool.eqmt_mgt_id = #{eqmtMgtId} AND eqipTool.is_del = FALSE									-- 설비 공구 장착 정보 
+			LEFT OUTER JOIN bc_rtl_routing_tool eqipRoutTool ON eqipRoutTool.tool_location = eqipTool.eqip_position
+					AND eqipRoutTool.routing_id = #{routingId}															-- 설비에 장착된 공구가 공구장착위치에 맞는지 판단
+			LEFT OUTER JOIN bc_tool_info toolInfo ON toolInfo.tool_id = t_table.tool_id									-- 공구정보
+			LEFT OUTER JOIN cm_tool_mgt  toolMgt ON  toolMgt.tool_mgt_id = eqipTool.tool_mgt_id							-- 공구관리
+			LEFT OUTER JOIN bc_company_info comp ON comp.comp_id = toolMgt.comp_id										-- 공구수입업체
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+	
+	<!--사용했던 공구 리스트(관리자용) -->
+	<select id="selectWorkToolAdminList"
+	parameterType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto"
+	resultType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto">
+		SELECT
+			routTool.tool_rpm			AS toolRpm,
+			routTool.tool_location		AS toolLocation,
+			routTool.tool_count			AS toolCount,
+			routTool.routing_id			AS routingId,
+			routTool.tool_id            AS toolId,
+			toolInfo.tool_nm            AS toolNm,
+			toolMgt.tool_mgt_id         AS toolMgtId,
+			toolMgt.tool_mgt_purchase   AS toolMgtPurchase,
+			toolMgt.tool_mgt_state      AS toolMgtState,
+			toolMgt.tool_mgt_limit      AS toolMgtLimit,
+			toolMgt.tool_mgt_use        AS toolMgtUse,
+			toolMgt.tool_mgt_verif      AS toolMgtVerif,
+			toolMgt.tool_mgt_gbn        AS toolMgtGbn,
+			toolMgt.tool_mgt_desc       AS toolMgtDesc,
+			toolUse.tool_mgt_id			AS toolMgtId,				
+			toolUse.tool_use_start		AS toolUseStart,				
+			toolUse.tool_use_end		AS toolUseEnd,				
+			toolUse.tool_use_qty		AS toolUseQty,
+			toolUse.eqmt_mgt_id			AS toolMgtId
+		FROM bc_rtl_routing_tool routTool 
+		JOIN prs_work_info workInfo ON workInfo.routing_id = routTool.routing_id AND workInfo.prod_work_id = #{prodWorkId}
+		LEFT OUTER JOIN prs_tool_useinfo toolUse ON routTool.tool_location = toolUse.eqip_position AND toolUse.prod_work_id = workInfo.prod_work_id
+		LEFT OUTER JOIN cm_tool_mgt toolMgt ON toolMgt.tool_mgt_id = toolUse.tool_mgt_id
+		LEFT OUTER JOIN bc_tool_info toolInfo ON toolInfo.tool_id = routTool.tool_id
+	</select>
+	
+	<!--작업정보 관리자용 사용가능 공구 조회(모두 조회) -->
+	<select id="selectWorkToolAdminPosList"
+		parameterType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto"
+		resultType="jin.mes.form.facilMgt.facilToolMgt.FacilToolMgtDto">
+		SELECT
+			routTool.tool_rpm				AS toolRpm,
+			routTool.tool_location			AS toolLocation,
+			routTool.tool_count				AS toolCount,
+			routTool.routing_id				AS routingId,
+			rout.routing_Type				AS routingType,
+			routTool.tool_id             	AS toolId,
+			toolInfo.tool_nm            	AS toolNm,
+			toolMgt.tool_mgt_id             AS toolMgtId,
+			toolMgt.tool_mgt_purchase   	AS toolMgtPurchase,
+			toolMgt.tool_mgt_state      	AS toolMgtState,
+			toolMgt.tool_mgt_limit      	AS toolMgtLimit,
+			toolMgt.tool_mgt_use        	AS toolMgtUse,
+			toolMgt.tool_mgt_verif      	AS toolMgtVerif,
+			toolMgt.tool_mgt_gbn        	AS toolMgtGbn,
+			toolMgt.tool_mgt_desc       	AS toolMgtDesc,
+			toolMgt.comp_id             	AS compId,
+			comp.comp_nm                	AS compNm
+		FROM bc_rtl_routing_tool routTool
+		LEFT OUTER JOIN bc_routing_info rout ON rout.routing_id = routTool.routing_id 		-- 라우팅
+		LEFT OUTER JOIN bc_item_info item ON item.item_id = rout.item_id					-- 아이템
+		LEFT OUTER JOIN bc_tool_info toolInfo ON toolInfo.tool_id = routTool.tool_id		-- 공구정보
+		LEFT OUTER JOIN cm_tool_mgt toolMgt ON toolMgt.tool_id = routTool.tool_id			-- 공구관리
+		LEFT OUTER JOIN bc_company_info comp ON comp.comp_id = toolMgt.comp_id 				-- 회사정보(수입업체)
+		WHERE routTool.routing_id = #{routingId}
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="toolId != null and toolId != '' ">
+			AND toolInfo.tool_id = #{toolId}
+		</if>
+	</select>
+</mapper>

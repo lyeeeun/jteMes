@@ -1,0 +1,38 @@
+package kr.co.itcall.jte.api.sample.model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
+import kr.co.itcall.jte.spring.config.jpa.JpaModel;
+import lombok.Data;
+import lombok.Getter;
+import lombok.ToString;
+
+//@Entity
+//@Table(name = "tb_sample_questions")
+@Data
+public class SampleQuestion extends JpaModel {
+
+	private static final long serialVersionUID = -8183307111837348608L;
+
+//	@Id
+//	@GeneratedValue(generator = "question_generator")
+//	@SequenceGenerator(name = "question_generator", sequenceName = "question_sequence", initialValue = 1000)
+	private Long seqId;
+
+//	@NotBlank
+//	@Size(min = 3, max = 100)
+	private String sampleTitle;
+
+//	@Column(columnDefinition = "text")
+	private String sampleDes;
+
+	// Getters and Setters (Omitted for brevity)
+
+}

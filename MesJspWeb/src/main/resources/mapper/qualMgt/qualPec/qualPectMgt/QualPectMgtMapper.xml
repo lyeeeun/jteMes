@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.mapper.qualMgt.qualPec.qualPectMgt.QualPectMgtMapper">
+
+	<sql id="mtrlOrderQual_base">
+			mtrlOrderForm.mtrl_of_id			AS mtrlOfId,			-- 주문서 코드
+			MAX(mtrlOrderForm.mtrl_of_nm)		AS mtrlOfNm,			-- 주문서 명
+			MAX(mtrlOrderForm.mtrl_of_date)		AS mtrlOfDate,			-- 주문일
+			mtrlOrder.mtrl_order_id				AS mtrlOrderId,			-- 주문코드
+			MAX(mtrlOrder.mtrl_order_qty)      	AS mtrlOrderQty,		-- 주문수량
+			MAX(mtrlOrder.mtrl_order_user)     	AS mtrlOrderUser,		-- 수령자
+			MAX(recipient.user_nm)	     		AS mtrlOrderUserNm,		-- 수령자명
+			MAX(mtrlOrder.mtrl_order_date)     	AS mtrlOrderDate,		-- 수주일
+			MAX(mtrlOrder.mtrl_order_cost)     	AS mtrlOrderCost,		-- 자재비용
+			MAX(mtrlOrder.mtrl_order_delivery) 	AS mtrlOrderDelivery,	-- 배송비
+			MAX(mtrlOrder.mtrl_order_state)    	AS mtrlOrderState,		-- 발주상태
+			MAX(mtrlOrder.mtrl_order_desc)     	AS mtrlOrderDesc,		-- 비고
+			MAX(mtrlOrder.created_at)          	AS createdAt,	
+			MAX(mtrlOrder.updated_at)          	AS updatedAt,
+			MAX(mtrlOrder.creator_id)          	AS creatorId,
+			MAX(mtrlOrder.updator_id)          	AS updatorId,
+			MAX(mtrlOrder.mtrl_id)             	AS mtrlId,				-- 자재코드
+			MAX(mtrlInfo.mtrl_nm)             	AS mtrlNm,				-- 자재명
+			MAX(mtrlInfo.mtrl_cost)            	AS mtrlCost,			-- 재재원가
+			MAX(mtrlInfo.description)			AS mtrlDiv,				-- 자재구분
+			MAX(mtrlCnt.mtrl_mgt_id)			AS mtrlMgtId,			-- 자재개별코드
+			MAX(mtrlOrder.comp_id)             	AS compId,				-- 업체코드
+			MAX(compInfo.comp_nm)             	AS compNm,				-- 업체명
+			SUM(bad.bad_qty)					AS badQty				-- 불량수량
+		FROM prs_mtrl_orderform mtrlOrderForm
+		LEFT OUTER JOIN prs_mtrl_order mtrlOrder ON mtrlOrder.mtrl_of_id = mtrlOrderForm.mtrl_of_id
+		LEFT OUTER JOIN mb_user_info recipient ON recipient.user_id = mtrlOrder.mtrl_order_user
+		LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlOrder.mtrl_id = mtrlInfo.mtrl_id
+		LEFT OUTER JOIN qm_mtrl_mgt mtrlCnt ON mtrlCnt.mtrl_qty_target_code =  mtrlOrder.mtrl_order_id AND mtrl_qty_target = 'mtrl_tagt01'
+		LEFT OUTER JOIN cm_mtrl_mgt mtrlMgt ON mtrlMgt.mtrl_mgt_id = mtrlCnt.mtrl_mgt_id
+		LEFT OUTER JOIN bc_company_info compInfo ON mtrlOrder.comp_id = compInfo.comp_id
+		LEFT OUTER JOIN prs_bad_product bad ON bad.bad_target = 'qual_spec01' AND bad.bad_target_code = mtrlOrder.mtrl_order_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="mtrlOfId != null and mtrlOfId != '' ">
+			AND mtrlOrder.mtrl_of_id = #{mtrlOfId}
+		</if>
+		<if test="mtrlOrderState != null and mtrlOrderState != '' ">
+			AND mtrlOrder.mtrl_order_state = #{mtrlOrderState}
+		</if>
+		GROUP BY mtrlOrder.mtrl_of_id,mtrlOrder.mtrl_order_id
+	
+	</sql>
+
+<!-- 품질 - 수입검사 조회 -->
+	<select id="selectMtrlOrderQualList"
+		parameterType="jin.mes.form.mtrl.mtrlOdMgt.mtrlOdplanMgt.MtrlOdplanMgtDto"
+		resultType="jin.mes.form.mtrl.mtrlOdMgt.mtrlOdplanMgt.MtrlOdplanMgtDto">
+		SELECT * FROM (
+			SELECT 
+			<choose>
+				<when test="sort != null and sort != '' ">
+					ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM, 
+				</when>
+				<otherwise>
+					ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+				</otherwise>
+			</choose>
+			g_table.*
+			FROM(
+				SELECT
+				<include refid="mtrlOrderQual_base" />
+			)g_table
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>
+	</select>
+	
+	<!-- 품질 - 수입검사 조회 COUNT -->
+	<select id="selectMtrlOrderQualCount"
+		parameterType="jin.mes.form.mtrl.mtrlOdMgt.mtrlOdplanMgt.MtrlOdplanMgtDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="mtrlOrderQual_base" />
+			)c_table
+	</select>
+
+</mapper>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.common.cache.CacheMapper">
+	<!--기초설정 -->
+	<select id="selectCacheSet" resultType="jin.mes.form.basMgt.codMgt.baseCodeMgt.BaseCodeMgtDto">
+		SELECT * FROM cw_comn_code
+		WHERE up_cd_id = 'sys'
+	</select>
+	
+	<!--기초코드 -->
+	<select id="selectCacheCode" resultType="jin.mes.form.basMgt.codMgt.baseCodeMgt.BaseCodeMgtDto">
+		WITH RECURSIVE code_view AS (
+			SELECT
+				biz.cd_id, 
+				biz.created_at, 
+				biz.updated_at, 
+				biz.creator_id, 
+				biz.updator_id, 
+				biz.cd_nm, 
+				biz.cd_val, 
+				biz.cd_reserve01, 
+				biz.cd_reserve02, 
+				biz.cd_reserve03, 
+				biz.cd_reserve04, 
+				biz.description, 
+				biz.sort_num, 
+				biz.up_cd_id, 
+				biz.use_yn
+			FROM cw_comn_code biz
+			WHERE biz.cd_id = 'biz' AND biz.use_yn = 'Y'
+			UNION ALL
+			SELECT
+				cd.cd_id, 
+				cd.created_at, 
+				cd.updated_at, 
+				cd.creator_id, 
+				cd.updator_id, 
+				cd.cd_nm, 
+				cd.cd_val, 
+				cd.cd_reserve01, 
+				cd.cd_reserve02, 
+				cd.cd_reserve03, 
+				cd.cd_reserve04, 
+				cd.description, 
+				cd.sort_num, 
+				cd.up_cd_id, 
+				cd.use_yn
+			FROM cw_comn_code cd
+			INNER JOIN code_view cdView ON cdView.cd_id = cd.up_cd_id
+			WHERE cd.use_yn = 'Y'
+		)SELECT 
+			parent.*, 
+			EXISTS(SELECT * FROM cw_comn_code child WHERE parent.cd_id = child.up_cd_id) child_yn
+		FROM code_view parent
+	</select>
+	
+	<!-- 메뉴 -->
+	<select id = "selectCacheMenu" resultType="jin.mes.form.basMgt.menuMgt.menuInfo.MenuInfoDto">
+		WITH RECURSIVE menu_view AS (
+			SELECT
+			root.menu_id,
+			root.up_menu_id,
+			1 lvl,
+			0 parent_seq,		
+			root.menu_seq,
+			CAST(root.menu_seq AS CHAR(100) CHARACTER SET utf8) AS menu_path, 
+			IFNULL(rMsg.msg_view, root.menu_nm) AS menu_nm,
+			root.svc_url,
+			root.view_url,
+			root.DESCRIPTION,
+			root.dupl_yn,
+			root.menu_cd,
+			root.menu_std01,
+			root.menu_std02,
+			root.menu_std03,
+			root.menu_std04,
+			root.menu_std05,
+			root.menu_std_str01,
+			root.menu_std_str02,
+			root.menu_std_str03,
+			root.menu_std_str04,
+			root.menu_std_str05
+		FROM cw_menu_bas root
+		LEFT OUTER JOIN cw_msg_view rMsg ON CONCAT('mn_', root.menu_id) = rMsg.msg_id AND rMsg.lang_cd = 'ko'
+		WHERE root.menu_id = 'root' AND root.is_del = FALSE AND root.is_lock = FALSE
+		UNION ALL
+		SELECT
+			menu.menu_id, 
+			menu.up_menu_id,
+			mView.lvl +1 lvl,
+			mView.menu_seq parent_seq,
+			menu.menu_seq,
+			CONCAT(mView.menu_path,';',menu.menu_seq) AS menu_path, 
+			IFNULL(bMsg.msg_view, menu.menu_nm)AS menu_nm, 
+			menu.svc_url,
+			menu.view_url,
+			menu.DESCRIPTION,
+			menu.dupl_yn,
+			menu.menu_cd,
+			menu.menu_std01,
+			menu.menu_std02,
+			menu.menu_std03,
+			menu.menu_std04,
+			menu.menu_std05,
+			menu.menu_std_str01,
+			menu.menu_std_str02,
+			menu.menu_std_str03,
+			menu.menu_std_str04,
+			menu.menu_std_str05
+		FROM cw_menu_bas menu
+		LEFT OUTER JOIN cw_msg_view bMsg ON CONCAT('mn_', menu.menu_id) = bMsg.msg_id AND bMsg.lang_cd = 'ko'
+		INNER JOIN menu_view mView ON menu.up_menu_id = mView.menu_id
+		WHERE menu.is_del = FALSE AND menu.is_lock = FALSE
+	)SELECT 
+		mv.*,
+		GROUP_CONCAT(';',rtl.role_id,';' SEPARATOR ',')AS roleId,
+		IF((SELECT COUNT(1)FROM cw_menu_bas child  WHERE child.up_menu_id = mv.menu_id) > 0 ,TRUE,FALSE) AS expanded
+	FROM menu_view mv 
+	INNER JOIN cw_menu_view rtl ON mv.menu_id = rtl.menu_id
+	GROUP BY menu_id
+	ORDER BY  lvl, parent_seq, menu_seq;
+	</select>
+	
+	<!-- 페이지 정보 - 그리드 -->
+	<select id = "selectCachePageGrid" resultType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto">
+		SELECT
+			grid_no, 
+			grid_db, 
+			grid_id, 
+			grid_class, 
+			grid_style, 
+			grid_title, 
+			grid_url_base, 
+			grid_url_read, 
+			grid_url_create, 
+			grid_url_update, 
+			grid_url_destroy, 
+			grid_pop_id,
+			grid_pop_width, 
+			grid_pop_height, 
+			grid_pop_class, 
+			grid_pop_col, 
+			grid_pop_title, 
+			grid_function, 
+			grid_div, 
+			up_grid_id,
+			menu_id
+		FROM cw_page_grid
+	</select>
+	
+	<!-- 페이지 정보 - 필드 -->
+	<select id = "selectCachePageField" resultType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto">
+		SELECT
+			field_no, 
+			field_db, 
+			field_id, 
+			field_name,
+			field_type, 
+			field_pop, 
+			field_grid, 
+			field_search, 
+			field_validation, 
+			field_excel, 
+			grid_no
+		FROM cw_page_field
+	</select>
+	
+	<!-- 공통 팝업 정보 조회 -->
+	<select  id = "selectCachePopInfo" resultType="jin.mes.form.basMgt.codMgt.popSet.PopSetDto">
+		SELECT
+			pop_id				AS popId, 
+			pop_nm              AS popNm, 
+			pop_type            AS popType, 
+			pop_width           AS popWidth, 
+			pop_height          AS popHeight, 
+			pop_url             AS popUrl, 
+			pop_template        AS popTemplate, 
+			pop_format          AS popFormat,
+			pop_num             AS popNum,
+			pop_use             AS popUse,  
+			pop_search_use      AS popSearchUse, 
+			pop_search_value    AS popSearchValue, 
+			pop_dynamic_use     AS popDynamicUse, 
+			pop_dynamic_value   AS popDynamicValue, 
+			up_pop_id           AS upPopId,
+			created_at          AS createdAt,
+			creator_id          AS creatorId,
+			updated_at          AS updatedAt,
+			updator_id          AS updatorId
+		FROM cw_pop_info
+	</select>
+</mapper>
+
+	

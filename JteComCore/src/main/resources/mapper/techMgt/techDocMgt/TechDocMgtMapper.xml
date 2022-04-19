@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.techMgt.techDocMgt.TechDocMgtMapper">
+			
+			
+	<sql id="techDocGroup_base">
+			docGroup.doc_group_id		as docGroupId,
+			docGroup.doc_group_nm		as docGroupNm,
+			docGroup.doc_group_target	as docGroupTarget,
+			docGroup.up_doc_group_id	as upDocGroupId,
+			docGroup.description		as description,
+			docGroup.created_at			as createdAt,
+			docGroup.creator_id			as creatorId,
+			docGroup.updated_at			as updatedAt,
+			docGroup.updator_id			as updatorId,
+			userInfo.user_nm			as updatorNm,
+			IF((SELECT COUNT(1)FROM bc_documents_group child  WHERE child.up_doc_group_id = docGroup.doc_group_id) > 0 ,TRUE,FALSE) AS hasChildren
+		FROM bc_documents_group docGroup
+		INNER JOIN mb_user_info userInfo ON userInfo.user_id = docGroup.updator_id
+		WHERE up_doc_group_id = IFNULL(#{docGroupId},'')
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+			
+	<sql id="techDocInfo_base">
+			docInfo.doc_id			AS docId,	
+			docInfo.document_no 	AS documentNo,
+			docInfo.document_rev 	AS documentRev,
+			docInfo.document_cd 	AS documentCd,
+			docInfo.document_subject 	AS documentSubject,
+			docInfo.document_desc 	AS documentDesc,
+			docInfo.name_file 		AS nameFile,
+			docInfo.updator_id 		AS updatorId,
+			user.user_nm			AS userNm,
+			docInfo.updated_at 		AS updatedAt
+		FROM bc_documents_info docInfo
+		INNER JOIN mb_user_info user ON user.user_id = docInfo.updator_id
+		WHERE doc_group_id = IFNULL(#{docGroupId},'')
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<!--트리조회 -->
+	<select id="selectTechDocGroup"
+		parameterType="jin.mes.form.techMgt.techDocMgt.TechDocMgtDto"
+		resultType="jin.mes.form.techMgt.techDocMgt.TechDocMgtDto">
+		SELECT	
+		<include refid="techDocGroup_base" />
+		AND doc_group_target = 'G'
+		ORDER BY doc_group_target ASC
+	</select>
+	
+	<select id="selectTechDocRtlItem"
+		parameterType="jin.mes.form.techMgt.techDocMgt.TechDocMgtDto"
+		resultType="jin.mes.form.techMgt.techDocMgt.TechDocMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY doc_group_target asc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="techDocGroup_base"></include>
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+		
+	<!-- 수주정보 select -->
+	<select id="selectTechDocRtlItemCount"
+		parameterType="jin.mes.form.techMgt.techDocMgt.TechDocMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="techDocGroup_base"></include>
+		)c_table
+	</select>
+	
+	
+	<select id="selectTechDocInfo"
+		parameterType="jin.mes.form.techMgt.techDocMgt.TechDocMgtDto"
+		resultType="jin.mes.form.techMgt.techDocMgt.TechDocMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="techDocInfo_base"></include>
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<select id="selectTechDocInfoCount"
+		parameterType="jin.mes.form.techMgt.techDocMgt.TechDocMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="techDocInfo_base"></include>
+		)c_table
+	</select>
+	
+	<insert id="insertTechDocRtlItem" parameterType="jin.mes.form.techMgt.techDocMgt.TechDocMgtDto">
+		INSERT INTO bc_documents_group(
+			doc_group_id,
+			doc_group_nm,
+			doc_group_target,
+			up_doc_group_id,
+			description,	
+			created_at,
+			creator_id,
+			updated_at,
+			updator_id
+		)VALUES(
+			#{docGroupId},
+			#{docGroupNm},
+			#{docGroupTarget},
+			#{upDocGroupId},
+			#{description},
+			NOW(),
+			#{creatorId},
+			NOW(),
+			#{updatorId}
+		)
+	</insert>
+	
+	<update id="updateTechDocRtlItem" parameterType="jin.mes.form.techMgt.techDocMgt.TechDocMgtDto">
+		UPDATE bc_documents_group
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="docGroupNm != null and docGroupNm != '' ">
+				,doc_group_nm = #{docGroupNm}
+			</if>
+			<if test="docGroupTarget != null and docGroupTarget != '' ">	
+				,doc_group_target = #{docGroupTarget}
+			</if>	
+			<if test="description != null and description != '' ">
+				,description = #{description}
+			</if>
+		WHERE doc_group_id = #{docGroupId}
+	</update>
+	
+	<!-- 기술문서 등록 -->
+	<insert id="insertTechDocInfo" parameterType="jin.mes.form.techMgt.techDocMgt.TechDocMgtDto">
+		<selectKey keyProperty="docId" resultType="String" order="BEFORE">
+				SELECT CREATE_PK('DOC') as docId
+		</selectKey>
+		INSERT INTO bc_documents_info(
+			doc_id,
+			doc_group_id,
+			document_no,
+			document_rev,
+			document_cd,
+			document_subject,
+			document_desc,	
+			name_file,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at
+		)VALUES(
+			#{docId},
+			#{docGroupId},
+			#{documentNo},
+			#{documentRev},
+			#{documentCd},
+			#{documentSubject},
+			#{documentDesc},
+			#{nameFile},
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			NOW()
+		)
+	</insert>
+	
+	<!-- 기술문서 수정 -->
+	<update id="updateTechDocInfo" parameterType="jin.mes.form.techMgt.techDocMgt.TechDocMgtDto">
+		UPDATE bc_documents_info
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="documentNo != null and documentNo != '' ">
+				,document_no = #{documentNo}
+			</if>
+			<if test="documentRev != null and documentRev != '' ">
+				,document_rev = #{documentRev}
+			</if>
+			<if test="documentCd != null and documentCd != '' ">
+				,document_cd = #{documentCd}
+			</if>
+			<if test="documentSubject != null and documentSubject != '' ">
+				,document_subject = #{documentSubject}
+			</if>
+			<if test="documentDesc != null and documentDesc != '' ">
+				,document_desc = #{documentDesc}
+			</if>
+			<if test="nameFile != null and nameFile != '' ">
+				,name_file = #{nameFile}
+			</if>
+		WHERE doc_id = #{docId}
+	</update>
+	
+</mapper>

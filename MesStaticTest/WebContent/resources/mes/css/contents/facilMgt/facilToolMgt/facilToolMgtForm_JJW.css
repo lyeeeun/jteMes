@@ -1,0 +1,42 @@
+@CHARSET "UTF-8";
+
+/* 20.12.01 JJW 좌측 트리 영역, 가운데 아이콘 영역, 우측 그리드 영역의 높낮이를 맞추기 위함  */
+.facilToolMgtForm {
+	vertical-align: middle;
+}
+
+.facilToolMgtForm .left-contents {
+	width: 25%;
+	display: inline-block;
+	height: 100%;
+}
+
+.facilToolMgtForm #jteMasterTree {
+	font-size: 16px;
+	border: 2px solid #8aafff;
+	background:#ffffff;
+}
+
+/** 20.08.11 JJW 왼쪽 트리 구조 여백 따로 주기 위함**/
+.facilToolMgtForm.k-treeview .k-item {
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+.facilToolMgtForm .middle-contents {
+	width: 5%;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.middle-contents .fas.fa-caret-square-right.fa-3x{
+	color: #3367D6;
+	padding-right: 24px;
+	
+}
+
+.facilToolMgtForm .right-contents {
+	width: 69%;
+	display: inline-block;
+}

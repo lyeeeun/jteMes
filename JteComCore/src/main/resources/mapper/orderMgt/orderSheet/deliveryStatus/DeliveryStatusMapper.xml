@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.orderMgt.orderSheet.deliveryStatus.DeliveryStatusMapper">
+
+		<!--납품현황 조회 -->
+	<sql id="orderSearch_base">
+			lot.order_id													AS orderId,
+			orInfo.order_nm													AS orderNm, 
+			orInfo.order_manager											AS orderManager, 
+			urInfo.user_nm													AS orderManagerNm,
+			orInfo.order_stdt												AS orderStdt, 
+			orInfo.order_eddt												AS orderEddt, 
+			orInfo.order_cost												AS orderCost, 
+			orInfo.comp_id													AS compId,
+			orInfo.order_state												AS orderState, 
+			orInfo.description												AS DESCRIPTION,
+			lot.lot_seq														AS lotSeq,
+			lot.lot_id														AS lotId,
+			lot.lot_nm														AS lotNm,
+			lot.lot_qty														AS lotQty,
+			lot.lot_pm														AS lotPm,
+			lot.lot_state													AS lotState,
+			lot.lot_desc													AS lotDesc,
+			lot.created_at													AS createdAt,
+			lot.creator_id													AS creatorId,
+			lot.updated_at													AS updatedAt,
+			lot.updator_id													AS updatorId,
+			lot.item_id														AS itemId,
+			item.item_nm													AS itemNm
+		FROM prs_order_info orInfo
+			LEFT OUTER JOIN prs_lot_info lot ON orInfo.order_id = lot.order_id
+			LEFT OUTER JOIN bc_item_info item ON lot.item_id = item.item_id
+			LEFT OUTER JOIN mb_user_info urInfo ON orInfo.order_manager = urInfo.user_id
+		WHERE 1=1
+		AND (orInfo.order_state = "ord_prcd01" OR orInfo.order_state = "ord_prcd02")
+		<if test="orderId != null and orderId != ''">	 
+			AND lot.order_id = #{orderId}
+		</if>
+		<if test="lotId != null and lotId != ''">	 
+			AND lot.lot_id = #{lotId}
+		</if>
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		GROUP BY orderId
+	</sql>
+
+	<!-- 납품현황 조회 select -->
+	<select id="selectOrderSearchList"
+		parameterType="jin.mes.form.orderMgt.orderSheet.deliveryStatus.DeliveryStatusDto"
+		resultType="jin.mes.form.orderMgt.orderSheet.deliveryStatus.DeliveryStatusDto">
+			SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="orderSearch_base" />
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<!-- 납품현황 조회 select(Count) -->
+	<select id="selectOrderSearchListCount"
+	parameterType="jin.mes.form.orderMgt.orderSheet.deliveryStatus.DeliveryStatusDto"
+		resultType="java.lang.Integer">
+		SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="orderSearch_base" />
+			)c_table
+	</select>
+	
+	<!--Lot조회 -->
+	<sql id="lotDeliverySta_base">
+			lot.lot_seq														AS lotSeq,
+			lot.lot_id														AS lotId,
+			lot.lot_nm														AS lotNm,
+			lot.lot_code													AS lotCode,
+			lot.lot_type													AS lotType,
+			lot.lot_qty														AS lotQty,
+			IFNULL(lot_person_cost,0)										AS lotPersonCost,
+			IFNULL(lot_person_cost_after,0)									AS lotPersonCostAfter,
+			IFNULL(lot_mtrl_cost,0)											AS lotMtrlCost,
+			IFNULL(lot_mtrl_cost_after,0)									AS lotMtrlCostAfter,
+			lot.lot_pm														AS lotPm,
+			lot.lot_state													AS lotState,
+			lot.lot_desc													AS lotDesc,
+			lot.created_at													AS createdAt,
+			lot.creator_id													AS creatorId,
+			lot.updated_at													AS updatedAt,
+			lot.updator_id													AS updatorId,
+			lot.item_id														AS itemId,
+			lot.order_id													AS orderId,
+			item.item_nm													AS itemNm,
+			urInfo.user_Nm													AS lotPmNm,
+			orInfo.order_nm													AS orderNm, 
+			orInfo.order_manager											AS orderManager, 
+			orInfo.order_stdt												AS orderStdt, 
+			orInfo.order_eddt												AS orderEddt, 
+			orInfo.order_cost												AS orderCost, 
+			orInfo.comp_id													AS compId,
+			orInfo.order_state												AS orderState, 
+			orInfo.description												AS description
+		FROM prs_lot_info lot
+			LEFT OUTER JOIN bc_item_info item on lot.item_id = item.item_id
+			LEFT OUTER JOIN mb_user_info urInfo on lot.lot_pm = urInfo.user_id
+			LEFT OUTER JOIN prs_order_info orInfo on orInfo.order_id = lot.order_id
+			LEFT OUTER JOIN	cm_mtrl_mgt	mtrlMgt on mtrlMgt.lot_id = lot.lot_id 
+			LEFT OUTER JOIN bc_material_info mtrlInfo on mtrlInfo.mtrl_id = mtrlMgt.mtrl_id 
+		WHERE 1=1
+		<if test="orderId != null">	 
+			AND lot.order_id = #{orderId}
+		</if>
+		<if test="lotId != null and lotId != ''">	 
+			AND lot.lot_id = #{lotId}
+		</if>
+		<if test="lotState != null and lotState != ''">	
+			AND lot.lot_state = #{lotState}
+		</if>
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+
+	<!-- Lot 조회 select -->
+	<select id="selectLotDeliveryStaList"
+		parameterType="jin.mes.form.orderMgt.orderSheet.deliveryStatus.DeliveryStatusDto"
+		resultType="jin.mes.form.orderMgt.orderSheet.deliveryStatus.DeliveryStatusDto">
+			SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="lotDeliverySta_base" />
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<!-- Lot 조회 select(Count) -->
+	<select id="selectLotDeliveryStaListCount"
+	parameterType="jin.mes.form.orderMgt.orderSheet.deliveryStatus.DeliveryStatusDto"
+		resultType="java.lang.Integer">
+		SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="lotDeliverySta_base" />
+			)c_table
+	</select>
+	
+	
+		<!--납품현황 조회 -->
+	<sql id="deliveryStatus_base">
+			lot.lot_seq															AS lotSeq,
+			lot.lot_id															AS lotId,
+			lot.lot_nm															AS lotNm,
+			lot.lot_type														AS lotType,
+			lot.lot_qty															AS lotQty,			-- LoT수량
+			lot.lot_pm															AS lotPm,
+			urInfo.user_Nm														AS lotPmNm,
+			lot.lot_state														AS lotState,
+			lot.lot_desc														AS lotDesc,
+			lot.created_at														AS createdAt,
+			lot.creator_id														AS creatorId,
+			lot.updated_at														AS updatedAt,
+			lot.updator_id														AS updatorId,
+			lot.item_id															AS itemId,			-- 부품코드
+			item.item_nm														AS itemNm,			-- 부품명
+			lot.order_id														AS orderId,
+			orInfo.order_nm														AS orderNm, 
+			orInfo.order_state													AS orderState,
+			shipMgt.ship_id														AS shipId,
+			shipMgt.ship_complete_date											AS shipCompleteDate,
+			shipPlan.ship_plan_id												AS shipPlanId,
+			shipPlan.ship_plan_state											AS shipPlanState,
+			shipMgt.ship_qty													AS shipQty 			-- 납품수량
+		FROM prs_lot_info lot
+			LEFT OUTER JOIN bc_item_info item ON lot.item_id = item.item_id
+			LEFT OUTER JOIN mb_user_info urInfo ON lot.lot_pm = urInfo.user_id
+			LEFT OUTER JOIN prs_order_info orInfo ON orInfo.order_id = lot.order_id
+			LEFT OUTER JOIN prs_ship_mgt shipMgt ON shipMgt.lot_id = lot.lot_id
+			LEFT OUTER JOIN prs_ship_plan shipPlan ON shipPlan.ship_plan_id = shipMgt.ship_plan_id
+		WHERE 1=1
+		AND (shipPlan.ship_plan_state = "shipSta02" OR shipPlan.ship_plan_state = "shipSta03")
+		<if test="orderId != null and orderId != ''">	 
+			AND lot.order_id = #{orderId}
+		</if>
+		<if test="lotId != null and lotId != ''">	 
+			AND lot.lot_id = #{lotId}
+		</if>
+		<if test="shipId != null and shipId != ''">	 
+			AND shipMgt.ship_id = #{shipId}
+		</if>
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+
+	<!-- 납품현황 조회 select -->
+	<select id="selectDeliveryStatusList"
+		parameterType="jin.mes.form.orderMgt.orderSheet.deliveryStatus.LotDeliveryStaDto"
+		resultType="jin.mes.form.orderMgt.orderSheet.deliveryStatus.LotDeliveryStaDto">
+			SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="deliveryStatus_base" />
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<!-- 납품현황 조회 select(Count) -->
+	<select id="selectDeliveryStatusListCount"
+	parameterType="jin.mes.form.orderMgt.orderSheet.deliveryStatus.LotDeliveryStaDto"
+		resultType="java.lang.Integer">
+		SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="deliveryStatus_base" />
+			)c_table
+	</select>
+</mapper>

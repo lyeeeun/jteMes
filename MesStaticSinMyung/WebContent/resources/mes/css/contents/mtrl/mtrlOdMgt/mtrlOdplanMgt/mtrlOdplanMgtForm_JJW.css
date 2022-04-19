@@ -1,0 +1,151 @@
+/***** 200511JJW 그리드 - 추가버튼 팝업/더블클릭 팝업 *******/
+
+.mtrlOdplanMgtForm .jtePopForm_master {
+	width: 100%;
+}
+
+.mtrlOdplanMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.mtrlOdplanMgtForm .fa-info-circle:before {
+	color:#3367D6;
+}
+
+.mtrlOdplanMgtForm .col-left-title {
+	width: 20%;
+}
+
+.mtrlOdplanMgtForm .col-left-content-1 {
+	width: 18%;
+}
+
+.mtrlOdplanMgtForm .col-left-content-2 {
+	width: 10%;
+}
+
+.mtrlOdplanMgtForm .col-right-title {
+	width: 24%;
+}
+
+.mtrlOdplanMgtForm .col-right-content-1 {
+	width: 18%;
+}
+
+.mtrlOdplanMgtForm .col-right-content-2 {
+	width: 10%;
+}
+
+.mtrlOdplanMgtForm .normal-input{
+	width: 100%;
+}
+
+.mtrlOdplanMgtForm .center-input{
+	width: 100%;
+}
+
+.mtrlOdplanMgtForm .left-input {
+	width: 100%;
+}
+
+.mtrlOdplanMgtForm .right-input {
+	width: 100%;
+}
+
+.mtrlOdplanMgtForm .left-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.mtrlOdplanMgtForm .right-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.mtrlOdplanMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.mtrlOdplanMgtForm .search-btn {
+	width: 100%;
+}
+
+/***** 200511JJW 오른쪽 그리드 정비이력 버튼 클릭 시 나타나는 팝업  *******/
+
+.mtrlOdplanMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.mtrlOdplanMgtForm .popsc-col-left-title {
+	width: 24%;
+}
+
+.mtrlOdplanMgtForm .popsc-col-left-content {
+	width: 28%;
+}
+
+.mtrlOdplanMgtForm .popsc-col-right-title {
+	width: 20%;
+}
+
+.mtrlOdplanMgtForm .popsc-col-right-content {
+	width: 28%;
+}
+
+
+.mtrlOdplanMgtForm .normal-input{
+	width: 100%;
+}
+
+.mtrlOdplanMgtForm .center-input{
+	width: 100%;
+}
+
+.mtrlOdplanMgtForm .left-input {
+	width: 100%;
+}
+
+.mtrlOdplanMgtForm .right-input {
+	width: 100%;
+}
+
+.mtrlOdplanMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.mtrltoolMgtForm .search-btn {
+	width: 100%;
+}
+
+/* #jtePopToolAdd_form {
+	font-size: 16px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+#jtePopToolAdd_form td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+} */
+
+#jteMtrlOrderPop_master {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 0;
+	padding-bottom: 2px;
+}
+
+#jteMtrlOrderPop_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.mtrlOdplanMgtForm #jteMtrlOrderPop_master th {
+	text-align: left;	
+}

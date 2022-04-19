@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PROD_resultShDel">
+		                 <!-- FN_CM_GETCOMNM(OP.CTR_CD , 'PRODTYPE', P.PRODTYPE) AS PRODTYPE         
+					      FN_CM_GETCOMNM(OP.CTR_CD , 'PRODSPEC', P.PRODSPEC) AS PRODSPEC         
+		                  FN_CM_GETCOMNM(OP.CTR_CD , 'PRODUNITCD',P.PRODUNIT_CD )  AS UNIT_NM -->   
+
+	<select id="selectOutPutList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+		
+		  SELECT           OP.WO_OUT_NO                                      					 
+		                 , DATE_FORMAT(OP.WO_OUT_DATE,'%Y%m%d') AS WO_OUT_DATE 					
+		                 , OP.WOID                                           		   			  
+		                 , OP.ORDER_NO                                       					  
+		                 , OP.CUSTOMERID										  				 
+		                 , OP.PRODID															  
+		                 , C.CUSTOMERNAME														 
+		                 , P.PRODNAME															 
+		                 , P.PRODMTRL     														 
+		                 , P.PRODTYPE       
+					     , P.PRODSPEC       
+		                 , P.PRODUNIT_CD AS UNIT_NM   
+		                 , OP.SHOPFLOOR_OUT_QTY                               					 
+		                 , OP.DEFECT_CAUSE_CD                                					 
+		                 , OP.DEFECT_QTY                                   						
+		                 , OP.REMARK                                          					
+		                 , OP.DEL_GBN                                           				 
+			FROM TB_MESWORKORDEROUT OP
+			INNER JOIN TB_CUSTOMER C ON OP.CUSTOMERID=C.CUSTOMERID
+			INNER JOIN TB_PRODUCT P ON OP.PRODID=P.PRODID
+		WHERE 1=1
+		]]>
+		<!--  삭제 구분에 N 즉 삭제된 데이터가 아닌경우 -->
+		<if test='DEL_GBN != "N"'>
+			AND OP.DEL_GBN ='N'
+		</if>
+		<!-- 검색 날짜가 null이 아닐경우 -->
+		<if test='STR_DT != null and STR_DT != ""'>
+			AND WO_OUT_DATE BETWEEN STR_TO_DATE(#{STR_DT},'%Y-%m-%d')
+			AND STR_TO_DATE(#{END_DT},'%Y-%m-%d') 
+		</if>
+		<!--고객사가 null이 아닌 경우 고객사에 따른 검색이 가능하게함  -->
+		<if test='CUSTOMERNAME != null and CUSTOMERNAME != ""'>
+				AND CUSTOMERNAME LIKE CONCAT("%"#{CUSTOMERNAME}"%") 
+		</if>
+        <!--제품명이 null이 아닌 경우 제품명에 따른 검색이 가능하게함  -->
+		<if test='PRODNAME != null and PRODNAME != ""'>
+			AND PRODNAME LIKE CONCAT("%"#{PRODNAME}"%")
+		</if>
+		    ORDER BY WO_OUT_NO
+	</select>
+	<!-- 불량원인 리스트 -->
+	<select id="selectProductDefectList" resultType="hashmap">
+		SELECT 	 COM_CD,
+			     COM_NM 
+		FROM     TB_COMCDINF 
+		WHERE    GRP_CD = 'DEFECT' 
+	</select>
+	<!-- 저장번튼 클릭시 테이블에서 해당 컬럼의 update처리를해준다. -->
+	<select id="updateOutPutList2" parameterType="hashmap"
+		resultType="hashmap">
+	<![CDATA[
+			   UPDATE TB_MESWORKORDEROUT
+			    SET REMARK          = #{REMARK}
+			        ,DEFECT_CAUSE_CD = #{DEFECT_CAUSE_CD}
+			    WHERE WO_OUT_NO=#{WO_OUT_NO}
+		]]>
+	</select>
+
+
+
+</mapper>

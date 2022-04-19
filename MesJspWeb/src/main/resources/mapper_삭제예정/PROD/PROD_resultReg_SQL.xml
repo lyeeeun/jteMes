@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PROD_resultReg">
+<!--		                 , FN_CM_GETCOMNM(MW.CTR_CD , 'PRODTYPE', P.PRODTYPE) AS PRODTYPE    
+					     , FN_CM_GETCOMNM(MW.CTR_CD , 'PRODSPEC', P.PRODSPEC) AS PRODSPEC        
+		                 , FN_CM_GETCOMNM(MW.CTR_CD , 'PRODUNITCD',P.PRODUNIT_CD )  AS UNIT_NM --> 
+
+	<select id="selectResultList" parameterType="hashmap"
+		resultType="hashmap">
+			<![CDATA[
+		   SELECT          MW.WOID     														
+		                 , DATE_FORMAT(MW.WO_DATE,'%Y%m%d') AS WO_DATE 							
+		                 , MW.ORDER_NO    														 
+		                 , MW.CUSTOMERID  														  
+		                 , MW.PRODID      														
+		                 , C.CUSTOMERNAME 														
+		                 , P.PRODNAME     														 
+		                 , P.PRODMTRL     														 
+		                 , P.PRODTYPE   
+					     , P.PRODSPEC      
+		                 , P.PRODUNIT_CD AS UNIT_NM    
+		                 , MW.SHOPFLOOR_QTY   													 
+		                 , MW.OUT_TOT_QTY     													 
+		                 , MW.DEFECT_TOT_QTY                                                     
+		                 , MW.SHOPFLOOR_QTY - MW.OUT_TOT_QTY - MW.DEFECT_TOT_QTY AS REMAINING    
+		                 , MW.DEL_GBN        													
+			 FROM TB_MESWORKORDER MW          
+			INNER JOIN TB_CUSTOMER C ON MW.CUSTOMERID=C.CUSTOMERID
+			INNER JOIN TB_PRODUCT P ON MW.PRODID=P.PRODID
+			WHERE 1=1
+		      AND  MW.SHOPFLOOR_QTY - MW.OUT_TOT_QTY - MW.DEFECT_TOT_QTY > 0
+		]]>
+		<!--  삭제 구분에 N 즉 삭제된 데이터가 아닌경우 -->
+		<if test='DEL_GBN != "N"'>
+			AND MW.DEL_GBN ='N'
+		</if>
+		<!-- 검색 날짜가 null이 아닐경우 -->
+		<if test='STR_DT != null and STR_DT != ""'>
+			AND WO_DATE BETWEEN STR_TO_DATE(#{STR_DT},'%Y-%m-%d')
+			AND STR_TO_DATE(#{END_DT},'%Y-%m-%d') 
+		</if>
+		<!--고객사가 null이 아닌 경우 고객사에 따른 검색이 가능하게함  -->
+		<if test='CUSTOMERNAME != null and CUSTOMERNAME != ""'>
+				AND CUSTOMERNAME LIKE CONCAT("%"#{CUSTOMERNAME}"%") 
+		</if>
+        <!--제품명이 null이 아닌 경우 제품명에 따른 검색이 가능하게함  -->
+		<if test='PRODNAME != null and PRODNAME != ""'>
+			AND PRODNAME LIKE CONCAT("%"#{PRODNAME}"%")  
+		</if>
+		    ORDER BY WOID
+	</select>
+
+	<!-- 불량원인 리스트 -->
+	<select id="selectProductDefectList" resultType="hashmap">
+		SELECT 	 COM_CD,
+			     COM_NM 
+		FROM     TB_COMCDINF 
+		WHERE    GRP_CD = 'DEFECT' 
+
+	</select>
+	
+	<!-- 저장버튼 눌렀을때 처리를 위해 -->
+	<select id="selectpreSave" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT COUNT(*) AS CNT      
+			FROM TB_MESWORKORDEROUT       -- [TB_제조지시목록]
+			WHERE WO_OUT_NO   =     #{WO_OUT_NO}
+		]]>
+	</select>
+
+	<!-- 제조지시테이블에 데이터 삽입 시 필요. -->
+	<select id="insertOutList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+			
+			INSERT INTO TB_MESWORKORDEROUT( 
+			                           WO_OUT_NO            
+			                          ,CTR_CD               
+			                          ,WO_OUT_DATE          
+			                          ,CUSTOMERID         
+			                          ,PRODID             
+			                          ,WOID                 
+			                          ,ORDER_NO            
+			                          ,UNIT_CD              
+			                          ,SHOPFLOOR_OUT_QTY    
+			                          ,DEFECT_CAUSE_CD   
+			                          ,DEFECT_QTY         
+			                          ,REMARK             
+			                          ,QM_REMARK           
+			                          ,DEL_GBN            
+			                          ,REG_USER_ID         
+			                          ,REG_PGM_ID
+			                          ,REG_DT
+			                          ,UPD_USER_ID
+			                          ,UPD_PGM_ID
+			                          ,UPD_DT
+			                          )
+			                   VALUES( (SELECT WO_OUT_NO + 1 AS WO_OUT_NO FROM TB_MESWORKORDEROUT AS SUB_TABLE ORDER BY WO_OUT_NO DESC LIMIT 1) -- FN_CM_SEQ('WO_OUT_NO',NULL,NULL) 함수 미존재로 임시 적용
+			                          ,#{CTR_CD}
+			                          ,now()
+			                          ,#{CUSTOMERID}
+			                          ,#{PRODID}
+			                          ,#{WOID}
+			                          ,#{ORDER_NO}
+			                          ,#{UNIT_CD}
+			                          ,#{SHOPFLOOR_OUT_QTY}
+			                          ,#{DEFECT_CAUSE_CD}
+			                          ,#{DEFECT_QTY}
+			                          ,#{REMARK}
+			                          ,#{QM_REMARK}
+			                          ,'N'
+			                          ,#{REG_USER_ID}
+			                          ,#{REG_PGM_ID}
+			                          ,now()
+			                          ,#{UPD_USER_ID}
+			                          ,#{UPD_PGM_ID}
+			                          ,now()
+			                          )
+		]]>
+	</select>
+	
+	
+
+</mapper>

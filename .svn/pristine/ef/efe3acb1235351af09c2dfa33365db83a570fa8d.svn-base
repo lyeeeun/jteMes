@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="SY_ctrInfRegMgmt">
+	<select id="selectComcdList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+		    SELECT COM_CD AS value  
+		          ,COM_NM AS label
+  			FROM TB_COMCDINF
+ 			WHERE CTR_CD = #{CTR_CD}
+   			AND GRP_CD = 'AREACD'  = '지역'
+ 			ORDER BY COM_CD
+ 		]]>
+	</select>
+
+	<select id="selectCtrList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT CTR_CD 		AS CTR_CD		
+				 , CTR_NM 		AS CTR_NM			
+				 , DATE_FORMAT(BLD_DT,'%Y%m%d') AS BLD_DT			
+				 , POST_NO		AS POST_NO			
+				 , ADDR		 	AS ADDR			
+				 , AREA_CD 		AS AREA_CD		
+				 , CTR_HP		AS CTR_HP
+				 , OPRCO_CD		AS OPRCO_CD		
+				 , BC_CD 		AS BC_CD			
+				 , SPORTS_CD	AS SPORTS_CD	
+				 , ADMIN_ID		AS ADMIN_ID		
+				 , DATE_FORMAT(TOT_HHLD_CNT) AS TOT_HHLD_CNT	
+				 , PIC_LOC		AS PIC_LOC		
+				 , (SELECT ADMIN_NM
+				      FROM TB_ADMININF
+				     WHERE CTR_CD   = A.CTR_CD
+				       AND ADMIN_ID = A.ADMIN_ID) AS ADMIN_NM	
+			FROM TB_CTRINF AS A			-- [TB_센터정보]
+			WHERE EXISTS (SELECT *
+			                 FROM TB_CTRINF
+			                WHERE CTR_CD                  = #{CTR_CD}
+			                  AND NVL(OPRCO_CD, 'NOCODE') = NVL(A.OPRCO_CD, 'NOCODE'))
+			  AND CTR_CD LIKE NVL(#{SEARCH_CTR_CD}, '%')
+		]]>
+		<!-- 검색 날짜가 null이 아닐경우 -->
+		
+	</select>
+
+	<select id="insertCtrList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+			INSERT INTO TB_CTRINF(
+						   CTR_CD	
+			        	  ,CTR_NM		
+			        	  ,BLD_DT		
+			        	  ,POST_NO		
+			        	  ,ADDR			
+			        	  ,AREA_CD	
+			        	  ,CTR_HP	
+			        	  ,OPRCO_CD		
+			        	  ,BC_CD	
+			        	  ,SPORTS_CD	
+			        	  ,ADMIN_ID		
+			        	  ,TOT_HHLD_CNT	
+			        	  ,PIC_LOC		
+			        	  ,REG_DT		
+			              ,REG_USER_ID	
+			              ,REG_PGM_ID)	
+					VALUES(  UPPER(#{CTR_CD})
+			               , #{CTR_NM}
+			               , #{BLD_DT}
+			               , #{POST_NO}
+			               , #{ADDR}
+			               , #{AREA_CD}
+			               , #{CTR_HP}
+			               , #{OPRCO_CD}
+			               , #{BC_CD}
+			               , #{SPORTS_CD}
+			               , #{ADMIN_ID}
+			               , #{TOT_HHLD_CNT}
+			               , #{PIC_LOC}
+			               , SYSDATE
+			              , #{REG_USER_NO}
+			              , #{REG_PGM_ID}
+			               )
+		]]>
+	</select>
+	<select id="updateCtrList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+			UPDATE TB_CTRINF
+			SET  	  CTR_NM        = #{CTR_NM}		
+					, BLD_DT		= #{BLD_DT}			
+					, POST_NO		= #{POST_NO}	
+					, ADDR			= #{ADDR}		
+					, AREA_CD		= #{AREA_CD}	
+					, OPRCO_CD		= #{OPRCO_CD}	
+					, CTR_HP 		= #{CTR_HP}		
+					, BC_CD			= #{BC_CD}		
+					, SPORTS_CD		= #{SPORTS_CD}		
+					, ADMIN_ID		= #{ADMIN_ID}		
+					, TOT_HHLD_CNT	= #{TOT_HHLD_CNT}	
+					, PIC_LOC		= #{PIC_LOC}		
+					, UPD_DT      	= SYSDATE			
+					, UPD_USER_ID 	= #{REG_USER_NO}	
+					, UPD_PGM_ID  	= #{REG_PGM_ID}		
+			WHERE CTR_CD = #{CTR_CD} 
+		]]>
+	</select>
+	<select id="deleteCtrList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			DELETE TB_CTRINF
+			 WHERE CTR_CD = #{CTR_CD} 
+		]]>
+	</select>
+
+	<select id="selectCtrList2" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+		    SELECT DISTINCT
+		    	   CTR_CD AS CTR_CD
+      			  ,CTR_NM AS CTR_NM
+  			FROM TB_CTRINF AS A
+  		   WHERE EXISTS (SELECT *
+		                   FROM TB_CTRINF
+		                  WHERE CTR_CD                  = #{CTR_CD}
+		                    AND NVL(OPRCO_CD, 'NOCODE') = NVL(A.OPRCO_CD, 'NOCODE'))
+		]]>
+	</select>
+
+	<select id="selectpreSave" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT COUNT(*) AS CNT      
+			  FROM TB_CTRINF               -- [TB_센터정보]
+			 WHERE CTR_CD     =     #{CTR_CD}
+		]]>
+	</select>
+
+	<select id="selectOprCo" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT COM_NM,
+			       COM_CD
+			  FROM TB_COMCDINF 
+			 WHERE CTR_CD  =  #{CTR_CD}
+			   AND USE_YN  = 'Y' 
+			   AND GRP_CD  = 'OPRCO'
+		]]>
+	</select>
+
+</mapper>

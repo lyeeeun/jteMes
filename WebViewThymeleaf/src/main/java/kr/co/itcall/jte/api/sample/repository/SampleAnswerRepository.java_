@@ -1,0 +1,15 @@
+package kr.co.itcall.jte.api.sample.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import kr.co.itcall.jte.api.sample.model.SampleAnswer;
+
+@Repository
+public interface SampleAnswerRepository extends JpaRepository<SampleAnswer, Long> {
+
+	List<SampleAnswer> findBySampleQuestionId(Long questionId);
+
+}

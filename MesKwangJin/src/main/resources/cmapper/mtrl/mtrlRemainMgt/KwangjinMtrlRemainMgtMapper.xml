@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.mtrl.mtrlRemainMgt.KwangjinMtrlRemainMgtMapper">
+
+	<!-- 자재 잔량 정보 -->
+	<sql id="mtrlRemain_base">
+			mtrlRemain.remain_id				AS remainId,
+			mtrlRemain.remain_nm				AS remainNm,
+			mtrlRemain.remain_weight			AS remainWeight,
+			mtrlRemain.remain_date				AS remainDate,
+			mtrlRemain.remain_disuse			AS remainDisuse,
+			mtrlRemain.disuse_date				AS disuseDate,
+			mtrlRemain.remain_user				AS remainUser,
+			mtrlRemain.remain_desc				AS remainDesc,
+			mtrlRemain.creator_id				AS creatorId,
+			mtrlRemain.created_at				AS createdAt,
+			mtrlRemain.updator_id				AS updatorId,
+			mtrlRemain.updated_at				AS updatedAt,
+			userInfo.user_nm					AS remainUserNm
+		FROM cm_remain_mgt mtrlRemain
+		LEFT OUTER JOIN mb_user_info userInfo ON mtrlRemain.remain_user = userInfo.user_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="remainId != null and remainId != '' ">
+			AND mtrlRemain.remain_id = #{remainId}
+		</if>
+		<if test="remainDisuse != null and remainDisuse != '' ">
+			AND mtrlRemain.remain_disuse = #{remainDisuse}
+		</if>
+		<if test="startDate != null and endDate != null ">
+			AND mtrlRemain.remain_date BETWEEN DATE(#{startDate}) and DATE(#{endDate})+1
+		</if>
+
+	</sql>
+	
+	<!-- 자재 잔량 정보(Page) select -->
+	<select id="selectMtrlRemainList"
+		parameterType="jin.mes.cform.mtrl.mtrlRemainMgt.KwangjinMtrlRemainMgtDto"
+		resultType="jin.mes.cform.mtrl.mtrlRemainMgt.KwangjinMtrlRemainMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="mtrlRemain_base" />
+				)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- 자재정보 Count -->
+	<select id="selectMtrlRemainCount"
+		parameterType="jin.mes.cform.mtrl.mtrlRemainMgt.KwangjinMtrlRemainMgtDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="mtrlRemain_base" />
+			)c_table
+	</select>
+
+	<!-- 자재 잔량 정보 입력 -->
+	<insert id="insertMtrlRemain" parameterType="jin.mes.cform.mtrl.mtrlRemainMgt.KwangjinMtrlRemainMgtDto">
+	<selectKey keyProperty="remainId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('REMAIN') AS remainId
+	</selectKey>
+		INSERT INTO cm_remain_mgt(
+			remain_id,
+			remain_nm,
+			remain_weight,
+			remain_date,
+			remain_desc,
+			remain_disuse,
+			remain_user,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at	
+		)VALUES(
+			#{remainId},
+			#{remainNm},
+			#{remainWeight},
+			#{remainDate},
+			#{remainDesc},
+			#{remainDisuse},
+			#{remainUser},
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			NOW()
+		)
+	</insert>
+	
+	<!-- 자재 잔량 정보수정 -->
+	<update id="updateMtrlRemain" parameterType="jin.mes.cform.mtrl.mtrlRemainMgt.KwangjinMtrlRemainMgtDto">
+		UPDATE cm_remain_mgt
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="remainNm != null and remainNm != ''">	
+				,remain_nm = #{remainNm}
+			</if>
+			<if test="remainWeight != null and remainWeight != ''">	
+				,remain_weight = #{remainWeight}
+			</if>
+			<if test="remainDate != null and remainDate != ''">	
+				,remain_date = #{remainDate}
+			</if>
+			<if test="remainUser != null and remainUser != ''">	
+				,remain_user = #{remainUser}
+			</if>
+			<if test="remainDesc != null and remainDesc != ''">	
+				,remain_desc = #{remainDesc}
+			</if>
+			<if test="remainDisuse != null and remainDisuse != ''">	
+				,remain_disuse = #{remainDisuse}
+			</if>
+			<if test="disuseDate != null and disuseDate != ''">	
+				,disuse_date = #{disuseDate}
+			</if>
+		WHERE remain_id = #{remainId}
+	</update>	
+	
+	<!-- 자재 잔량 정보 삭제-->
+	<delete id="deleteMtrlRemain" parameterType="jin.mes.cform.mtrl.mtrlRemainMgt.KwangjinMtrlRemainMgtDto">
+		DELETE FROM cm_remain_mgt
+		WHERE remain_id  = #{remainId}
+	</delete>
+</mapper>

@@ -1,0 +1,204 @@
+@CHARSET "UTF-8";
+
+
+/***** PC 메인 페이지 관련_200806 youmi *****/
+/* 20.08.11 수정 JJW */
+
+.grid-content {
+	width: 100%;
+}
+
+.techDocMgtForm {
+	width: 100%;
+	margin: 0 auto;
+/* 	text-align: center; */
+	vertical-align: middle;
+}
+
+.techDocMgtForm .left-contents {
+	width: 20%;
+	display: inline-block;
+	height: 100%;
+}
+
+.techDocMgtForm .middle-contents {
+	width: 5%;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.techDocMgtForm .right-contents {
+	width: 74%;
+	display: inline-block;
+}
+
+.middle-contents .fas.fa-caret-square-right.fa-3x{
+	color: #3367D6;
+	padding-right: 24px;
+	
+}
+
+.techDocMgtForm #jteMasterTree {
+	font-size: 16px;
+	border: 2px solid #8aafff;
+	background:#ffffff;
+}
+
+/** 20.08.10 JJW 왼쪽 트리 구조 여백 따로 주기 위함**/
+.techDocMgtForm.k-treeview .k-item {
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+
+
+/***** PC 메인 화면 그리드 추가 / 수정 버튼 클릭 시 팝업 관련_200806 youmi *****/
+
+#techDocMgtForm_master {
+	margin-top: 5px;
+}
+
+.techDocMgtForm .techDocRegForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.techDocMgtForm .techDocRegForm_master th {
+	text-align: left;	
+}
+
+.techDocMgtForm .techDocRegForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.techDocMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+} 
+
+.techDocMgtForm .group-checkbox {
+	overflow: auto;
+	height: 150px;
+	background-color: #ffffff;
+	padding-top: 5px;
+	border: 1px solid #C7D5F4;
+}
+
+/*수정 _200825 JJW*/
+.techDocMgtForm .center-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.techDocMgtForm .jtePopForm_master th {
+   text-align: left;
+}
+
+/*수정 _200825 JJW*/
+.techDocMgtForm .left-input {
+	width: 100%;
+}
+
+/*수정 _200825 JJW*/
+.techDocMgtForm .right-input {
+	width: 100%;
+}
+
+
+.techDocMgtForm .center-input {
+	width: 100%;
+}
+
+.techDocMgtForm .normal-input {
+	width: 100%;
+}
+
+.techDocMgtForm .col-left-title {
+   width: 20%;
+}
+
+.techDocMgtForm .col-left-content {
+   width: 30%;
+}
+
+.techDocMgtForm .col-right-title {
+   width: 20%;
+}
+
+.techDocMgtForm .col-right-content {
+   width: 30%;
+}
+
+.techDocMgtForm .jte-msgBox {
+	width: 90%;
+	float: right;
+}
+
+/*추가 _200825 JJW*/
+.techDocMgtForm .search-btn {
+	width: 95%;
+	float: right;
+}
+
+/*추가 _200825 JJW*/
+.techDocMgtForm .left-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+/*추가 _200825 JJW*/
+.techDocMgtForm .right-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+
+/***** PC 메인 화면 기술문서 등록 버튼 클릭 > 추가 / 수정 버튼 클릭 시 팝업 관련_200806 youmi *****/
+
+#techDocRegForm_master {
+	margin-top: 5px;
+}
+
+.techDocMgtForm .techDocRegForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.techDocMgtForm .techDocRegForm_master th {
+	text-align: left;	
+}
+
+.techDocMgtForm .techDocRegForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.techDocMgtForm .popsc-col-left-title {
+   width: 17%;
+}
+
+.techDocMgtForm .popsc-col-left-content {
+   width: 32%;
+}
+
+.techDocMgtForm .popsc-col-right-title {
+   width: 19%;
+}
+
+.techDocMgtForm .popsc-col-right-content {
+   width: 32%;
+}
+
+.techDocMgtForm .techDocRegForm_master .addFile {
+   vertical-align : top;
+}
+
+.techDocMgtForm .techDocRegForm_master .k-dropzone {
+   padding : 0;
+   padding-bottom : 8px;
+}

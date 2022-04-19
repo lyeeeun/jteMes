@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.item.itemToolMgt.ItemToolMgtMapper">
+
+	<sql id="itemTool_base">
+			item_id as itemId,
+			item_nm as itemNm,
+			item_type as itemType,
+			item_price as itemPrice,
+			item_mtrl_cost as itemMtrlCost,
+			item_person_cost as itemPersonCost,
+			item_std01 as itemStd01,
+			item_std02 as itemStd02,
+			item_std03 as itemStd03,
+			item_std04 as itemStd04,
+			item_std05 as itemStd05,
+			item_std_str01 as itemStdStr01,
+			item_std_str02 as itemStdStr02,
+			item_std_str03 as itemStdStr03,
+			item_std_str04 as itemStdStr04,
+			item_std_str05 as itemStdStr05,
+			item_std_str06 as itemStdStr06,
+			item_unit as itemUnit,
+			item_mtrl as itemMtrl,
+			description,
+			is_use as isUse,
+			created_at as createdAt,
+			creator_id as creatorId,
+			updated_at as updatedAt,
+			updator_id as updatorId
+		FROM bc_item_info
+		WHERE 1=1
+			<if test="itemId != null and itemId !='' ">
+				AND item_id = #{itemId}
+			</if>
+			<if test="itemType != null and itemType != '' ">
+				AND item_type = #{itemType}
+			</if>
+			<if test="isUse != null and isUse != '' ">
+				AND is_use = #{isUse}
+			</if>
+			<choose>
+				<when test="searchGubun == 'itemId'">
+					AND item_id LIKE CONCAT('%',#{searchText},'%')
+				</when>
+				<when test="searchGubun == 'itemNm'">
+					AND item_nm LIKE CONCAT('%',#{searchText},'%')
+				</when>
+			</choose>
+	</sql>
+ 	<select id="selectItemToolList"
+		parameterType="jin.mes.form.item.itemToolMgt.ItemToolMgtDto"
+		resultType="jin.mes.form.item.itemToolMgt.ItemToolMgtDto">
+		SELECT *
+		FROM (
+			SELECT
+			<choose>
+				<when test="sort != null and sort != '' ">
+					ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+				</when>
+				<otherwise>
+					ROW_NUMBER() OVER(ORDER BY createdAt DESC) AS RNUM,
+				</otherwise>
+			</choose> 
+				<include refid="itemTool_base"/>
+			)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ <= ]]> #{lastIndex} AND RNUM <![CDATA[ >= ]]> #{firstIndex}
+			</if>
+	</select>
+ 	
+	<select id="selectItemToolListCount"
+		parameterType="jin.mes.form.item.itemToolMgt.ItemToolMgtDto"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM(
+			SELECT
+			<include refid="itemTool_base"/>
+		)c_table
+	</select>
+	
+	<select id="selectRtlToolList"
+		parameterType="jin.mes.form.item.itemToolMgt.ItemToolMgtDto"
+		resultType="jin.mes.form.item.itemToolMgt.ItemToolMgtDto">
+		SELECT * 
+		FROM bc_rtl_item_tool a
+		LEFT JOIN bc_tool_info b
+		ON a.tool_id = b.tool_id
+		WHERE item_id = #{itemId}
+	</select>
+	
+	<select id="selectRtlToolCount"
+		parameterType="jin.mes.form.item.itemToolMgt.ItemToolMgtDto"
+		resultType="int">
+		SELECT COUNT(*) 
+		FROM bc_rtl_item_tool a
+		LEFT JOIN bc_tool_info b
+		ON a.tool_id = b.tool_id
+		WHERE item_id = #{itemId}
+	</select>
+	
+		<!-- 수주정보 select(order-child) -->
+	<select id="selectItemToolinfo"
+	parameterType="jin.mes.form.item.itemToolMgt.ItemToolMgtDto"
+	resultType="jin.mes.form.item.itemToolMgt.ItemToolMgtDto">
+				SELECT
+				<include refid="itemTool_base" />
+	</select>
+	
+		<update id="updateItemTool"
+		parameterType="jin.mes.form.item.itemToolMgt.ItemToolMgtDto">
+		UPDATE bc_item_info
+		SET item_id = item_id
+			<if test="itemNm != null">
+				,item_nm = #{itemNm}
+			</if>
+			<if test="itemPrice != null">
+				,item_price = #{itemPrice}
+			</if>
+			<if test="itemMtrlCost != null">
+				,item_mtrl_cost = #{itemMtrlCost}
+			</if>
+			<if test="itemPersonCost != null">
+				,item_person_cost = #{itemPersonCost}
+			</if>
+			<if test="itemType != null">
+				,item_type = #{itemType}
+			</if>
+			<if test="itemUnit != null">
+				,item_unit = #{itemUnit}
+			</if>
+			<if test="itemMtrl != null">
+				,item_mtrl = #{itemMtrl}
+			</if>
+			<if test="description != null">
+				,description = #{description}
+			</if>
+			,updated_at = now()
+			<if test="updatorId != null">
+				,updator_id = #{updatorId}
+			</if>
+			<if test="itemTotalStock != null">
+				,item_total_stock = #{itemTotalStock}
+			</if>
+			<if test="itemDayTarget != null">
+				,item_day_target = #{itemDayTarget}
+			</if>
+			<if test="itemStd01 != null">
+				,item_std01 = #{itemStd01}
+			</if>
+			<if test="itemStd02 != null">
+				,item_std02 = #{itemStd02}
+			</if>
+			<if test="itemStd03 != null">
+				,item_std03 = #{itemStd03}
+			</if>
+			<if test="itemStd04 != null">
+				,item_std04 = #{itemStd04}
+			</if>
+			<if test="itemStd05 != null">
+				,item_std05 = #{itemStd05}
+			</if>
+			<if test="itemStdStr01 != null">
+				,item_std_str01 = #{itemStdStr01}
+			</if>
+			<if test="itemStdStr02 != null">
+				,item_std_str02 = #{itemStdStr02}
+			</if>
+			<if test="itemStdStr03 != null">
+				,item_std_str03 = #{itemStdStr03}
+			</if>
+			<if test="itemStdStr04 != null">
+				,item_std_str04 = #{itemStdStr04}
+			</if>
+			<if test="itemStdStr05 != null">
+				,item_std_str05 = #{itemStdStr05}
+			</if>
+			<if test="itemStdStr06 != null">
+				,item_std_str06 = #{itemStdStr06}
+			</if>
+		WHERE item_id = #{itemId}
+	</update>
+	
+	<insert id="insertRtlTool" parameterType="jin.mes.form.item.itemToolMgt.ItemToolRtlDto">
+		INSERT INTO bc_rtl_item_tool
+		(
+			item_id,
+			tool_id
+		)
+		VALUES
+		(
+			#{itemId},
+			#{toolId}
+		)
+	</insert>
+	
+	<delete id="deleteRtlTool" parameterType="jin.mes.form.item.itemToolMgt.ItemToolRtlDto">
+		DELETE FROM bc_rtl_item_tool
+		WHERE 1=1
+		AND item_id = #{itemId}
+		AND tool_id = #{toolId} 
+	</delete>
+	
+	<!-- 품목별 공구정보 조회 -->
+		<sql id="itemToolRtl_base">
+			rtl.item_id				AS itemId,
+			tool.tool_id				AS toolId,
+			tool.tool_nm			AS toolNm,
+			tool.tool_type			AS toolType,
+			tool.tool_price			AS toolPrice,
+			tool.tool_limit			AS toolLimit,
+			tool.tool_desc			AS toolDesc,
+			tool.is_use				AS isUse,
+			tool.created_at			AS createdAt,
+			tool.creator_id			AS creatorId,
+			tool.updated_at			AS updatedAt,
+			tool.updator_id			AS updatorId,
+			tool.tool_std01			AS toolStd01,
+			tool.tool_std02			AS toolStd02,
+			tool.tool_std03			AS toolStd03,
+			tool.tool_std04			AS toolStd04,
+			tool.tool_std05			AS toolStd05,
+			tool.tool_std_str01		AS toolStdStr01,
+			tool.tool_std_str02		AS toolStdStr02,
+			tool.tool_std_str03		AS toolStdStr03,
+			tool.tool_std_str04		AS toolStdStr04,
+			tool.tool_std_str05		AS toolStdStr05
+		FROM bc_rtl_item_tool rtl
+		JOIN bc_tool_info tool ON rtl.tool_id = tool.tool_id
+			WHERE 1=1
+			AND item_id = #{itemId}
+			AND tool.is_use = true
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<select id="selectItemToolChild"
+	parameterType="jin.mes.form.item.itemToolMgt.ItemToolRtlDto"
+	resultType="jin.mes.form.item.itemToolMgt.ItemToolRtlDto">
+			SELECT 
+			'K'	AS action,
+			<include refid="itemToolRtl_base" />
+		
+	</select>
+</mapper>

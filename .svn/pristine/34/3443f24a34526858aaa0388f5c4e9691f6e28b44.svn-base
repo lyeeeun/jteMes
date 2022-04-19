@@ -1,0 +1,115 @@
+@CHARSET "UTF-8";
+
+.grid-content {
+	width: 100%;
+}
+
+.menuInfoForm {
+	width: 100%;
+	margin: 0 auto;
+/* 	text-align: center; */
+	vertical-align: middle;
+}
+
+.menuInfoForm .left-contents {
+	width: 20%;
+	display: inline-block;
+	height: 100%;
+}
+
+.menuInfoForm .middle-contents {
+	width: 5%;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.menuInfoForm .right-contents {
+	width: 74%;
+	display: inline-block;
+}
+
+.middle-contents .fas.fa-caret-square-right.fa-3x{
+	color: #3367D6;
+	padding-right: 24px;
+	
+}
+
+.menuInfoForm #jteMasterTree {
+	font-size: 16px;
+	border: 2px solid #8aafff;
+	background:#ffffff;
+}
+
+/** 20.08.10 JJW 왼쪽 트리 구조 여백 따로 주기 위함**/
+.menuInfoForm.k-treeview .k-item {
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+#jtePopForm_master {
+	margin-top: 5px;
+}
+
+.menuInfoForm .col-left-title {
+	width: 20%;
+}
+
+.menuInfoForm .col-right-content {
+	width: 70%;
+}
+
+.menuInfoForm .group-checkbox {
+	overflow: auto;
+	height: 150px;
+	background-color: #ffffff;
+	padding-top: 5px;
+	border: 1px solid #C7D5F4;
+}
+
+.menuInfoForm .center-input .btn-input {
+	width: 100%;
+}
+
+.menuInfoForm .jtePopForm_master th {
+   text-align: left;
+}
+
+.menuInfoForm .left-input {
+   width: 90%;
+   float: left;
+}
+
+.menuInfoForm .right-input {
+   width: 90%;
+   float: right;
+}
+
+.menuInfoForm .center-input {
+	width: 100%;
+}
+
+.menuInfoForm .normal-input {
+	width: 100%;
+}
+
+.menuInfoForm .col-left-title {
+   width: 18%;
+}
+
+.menuInfoForm .col-left-content {
+   width: 32%;
+}
+
+.menuInfoForm .col-right-title {
+   width: 18%;
+}
+
+.menuInfoForm .col-right-content {
+   width: 32%;
+}
+
+.menuInfoForm .jte-msgBox {
+	width: 90%;
+	float: right;
+}

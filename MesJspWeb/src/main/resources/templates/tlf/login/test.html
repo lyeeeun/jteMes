@@ -1,0 +1,91 @@
+<html>
+    <head>
+        <title>
+        </title>
+        <!-- 외부 스타일 ★ -->
+        <link href="test.css"  rel="stylesheet" type="text/css">
+        <!-- 내부 스타일 -->
+        <style type="text/css">
+            body{
+                width: 100%;
+                height:100%;
+                background: green;
+            }
+        </style>
+    </head>
+    <body>
+        <div id = "test">
+            <!-- 인라인 스타일 -->
+            <div style="width:50px; background: red;">1</div>
+            
+            <div style="width:50px;  background: blue;">2</div>
+        </div>
+    </body>
+</html>
+
+<!-- html -->
+
+
+<!-- jsp -->
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+    
+    <html>
+    <head>
+        <title>
+        </title>
+        <!-- 외부 스타일 ★ -->
+        <link href="test.css"  rel="stylesheet" type="text/css">
+        <!-- 내부 스타일 -->
+        <style type="text/css">
+            body{
+                width: 100%;
+                height:100%;
+                background: green;
+            }
+        </style>
+    </head>
+    <body>
+        <table style="width:100%;" id="jteConfigForm_master" class="tabMain_jteConfigForm">
+            <colgroup>
+                <col class="Config-col-left">
+                <col class="Config-col-right">
+            </colgroup>
+                <tr>
+                    <td class="jteConfigForm-title"><i class="fas fa-globe"></i><spring:message code ="html_langChange"></spring:message> :</td>																								<!-- 언어수정 --> 
+
+                    <div class="tester">
+                    <td class="Config-lang-inputBox">
+                        <input id="t_langCd" name="langCd" msg="msgLangCode" class="Config-lang-input"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="jteConfigForm-title">
+                        <i class="fas fa-lock"></i>
+                        <spring:message code ="html_changePw"></spring:message>
+                    </td>
+                    <td class="Config-password-inputBox">
+                        <input type="checkbox" id="t_passwordYN" name="passwordYN" class="k-checkbox config-checkbox">
+                        <label class="config-label" for="t_passwordYN"><span style="visibility: hidden;">|</span></label>								<!-- 20.04.29 LYM JJW 체크박스 정렬을 위해 span 추가 --><!-- 비밀번호수정 -->
+                    </td>
+                </tr>
+                <tr class="jteConfigFomr_pwZone">
+                    <td class="Config-password-title"><i class="fas fa-caret-right"></i><spring:message code ="html_pwExisting"></spring:message> :</td>																								<!-- 기존 비밀번호 -->
+                    <td class="Config-password-inputBox">
+                        <input type="password" name="passwordPrev" id="t_passwordPrev" class="k-textbox Config-password-input" maxlength="16"/>
+                    </td>
+                </tr>
+                <tr class="jteConfigFomr_pwZone">
+                    <td class="Config-password-title"><i class="fas fa-caret-right"></i><spring:message code ="html_pwChange"></spring:message> :</td>																								<!-- 변경 비밀번호 -->
+                    <td class="Config-password-inputBox">
+                            <input type="password" name="password" id="t_password" class="k-textbox Config-password-input" maxlength="16"/> 
+                    </td>
+                </tr>
+                <tr class="jteConfigFomr_pwZone">
+                    <td class="Config-password-title"><i class="fas fa-caret-right"></i><spring:message code ="html_pwConfirm"></spring:message> :</td>																								<!-- 비밀번호 확인 -->
+                    <td class="Config-password-inputBox">
+                        <input type="password" name="passwordCheck" id="t_passwordCheck" class="k-textbox Config-password-input" maxlength="16"/> <br/>
+                    </td>
+                </tr>
+            </table>
+    </body>
+</html>

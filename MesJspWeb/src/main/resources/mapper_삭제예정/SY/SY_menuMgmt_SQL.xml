@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="SY_menuMgmt">
+	<select id="selectCtrList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+		    SELECT DISTINCT
+		           CTR_CD AS CTR_CD
+      			  ,CTR_NM AS CTR_NM
+  			  FROM TB_CTRINF
+		]]>
+	</select>
+
+	<select id="selectTaskList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT COM_CD AS COM_CD
+				  ,COM_NM AS COM_NM
+			      ,DUMY1_VALUE AS DUMY1_VALUE
+   			  FROM TB_COMCDINF
+             WHERE CTR_CD = #{APT_CD}
+    		   AND GRP_CD = 'MENU'
+		]]>
+	</select>
+
+	<select id="selectMenuList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT  APT_CD    AS       APT_CD
+			  	  , AUTH_CODE    AS    AUTH_CODE
+			  	  , TASK_DIV    AS    TASK_DIV
+			      , MENU_ID    AS    MENU_ID
+			      , MENU_NAME    AS    MENU_NAME
+			      , PGM_ID    AS    PGM_ID
+			      , MENU_DIV    AS    MENU_DIV
+			      , UP_MENU_ID    AS    UP_MENU_ID
+			      , MENU_ORDER    AS    MENU_ORDER
+			      , USE_YN    AS    USE_YN
+			      , DECODE(SEARCH_AUTH, 'Y', 'true', 'false')   AS SEARCH_AUTH  
+			      , DECODE(PRINT_AUTH,  'Y', 'true', 'false')   AS PRINT_AUTH   
+			      , DECODE(INPUT_AUTH, 'Y', 'true', 'false')    AS INPUT_AUTH 
+			  FROM TB_MENUINF_NEW
+			 WHERE APT_CD = #{APT_CD}
+			   AND USE_YN LIKE NVL(#{USE_YN}, '%') || '%'  
+		]]>
+		
+		ORDER BY MENU_ID ASC
+	</select>
+
+	<select id="insertMenuList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+	INSERT INTO TB_MENUINF_NEW(APT_CD
+							  ,AUTH_CODE
+							  ,TASK_DIV
+						      ,MENU_ID
+						      ,MENU_NAME
+						      ,PGM_ID
+						      ,MENU_DIV
+						      ,UP_MENU_ID
+						      ,MENU_ORDER
+						      ,USE_YN
+						      ,REG_DT
+						      ,REG_USER_NO
+						      ,REG_PGM_ID
+						      ,SEARCH_AUTH
+			                  ,PRINT_AUTH
+			                  ,INPUT_AUTH
+						      )
+					    VALUES(
+					    	   #{CTR_CD}
+							  ,#{AUTH_CODE}
+							  ,#{TASK_DIV}
+						      ,#{MENU_ID}
+						      ,#{MENU_NAME}
+						      ,#{PGM_ID}
+						      ,#{MENU_DIV}
+						      ,#{UP_MENU_ID}
+						      ,#{MENU_ORDER}
+						      ,#{USE_YN}
+						      ,SYSDATE
+						      ,#{REG_USER_NO}
+						      ,#{REG_PGM_ID}
+						      ,DECODE(#{SEARCH_AUTH},'true', 'Y', 'N') 
+			                  ,DECODE(#{PRINT_AUTH} ,'true', 'Y', 'N') 
+			                  ,DECODE(#{INPUT_AUTH},'true', 'Y', 'N')
+						      )
+		]]>
+	</select>
+
+	<select id="updateMenuList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+			UPDATE TB_MENUINF_NEW
+			   SET MENU_NAME = #{MENU_NAME}
+			      ,TASK_DIV = #{TASK_DIV}
+			      ,PGM_ID = #{PGM_ID}
+			      ,UP_MENU_ID = #{UP_MENU_ID}
+			      ,MENU_ORDER = #{MENU_ORDER}
+			      ,MENU_DIV = #{MENU_DIV}
+			      ,USE_YN = #{USE_YN}
+			      ,UPD_DT = SYSDATE
+			      ,UPD_USER_NO = #{REG_USER_NO}
+			      ,UPD_PGM_ID = #{UPD_PGM_ID}
+			      ,SEARCH_AUTH  = DECODE(#{SEARCH_AUTH}, 'true', 'Y', 'N')  
+			      ,PRINT_AUTH   = DECODE(#{PRINT_AUTH},  'true', 'Y', 'N') 
+			      ,INPUT_AUTH   = DECODE(#{INPUT_AUTH}, 'true', 'Y', 'N')  
+			 WHERE APT_CD = #{APT_CD}
+			   AND AUTH_CODE = #{AUTH_CODE}
+			   AND MENU_ID = #{MENU_ID}
+		]]>
+	</select>
+
+	<select id="deleteMenuList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+			   DELETE 
+			     FROM TB_MENUINF_NEW
+			    WHERE APT_CD = #{APT_CD}
+			      AND AUTH_CODE = #{AUTH_CODE}
+			      AND MENU_ID = #{MENU_ID}
+		]]>
+	</select>
+	<select id="selectMenuId" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT MENU_ID 
+  		      FROM TB_MENUINF_NEW
+           	 WHERE APT_CD = #{APT_CD} 
+               AND MENU_ID = (SELECT MAX(MENU_ID) AS MENU_ID 
+              					FROM TB_MENUINF_NEW
+              				   WHERE APT_CD = #{APT_CD}
+              				  )
+             
+		]]>
+	</select>
+
+	<select id="selectAuthGrp" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT    (SY_authGrpAuthReg)
+			       AUTH_GRP_CD     AS AUTH_GRP_CD    
+			     , AUTH_GRP_NM     AS AUTH_GRP_NM    
+			  FROM TB_AUTHGRPINF                    
+			 WHERE USE_YN = 'Y'                     
+			   AND CTR_CD = #{CTR_CD}      
+		]]>
+	</select>
+
+	<select id="selectPgmId" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT DISTINCT 
+			        (CASE SUBSTR(B.PGM_ID, 0, INSTR(B.PGM_ID, '_') - 1) WHEN A.COM_NM THEN A.COM_CD
+			          END
+			        )                                AS TASK_DIV
+			        , B.PGM_ID                       AS PGM_ID
+			        , C.MENU_NAME                    AS PGM_NAME
+			  FROM TB_COMCDINF A
+			     , (SELECT DISTINCT 
+			               PGM_ID                    AS PGM_ID
+			             , PGM_NAME                  AS PGM_NAME
+				      FROM TB_PGMINF_NEW
+				   ) B
+				 , TB_MENUINF_NEW C
+			  WHERE A.CTR_CD     = #{CTR_CD}
+			    AND A.GRP_CD     = 'MENU'
+			    AND A.COM_NM     = SUBSTR(B.PGM_ID, 0, INSTR(B.PGM_ID, '_') - 1)
+			    AND B.PGM_ID     = C.PGM_ID;
+		]]>
+	</select>
+
+	<select id="selectAddPgmId" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT DISTINCT 
+			       A.PGM_ID                                       AS PGM_ID
+			     , A.PGM_NAME                                     AS PGM_NAME
+			     , (CASE SUBSTR(A.PGM_ID, 0, INSTR(A.PGM_ID, '_') - 1) WHEN B.COM_NM THEN B.COM_CD
+			         END
+			       )                                              AS TASK_DIV
+			     , #{AUTH_CODE}                                   AS AUTH_CODE 
+			  FROM TB_PGMINF_NEW A
+			     , TB_COMCDINF B
+			 WHERE NOT EXISTS (SELECT C.PGM_ID
+			                     FROM TB_MENUINF_NEW C
+			                    WHERE A.PGM_ID = C.PGM_ID
+			                      AND C.AUTH_CODE = #{AUTH_CODE}
+						       )
+			   AND SUBSTR(A.PGM_ID, 0, INSTR(A.PGM_ID, '_') - 1) = B.COM_NM
+			   AND B.CTR_CD = #{CTR_CD}
+		]]>
+	</select>
+
+
+	<select id="selectUpMenuId" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT DISTINCT 
+			      A.MENU_ID        AS  MENU_ID
+			     , A.MENU_NAME     AS  MENU_NAME
+			     , A.MENU_DIV      AS  MENU_DIV
+			     , A.AUTH_CODE     AS  AUTH_CODE
+			     , A.TASK_DIV      AS  TASK_DIV
+			     
+			  FROM TB_MENUINF_NEW A
+			     , (SELECT MENU_ID, MENU_NAME
+			          FROM TB_MENUINF_NEW) B
+			 WHERE A.UP_MENU_ID = B.MENU_ID(+)
+			   
+			   AND A.MENU_DIV = 'F'
+			   AND A.APT_CD = #{CTR_CD}
+		]]>
+	</select>
+</mapper>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/rms_layout}" lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+<link rel="stylesheet" href="/css/rms/MaintenanceManagement/maintenance_history.css" />
+<title></title>
+</head>
+<body>
+	<div id="container">
+		<div class="content" layout:fragment="content">
+			<!-- 검색 -->
+			<!-- 검색 -->
+			<div class="main_search">
+				<table class="search_table">
+					<colgroup>
+						<col style="width: 15%;" />
+						<col style="width: 85%;" />
+					</colgroup>
+					<tr>
+						<td>
+							<span class="search_title1" th:text="${Title}"></span>
+						</td>
+						<td>
+							<div id="works_search">
+								<form id="worksSearchForm" action="/main_history" method="get">
+									<span class="search_title2">Works Search</span>
+									<input name="searchGubun" id="worksCombo" class="easyui-combobox" style="width: 120px;" />
+									<input type="hidden" th:value="${search.searchGubun != null} ? ${search.searchGubun} : null" id="hidCombo">
+									<input name="searchText" type="text" class="easyui-textbox" id="worksText" th:value="${search.searchText != null} ? ${search.searchText} : null"/>
+									<a id="worksSearchBtn" class="easyui-linkbutton" onclick="searchBtn();" data-options="iconCls:'icon-search'">Search</a>
+								</form>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<!-- 본문 영역 -->
+			<div class="content_layer">
+				<div class="orderListDiv">
+					<span class="orderListItem" style="width: 50%; display:inline-block" th:each="key : ${searchResult}" 
+					th:attr="onclick=|worksItemSelectOne('${key[0]}','${key[1]}','${key[2]}','${key[3]}','${key[4]}','${key[5]}'),orderListSelected(this)|">
+						<span th:text="${key[0]}+' '+${key[1]}+' '+${key[2]}+' '+${key[3]}+' '+${key[4]}+' '+${key[5]}" ></span>
+					</span>
+				</div>
+			
+				<table id="history_table" style="display: none;">
+						<colgroup>
+							<col style="width: 10%">
+							<col style="width: 9%">
+							<col style="width: 9%">
+							<col style="width: 9%">
+							<col style="width: 9%">
+							<col style="width: 9%">
+							<col style="width: 9%">
+							<col style="width: 9%">
+							<col style="width: 9%">
+							<col style="width: 9%">
+							<col style="width: 9%">
+						</colgroup>
+						<thead>
+						<tr>
+							<th colspan="11">Additional Information</th>
+						</tr>
+						</thaed>
+						<!-- 엔진영역 -->
+						<tbody id="history_engine_body"></tbody>
+						<!-- 실린더영역 -->
+						<tbody id="history_cylinder_body"></tbody>
+					</table>
+				
+					<table id="history_detail_table" style="display:none;">
+					<colgroup>
+						<col style="width: 10%">
+						<col style="width: 15%">
+						<col style="width: 15%">
+						<col style="width: 15%">
+						<col style="width: 25%">
+						<col style="width: 10%">
+						<col style="width: 10%">
+					</colgroup>
+					<thead>
+						<tr>
+							<th>Equip.</th>
+							<th>Date</th>
+							<th>OverHaul</th>
+							<th>Running Hour</th>
+							<th>Work</th>
+							<th>Engine. No.</th>
+							<th>Cyl. No.</th>
+						</tr>
+					</thead>
+					<tbody id="history_detail_body"></tbody>
+				</table>
+				
+				<table id="histroy_RH_table" style="display:none;">
+					<colgroup>
+						<col style="width:10%;">
+						<col style="width:30%;">
+						<col style="width:10%">
+						<col style="width:20%">
+						<col style="width:10%">
+						<col style="width:20%">
+					</colgroup>
+					<tr>
+						<th style="text-align:center;">Description</th>
+						<td><span style="border-bottom:1px solid black; font-weight:bold;" id = "runhourDesc"></span></td>
+						<th>From</th>
+						<td><input id="runhourFDate" type="text" class="easyui-datebox" style="width: 120px;" /></td>
+						<th>To</th>
+						<td><input id="runhourTDate" type="text" class="easyui-datebox" style="width: 120px;" /></td>
+					</tr>
+					<tr>
+						<th>Interval : </th>
+						<td>
+							<input id="runhourInterval" name="runhourInterval" class="easyui-numberbox" style="color:red;" />
+						</td>
+						<th>기존 R/H</th>
+						<td><span id="runhourBaseText"></span></td>
+						<th>변경 R/H</th>
+						<td>
+							<span id="runhourChText" style="width:150px;">-</span>
+							<a id="runHourBtn" class="easyui-linkbutton" onclick="runHourSaveBtn();" data-options="iconCls:'icon-save'">Save</a>
+						</td>
+					</tr>
+				</table>
+
+				<div id="histoty_graph">
+				</div>
+			</div>
+					<input type="hidden" id = "hidPmsCd01">
+			<input type="hidden" id = "hidPmsCd02">
+			<input type="hidden" id = "hidPmsCd03">
+			<input type="hidden" id = "hidPmsCd04">
+			<input type="hidden" id = "hidPmsCd05">
+			<!-- <input type="hidden" id = "hidPmsDesc"> -->
+			<input type="hidden" id = "hidEngineId">
+	<!-- 		<input type="hidden" id = "hidParentId"> -->
+		</div>
+	</div>
+</body>
+<th:block layout:fragment="script">
+	<script src="/util/plotly-latest.min.js"></script>
+	
+	<script src="/js/rms/MaintenanceManagement/maintenance_history.js"></script>
+</th:block>
+</html>

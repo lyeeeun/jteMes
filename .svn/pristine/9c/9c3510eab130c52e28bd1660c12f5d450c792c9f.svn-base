@@ -1,0 +1,11 @@
+
+server.port=8080
+
+
+biz.prop.enc.test = ENC(DlZTxAjmcKfhzxqZsKijPkgzGmLEGvjHG9bwCGyNJ7iLcp2WiU4JZBznp3A1OVNDZjLHM1oai3C4licyNTaT1w==)
+
+spring.datasource.driver-name=ENC(YUeayhKA6Faai1qsYSaVIZxGJpI4W/t5hMgpLDVrhWeKXmLYnHXyusQ0QIVpR51e)
+spring.datasource.url=ENC(7ebncU5KaORTDs14x3/ttIoAlWgevglitAGhRQY5rpTELKjW59qnWdSTYDy3zZ46hmxy9YlXd9LBFwVVvv240J4KYsnL66Nu+OIZtUHS31M=)
+spring.datasource.username=ENC(t3Jtpj9iReuZH/58mgxghiBukciAk2+n6N6myWtWibs=)
+spring.datasource.password=ENC(tOxrk8FnjV6Gqs1iFHcV4oYqIQnPBxT6AZT5ue4PnG1+sZAwOyQk3g==)
+

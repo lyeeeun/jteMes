@@ -1,0 +1,27 @@
+#spring:
+#    view:
+#        prefix: /WEB-INF/jsp/
+#        suffix: .jsp
+      
+
+
+#server:
+#   port: 8080
+#   servlet:
+#      contextPath: /
+
+
+#spring:
+#   mvc:
+#      view:
+#         prefix: /WEB-INF/jsp/
+#         suffix: .jsp
+
+
+# Spring-boot의 기본설정값이며, 변경시 사용한다.
+#spring:
+#   velocity:
+#      resource-loader-path: classpath:/templates/
+
+
+

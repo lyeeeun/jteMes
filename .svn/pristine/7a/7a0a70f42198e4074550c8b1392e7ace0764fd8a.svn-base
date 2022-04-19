@@ -1,0 +1,3 @@
+.inputQualMgtForm.k-grid th:first-child, .inputQualMgtForm.k-grid td:first-child {
+	text-align: center;
+}

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PROD_MFOrderReg">
+<!--  FN_CM_GETCOMNM(O.CTR_CD , 'PRODTYPE', P.PRODTYPE) AS PRODTYPE
+ FN_CM_GETCOMNM(O.CTR_CD , 'PRODSPEC', P.PRODSPEC) AS PRODSPEC
+ FN_CM_GETCOMNM(O.CTR_CD , 'PRODUNITCD',P.PRODUNIT_CD )  AS UNIT_NM -->
+	<select id="selectMFOrderList" parameterType="hashmap"
+		resultType="hashmap">
+		<!-- <![CDATA[ -->
+	        SELECT    O.ORDER_NO                                    					   <!--  주문번호 -->
+		            , DATE_FORMAT(O.ORDER_DATE,'%Y%m%d') AS ORDER_DATE					   <!-- 주문날짜 -->
+		            , DATE_FORMAT(O.DELIVERY_DATE,'%Y%m%d') AS DELIVERY_DATE	     	   <!-- 납기일자 -->
+		            , O.CUSTOMERID                                 						   <!--고객사아이디 -->
+		            , O.PRODID                                    						   <!-- 제품아이디 -->
+		            , C.CUSTOMERNAME                              						   <!-- 고객사명 -->
+		            , P.PRODNAME                                  						   <!-- 제품명 -->
+		            , P.PRODMTRL                                   						   <!-- 재품재질 -->
+		            , P.PRODTYPE AS PRODTYPE                                               <!-- 제품유형 -->
+			        , P.PRODSPEC AS PRODSPEC      										   <!-- 제품규격 -->
+					, P.PRODUNIT_CD AS UNIT_NM     										   <!-- 단위 -->      
+			        , O.QTY                                           					   <!-- 주문량 -->
+		            , O.SHOPFLOOR_TOT_QTY                           					   <!-- 총지시량 -->
+			        , O.QTY - O.SHOPFLOOR_TOT_QTY  AS REMAINING    						   <!-- 주문잔량 -->
+			        , O.REMARK AS ORDERREMARK                      						   <!-- 주문특기사항 -->
+			        , O.DEL_GBN                                                            <!-- 삭제여부 -->
+			FROM TB_MESORDER O
+			INNER JOIN TB_CUSTOMER C ON O.CUSTOMERID=C.CUSTOMERID
+			INNER JOIN TB_PRODUCT P ON O.PRODID=P.PRODID
+		
+		WHERE 1=1
+		    AND O.QTY - O.SHOPFLOOR_TOT_QTY > 0
+		<!-- ]]> -->
+		<!--  삭제 구분에 N 즉 삭제된 데이터가 아닌경우 -->
+		<if test='DEL_GBN != "N"'>
+			AND O.DEL_GBN ='N'
+		</if> 
+		<!-- 검색 날짜가 null이 아닐경우 -->
+		<if test='STR_DT != null and STR_DT != ""'>
+		   <!--||는 더해주는것 (산술연산이아니고 문자와문자를 이어준다.)뒤에 '00:00:00'을 붙여줘야함 해당일의 0시0분0초를의미해줘야함. -->
+			AND ORDER_DATE BETWEEN DATE_FORMAT(#{STR_DT}, '%Y-%m-%D 00:00:00')
+			AND DATE_FORMAT(#{END_DT}, '%Y-%m-%D 23:59:59')
+		</if>
+		<!--고객사가 null이 아닌 경우 고객사에 따른 검색이 가능하게함  -->
+		<if test='CUSTOMERNAME != null and CUSTOMERNAME != ""'>
+			AND CUSTOMERNAME LIKE CONCAT("%"#{CUSTOMERNAME}"%") 
+			
+		</if>
+        <!--제품명이 null이 아닌 경우 제품명에 따른 검색이 가능하게함  -->
+		<if test='PRODNAME != null and PRODNAME != ""'>
+			AND PRODNAME LIKE CONCAT("%"#{PRODNAME}"%") 
+		</if>
+			ORDER BY ORDER_NO
+	</select>
+
+	<!-- 저장버튼 눌렀을때 처리를 위해 -->
+	<select id="selectpreSave" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT COUNT(*) AS CNT      
+			FROM TB_MESWORKORDER       -- [TB_제조지시목록]
+			WHERE WOID     =     #{WOID}
+		]]>
+	</select>
+
+	<!-- 제조지시테이블에 데이터 삽입 시 필요. -->
+	<select id="insertMFOList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+			
+			INSERT INTO TB_MESWORKORDER( WOID
+			                          ,CTR_CD
+			                          ,ORDER_NO
+			                          ,WO_DATE
+			                          ,CUSTOMERID
+			                          ,PRODID
+			                          ,UNIT_CD
+			                          ,SHOPFLOOR_QTY      --지시량
+			                          ,OUT_TOT_QTY        --총 생산 수량
+			                          ,DEFECT_TOT_QTY     --총 불량 량
+			                          ,PACK_TOT_QTY       --총 포장 량
+			                          ,REMARK             --특이사항
+			                          ,DEL_GBN            --삭제여부
+			                          ,REG_USER_ID
+			                          ,REG_PGM_ID
+			                          ,REG_DT
+			                          ,UPD_USER_ID
+			                          ,UPD_PGM_ID
+			                          ,UPD_DT
+			                          )
+			                   VALUES( (SELECT WOID + 1 AS WOID FROM TB_MESWORKORDER AS SUB_TABLE ORDER BY WOID DESC LIMIT 1) -- FN_CM_SEQ('WOID',NULL,NULL)     Function 미 존재
+			                          ,#{CTR_CD}
+			                          ,#{ORDER_NO}
+			                          ,now()
+			                          ,#{CUSTOMERID}
+			                          ,#{PRODID}
+			                          ,#{UNIT_CD}
+			                          ,#{SHOPFLOOR_QTY}
+			                          ,'0'
+			                          ,#{DEFECT_TOT_QTY}
+			                          ,#{PACK_TOT_QTY}
+			                          ,#{REMARK}
+			                          ,'N'
+			                          ,#{REG_USER_ID}
+			                          ,#{REG_PGM_ID}
+			                          ,now()
+			                          ,#{UPD_USER_ID}
+			                          ,#{UPD_PGM_ID}
+			                          ,now()
+			                          )
+		]]>
+	</select>
+</mapper>

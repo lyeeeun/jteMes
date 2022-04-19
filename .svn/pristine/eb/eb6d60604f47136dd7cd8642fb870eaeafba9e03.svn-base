@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.pick.rlesPlanMgt.RlesPlanMgtMapper">
+	<!-- 출고(포장) 대상 정보 -->
+	<sql id="pkgPlan_base">
+			pkgId,
+			lotId,
+			itemNm,
+			itemWeight,
+			mtrlMgtScrap,
+			mtrlReceiveQty,
+			pkgPlanQty,
+			pkgState,
+			pkgDesc
+		FROM ( 
+			SELECT distinct
+				pkgPlan.pkg_id as pkgId,
+				pkgPlan.lot_id as lotId,
+				itemInfo.item_nm AS itemNm,
+				pkgPlan.item_weight as itemWeight,
+				pkgPlan.mtrl_mgt_scrap as mtrlMgtScrap,
+				pkgPlan.mtrl_receive_qty AS mtrlReceiveQty,
+				pkgPlan.pkg_plan_qty as pkgPlanQty,
+				pkgPlan.pkg_state AS pkgState,
+				pkgPlan.pkg_desc as pkgDesc
+			FROM prs_package_plan pkgPlan
+			LEFT JOIN prs_lot_info lotInfo
+			ON pkgPlan.lot_id = lotInfo.lot_id
+			LEFT JOIN bc_item_info itemInfo
+			ON lotInfo.item_id = itemInfo.item_id
+			where pkgPlan.lot_id = #{itemMgtId}
+			<if test="searchText != null and searchText != '' ">
+				AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+			</if>
+		) pkgPlan
+	</sql>
+	
+	<!-- 출고 대상 조회 -->
+	<select id="selectPackagePlanList"
+		parameterType="jin.mes.form.pick.rlesPlanMgt.RlesPlanMgtDto"
+		resultType="jin.mes.form.pick.rlesPlanMgt.RlesPlanMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY pkgId desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="pkgPlan_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	<!-- 출고 대상 Count -->
+	<select id="selectPackagePlanCount"
+		parameterType="jin.mes.form.pick.rlesPlanMgt.RlesPlanMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="pkgPlan_base" />
+				)c_table
+	</select>
+	
+	<select id="selectPackageAgg"
+		parameterType="jin.mes.form.pick.rlesPlanMgt.RlesPlanMgtDto"
+		resultType="jin.mes.form.pick.rlesPlanMgt.RlesPlanMgtDto">
+		SELECT 
+			IFNULL(itemInfo.item_std04,0) AS itemWeight,
+			SUM(itemMgt.item_stock) AS itemStock,
+			IFNULL(mtrlMgt.mtrl_mgt_scrap,0) AS mtrlMgtScrap
+		FROM cm_item_mgt itemMgt
+		LEFT JOIN bc_item_info itemInfo
+		ON itemMgt.item_id = itemInfo.item_id
+		LEFT JOIN cm_mtrl_mgt mtrlMgt
+		ON itemMgt.item_mgt_id = mtrlMgt.lot_id
+		WHERE 1=1
+		AND itemMgt.item_mgt_id = #{lotId}
+		GROUP BY itemMgt.item_mgt_id
+	</select>
+	
+	<insert id="insertPackagePlan" parameterType="jin.mes.form.pick.rlesPlanMgt.RlesPlanMgtDto">
+		<selectKey keyProperty="pkgId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('PKGD') AS pkg_id
+		</selectKey>
+		INSERT INTO prs_package_plan(
+				pkg_id,
+				lot_id,
+				item_weight,
+				mtrl_mgt_scrap,
+				mtrl_receive_qty,
+				pkg_plan_qty,
+				pkg_state,
+				pkg_desc
+		)VALUES(
+				#{pkgId},
+				#{itemMgtId},
+				#{itemWeight},
+				#{mtrlMgtScrap},
+				#{mtrlReceiveQty},
+				#{pkgPlanQty},
+				'ship_sta01',
+				#{pkgDesc}
+		)
+	</insert>
+	
+	<update id="updatePackagePlan" parameterType="jin.mes.form.pick.rlesPlanMgt.RlesPlanMgtDto">
+		UPDATE prs_package_plan
+		SET pkg_id = pkg_id
+		<if test="itemWeight != null and itemWeight != '' ">
+			,item_weight = #{itemWeight}
+		</if>
+		<if test="mtrlMgtScrap != null and mtrlMgtScrap != '' ">
+			,mtrl_mgt_scrap = #{mtrlMgtScrap}
+		</if>
+		<if test="mtrlReceiveQty != null and mtrlReceiveQty != '' ">
+			,mtrl_receive_qty = #{mtrlReceiveQty}
+		</if>
+		<if test="pkgPlanQty != null and pkgPlanQty != '' ">
+			,pkg_plan_qty = #{pkgPlanQty}
+		</if>
+		<if test="pkgDesc != null and pkgDesc != '' ">
+			,pkg_desc = #{pkgDesc}
+		</if>
+		WHERE 1=1
+		AND pkg_id = #{pkgId} 
+	</update>
+	
+	
+	<delete id="deletePackagePlan" parameterType="jin.mes.form.pick.rlesPlanMgt.RlesPlanMgtDto">
+		DELETE FROM prs_package_plan
+		WHERE pkg_id = #{pkgId}
+	</delete>
+</mapper>

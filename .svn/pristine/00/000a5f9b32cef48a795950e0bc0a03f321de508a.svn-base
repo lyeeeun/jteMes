@@ -1,0 +1,6 @@
+.productPlanForm .k-datetimepicker .k-select .k-link {
+	display: flex;
+}
+.productPlanForm .k-datetimepicker .k-select .k-link-date {
+	border-right: 1px solid #ffffff;
+}

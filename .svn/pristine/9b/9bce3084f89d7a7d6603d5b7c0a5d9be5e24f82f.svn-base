@@ -1,0 +1,6 @@
+#lbl : label, msg : alert, log : log
+del.test.msg={0}\uc740 \ud55c\uad6d\ub9d0\uc785\ub2c8\ub2e4.(\ud55c\uad6d\uc5b4\uba54\uc2dc\uc9c0)[{1}]
+title1.OverView.lbl=Total Output
+title2.OverView.lbl=Availability
+title3.OverView.lbl=Next PMS
+title4.OverView.lbl=R/H

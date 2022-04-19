@@ -1,0 +1,21 @@
+
+.eqmtOperationPlanForm {
+	width:100%;
+}
+
+.eqmtOperationPlanForm.search-btn-area {
+}
+
+/* JJW 20.11.10 부하분석 가운데 날짜 선택 박스 수정 */
+.eqmtOperationPlanForm #scheduler .k-toolbar .k-nav-current{
+	/* display: block; */
+	padding: 6px 8px;
+	background-color: #ffffff;
+	border-radius: 4px;
+	border: 1px solid #c3d2f3;
+}
+
+.eqmtOperationPlanForm.performEquipmentForm-gird {
+	width:100%;
+	margin-top: 5px;
+}

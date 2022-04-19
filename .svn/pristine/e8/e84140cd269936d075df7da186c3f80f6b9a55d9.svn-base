@@ -1,0 +1,18 @@
+package jin.mes.form.ship.shipPlanMgt;
+
+import java.util.List;
+
+public interface ShipPlanMgtMapper {
+
+	public List<ShipPlanMgtDto> selectShipPlanList(ShipPlanMgtDto planDto);
+	
+	public int selectShipPlanCount(ShipPlanMgtDto planDto);
+	
+	public List<ShipPlanMgtDto> selectShipPlanDetail(ShipPlanMgtDto planDto);
+
+	public void insertShipPlan(ShipPlanMgtDto planDto);
+	
+	public void updateShipPlan(ShipPlanMgtDto planDto);
+	
+	public void deleteShipPlan(ShipPlanMgtDto planDto);
+}

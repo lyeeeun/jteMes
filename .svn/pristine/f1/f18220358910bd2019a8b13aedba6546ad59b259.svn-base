@@ -1,0 +1,93 @@
+package jin.mes.form.ship.shipPlanMgt;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import jin.mes.common.alarm.AlarmMgtService;
+import kr.co.itcall.jte.common.mvc.PageInfo;
+import kr.co.itcall.jte.common.mvc.PageRequestVo;
+import kr.co.itcall.jte.common.util.JteUtils;
+import kr.co.itcall.jte.spring.config.exception.BusinessException;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Transactional(transactionManager="transactionManager")
+@Slf4j
+public class ShipPlanMgtService {
+
+	@Autowired AlarmMgtService alarmMgtService; 
+	
+	@Resource
+    protected ShipPlanMgtMapper planMapper;
+	
+	public PageInfo<ShipPlanMgtDto> getShipPlanList(ShipPlanMgtDto planDto, PageRequestVo pageRequestVo){
+		List<ShipPlanMgtDto> planList = null;
+		int rowCount = 0;
+
+		// Page Setting
+		planDto.setFirstIndex(pageRequestVo.getBlockFirstPage());
+		planDto.setLastIndex(pageRequestVo.getBlockLastPage());
+
+		try {
+			//Count
+			rowCount = planMapper.selectShipPlanCount(planDto);
+			if (rowCount > 0) {
+				//List
+				planList = planMapper.selectShipPlanList(planDto);
+			}
+		} catch (Exception e) {
+			throw new BusinessException("월간 계획 조회 에러 : " + e.getMessage());
+		}
+		if (planList == null) {
+			planList = new ArrayList<ShipPlanMgtDto>();
+		}
+		return new PageInfo<ShipPlanMgtDto>(planList, pageRequestVo, rowCount);
+	}
+	
+	
+	public PageInfo<ShipPlanMgtDto> getShipPlanDetail(ShipPlanMgtDto shipPlanDto, PageRequestVo pageRequestVo){
+		List<ShipPlanMgtDto> planDetailList = null;
+		int rowCount = 0;
+
+		// Page Setting
+		shipPlanDto.setFirstIndex(pageRequestVo.getBlockFirstPage());
+		shipPlanDto.setLastIndex(pageRequestVo.getBlockLastPage());
+
+		try {
+			planDetailList = planMapper.selectShipPlanDetail(shipPlanDto);
+		} catch (Exception e) {
+			throw new BusinessException("상세 계획 조회 에러  : " + e.getMessage());
+		}
+		if (planDetailList == null) {
+			planDetailList = new ArrayList<ShipPlanMgtDto>();
+		}
+		return new PageInfo<ShipPlanMgtDto>(planDetailList, pageRequestVo, rowCount);
+	}
+	
+	public String setShipPlan(ShipPlanMgtDto shipPlanDto){
+		String returnKey = "";
+		try {
+			shipPlanDto.setCreatorId(JteUtils.getUserId());
+			shipPlanDto.setUpdatorId(JteUtils.getUserId());
+			
+			if(shipPlanDto.getAction().equals("C")) { 
+				planMapper.insertShipPlan(shipPlanDto);
+				returnKey = shipPlanDto.getShipPlanId();
+			}else if(shipPlanDto.getAction().equals("U")){ 
+				planMapper.updateShipPlan(shipPlanDto);
+				returnKey = shipPlanDto.getShipPlanId();
+			}
+		} catch (Exception e) {
+			returnKey = "";
+			throw new BusinessException("계획 입력 에러  : " + e.getMessage());
+		}
+		
+		return returnKey;
+	}
+}

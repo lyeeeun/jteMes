@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.basMgt.operMgt.toolMgt.ToolMgtMapper">
+
+	<!-- 설비정보 -->
+	<sql id="toolInfo_base">
+			toolInfo.tool_id		AS toolId, 
+			toolInfo.tool_nm     	AS toolNm, 
+			toolInfo.tool_type   	AS toolType,
+			toolInfo.tool_dc		AS toolDc,
+			toolInfo.tool_price  	AS toolPrice, 
+			toolInfo.tool_limit  	AS toolLimit, 
+			toolInfo.tool_desc   	AS toolDesc,
+			toolInfo.is_use      	AS isUse, 
+			toolInfo.creator_id  	AS creatorId, 
+			toolInfo.created_at  	AS createdAt,
+			toolInfo.updator_id  	AS updatorId,
+			toolInfo.updated_at  	AS updatedAt,
+			toolInfo.tool_std01  	AS toolStd01,
+			toolInfo.tool_std02  	AS toolStd02,
+			toolInfo.tool_std03  	AS toolStd03,
+			toolInfo.tool_std04  	AS toolStd04,
+			toolInfo.tool_std05  	AS toolStd05,
+			toolInfo.tool_std_str01  	AS toolStdStr01,
+			toolInfo.tool_std_str02  	AS toolStdStr02,
+			toolInfo.tool_std_str03  	AS toolStdStr03,
+			toolInfo.tool_std_str04  	AS toolStdStr04,
+			toolInfo.tool_std_str05  	AS toolStdStr05
+			
+		FROM bc_tool_info toolInfo
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="toolType != null and toolType != '' ">
+			AND toolInfo.tool_type = #{toolType}
+		</if>
+		<if test="toolId != null and toolId != '' ">
+			AND toolInfo.tool_id = #{toolId}
+		</if>
+		<if test="isUse != null and isUse != '' ">
+			AND toolInfo.is_use = #{isUse}
+		</if>
+	</sql>
+
+	<!-- 설비 구매 업체-->
+	<sql id="tool_rtl_comp">
+			comp.comp_id		AS compId,
+			comp.comp_nm		AS compNm,
+			comp.comp_managr	AS compManagr,
+			comp.comp_number	AS compNumber,
+			comp.comp_type		AS compType,
+			comp.comp_addr		AS compAddr,
+			comp.created_at		AS createdAt,
+			comp.updated_at		AS updatedAt,
+			comp.creator_id		AS creatorId,
+			comp.updator_id		AS updatorId,
+			comp.description	AS description,
+			comp.is_use			AS isUse,
+			rtl.tool_id			AS toolId,
+			comp.comp_std01		AS compStd01,
+			comp.comp_std02		AS compStd02,
+			comp.comp_std03		AS compStd03,
+			comp.comp_std04		AS compStd04,
+			comp.comp_std05		AS compStd05,
+			comp.comp_std_str01		AS compStdStr01,
+			comp.comp_std_str02		AS compStdStr02,
+			comp.comp_std_str03		AS compStdStr03,
+			comp.comp_std_str04		AS compStdStr04,
+			comp.comp_std_str05		AS compStdStr05
+		FROM bc_rtl_tool_comp rtl
+		LEFT OUTER JOIN bc_company_info comp on rtl.comp_id = comp.comp_id
+		WHERE rtl.tool_id = #{toolId} AND comp.is_use = true
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<!-- 설비정보(Page) select -->
+	<select id="selectToolInfoList"
+		parameterType="jin.mes.form.basMgt.operMgt.toolMgt.ToolMgtDto"
+		resultType="jin.mes.form.basMgt.operMgt.toolMgt.ToolMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="toolInfo_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 설비정보 Count -->
+	<select id="selectToolInfoCount"
+		parameterType="jin.mes.form.basMgt.operMgt.toolMgt.ToolMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="toolInfo_base" />
+				)c_table
+	</select>
+	
+	<!-- 설비정보 입력 -->
+	<insert id="insertToolInfo" parameterType="jin.mes.form.basMgt.operMgt.toolMgt.ToolMgtDto">
+	<selectKey keyProperty="toolId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('TOL') AS toolId
+	</selectKey>
+		INSERT INTO bc_tool_info(
+			tool_id,
+			tool_nm,
+			tool_type,
+			tool_price,
+			tool_limit,
+			tool_desc,
+			is_use,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at,
+			tool_std01,
+			tool_std02,
+			tool_std03,
+			tool_std04,
+			tool_std05,
+			tool_std_str01,
+			tool_std_str02,
+			tool_std_str03,
+			tool_std_str04,
+			tool_std_str05
+			
+		)VALUES(
+			#{toolId}, 
+			#{toolNm}, 
+			#{toolType}, 
+			#{toolPrice}, 
+			#{toolLimit}, 
+			#{toolDesc},
+			TRUE, 
+			#{creatorId}, 
+			NOW(),
+			#{updatorId},
+			NOW(),
+			#{toolStd01},
+			#{toolStd02},
+			#{toolStd03},
+			#{toolStd04},
+			#{toolStd05},
+			#{toolStdStr01},
+			#{toolStdStr02},
+			#{toolStdStr03},
+			#{toolStdStr04},
+			#{toolStdStr05}
+		)
+	</insert>
+	
+	<!-- 설비 정보수정 -->
+	<update id="updateToolInfo" parameterType="jin.mes.form.basMgt.operMgt.toolMgt.ToolMgtDto">
+		UPDATE bc_tool_info
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+
+			<if test="toolNm != null and toolNm != ''">	
+				,tool_nm = #{toolNm}
+			</if>
+			<if test="toolType != null and toolType != ''">	
+				,tool_type = #{toolType}
+			</if>
+			<if test="toolPrice != null and toolPrice != ''">	
+				,tool_price = #{toolPrice}
+			</if>
+			<if test="toolLimit != null and toolLimit != ''">	
+				,tool_limit = #{toolLimit}
+			</if>
+			<if test="toolDesc != null and toolDesc != ''">	
+				,tool_desc = #{toolDesc}
+			</if>
+			<if test="toolStd01 != null and toolStd01 != ''">	
+				,tool_std01 = #{toolStd01}
+			</if>
+			<if test="toolStd02 != null and toolStd02 != ''">	
+				,tool_std02 = #{toolStd02}
+			</if>
+			<if test="toolStd03 != null and toolStd03 != ''">	
+				,tool_std03 = #{toolStd03}
+			</if>
+			<if test="toolStd04 != null and toolStd04 != ''">	
+				,tool_std04 = #{toolStd04}
+			</if>
+			<if test="toolStd05 != null and toolStd05 != ''">	
+				,tool_std05 = #{toolStd05}
+			</if>
+			<if test="toolStdStr01 != null and toolStdStr01 != ''">	
+				,tool_std_str01 = #{toolStdStr01}
+			</if>
+			<if test="toolStdStr02 != null and toolStdStr02 != ''">	
+				,tool_std_str02 = #{toolStdStr02}
+			</if>
+			<if test="toolStdStr03 != null and toolStdStr03 != ''">	
+				,tool_std_str03 = #{toolStdStr03}
+			</if>
+			<if test="toolStdStr04 != null and toolStdStr04 != ''">	
+				,tool_std_str04 = #{toolStdStr04}
+			</if>
+			<if test="toolStdStr05 != null and toolStdStr05 != ''">	
+				,tool_std_str05 = #{toolStdStr05}
+			</if>
+			
+			<if test="isUse != null">	
+				,is_use = #{isUse}
+			</if>
+		WHERE tool_id  = #{toolId}
+	</update>
+	
+	<!-- 설비정보 삭제 -->
+	<delete id="deleteToolInfo" parameterType="jin.mes.form.basMgt.operMgt.toolMgt.ToolMgtDto">
+		DELETE FROM bc_tool_info
+		WHERE tool_id  = #{toolId}
+	</delete>
+	
+	
+	
+		<!-- 설비구매업체(Page) select -->
+	<select id="selectToolRtlCompList"
+		parameterType="jin.mes.form.basMgt.operMgt.compMgt.CompMgtDto"
+		resultType="jin.mes.form.basMgt.operMgt.compMgt.CompMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="tool_rtl_comp" />
+			)s_table
+		WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+
+
+	<!-- 설비구매업체 Count -->
+	<select id="selectToolRtlCompCount"
+		parameterType="jin.mes.form.basMgt.operMgt.compMgt.CompMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="tool_rtl_comp" />
+				)c_table
+	</select>
+	
+	<!-- 설비구매업체 입력 -->
+	<insert id="insertToolRtlComp" parameterType="jin.mes.form.basMgt.operMgt.toolMgt.ToolCompMgtDto">
+		INSERT INTO bc_rtl_tool_comp(
+			tool_id,
+			comp_id
+		)VALUES(
+			#{toolId}, 
+			#{compId}
+		)
+	</insert>
+	
+	<!-- 설비구매업체 삭제 -->
+	<delete id="deleteToolRtlComp" parameterType="jin.mes.form.basMgt.operMgt.toolMgt.ToolCompMgtDto">
+		DELETE FROM bc_rtl_tool_comp
+		WHERE tool_id  = #{toolId} AND comp_id = #{compId}
+	</delete>
+	
+	
+	<!-- 공구 정보 조회(All) -->
+	<select id="selectAllToolInfo"
+		resultType="jin.mes.form.basMgt.operMgt.toolMgt.ToolMgtDto">
+		SELECT
+		<include refid="toolInfo_base" />
+		ORDER BY toolInfo.tool_nm ASC
+	</select>
+	
+	
+	<!-- 수주정보 select(order-child) -->
+	<select id="selectToolInfo"
+		parameterType="jin.mes.form.basMgt.operMgt.toolMgt.ToolMgtDto"
+		resultType="jin.mes.form.basMgt.operMgt.toolMgt.ToolMgtDto">
+				SELECT
+				<include refid="toolInfo_base" />
+	</select>
+
+	<select id="selectRtlCompChild"
+		parameterType="jin.mes.form.basMgt.operMgt.toolMgt.ToolCompMgtDto"
+		resultType="jin.mes.form.basMgt.operMgt.toolMgt.ToolCompMgtDto">
+
+			SELECT 
+			'K'	AS action,
+			<include refid="tool_rtl_comp" />
+		
+	</select>
+	
+	
+
+	
+</mapper>

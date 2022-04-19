@@ -1,0 +1,135 @@
+@CHARSET "UTF-8";
+
+/**200427 CSS 파일 생성_LYM**/
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.compMgtForm {
+	margin-top: 0.8em;
+}
+
+.compMgtForm .center-input {
+	width: 100%;
+}
+
+.compMgtForm .center-input.btn-input{
+	width: 100%;
+}
+
+
+.compMgtForm .col-left-title {
+	width: 17%;
+}
+
+.compMgtForm .col-left-content {
+	width: 30%;
+}
+
+.compMgtForm .col-right-title {
+	width: 23%;
+}
+
+.compMgtForm .col-right-content {
+	width: 30%;
+}
+
+.compMgtForm .grid-content {
+	width: 100%;
+}
+
+.jte-search-aria .input.k-textbox{
+	margin-left: 0.4em;
+	margin-right: 0.4em;
+}
+
+.compMgtForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+.compMgtForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 0px;
+}
+
+.compMgtForm .k-listbox.k-listbox-toolbar-right .k-listbox-toolbar {
+    margin-left: 8px;
+    margin-right: 4px; /* 200409 툴바 양옆으로 마진 부여_LYM */
+}
+
+.compMgtForm .jte-msgBox {
+	width: 100%;
+	text-align: center;
+}
+
+.compMgtForm .jtePopAddForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.compMgtForm .jtePopForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.compMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.compMgtForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.compMgtForm .left-caret:before {
+	padding-left: 40px;
+}
+
+.compMgtForm .left-input {
+	width: 100%;
+}
+ 
+.compMgtForm .normal-input {
+	width: 100%;
+}
+ 
+.compMgtForm .popsc-col-left-title {
+	width:35%;
+}
+
+.compMgtForm .popsc-col-right-content {
+	width:65%;
+}
+
+.compMgtForm .jtePopAddForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.compMgtForm .right-input {
+	width: 100%;
+}
+
+#jtePopForm_grid .k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#jtePopForm_grid td {
+	padding: .4em .6em;	
+}
+
+.compMgtForm .final-btn-area {
+	margin-top: 0px;
+}

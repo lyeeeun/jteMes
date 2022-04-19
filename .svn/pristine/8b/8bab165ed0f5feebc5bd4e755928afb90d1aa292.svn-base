@@ -1,0 +1,90 @@
+/********* 포장정보등록 **********/
+
+.toolInfoPopup_form.bundleForm .toolInfo-div {
+	height: 250px;
+	margin: 10px;
+	border: 1px solid #D5E0F5;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+.toolInfoPopup_form .bundleForm .final-btn-area {
+	margin-top: 0;
+	vertical-align: bottom;
+}
+
+.toolInfo-title tr {
+	width: 100%;
+}
+
+#toolInfo-title .bundleForm .bundleForm-toolInfo-title {
+	width: 100%;
+    font-size: 20px;
+    font-weight: bold;
+    float: left;
+}
+
+.toolInfo-div .toolInfo .bundleForm .bundleForm-toolInfo-content {
+/* 	padding-left: 5px; */
+	width: 100%;
+}
+
+.bundleForm-toolInfo-content td {
+	width: 30%;
+}
+
+.plus-minus-btn-area {
+	padding: 10px;
+    /* text-align: center; */
+    padding-bottom: 0;
+}
+
+.plus-minus-btn {
+	width: 50px;
+	font-size: 26px;
+	font-weight: bold;
+	padding: 4px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-right: 10px;
+}
+
+.tool-checkbox-td {
+	width: 10%;
+	text-align: center;
+}
+
+.bundleForm .toolInfo-title{
+	width: 100%;
+	font-weight: bolder;
+	margin-bottom: -10px;
+}
+
+.bundleForm .toolInfo-content {
+	width: 100%;
+}
+
+.bundleForm .toolInfo tr {
+	text-align: left;	
+}
+
+.bundleForm .toolInfo-title td {
+	text-align: left;
+	font-size: 20px;
+}
+
+.bundleForm .toolInfo-content .bundleUnit {
+	width: 95%;
+	float: left;
+	font-size: 20px;
+}
+
+.bundleForm .toolInfo-content .bundleQty {
+	width: 98%;
+	float: left;
+	font-size: 20px;
+}
+
+.bundleForm .col-toolInfo {
+	width: 24%;
+}

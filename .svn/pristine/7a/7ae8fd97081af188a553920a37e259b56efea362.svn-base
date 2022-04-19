@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="search" class="main_search">
+	<table class="search_table">
+		<colgroup>
+			<col style="width: 15%;" />
+			<col style="width: 85%;" />
+		</colgroup>
+		<tr>
+			<td rowspan="2">
+			<span class="search_title1" th:text="${Title}"></span>
+			</td>
+			<td rowspan="2">
+			<!-- 시간 입력 부분 -->
+				<div id="works_search" style="display:none;">
+					<span class="search_title2">작업검색&nbsp;&nbsp;&nbsp; </span>
+					<span class="search_title2">Code :</span>
+					<input type="text" class="easyui-textbox" id="code"/>
+					&nbsp;&nbsp;
+					<span class="search_title2">Name :</span>
+					<input type="text" class="easyui-textbox"  />
+					<input type="button" id="works_spare_search" onclick="data_search()" value="조회">
+				</div>
+				<div id="history_search" style="display:none">
+					<span class="search_title2">Equip No.&nbsp;&nbsp;&nbsp; </span>
+					<input type="text" class="easyui-textbox" id="equip_no"/>
+					&emsp;&emsp;&emsp;
+					<input type="button" id="history_search" onclick="data_search()" value="조회">
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+</html>

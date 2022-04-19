@@ -1,0 +1,16 @@
+
+.performItemForm {
+	width:100%;
+}
+
+.performItemForm-gird {
+	width:100%;
+}
+
+.performItemForm #performInfoChart {
+	font-size: 16px;
+}
+
+.performOrderChartForm #performOrderChart {
+	font-size: 16px;
+}

@@ -1,0 +1,126 @@
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.infergodsMgtForm {
+	margin-top: 0.8em;
+	width:100%;
+}
+
+.infergodsMgtForm #grid-content {
+	height: 100%;
+}
+
+.infergodsMgtForm #jtePopForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.infergodsMgtForm #jtePopForm_master th {
+	text-align: left;	
+}
+
+.infergodsMgtForm #jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.infergodsMgtForm #jteSingleGrid {
+	height: 70%;
+	margin-top: 5px;
+}
+
+.infergodsMgtForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 0px;
+}
+
+.infergodsMgtForm .select-btn-area {
+	background-color: #f1f3f5;
+	background-image: none, linear-gradient(to bottom, rgba(255, 255, 255, .25) 0, rgba(255, 255, 255, 0) 100%);
+	padding: 15px 10px;
+	margin-bottom: 10px;
+	font-size: 19px;
+	font-weight: bold;
+}
+
+.infergodsMgtForm .radio-btn {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.infergodsMgtForm .radio-span {
+	margin-right: 10px;
+}
+
+.jte-search-aria .input.k-textbox{
+	margin-left: 0.4em;
+	margin-right: 0.4em;
+}
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+
+/*********그리드 더블클릭 혹은 추가 버튼 클릭 시의 팝업**********/
+
+
+.infergodsMgtForm .center-input {
+	width: 100%;
+}
+
+.infergodsMgtForm .center-input.btn-input{
+	width: 100%;
+}
+
+.infergodsMgtForm .col-left-title {
+	width: 20%;
+}
+
+.infergodsMgtForm .col-left-content {
+	width: 30%;
+}
+
+.infergodsMgtForm .col-right-title {
+	width: 20%;
+}
+
+.infergodsMgtForm .col-right-content {
+	width: 30%;
+}
+
+.infergodsMgtForm .left-caret:before {
+	padding-left: 40px;
+}
+
+.infergodsMgtForm .left-input {
+	width: 100%;
+}
+
+.infergodsMgtForm .search-btn {
+	width: 100%;
+	text-align: center;
+}
+
+.infergodsMgtForm .right-input {
+	width: 100%;
+}
+
+.k-animation-container .k-list-container .k-list-scroller ul li {
+	padding-top: 0.4em;
+	padding-bottom: 0.4em;
+}
+
+
+/*********그리드 더블클릭 혹은 추가 버튼 클릭 > 불량 발생 품목 선택 버튼 클릭 시의 팝업**********/
+
+#popArea .k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#popArea td {
+	padding: .4em .6em;
+}

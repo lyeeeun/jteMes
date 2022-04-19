@@ -1,0 +1,103 @@
+/*20.08.07 왼쪽 셀 가운데 정렬, 상단 열 제외*/
+.toolQualMgtForm.k-grid td:first-child {
+	text-align: center;
+}
+
+/*** 201014 공구검사 - 공구 검사 팝업  ***/
+
+.toolQualMgtForm .toolQualMgtForm_rtlEqmtSelBox_area {
+/* 	width:100%; */
+	background: #f0f5ff;
+	padding: 15px 0 15px 20px;
+	margin: 20px 20px 5px 20px;
+}
+
+.toolQualMgtForm .toolQualMgtForm_rtlEqmtSelBox_area label {
+	padding-right: 10px;
+}
+
+.mtrlOdcursitMgtForm.input-list {
+	font-weight: bold;
+	font-size: 16px;
+	text-align: center;
+}
+
+.mtrlOdcursitMgtForm-table {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.mtrlOdcursitMgtForm-index {
+	text-align: center;
+}
+
+.mtrlOdcursitMgtForm.final-btn-area {
+	margin-top: 10px;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-1 {
+	width:12%;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-2 {
+	width:16%;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-3 {
+	width:12%;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-4 {
+	width:12%;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-5 {
+	width:16%;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-6 {
+	width:16%;
+} 
+
+.mtrlOdcursitMgtForm-table .col-input-list-7 {
+	width:16%;
+} 
+
+.mtrlOdcursitMgtForm .k-widget.k-numerictextbox {
+	width:100%;	
+}
+
+.center-input {
+	width: 100%;
+}
+
+
+/***************************************/
+
+/*201014 공구검사 - 공구 검사 팝업*/
+.mtrlOdcursitMgtForm-table {
+	font-size: 14px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.mtrlOdcursitMgtForm-table tr:nth-child(2n+1) {
+	background-color: rgba(51, 103, 214, 0.05);
+/* 	border-bottom: 1px solid #d5d5d5 */
+}
+
+.mtrlOdcursitMgtForm-table tr:nth-child(1) {
+   background-image : url(textures/highlight.png);
+   background-color : rgba(51, 103, 214, 0.19);
+}
+
+.mtrlOdcursitMgtForm-table td {
+	padding: .45em .4em;
+}
+
+.pop_selfInspect_Form_title {
+   background-image : url(textures/highlight.png);
+   background-color : rgba(51, 103, 214, 0.19);
+}
+
+/*********************************/

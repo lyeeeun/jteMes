@@ -1,0 +1,57 @@
+
+/*05.18 JJW 내부 스타일 옮김*/
+
+/* 사람들 스케츌 주황(미작업 상태) 클릭 전*/
+.k-task-single {
+	background-color: #ff9e9e;
+    border-color: #ff6969;
+    color: #fff;
+}
+
+/* 사람들 스케츌 주황 클릭- 작업 어느정도 진행 된 상태에서도 동일*/
+.k-task-single.k-state-selected {
+	border-color: #0B2B6F;
+    color: #fff;
+    background: #ff6969;
+    font-weight: bold;
+}
+
+/* 로뜨번호 클릭 */
+.k-state-selected.k-task-summary {
+	border-color: #ff9e9e;
+	background: #ff9e9e;
+}
+
+/* 로뜨번호 클릭 전 */
+.k-task-summary {
+	border-color: #92B5FC;
+    background: #92B5FC;
+}
+
+/* 로뜨번호 100% 클릭 */
+.k-state-selected .k-task-summary-complete, .k-state-selected.k-task-milestone {
+	border-color: #ff6969;
+	background: #ff6969;
+}
+
+/* 로뜨번호 100% 클릭 전 */
+.k-task-milestone, .k-task-summary-complete {
+	border-color: #3367D6;
+    background: #3367D6;
+}
+
+/* 툴팁 _200819 youmi*/
+.gantChtMgtForm .k-task-details {
+	color: #000000;
+}
+
+/* 툴팁 강조 _200819 youmi*/
+.gantChtMgtForm .k-task-details strong {
+	color: #3367d6;
+}
+
+/* 그리드 영역 깨지는 현상 수정 _201113 YUMI */
+.shopSchdMgtForm .k-gantt-content {
+	display: flex;
+}
+

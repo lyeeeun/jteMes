@@ -1,0 +1,77 @@
+.inputQualMgtForm.k-grid th:first-child, .inputQualMgtForm.k-grid td:first-child {
+	text-align: center;
+}
+
+.mtrlOdcursitMgtForm.input-list {
+	font-weight: bold;
+	font-size: 16px;
+	text-align: center;
+}
+
+.mtrlOdcursitMgtForm-table {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.mtrlOdcursitMgtForm-index {
+	text-align: center;
+}
+
+.mtrlOdcursitMgtForm.final-btn-area {
+	margin-top: 10px;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-1 {
+	width:5%;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-2 {
+	width:13%;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-3 {
+	width:37%;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-4 {
+	width:13%;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-5 {
+	width:13%;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-6 {
+	width:19%;
+}
+
+.center-input {
+	width: 100%;
+}
+/***************************************/
+
+/*20.10.05 발주주문 수정 > 입고검사 팝업 LYM*/
+.mtrlOdcursitMgtForm-table {
+	font-size: 14px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.mtrlOdcursitMgtForm-table tr:nth-child(2n+1) {
+	background-color: rgba(51, 103, 214, 0.05);
+/* 	border-bottom: 1px solid #d5d5d5 */
+}
+
+.mtrlOdcursitMgtForm-table tr:nth-child(1) {
+   background-color : rgba(51, 103, 214, 0.19);
+}
+
+.mtrlOdcursitMgtForm-table td {
+	padding: .45em .4em;
+}
+
+.pop_selfInspect_Form_title {
+   background-color : rgba(51, 103, 214, 0.19);
+}
+
+/*********************************/

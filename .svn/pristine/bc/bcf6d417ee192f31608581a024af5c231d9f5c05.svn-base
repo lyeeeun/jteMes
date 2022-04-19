@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MTRL_stockSh">
+<!-- 					, FN_CM_GETCOMNM(mi.CTR_CD , 'MTRLTYPE' ,mtrl.MTRLTYPE)       AS MTRLTYPE            
+				    , FN_CM_GETCOMNM(mi.CTR_CD , 'MTRLUNITCD',mtrl.MTRLUNIT_CD )  AS UNIT_NM  -->
+
+	<select id="selectStockList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+		      SELECT   mi.MTRL_IN_NO                                                             
+					, DATE_FORMAT(mi.MTRL_IN_DATE,'%Y%m%d') AS MTRL_IN_DATE                             
+					, s.SUPPLIERNAME                                                                   
+					, mi.SUPPLIERID                                                                     
+					, mtrl.MTRLNAME                                                                     
+					, mtrl.MTRLSPEC                                                                     
+				    , mtrl.MTRLCMPT                                                                                                                                                                                                         
+					, mi.MTRLID                                                                         
+					, mi.MTRL_IN_QTY                                   AS MTRL_IN_QTY        
+					, mi.MTRL_OUT_TOT_QTY                             AS MTRL_OUT_TOT_QTY  
+					, (mi.MTRL_IN_QTY - mi.MTRL_OUT_TOT_QTY)                AS NOW_OUT            
+					, mtrl.MTRLTYPE           
+				    , mtrl.MTRLUNIT_CD AS UNIT_NM            
+			  FROM tb_mesmtrlin mi
+			 INNER JOIN tb_material mtrl ON mi.MTRLID = mtrl.MTRLID
+			 INNER JOIN tb_supplier s ON mi.SUPPLIERID = s.SUPPLIERID
+			 WHERE 1=1 	
+			   AND mi.MTRL_IN_QTY - mi.MTRL_OUT_TOT_QTY > 0   
+			]]>
+			<if test='MTRLNAME != null and MTRLNAME != ""'>
+				AND MTRLNAME LIKE CONCAT("%" #{MTRLNAME} "%")  
+			</if>
+			<if test='SUPPLIERNAME != null and SUPPLIERNAME != ""'>
+				AND SUPPLIERNAME LIKE CONCAT("%" #{SUPPLIERNAME} "%") 
+			</if>
+			
+       ORDER BY mi.MTRL_IN_NO
+	</select>
+
+	
+</mapper>

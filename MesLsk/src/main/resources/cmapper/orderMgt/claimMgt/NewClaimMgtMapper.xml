@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.orderMgt.claimMgt.NewClaimMgtMapper">
+	
+	<sql id="claimOrder_base">
+			orInfo.order_id 			AS orderId,
+			MAX(orInfo.order_nm)		AS orderNm, 
+			MAX(orInfo.order_manager)	AS orderManager, 
+			MAX(orInfo.order_stdt)		AS orderStdt, 
+			MAX(orInfo.order_eddt)		AS orderEddt, 
+			MAX(orInfo.order_cost)		AS orderCost, 
+			MAX(orInfo.comp_id)			AS compId,
+			MAX(orInfo.order_state)		AS orderState, 
+			MAX(orInfo.description)		AS DESCRIPTION,
+			MAX(orInfo.created_at)		AS createdAt, 
+			MAX(orInfo.creator_id)		AS creatorId, 
+			MAX(orInfo.updated_at)		AS updatedAt, 
+			MAX(orInfo.updator_id)		AS updatorId,
+			COUNT(claimInfo.claim_id)		AS claimCnt,
+			MAX(urInfo.user_nm)			AS orderManagerNm,
+			MAX(compInfo.comp_nm)		AS compNm
+		FROM prs_order_info orInfo
+		LEFT OUTER JOIN prs_lot_info lotInfo ON orInfo.order_id = lotInfo.order_id
+		LEFT OUTER JOIN prs_claim_info claimInfo ON lotInfo.lot_id = claimInfo.lot_id
+		LEFT OUTER JOIN mb_user_info urInfo ON orInfo.order_manager = urInfo.user_id
+		LEFT OUTER JOIN bc_company_info compInfo ON orInfo.comp_id = compInfo.comp_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="orderId != null and orderId != '' ">
+			AND orInfo.order_id = #{orderId}
+		</if>
+		GROUP BY orInfo.order_id
+	</sql>
+	
+	<!-- 수주정보 select -->
+	<select id="selectOrderClaimList"
+		parameterType="jin.mes.cform.orderMgt.orderDetailMgt.NewOrderDetailMgtDto"
+		resultType="jin.mes.cform.orderMgt.orderDetailMgt.NewOrderDetailMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="claimOrder_base"></include>
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 수주정보 select -->
+	<select id="selectOrderClaimListCount"
+	parameterType="jin.mes.cform.orderMgt.orderDetailMgt.NewOrderDetailMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="claimOrder_base"></include>
+		)c_table
+	</select>
+	
+	
+	<sql id="claimLot_base">
+			lot.lot_seq					AS lotSeq,
+			lot.lot_id					AS lotId,
+			lot.lot_nm					AS lotNm,
+			lot.lot_code				AS lotCode,
+			lot.lot_type				AS lotType,
+			lot.lot_qty					AS lotQty,
+			lot.lot_mtrl_cost			AS lotMtrlCost,
+			lot.lot_mtrl_cost_after		AS lotMtrlCostAfter,
+			lot.lot_person_cost			AS lotPersonCost,
+			lot.lot_person_cost_after	AS lotPersonCostAfter,
+			lot.lot_pm					AS lotPm,
+			lot.lot_state				AS lotState,
+			lot.lot_desc				AS lotDesc,
+			lot.created_at				AS createdAt,
+			lot.creator_id				AS creatorId,
+			lot.updated_at				AS updatedAt,
+			lot.updator_id				AS updatorId,
+			lot.item_id					AS itemId,
+			lot.claim_id				AS cliamId,
+			lot.order_id				AS orderId,
+			item.item_nm				AS itemNm,
+			urInfo.user_Nm				AS lotPmNm
+			<!-- claim.claim_id 				AS claimId,
+			claim.claim_nm 				AS claimNm,
+			claim.claim_qty 			AS claimQty,
+			claim.claim_state 			AS claimState,
+			claim.claim_desc			AS claimDesc -->
+		FROM prs_lot_info lot
+			LEFT OUTER JOIN bc_item_info item ON lot.item_id = item.item_id
+			LEFT OUTER JOIN mb_user_info urInfo ON lot.lot_pm = urInfo.user_id
+			LEFT OUTER JOIN prs_claim_info claim ON lot.claim_Id = claim.claim_Id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="orderId != null and orderId != '' "> 
+			AND lot.order_id = #{orderId}
+		</if>
+		<if test="lotId != null and lotId != '' "> 
+			AND lot.lot_id = #{lotId}
+		</if>
+		<if test="lotSeq != null and lotSeq != '' "> 
+			AND lot.lot_seq = #{lotSeq}
+		</if>
+	</sql>
+	
+	<sql id="claim_base">
+		claim.claim_id AS claimId,
+		claim.claim_nm AS claimNm, 
+		claim.claim_qty AS claimQty,
+		claim.claim_state AS claimState,
+		claim.claim_desc AS claimDesc,
+		lot.updated_at	AS updatedAt,
+		claim.lot_id
+		FROM prs_order_info orInfo
+		JOIN prs_lot_info lot ON orInfo.order_id = lot.order_id   
+		JOIN prs_claim_info claim ON claim.lot_id = lot.lot_id 
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="orderId != null and orderId != '' "> 
+			AND lot.order_id = #{orderId}
+		</if>
+		<if test="lotId != null and lotId != '' "> 
+			AND lot.lot_id = #{lotId}
+		</if>
+		<if test="lotSeq != null and lotSeq != '' "> 
+			AND lot.lot_seq = #{lotSeq}
+		</if>
+	</sql>
+	
+	<!-- 해당 수주에 포함된 Lot 조회 select -->
+	<select id="selectLotClaimList"
+		parameterType="jin.mes.cform.orderMgt.claimMgt.NewClaimMgtDto"
+		resultType="jin.mes.cform.orderMgt.claimMgt.NewClaimMgtDto">
+			SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="claim_base"></include>
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 해당 수주에 포함된 Lot 조회 select(Count) -->
+	<select id="selectLotClaimListCount"
+	parameterType="jin.mes.cform.orderMgt.claimMgt.NewClaimMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*) 
+			FROM(
+				SELECT
+				<include refid="claim_base"></include>
+			)c_table
+	</select>
+
+	<!-- 클레임정보 입력 -->
+	<insert id="insertClaimInfo" parameterType="jin.mes.cform.orderMgt.claimMgt.NewClaimMgtDto">
+	<selectKey keyProperty="claimId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('CLM') as claimId
+	</selectKey>
+		INSERT INTO prs_claim_info(
+			claim_id,
+			claim_nm,
+			claim_qty,
+			claim_state,
+			claim_desc,
+			lot_id
+		)VALUES(
+			#{claimId},
+			#{claimNm},
+			#{claimQty},
+			#{claimState},
+			#{claimDesc},
+			#{lotId}
+		)
+	</insert>
+	
+	<!-- 클레임정보 수정 -->
+	<update id="updateClaimInfo" parameterType="jin.mes.cform.orderMgt.claimMgt.NewClaimMgtDto">
+		UPDATE prs_claim_info
+		SET claim_id = claim_id
+			<if test="claimNm != null and claimNm != ''">	
+				,claim_nm = #{claimNm}
+			</if>
+			<if test="claimQty != null and claimQty != ''">	
+				,claim_qty = #{claimQty}
+			</if>
+			<if test="claimState != null and claimState != ''">	
+				,claim_state = #{claimState}
+			</if>
+			<if test="claimDesc != null and claimDesc != ''">	
+				,claim_desc = #{claimDesc}
+			</if>
+		WHERE claim_id  = #{claimId}
+	</update>
+	
+	<!-- 클레임정보 삭제 -->
+	<delete id="deleteClaimInfo" parameterType="jin.mes.cform.orderMgt.claimMgt.NewClaimMgtDto">
+		DELETE FROM prs_claim_info
+		WHERE claim_id  = #{claimId}
+	</delete>
+	
+	<!-- 해당 수주에 포함된 Lot 조회 select(Count) -->
+	<select id="selectRtlDefectList"
+	parameterType="jin.mes.cform.orderMgt.claimMgt.NewClaimMgtDto"
+		resultType="jin.mes.cform.qualMgt.infergodsMgt.NewInfergodsMgtDto">
+		SELECT 
+			bad_code AS badCode,
+			bad_qty AS badQty
+		FROM prs_bad_product
+		WHERE bad_target_code = #{claimId}
+	</select>
+	
+	<insert id="insertRtlDefectList" parameterType="jin.mes.cform.orderMgt.claimMgt.NewClaimMgtDto">
+		INSERT INTO prs_bad_product
+		(
+			<selectKey keyProperty="badId" resultType="java.lang.String" order="BEFORE">
+				SELECT CREATE_PK('PRDBD') as badId
+			</selectKey>
+			bad_id,
+			bad_code,
+			bad_qty,
+			chk_user,
+			chk_date,
+			bad_target,
+			bad_target_code,
+			bad_desc,
+			lot_id
+		)
+		VALUES
+		(
+			#{badId},
+			#{badCode},
+			#{badQty},
+			#{chkUser},
+			now(),
+			'qual_spec05',
+			#{claimDto.claimId},
+			#{claimDto.claimDesc},
+			#{claimDto.lotId}
+		)
+	</insert>
+	
+	<update id="updateRtlDefectList" parameterType="jin.mes.cform.orderMgt.claimMgt.NewClaimMgtDto">
+		UPDATE prs_bad_product
+		SET
+			bad_qty = #{badQty},
+			chk_user = #{chkUser},
+			chk_date = now(),
+			bad_desc = #{claimDto.claimDesc}
+		WHERE 1=1 
+		AND bad_target_code = #{claimDto.claimId}
+		AND bad_code = #{badCode}
+	</update>
+	
+	<delete id="deleteRtlDefectList" parameterType="jin.mes.cform.orderMgt.claimMgt.NewClaimMgtDto">
+		DELETE FROM prs_bad_product
+		WHERE 1=1
+		AND bad_target_code = #{claimDto.claimId}
+		AND bad_code = #{badCode}
+	</delete>
+	
+	<update id="updateReorder" parameterType="jin.mes.cform.orderMgt.claimMgt.NewClaimMgtDto">
+		UPDATE prs_lot_info
+		SET 
+			lot_qty = lot_qty + #{lotQty},
+			lot_state = 'ord_sta04'
+		WHERE lot_id = #{lotId}
+	</update>
+	
+	<sql id="claimInfo_base">
+			claim_id AS claimId,
+			claim_nm AS claimNm,
+			claim_qty AS claimQty,
+			claim_state AS claimState,
+			claim_desc AS claimDesc,
+			lot_id AS lotId
+		FROM prs_claim_info
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="lotId != null and lotId != '' "> 
+			AND lot_id = #{lotId}
+		</if>
+	</sql>
+	
+	<!-- 해당 Lot의 Cliam 정보 SELECT -->
+	<select id="selectClaimInfo"
+	parameterType="jin.mes.cform.orderMgt.claimMgt.NewClaimMgtDto"
+		resultType="jin.mes.cform.orderMgt.claimMgt.NewClaimMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY claim_id desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="claimInfo_base"></include>
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 해당 수주에 포함된 Lot 조회 select(Count) -->
+	<select id="selectClaimInfoCount"
+	parameterType="jin.mes.cform.orderMgt.claimMgt.NewClaimMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*) 
+			FROM(
+				SELECT
+				<include refid="claimInfo_base"></include>
+			)c_table
+	</select>
+	
+</mapper>

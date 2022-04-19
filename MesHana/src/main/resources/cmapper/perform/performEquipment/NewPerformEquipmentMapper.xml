@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.perform.performEquipment.NewPerformEquipmentMapper">
+	
+	<select id="selectPerformEquipInfo"
+		parameterType="jin.mes.cform.perform.performEquipment.NewPerformEquipmentDto"
+		resultType="jin.mes.cform.perform.performEquipment.NewPerformEquipmentDto">
+		SELECT * 
+		FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY eqmtAchieveRate desc) AS RNUM,
+						</otherwise>
+					</choose> 
+					IFNULL(workInfo.STATUS, "STOP") AS eqmtStatus,
+					eqmtMgt.eqmt_mgt_id AS eqmtMgtId,
+					eqmtMgt.eqmt_mgt_nm AS eqmtMgtNm,
+					workInfo.item_nm AS itemNm,
+					IFNULL(workInfo.workUser,"") AS workUser,
+					IFNULL(workInfo.Target,0) AS totalTarget,
+					IFNULL(workInfo.Output,0) AS totalOutput,
+					IFNULL(workInfo.Defect,0) AS totalDefect,
+					IFNULL(workInfo.Output/workInfo.Target*100,0) AS eqmtAchieveRate,
+					IFNULL(workInfo.Defect/(IFNULL(workInfo.Output,0)+IFNULL(workInfo.Defect,0))*100,0) AS eqmtDefectRate
+				FROM bc_equipment_mgt eqmtMgt
+				LEFT JOIN (
+					SELECT eqmt_mgt_id, itemInfo.item_nm, userInfo.user_nm AS workUser, SUM(prod_work_qty) AS Target, SUM(prod_work_good) AS Output, SUM(prod_work_bad) AS Defect, IF(prod_work_start IS NOT NULL AND prod_work_end IS NULL, "RUN", "STOP") AS STATUS
+					FROM prs_work_info workInfo
+					LEFT JOIN mb_user_info userInfo
+					ON workInfo.prod_work_user = userInfo.user_id
+					LEFT JOIN prs_product_assignment assign
+					ON workInfo.prod_asm_id = assign.prod_asm_id
+					LEFT JOIN prs_lot_info lotInfo
+					ON workInfo.lot_id = lotInfo.lot_id
+					LEFT JOIN bc_item_info itemInfo
+					ON lotInfo.item_id = itemInfo.item_id
+					WHERE prod_asm_date BETWEEN CURDATE() AND CURDATE()+1
+					GROUP BY eqmt_mgt_id, itemInfo.item_id
+				) AS workInfo
+				ON eqmtMgt.eqmt_mgt_id = workInfo.eqmt_mgt_id
+				WHERE 1=1
+				<if test="#{placeId} != null">
+					AND eqmtMgt.place_id = #{placeId}
+				</if>
+				<if test="eqmtMgtId != null and eqmtMgtId != ''">	
+					AND eqmtMgt.eqmt_mgt_id = #{eqmtMgtId}
+				</if>
+				<if test="eqmtMgtNm != null and eqmtMgtNm != ''">	
+					AND eqmtMgt.eqmt_mgt_nm = #{eqmtMgtNm}
+				</if>
+				) s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<select id="rowCount"
+	parameterType="jin.mes.cform.perform.performEquipment.NewPerformEquipmentDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+				SELECT 
+					IFNULL(workInfo.STATUS, "STOP") AS eqmtStatus,
+					eqmtMgt.eqmt_mgt_id AS eqmtMgtId,
+					eqmtMgt.eqmt_mgt_nm AS eqmtMgtNm,
+					workInfo.item_nm AS itemNm,
+					IFNULL(workInfo.workUser,"") AS workUser,
+					IFNULL(workInfo.Target,0) AS totalTarget,
+					IFNULL(workInfo.Output,0) AS totalOutput,
+					IFNULL(workInfo.Defect,0) AS totalDefect,
+					IFNULL(workInfo.Output/workInfo.Target*100,0) AS eqmtAchieveRate,
+					IFNULL(workInfo.Defect/(IFNULL(workInfo.Output,0)+IFNULL(workInfo.Defect,0))*100,0) AS eqmtDefectRate
+				FROM bc_equipment_mgt eqmtMgt
+				LEFT JOIN (
+					SELECT eqmt_mgt_id, itemInfo.item_nm, userInfo.user_nm AS workUser, SUM(prod_work_qty) AS Target, SUM(prod_work_good) AS Output, SUM(prod_work_bad) AS Defect, IF(prod_work_start IS NOT NULL AND prod_work_end IS NULL, "RUN", "STOP") AS STATUS
+					FROM prs_work_info workInfo
+					LEFT JOIN mb_user_info userInfo
+					ON workInfo.prod_work_user = userInfo.user_id
+					LEFT JOIN prs_product_assignment assign
+					ON workInfo.prod_asm_id = assign.prod_asm_id
+					LEFT JOIN prs_lot_info lotInfo
+					ON workInfo.lot_id = lotInfo.lot_id
+					LEFT JOIN bc_item_info itemInfo
+					ON lotInfo.item_id = itemInfo.item_id
+					WHERE prod_asm_date BETWEEN CURDATE() AND CURDATE()+1
+					GROUP BY prod_work_id
+				) AS workInfo
+				ON eqmtMgt.eqmt_mgt_id = workInfo.eqmt_mgt_id
+				WHERE 1=1
+				<if test="#{placeId} != null">
+					AND eqmtMgt.place_id = #{placeId}
+				</if>
+				<if test="eqmtMgtId != null and eqmtMgtId != ''">	
+					AND eqmtMgt.eqmt_mgt_id = #{eqmtMgtId}
+				</if>
+				<if test="eqmtMgtNm != null and eqmtMgtNm != ''">	
+					AND eqmtMgt.eqmt_mgt_nm = #{eqmtMgtNm}
+				</if>
+		)c_table
+	</select>
+		
+	<select id="selectPlaceAll" resultType="jin.mes.cform.basMgt.operMgt.rlehoMgt.NewRlehoMgtDto">
+		SELECT
+			placeId,
+			placeNm,
+			hasChildren
+		FROM 
+			(
+				SELECT
+					place.place_id		AS placeId,
+					place.place_nm		AS placeNm,
+					place.place_parent	AS placeParent,
+					place.place_manager	AS placeManager,
+					place.is_use		AS isUse,
+					urInfo.user_nm		AS placeManagerNm,
+					IF((SELECT COUNT(1)FROM bc_place_info child  WHERE child.place_parent = place.place_id) > 0 ,TRUE,FALSE) AS hasChildren
+				FROM bc_place_info place
+				LEFT OUTER JOIN mb_user_info urInfo ON place.place_manager = urInfo.user_id
+				WHERE place.is_use = TRUE
+			) placeInfo
+		WHERE hasChildren != 1
+		AND placeNm IS NOT NULL
+	</select>
+</mapper>

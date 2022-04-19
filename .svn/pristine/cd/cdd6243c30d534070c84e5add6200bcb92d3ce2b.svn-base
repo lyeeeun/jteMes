@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtMapper">
+	
+	<!-- 작업지시 쿼리 -->
+	<!--생산계획 + 작업지시 +작업정보까지 조회 -->
+	<!-- action이 ASGN 일때는 작업지시는 조회하지 않는다.  -->
+	<sql id="asgn_base">
+			lot.order_id			AS orderId,			-- 수주ID
+			plan.lot_id				AS lotId,			-- LotID
+			lot.lot_nm				AS lotNm,			-- Lot명
+			item.item_id			AS itemId,			-- 아이템ID
+			item.item_nm			AS itemNm,			-- 아이템명
+			plan.prod_plan_id		AS prodPlanId,		-- 생산계획정보 ID
+			plan.prod_plan_year		AS prodPlanYear,	-- 계획연도
+			plan.prod_plan_month	AS prodPlanMonth,	-- 계획월
+			plan.prod_plan_day		AS prodPlanDay,		-- 계획일
+			plan.prod_plan_qty		AS prodPlanQty,		-- 계획량
+			plan.prod_plan_desc		AS prodPlanDesc,	-- 비고
+			asgn.prod_asm_id		AS prodAsmId,		-- 작업지시 ID
+			asgn.prod_asm_nm		AS prodAsmNm,		-- 작업지시명
+			asgn.prod_asm_date		AS prodAsmDate,		-- 작업지시일
+			asgn.prod_asm_qty		AS prodAsmQty,		-- 생산지시량
+			asgn.prod_asm_desc		AS prodAsmDesc,		-- 비고
+			asgn.prod_asm_user		AS prodAsmUser,		-- 작업지시 수신자 아이디(부서 담당자)
+			d_usr.user_nm			AS prodAsmUserNm,	-- 작업지시 수신자 명
+			asgn.prod_asm_emj		AS prodAsmEmj,		-- 긴급여부
+			asgn.prod_asm_state		AS prodAsmState,	-- 작업상태
+			asgn.created_at			AS createdAt,		-- 생성일
+			asgn.creator_id			AS creatorId,		-- 생성자
+			asgn.dept_id			AS deptId,			-- 부서정보
+			d_dept.dept_Nm			AS deptNm			-- 부서명
+
+		FROM prs_product_assignment asgn -- 생산지시
+		JOIN prs_product_plan plan ON plan.prod_plan_id = asgn.prod_plan_id AND plan.prod_plan_type = 'prod_plan02'	-- 생산계획(일간)
+		LEFT OUTER JOIN mb_user_info d_usr ON d_usr.user_id = asgn.prod_asm_user					-- 작업지시 수신자 정보
+		LEFT OUTER JOIN mb_dept_info d_dept ON d_dept.dept_id = asgn.dept_id						-- 작업지시 수신자 부서
+		-- LEFT OUTER JOIN mb_position_info d_pos ON d_pos.position_id = d_usr.position_id					-- 작업지시 수신자 직위
+		LEFT OUTER JOIN prs_lot_info lot ON lot.lot_id = plan.lot_id							-- Lot정보
+		LEFT OUTER JOIN prs_order_info odr ON odr.order_id = lot.order_id						-- 수주정보
+		LEFT OUTER JOIN bc_item_info item ON item.item_id = lot.item_id							-- 품목정보
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="prodPlanId != null and prodPlanId != '' ">	
+			AND plan.prod_plan_id = #{prodPlanId}
+		</if>
+		<if test="prodPlanYear != null and prodPlanYear != '' ">	
+			AND plan.prod_plan_year = #{prodPlanYear}
+		</if>
+		<if test="prodPlanMonth != null and prodPlanMonth != '' ">	
+			AND plan.prod_plan_month = #{prodPlanMonth}
+		</if>
+		<if test="prodPlanDay != null and prodPlanDay != '' ">	
+			AND plan.prod_plan_day = #{prodPlanDay}
+		</if>
+		<if test="prodAsmId != null and prodAsmId != '' ">
+			AND asgn.prod_asm_id = #{prodAsmId}
+		</if>
+		<if test="prodAsmUser != null and prodAsmUser != '' ">	
+			AND asgn.prod_asm_user = #{prodAsmUser}
+		</if>
+		<if test="prodAsmEmj != null and prodAsmEmj != '' ">	
+			AND asgn.prod_asm_emj = #{prodAsmEmj}
+		</if>
+		<if test="deptId != null and deptId != '' ">	
+			AND asgn.dept_id = #{deptId}
+		</if>
+	</sql>
+		<!-- 작업지시(Page) select -->
+	<select id="selectAsgnList"
+		parameterType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto"
+		resultType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test='sort != null and sort != "" '>
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY prodAsmEmj ASC, createdAt DESC) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="asgn_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 작업지시 Count -->
+	<select id="selectAsgnCount"
+		parameterType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="asgn_base" />
+				)c_table
+	</select>
+	
+	<!-- 작업지시 팝업 -->
+	<sql id="asgn_pop">
+			lot.order_id			AS orderId,		       -- 수주ID                    
+			plan.lot_id				AS lotId,		       -- LotID                   
+			lot.lot_nm				AS lotNm,	  		   -- Lot명                    
+			item.item_id			AS itemId,			   -- 아이템ID
+			item.item_nm			AS itemNm,			   -- 아이템명
+			plan.prod_plan_id      	AS prodPlanId,         -- 생산계획정보 ID               
+			plan.prod_plan_year    	AS prodPlanYear,       -- 계획연도                    
+			plan.prod_plan_month   	AS prodPlanMonth,      -- 계획월                     
+			plan.prod_plan_day     	AS prodPlanDay,        -- 계획일                     
+			plan.prod_plan_qty     	AS prodPlanQty,        -- 계획량                     
+			plan.prod_plan_desc    	AS prodPlanDesc,       -- 비고                      
+			asgn.prod_asm_id		AS prodAsmId,          -- 작업지시 ID                 
+			asgn.prod_asm_nm		AS prodAsmNm,          -- 작업지시명                   
+			asgn.prod_asm_date      AS prodAsmDate,        -- 작업지시일                   
+			asgn.prod_asm_qty       AS prodAsmQty,         -- 생산지시량                   
+			asgn.prod_asm_desc     	AS prodAsmDesc,        -- 비고                      
+			asgn.prod_asm_user    	AS prodAsmUser,        -- 작업지시 수신자 아이디(부서 담당자)
+			d_usr.user_nm		   	AS prodAsmUserNm,      -- 작업지시 수신자 명
+			asgn.prod_asm_emj      	AS prodAsmEmj,         -- 긴급여부                    
+			asgn.prod_asm_state    	AS prodAsmState,       -- 작업상태                    
+			asgn.created_at			AS createdAt,          -- 생성일                     
+			asgn.creator_id			AS creatorId,	       -- 생성자                     
+			asgn.dept_id			AS deptId,	           -- 부서정보
+			d_dept.dept_Nm			AS deptNm	       	   -- 부서명
+		FROM  prs_product_plan plan -- 생산계획
+		LEFT OUTER JOIN prs_product_assignment asgn ON plan.prod_plan_id = asgn.prod_plan_id 	-- 생산지시
+		LEFT OUTER JOIN mb_user_info d_usr ON d_usr.user_id = asgn.prod_asm_user					-- 작업지시 수신자 정보
+		LEFT OUTER JOIN mb_dept_info d_dept ON d_dept.dept_id = asgn.dept_id						-- 작업지시 수신자 부서
+		-- LEFT OUTER JOIN mb_position_info d_pos ON d_pos.position_id = d_usr.position_id					-- 작업지시 수신자 직위
+		LEFT OUTER JOIN prs_lot_info lot ON lot.lot_id = plan.lot_id							-- Lot정보
+		LEFT OUTER JOIN prs_order_info odr ON odr.order_id = lot.order_id						-- 수주정보
+		LEFT OUTER JOIN bc_item_info item ON item.item_id = lot.item_id							-- 품목정보
+
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="prodPlanId != null and prodPlanId != '' ">	
+			AND plan.prod_plan_id = #{prodPlanId}
+		</if>
+		<if test="prodPlanYear != null and prodPlanYear != '' ">	
+			AND plan.prod_plan_year = #{prodPlanYear}
+		</if>
+		<if test="prodPlanMonth != null and prodPlanMonth != '' ">	
+			AND plan.prod_plan_month = #{prodPlanMonth}
+		</if>
+		<if test="prodPlanDay != null and prodPlanDay != '' ">	
+			AND plan.prod_plan_day = #{prodPlanDay}
+		</if>
+		<if test="prodAsmId != null and prodAsmId != '' ">
+			AND asgn.prod_asm_id = #{prodAsmId}
+		</if>
+		<if test="prodAsmUser != null and prodAsmUser != '' ">	
+			AND asgn.prod_asm_user = #{prodAsmUser}
+		</if>
+		<if test="prodAsmEmj != null and prodAsmEmj != '' ">	
+			AND asgn.prod_asm_emj = #{prodAsmEmj}
+		</if>
+		<if test="deptId != null and deptId != '' ">	
+			AND asgn.dept_id = #{deptId}
+		</if>
+	</sql>
+	
+	<!-- 작업지시(팝업) select -->
+	<select id="selectAsgnPop"
+		parameterType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto"
+		resultType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto">
+		SELECT 
+		<include refid="asgn_pop" />
+	</select>
+	
+	<!-- 작업지시 입력 -->
+	<insert id="insertAsgn" parameterType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto">
+	<selectKey keyProperty="prodAsmId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('ASM') AS prodAsmId
+	</selectKey>
+		INSERT INTO prs_product_assignment(
+			prod_asm_id,
+			prod_asm_nm,
+			prod_asm_date,
+			prod_asm_qty,
+			prod_asm_desc,
+			prod_asm_user,
+			prod_asm_emj,
+			prod_asm_state,
+			created_at,
+			creator_id,
+			dept_id,
+			prod_plan_id,
+			lot_id
+		)VALUES(
+			#{prodAsmId},
+			#{prodAsmNm},
+			#{prodAsmDate},
+			#{prodAsmQty},
+			#{prodAsmDesc},
+			#{prodAsmUser},
+			#{prodAsmEmj},
+			#{prodAsmState},
+			NOW(),
+			#{creatorId},
+			#{deptId},
+			#{prodPlanId},
+			#{lotId}
+		)
+	</insert>
+	<!-- 작업지시 수정 -->
+	<update id="updateAsgn" parameterType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto">
+		UPDATE prs_product_assignment
+		SET prod_asm_id = prod_asm_id
+			<if test="prodAsmNm != null">	
+				,prod_asm_nm = #{prodAsmNm}
+			</if>
+			<if test="prodAsmQty != null">	
+				,prod_asm_qty = #{prodAsmQty}
+			</if>
+			<if test="prodAsmDesc != null">	
+				,prod_asm_desc = #{prodAsmDesc}
+			</if>
+			<if test="prodAsmUser != null">	
+				,prod_asm_user = #{prodAsmUser}
+			</if>
+			<if test="prodAsmEmj != null">	
+				,prod_asm_emj = #{prodAsmEmj}
+			</if>
+			<if test="prodAsmState != null">	
+				,prod_asm_state = #{prodAsmState}
+			</if>
+		WHERE prod_asm_id  = #{prodAsmId}
+	</update>
+	
+	<!-- 작업지시 삭제 -->
+	<delete id="deleteAsgn" parameterType="jin.mes.cform.mfgMgt.wrkinTeamMgt.NewWrkinTeamMgtDto">
+		DELETE FROM prs_product_assignment
+		WHERE prod_asm_id  = #{prodAsmId}
+	</delete>
+	
+</mapper>

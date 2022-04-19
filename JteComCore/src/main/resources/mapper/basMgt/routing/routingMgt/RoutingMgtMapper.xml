@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.basMgt.routing.routingMgt.RoutingMgtMapper">
+ 	
+ 	<select id="selectRoutingInfo"
+		parameterType="jin.mes.form.basMgt.routing.routingMgt.RoutingMgtDto"
+		resultType="jin.mes.form.basMgt.routing.routingMgt.RoutingMgtDto">
+		SELECT 
+			rout.routing_id AS routingId,
+			rout.routing_seq AS routingSeq,
+			IFNULL(rout.routing_type," ") AS routingType,
+			rout.man_hour AS manHour,
+			rout.created_at AS createdAt,
+			rout.updated_at AS updatedAt,
+			rout.creator_id AS creatorId,
+			rout.updator_id AS updatorId,
+			rout.description,
+			rout.item_id AS itemId,
+			rout.routing_mgt_std01,
+			rout.routing_mgt_std02,
+			rout.routing_mgt_std03,
+			rout.routing_mgt_std04,
+			rout.routing_mgt_std05,
+			rout.routing_mgt_std_str01,
+			rout.routing_mgt_std_str02,
+			rout.routing_mgt_std_str03,
+			rout.routing_mgt_std_str04,
+			rout.routing_mgt_std_str05,
+			routEqmt.eqmt_mgt_id AS eqmtMgtId
+		FROM bc_routing_info rout
+		LEFT OUTER JOIN bc_rtl_routing_equip routEqmt ON rout.routing_id = routEqmt.routing_id AND routEqmt.default_yn = TRUE
+		WHERE rout.item_id = #{itemId}
+		ORDER BY rout.routing_seq
+	</select>
+	
+	<insert id="insertRoutingInfo" parameterType="jin.mes.form.basMgt.routing.routingMgt.RoutingMgtDto">
+		<selectKey keyProperty="routingId" resultType="String" order="BEFORE">
+			SELECT CREATE_PK('ROUTING') as routingId
+		</selectKey>
+		INSERT INTO bc_routing_info
+		(
+			routing_id,
+			routing_seq,
+			routing_type,
+			man_hour,
+			description,
+			created_at,
+			creator_id,
+			updated_at,
+			updator_id,
+			routing_mgt_std01,
+			routing_mgt_std02,
+			routing_mgt_std03,
+			routing_mgt_std04,
+			routing_mgt_std05,
+			routing_mgt_std_str01,
+			routing_mgt_std_str02,
+			routing_mgt_std_str03,
+			routing_mgt_std_str04,
+			routing_mgt_std_str05,
+			item_id
+		)
+		VALUES
+		(
+			#{routingId},
+			#{routingSeq},
+			#{routingType},
+			#{manHour},
+			#{description},
+			now(),
+			#{creatorId},
+			now(),
+			#{updatorId},
+			#{routingMgtStd01},
+			#{routingMgtStd02},
+			#{routingMgtStd03},
+			#{routingMgtStd04},
+			#{routingMgtStd05},
+			#{routingMgtStdStr01},
+			#{routingMgtStdStr02},
+			#{routingMgtStdStr03},
+			#{routingMgtStdStr04},
+			#{routingMgtStdStr05},
+			#{itemId}
+		)
+	</insert>
+	
+	<update id="updateRoutingInfo"
+		parameterType="jin.mes.form.basMgt.routing.routingMgt.RoutingMgtDto">
+		UPDATE bc_routing_info
+		SET
+			routing_seq = #{routingSeq},
+			man_hour = #{manHour},
+			routing_type = #{routingType},
+			description = #{description},
+			updated_at = now(),
+			updator_id = #{updatorId},
+			routing_mgt_std01 = #{routingMgtStd01},
+			routing_mgt_std02 = #{routingMgtStd02},
+			routing_mgt_std03 = #{routingMgtStd03},
+			routing_mgt_std04 = #{routingMgtStd04},
+			routing_mgt_std05 = #{routingMgtStd05},
+			routing_mgt_std_str01 = #{routingMgtStdStr01},
+			routing_mgt_std_str02 = #{routingMgtStdStr02},
+			routing_mgt_std_str03 = #{routingMgtStdStr03},
+			routing_mgt_std_str04 = #{routingMgtStdStr04},
+			routing_mgt_std_str05 = #{routingMgtStdStr05}
+		WHERE routing_id = #{routingId}
+	</update>
+
+	<delete id="deleteRoutingInfo"
+		parameterType="jin.mes.form.basMgt.routing.routingMgt.RoutingMgtDto">
+		DELETE FROM bc_routing_info
+		WHERE routing_id = #{routingId}
+	</delete>
+	
+	<select id="selectRtlBomList"
+		parameterType="jin.mes.form.basMgt.routing.routingMgt.RoutingMgtDto"
+		resultType="jin.mes.form.basMgt.bom.bomMgt.BomMgtDto">
+		SELECT 
+			'K'		AS action,
+			b.bom_id AS bomId,
+			b.bom_nm AS bomNm,
+			b.bom_target_nm AS bomTargetNm,
+			b.bom_target_cnt AS bomTargetCnt
+		FROM bc_rtl_bom_routing a
+		INNER JOIN bc_bom_info b
+		ON a.bom_id = b.bom_id
+		WHERE routing_id = #{routingId}
+	</select>
+	
+	<insert id="insertRtlBomList" parameterType="jin.mes.form.basMgt.routing.routingMgt.RoutingMgtDto">
+		INSERT INTO bc_rtl_bom_routing
+		(
+			bom_id,
+			routing_id
+		)
+		VALUES
+		(
+			#{bomId},
+			#{routingId}
+		)
+	</insert>
+	
+	<delete id="deleteRtlBomList" parameterType="jin.mes.form.basMgt.routing.routingMgt.RoutingMgtDto">
+		DELETE FROM bc_rtl_bom_routing
+		WHERE 1=1
+		<if test="bomId != null and bomId != '' ">
+			AND bom_id = #{bomId}
+		</if>
+		AND routing_id = #{routingId} 
+	</delete>
+	
+	
+	<select id="selectRtlEqmtList"
+		parameterType="jin.mes.form.basMgt.routing.routingMgt.RoutingMgtDto"
+		resultType="jin.mes.form.basMgt.operMgt.facilMgt.FacilMgtDto">
+		SELECT
+			'K'							AS action,
+			rout.eqmt_mgt_id			AS eqmtMgtId,
+			rout.default_yn				AS defaultYn,
+			eqmtMgt.eqmt_mgt_gbn		AS eqmtMgtGbn,
+			eqmtMgt.eqmt_mgt_Mtnc		AS eqmtMgtMtnc,
+			eqmtMgt.eqmt_mgt_nm			AS eqmtMgtNm,
+			eqmtMgt.eqmt_mgt_purchase	AS eqmtMgtPurchase,
+			eqmtMgt.eqmt_mgt_verif		AS eqmtMgtVerif,
+			eqmtMgt.eqmt_mgt_desc		AS eqmtMgtDesc,
+			eqmtMgt.eqmt_mgt_file		AS eqmtMgtFile,
+			eqmtMgt.is_use				AS isUse,
+			eqmtMgt.creator_id			AS creatorId,
+			eqmtMgt.created_at			AS createdAt,
+			eqmtMgt.updator_id			AS updatorId,
+			eqmtMgt.updated_at			AS updatedAt,
+			eqmtMgt.place_id			AS placeId,
+			eqmtMgt.eqmt_mgt_std01		AS eqmtMgtStd01,
+			eqmtMgt.eqmt_mgt_std02		AS eqmtMgtStd02,
+			eqmtMgt.eqmt_mgt_std03		AS eqmtMgtStd03,
+			eqmtMgt.eqmt_mgt_std04		AS eqmtMgtStd04,
+			eqmtMgt.eqmt_mgt_std05		AS eqmtMgtStd05,
+			eqmtMgt.eqmt_mgt_std_str01	AS eqmtMgtStdStr01,
+			eqmtMgt.eqmt_mgt_std_str02	AS eqmtMgtStdStr02,
+			eqmtMgt.eqmt_mgt_std_str03	AS eqmtMgtStdStr03,
+			eqmtMgt.eqmt_mgt_std_str04	AS eqmtMgtStdStr04,
+			eqmtMgt.eqmt_mgt_std_str05	AS eqmtMgtStdStr05,
+			place.place_nm				AS placeNm,
+			eqmtMgt.comp_id				AS compId,
+			comp.comp_nm				AS compNm
+		FROM bc_rtl_routing_equip rout
+		LEFT JOIN bc_equipment_mgt eqmtMgt
+		LEFT OUTER JOIN bc_company_info comp ON comp.comp_id = eqmtMgt.comp_id 
+		LEFT OUTER JOIN bc_place_info place ON place.place_id = eqmtMgt.place_id ON rout.eqmt_mgt_id = eqmtMgt.eqmt_mgt_id
+		WHERE 1=1
+		<if test="routingId != null and routingId != '' ">
+			AND rout.routing_id = #{routingId}
+		</if>
+		<if test="eqmtMgtId != null and eqmtMgtId != '' ">
+			AND rout.eqmt_mgt_id = #{eqmtMgtId}
+		</if>
+	</select> 
+	
+	<select id="selectRtlEqmtCount"
+		parameterType="jin.mes.form.basMgt.routing.routingMgt.RoutingMgtDto"
+		resultType="int">
+		SELECT COUNT(*) 
+		FROM bc_rtl_routing_equip a
+		LEFT JOIN bc_equipment_mgt b
+		ON a.eqmt_mgt_id = b.eqmt_mgt_id
+		WHERE routing_id = #{routingId}
+	</select>
+	
+	<insert id="insertRtlEquipment" parameterType="jin.mes.form.basMgt.routing.routingMgt.RoutingMgtDto">
+		INSERT INTO bc_rtl_routing_equip
+		(
+			routing_id,
+			eqmt_mgt_id,
+			default_yn
+		)
+		VALUES
+		(
+			#{routingId},
+			#{eqmtMgtId},
+			FALSE
+		)
+	</insert>
+	
+	<delete id="deleteRtlEquipment" parameterType="jin.mes.form.basMgt.routing.routingMgt.RoutingMgtDto">
+		DELETE FROM bc_rtl_routing_equip
+		WHERE 1=1
+		AND routing_id = #{routingId}
+		AND eqmt_mgt_id = #{eqmtMgtId} 
+	</delete>
+	
+	<update id="updateEqmtAllFalse" parameterType="jin.mes.form.basMgt.routing.routingMgt.RoutingMgtDto">
+		UPDATE bc_rtl_routing_equip 
+		SET default_yn = FALSE 
+		WHERE routing_id = #{routingId}
+		
+	</update>
+	<update id="updateEqmtTrue" parameterType="jin.mes.form.basMgt.routing.routingMgt.RoutingMgtDto">
+		UPDATE bc_rtl_routing_equip 
+		SET default_yn = TRUE 
+		WHERE routing_id = #{routingId} AND
+		eqmt_mgt_id = #{eqmtMgtId}
+	</update>
+	
+	<select id="selectRtlToolList"
+		parameterType="jin.mes.form.basMgt.routing.routingMgt.RoutingMgtDto"
+		resultType="jin.mes.form.basMgt.routing.routingMgt.RoutingRtlToolDto">
+		SELECT  
+			'K'						AS action,
+			rtl.routing_id 			AS routingId,
+			rtl.tool_id 			AS toolId,
+			rtl.tool_rpm 			AS toolRpm,
+			rtl.tool_location 		AS toolLocation,
+			rtl.tool_count 			AS toolCount,
+			toolInfo.tool_id 		AS toolId,
+			toolInfo.tool_nm 		AS toolNm,
+			toolInfo.tool_type 		AS toolType,
+			toolInfo.tool_price 	AS toolPrice,
+			toolInfo.tool_limit 	AS toolLimit,
+			toolInfo.tool_desc 		AS toolDesc,
+			toolInfo.tool_std01  	AS toolStd01,
+			toolInfo.tool_std02  	AS toolStd02,
+			toolInfo.tool_std03  	AS toolStd03,
+			toolInfo.tool_std04  	AS toolStd04,
+			toolInfo.tool_std05  	AS toolStd05,
+			toolInfo.tool_std_str01 AS toolStdStr01,
+			toolInfo.tool_std_str02 AS toolStdStr02,
+			toolInfo.tool_std_str03 AS toolStdStr03,
+			toolInfo.tool_std_str04 AS toolStdStr04,
+			toolInfo.tool_std_str05 AS toolStdStr05
+		FROM bc_rtl_routing_tool rtl
+		LEFT OUTER JOIN bc_tool_info toolInfo ON rtl.tool_id = toolInfo.tool_id
+		WHERE 1=1
+		<if test="routingId != null and routingId != '' ">
+			AND rtl.routing_id = #{routingId}
+		</if>
+		ORDER BY rtl.tool_location ASC
+	</select>
+	
+	<insert id="insertRtlToolList" parameterType="jin.mes.form.basMgt.routing.routingMgt.RoutingRtlToolDto">
+		INSERT INTO bc_rtl_routing_tool
+		(
+			routing_id,
+			tool_id,
+			tool_rpm,
+			tool_location,
+			tool_count
+		)
+		VALUES
+		(
+			#{routingId},
+			#{toolId},
+			#{toolRpm},
+			#{toolLocation},
+			#{toolCount}
+		)
+	</insert>
+	
+	<update id="updateRtlToolList" parameterType="jin.mes.form.basMgt.routing.routingMgt.RoutingRtlToolDto">
+		UPDATE bc_rtl_routing_tool
+		SET
+			tool_rpm = #{toolRpm},
+			tool_location = #{toolLocation},
+			tool_count = #{toolCount}
+		WHERE 1=1 
+		AND routing_id = #{routingId}
+		AND tool_id = #{toolId}
+		AND tool_location = #{toolLocation}
+	</update>
+	
+	<delete id="deleteRtlToolList" parameterType="jin.mes.form.basMgt.routing.routingMgt.RoutingRtlToolDto">
+		DELETE FROM bc_rtl_routing_tool
+		WHERE 1=1
+		AND routing_id = #{routingId}
+		AND tool_id = #{toolId}
+		AND tool_location = #{toolLocation}
+	</delete>
+	
+</mapper>

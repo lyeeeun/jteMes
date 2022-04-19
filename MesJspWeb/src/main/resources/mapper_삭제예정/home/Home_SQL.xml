@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Home">
+
+	<select id="selectMenuList2" parameterType="hashmap" resultType="hashmap">
+			SELECT auth.mn_code, menu.mn_name, auth.`view`, auth.`insert`,auth.`update`,auth.`delete`,auth.`print`,
+			menu.up_code,menu.module,menu.mn_desc,menu.mn_group,menu.sort_num FROM jte_auth_info auth
+			LEFT OUTER JOIN jte_menu_info menu ON menu.mn_code = auth.mn_code AND menu.is_use = 'Y'
+			WHERE auth_code = (SELECT auth_up_code FROM jte_auth_group WHERE ur_code=#{ur_code} AND is_use = 'Y') AND auth.is_use='Y'
+		ORDER BY menu.mn_group,menu.sort_num
+	</select>
+	
+	
+	
+	<select id="selectMenuList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT A.MENU_ID
+		,A.MENU_NAME
+		,A.PGM_ID
+		,A.MENU_DIV
+		,A.UP_MENU_ID
+		,A.MENU_ORDER
+		,C.SCR_ID
+		FROM TB_MENUINF_NEW A
+		<if test='AM != null and AM == "A"'>
+			INNER JOIN TB_ADMININF B
+			ON A.APT_CD = B.CTR_CD
+			AND A.AUTH_CODE = B.AUTH_GRP_CD
+			AND B.ADMIN_ID = #{ADMIN_ID}
+		</if>
+		LEFT OUTER JOIN TB_PGMINF_NEW C
+		ON A.PGM_ID = C.PGM_ID
+		AND C.USE_YN = 'Y'
+		WHERE A.APT_CD = #{APT_CD}
+		AND A.USE_YN = 'Y'
+		<if test='AM != null and AM == "M"'>
+			AND A.AUTH_CODE = 'MEMB'
+		</if>
+		ORDER BY A.UP_MENU_ID, A.MENU_DIV, A.MENU_ORDER
+	</select>
+
+	<select id="selectCenterList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT DISTINCT A.CTR_CD
+		,A.CTR_NM
+		FROM TB_CTRINF A
+		WHERE EXISTS (SELECT *
+		FROM TB_CTRINF
+		WHERE CTR_CD = #{CTR_CD}
+		AND IFNULL(OPRCO_CD, 'NOCODE') = IFNULL(A.OPRCO_CD, 'NOCODE'))
+		ORDER BY A.CTR_CD, A.CTR_NM
+	</select>
+
+	<select id="selectBpList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT A.*
+		FROM TB_BPINF A
+		<if test='DIV == "LESN"'>
+			INNER JOIN (SELECT CTR_CD, BP_CD FROM TB_LESNINF WHERE USE_YN = 'Y' GROUP
+			BY CTR_CD, BP_CD) B
+			ON A.CTR_CD = B.CTR_CD
+			AND A.BP_CD = B.BP_CD
+		</if>
+		WHERE 1 = 1
+		<if test='CTR_CD != null and CTR_CD != ""'>
+			AND A.CTR_CD = #{CTR_CD}
+		</if>
+		<if test='BP_DIV_CD != null and BP_DIV_CD != ""'>
+			AND A.BP_DIV_CD = #{BP_DIV_CD}
+		</if>
+		AND A.USE_YN = 'Y'
+		ORDER BY A.CTR_CD, A.BP_CD
+	</select>
+
+	<select id="selectComCdList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT A.CTR_CD
+		,A.GRP_CD
+		,A.COM_CD
+		,A.COM_NM
+		,A.DUMY1_NM
+		,A.DUMY1_VALUE
+		,A.DUMY2_NM
+		,A.DUMY2_VALUE
+		,A.USE_YN
+		,A.REMARK
+		FROM TB_COMCDINF A
+		
+	</select>
+
+	<select id="selectProcParamList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT  A.OBJECT_ID
+			       ,B.ARGUMENT_NAME AS NAME
+			       ,B.DATA_TYPE
+			       ,B.IN_OUT
+			       ,A.OBJECT_TYPE
+			  FROM (SELECT  OBJECT_ID
+			               ,OBJECT_TYPE
+			          FROM USER_OBJECTS 
+			         WHERE OBJECT_NAME = #{OBJECT_NAME} ) A
+			  LEFT OUTER JOIN (SELECT  OBJECT_ID
+			                          ,ARGUMENT_NAME
+			                          ,DATA_TYPE
+			                          ,IN_OUT
+			                          ,POSITION
+			                     FROM USER_ARGUMENTS 
+			                    WHERE PACKAGE_NAME IS NULL 
+			                      AND OBJECT_NAME = #{OBJECT_NAME} ) B 
+			    ON A.OBJECT_ID = B.OBJECT_ID
+			 ORDER BY POSITION
+		]]>
+	</select>
+
+	<select id="authMemberCard" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT  (CASE WHEN CI.CARD_NO = #{CARD_NO} THEN 'Y'
+			             ELSE 'N' END) AS CHK_YN
+			       ,MI.MEMB_NO
+			       ,MI.MEMB_NM
+			  FROM TB_CARDPRTINF CI
+			 INNER JOIN TB_MEMBINF MI
+			    ON MI.CTR_CD  = CI.CTR_CD
+			   AND MI.MEMB_NO = CI.MEMB_NO
+			 WHERE CI.CTR_CD  = #{CTR_CD}
+			   AND CI.MEMB_NO = #{MEMB_NO}
+		]]>
+	</select>
+
+	<select id="selectEnvInf" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[	
+			SELECT *
+			  FROM TB_ENVINF
+			 WHERE CTR_CD  = #{CTR_CD}
+		   ]]>
+	</select>
+
+	<select id="selectFavList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT  CTR_CD
+			  	  , ADMIN_ID
+			  	  , MENU_ID
+			  	  , PGM_ID
+			  	  , PGM_NM
+			  	  ,(SELECT SCR_ID
+                       FROM TB_PGMINF_NEW
+                      WHERE PGM_ID = A.PGM_ID) AS SCR_ID
+			  FROM  TB_FAVORITE A
+			 WHERE  CTR_CD = #{CTR_CD}
+			   AND  ADMIN_ID = #{ADMIN_ID}
+			 ORDER  BY ORDER_NO ASC
+		]]>
+	</select>
+
+	<select id="insertFavList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+	<![CDATA[----------------------------------메인 즐겨찾기 INSERT
+		INSERT  INTO TB_FAVORITE(
+		 	    CTR_CD 
+		 	  , ADMIN_ID
+		 	  , MENU_ID
+		 	  , PGM_ID
+		 	  , PGM_NM
+		 	  , SND_YN
+		 	  , REG_DT
+		 	  , REG_USER_ID
+		 	  , REG_PGM_ID
+		 	  , ORDER_NO)
+		 	  VALUES(
+		 	    #{CTR_CD}
+		 	  , #{ADMIN_ID}
+		 	  , #{MENU_ID}
+		 	  , #{PGM_ID}
+		 	  , #{PGM_NM}
+		 	  ,	'N'
+		 	  , SYSDATE
+			  , #{REG_USER_ID}
+		      , #{REG_PGM_ID}
+		 	  , NVL((SELECT MAX(ORDER_NO)+1 
+		 	       FROM TB_FAVORITE
+		 		  WHERE CTR_CD = #{CTR_CD}
+		    		AND ADMIN_ID = #{ADMIN_ID}), 0)
+		      )
+      ]]>
+	</select>
+
+	<select id="deleteFavList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+		----------------------------------메인 즐겨찾기 DELETE
+		DELETE TB_FAVORITE 
+		 WHERE  CTR_CD = #{CTR_CD}
+		   AND  ADMIN_ID = #{ADMIN_ID}
+		   AND  MENU_ID = #{PGM_ID}
+		]]>
+	</select>
+
+
+	<select id="ADMIN_NOWPW" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			-- 관리자 현재 비밀번호 검증 query
+			SELECT CASE WHEN PKG_CRYPTO.FN_CM_HASH(#{userPw}) = A.ADMIN_PW THEN 'Y' ELSE 'N' END AS YN
+				 FROM TB_ADMININF A
+				 WHERE UPPER(A.ADMIN_ID) = UPPER(#{userId})
+				   AND A.CTR_CD = #{CTR_CD}
+		]]>
+	</select>
+
+	<select id="ADMIN_PwUpdate" parameterType="hashmap"
+		resultType="hashmap">
+	<![CDATA[
+		UPDATE TB_ADMININF 
+		   SET  ADMIN_PW   = PKG_CRYPTO.FN_CM_HASH(#{userPw})
+		       ,UPD_DT      = SYSDATE
+		       ,UPD_USER_ID = #{UPD_USER_ID}
+		       ,UPD_PGM_ID = #{UPD_PGM_ID}
+		 WHERE UPPER(ADMIN_ID) = UPPER(#{userId})
+		   AND CTR_CD   = #{CTR_CD}
+   ]]>
+	</select>
+
+	<select id="MEMB_NOWPW" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			-- 일반 사용자 현재 비밀번호 검증 query
+			SELECT CASE WHEN PKG_CRYPTO.FN_CM_HASH(#{userPw}) = A.WEB_PW THEN 'Y' ELSE 'N' END AS YN
+			  FROM TB_MEMBINF A
+			  WHERE UPPER(A.WEB_ID) = UPPER(#{userId})
+			    AND A.CTR_CD = #{CTR_CD}
+		]]>
+	</select>
+
+	<select id="MEMB_PwUpdate" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			UPDATE TB_MEMBINF
+			   SET  WEB_PW   = PKG_CRYPTO.FN_CM_HASH(#{userPw})
+			   	  ,UPD_DT = SYSDATE
+			   	  ,UPD_USER_ID = #{UPD_UESR_ID}
+			   	  ,UPD_PGM_ID = #{UPD_PGM_ID}
+			   WHERE UPPER(WEB_ID) = UPPER(#{userId})
+			   	 AND CTR_CD = 	#{CTR_CD}
+		]]>
+	</select>
+</mapper>

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.mtrl.asHisMgt.ZinixAsHisMgtMapper">
+
+	<!-- 바코드 정보 -->
+	<sql id="asSerial_base">
+					
+			barcode.barcode_id				AS barcodeId,
+			barcode.lot_id					AS lotId, 
+			barcode.item_id					AS itemId,	
+			barcode.ship_id					AS shipId, 
+			barcode.created_at				AS createdAt, 
+			barcode.creator_id				AS creatorId, 
+			barcode.updated_at				AS updatedAt, 
+			barcode.updator_id				AS updatorId,
+			barcode.prod_asm_id				AS prodAsmId, 
+			barcode.plc_eqmt_id				AS plcEqmtId, 
+			barcode.package_id				AS packageId,	
+			lot.lot_nm						AS lotNm,
+			lot.order_id					AS orderId,
+			lot.lot_state 					AS lotState,
+			lot.lot_qty						AS lotQty,
+			odr.order_nm					AS orderNm,
+			odr.order_state 				AS orderState,
+			itemInfo.item_nm				AS itemNm,
+			itemInfo.item_std_str01			AS itemStdStr01,
+			itemMgt.item_mgt_id				AS itemMgtId,
+			pickMgt.created_at 				AS acreatedAt,
+			shipMgt.ship_complete_date 			AS shipCompleteDate
+			
+		FROM prs_barcode_info2 barcode
+		LEFT OUTER JOIN prs_lot_info lot ON barcode.lot_id = lot.lot_id
+		LEFT OUTER JOIN prs_order_info odr ON odr.order_id = lot.order_id
+		LEFT OUTER JOIN bc_item_info itemInfo ON itemInfo.item_id = barcode.item_id
+		LEFT OUTER JOIN cm_item_mgt itemMgt ON itemMgt.item_mgt_id = barcode.lot_id
+		LEFT OUTER JOIN prs_pick_mgt pickMgt ON pickMgt.pick_id = barcode.package_id
+		LEFT OUTER JOIN prs_ship_mgt shipMgt ON shipMgt.item_mgt_id = itemMgt.item_mgt_id
+		WHERE 1=1	
+		<if test="barcodeId != null">
+			AND barcode.barcode_id = #{barcodeId}
+		</if>
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		GROUP BY barcode.barcode_id
+	</sql>
+	
+	<!-- 바코드정보(Page) select -->
+	<select id="selectSerialList"
+		parameterType="jin.mes.cform.mtrl.asHisMgt.ZinixAsHisMgtDto"
+		resultType="jin.mes.cform.mtrl.asHisMgt.ZinixAsHisMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY barcodeId desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="asSerial_base" />
+				)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- 바코드정보 Count -->
+	<select id="selectSerialCount"
+		parameterType="jin.mes.cform.mtrl.asHisMgt.ZinixAsHisMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="asSerial_base" />
+				)c_table
+	</select>
+	
+	
+	
+	<!-- as 관리정보 -->
+	<sql id="asHisMgt_base">
+			asInfo.ashis_id AS ashisId,
+			asInfo.ashis_state AS ashisState,
+			asInfo.ashis_cnt AS ashisCnt,
+			asInfo.ashis_user AS ashisUser,
+			userInfo.user_nm AS ashisUserNm,
+			asInfo.ashis_at AS ashisAt,
+			asInfo.ashis_desc AS ashisDesc,
+			asInfo.ashis_std_str01 AS ashisStdStr01,
+			asInfo.ashis_result AS ashisResult,
+			asInfo.creator_id AS creatorId,
+			asInfo.created_at AS createdAt,
+			asInfo.updator_id AS updatorId,
+			asInfo.updated_at AS updatedAt,
+			asInfo.mtrl_mgt_id AS mtrlMgtId,
+			asInfo.barcode_id AS barcodeId,
+			lotInfo.lot_id AS lotId,
+			mtrlMgt.mtrl_id AS mtrlId,
+			mtrlInfo.mtrl_nm AS mtrlNm,
+			itemInfo.item_id AS itemId,
+			itemInfo.item_std_str01 AS itemStdStr01
+		FROM prs_ashis_info asInfo
+		LEFT OUTER JOIN mb_user_info userInfo ON userInfo.user_id = asInfo.ashis_user
+		LEFT OUTER JOIN cm_mtrl_mgt mtrlMgt ON mtrlMgt.mtrl_mgt_id = asInfo.mtrl_mgt_id
+		LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlInfo.mtrl_id = mtrlMgt.mtrl_id
+		LEFT OUTER JOIN prs_barcode_info2 barcode ON barcode.barcode_id = asInfo.barcode_id
+		LEFT OUTER JOIN cm_item_mgt itemMgt ON itemMgt.item_mgt_id = barcode.lot_id
+		LEFT OUTER JOIN prs_lot_info lotInfo ON lotInfo.lot_id = itemMgt.item_mgt_id
+		LEFT OUTER JOIN bc_item_info itemInfo ON itemInfo.item_id = itemMgt.item_id
+		WHERE 1=1
+		<if test="barcodeId != null">
+			AND barcode.barcode_id = #{barcodeId}
+		</if>		
+		<if test="ashisId != null">
+			AND asInfo.ashis_id = #{ashisId}
+		</if>
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="itemId != null">
+			AND itemInfo.item_id = #{itemId}
+		</if>	
+	</sql>
+	
+	<!-- as정보(Page) select -->
+	<select id="selectAsHisMgtList"
+		parameterType="jin.mes.cform.mtrl.asHisMgt.ZinixAsHisMgtDto"
+		resultType="jin.mes.cform.mtrl.asHisMgt.ZinixAsHisMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="asHisMgt_base" />
+				)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- as정보 Count -->
+	<select id="selectAsHisMgtCount"
+		parameterType="jin.mes.cform.mtrl.asHisMgt.ZinixAsHisMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="asHisMgt_base" />
+				)c_table
+	</select>
+	
+	<!-- as정보 입력 -->
+	<insert id="insertAsHisMgt" parameterType="jin.mes.cform.mtrl.asHisMgt.ZinixAsHisMgtDto">
+	<selectKey keyProperty="ashisId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('ASHIS') AS mtrlMgtId
+	</selectKey>
+		INSERT INTO prs_ashis_info(
+			ashis_id,
+			ashis_state,
+			ashis_cnt,
+			ashis_user,
+			ashis_at,
+			ashis_desc,
+			ashis_std_str01,
+			ashis_result,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at,
+			mtrl_mgt_id,
+			barcode_id,
+			lot_id
+		)VALUES(
+			#{ashisId},
+			#{ashisState},
+			#{ashisCnt},
+			#{ashisUser},
+			#{ashisAt},
+			#{ashisDesc},
+			#{ashisStdStr01},
+			#{ashisResult},
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			NOW(),
+			#{mtrlMgtId},
+			#{barcodeId},
+			#{lotId}
+		)
+	</insert>
+	
+	<!-- as정보수정 -->
+	<update id="updateAsHisMgt" parameterType="jin.mes.cform.mtrl.asHisMgt.ZinixAsHisMgtDto">
+		UPDATE prs_ashis_info
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="ashisCnt != null">	
+				,ashis_cnt = #{ashisCnt}
+			</if>
+			<if test="ashisState != null">	
+				,ashis_state = #{ashisState}
+			</if>
+			<if test="ashisUser != null">	
+				,ashis_user = #{ashisUser}
+			</if>
+			<if test="ashisDesc != null">	
+				,ashis_desc = #{ashisDesc}
+			</if>
+			<if test="ashisStdStr01 != null">	
+				,ashis_std_str01 = #{ashisStdStr01}
+			</if>
+			<if test="ashisResult != null">	
+				,ashis_result = #{ashisResult}
+			</if>
+			<if test="mtrlMgtId != null">	
+				,mtrl_mgt_id = #{mtrlMgtId}
+			</if>
+		WHERE ashis_id = #{ashisId}
+	</update>
+
+	<!-- 자재정보 삭제 -->
+	<delete id="deleteAsHisMgt" parameterType="jin.mes.cform.mtrl.asHisMgt.ZinixAsHisMgtDto">
+		DELETE FROM prs_ashis_info
+		WHERE ashis_id  = #{ashisId}
+	</delete>
+	
+		<!-- as-바코드 정보 입력 -->
+	<!-- <insert id="insertAsHisSerialMgt" parameterType="jin.mes.cform.mtrl.asHisMgt.ZinixAsHisMgtDto">
+		INSERT INTO prs_rtl_ashis_barcode(
+			ashis_id,
+			barcode_id
+		)VALUES(
+			#{ashisId},
+			#{barcodeId}
+		)
+	</insert> -->
+	
+	<!-- as-바코드 수정 -->
+	<!-- <update id="updateAsHisSerialMgt" parameterType="jin.mes.cform.mtrl.asHisMgt.ZinixAsHisMgtDto">
+		UPDATE prs_rtl_ashis_barcode
+		SET 
+			<if test="ashisId != null">	
+				ashis_state = #{ashisId}
+			</if>
+			<if test="barcode != null">	
+				,barcode_id = #{barcodeId}
+			</if>
+		WHERE ashis_id = #{ashisId} AND barcode = #{barcode}
+	</update> -->
+</mapper>

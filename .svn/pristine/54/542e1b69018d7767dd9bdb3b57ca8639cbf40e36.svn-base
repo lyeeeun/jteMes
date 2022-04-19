@@ -1,0 +1,8 @@
+package jin.mes.form.perform.prodStaMgt.workProdStaMgt;
+
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface WorkProdStaMgtMapper {
+
+}

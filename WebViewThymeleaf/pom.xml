@@ -1,0 +1,214 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<properties>
+		<start-class>kr.co.itcall.jte.spring.starter.BootApp</start-class>
+	</properties>
+	
+	<!-- <groupId>kr.co.itcall.jte</groupId> -->
+	<artifactId>WebViewThymeleaf</artifactId>
+	<!-- <version>1.0.0</version> -->
+	<packaging>war</packaging>
+	<name>${project.artifactId} Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+	
+	<parent>
+		<groupId>kr.co.itcall.jte</groupId>
+		<artifactId>JinTechEngParents</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	
+	<dependencies>
+		
+		<dependency>
+			<groupId>kr.co.itcall.jte</groupId>
+			<artifactId>WebAppCore</artifactId>
+			<version>1.0.0</version>
+<!-- 			<scope>provided</scope> -->
+		</dependency>
+		
+		
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>nz.net.ultraq.thymeleaf</groupId>
+			<artifactId>thymeleaf-layout-dialect</artifactId>
+		</dependency>
+		
+		<!--elasticSearch 관련 -->
+		<dependency>
+			<groupId>org.elasticsearch</groupId>
+			<artifactId>elasticsearch</artifactId>
+			<version>6.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.elasticsearch.client</groupId>
+			<artifactId>elasticsearch-rest-high-level-client</artifactId>
+			<version>6.6.0</version>
+		</dependency>
+		
+		<!--JSON 관련 -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+		
+		<!-- 파일업로드 관련 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+		<groupId>commons-fileupload</groupId>
+		<artifactId>commons-fileupload</artifactId>
+		<version>1.3.1</version>
+		</dependency>
+		
+		<!-- 엑셀 import,export 관련 -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.11</version>
+		</dependency>
+
+		<!-- Test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<finalName>${project.artifactId}</finalName>
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<!-- <version>3.1</version> -->
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+<!-- 			<plugin> -->
+<!-- 				<groupId>org.codehaus.mojo</groupId> -->
+<!-- 				<artifactId>exec-maven-plugin</artifactId> -->
+<!-- 				<version>1.6.0</version> -->
+<!-- 				<inherited>false</inherited> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<id>copy-start-class</id> -->
+<!-- 						<phase>package</phase> -->
+<!-- 						<goals> -->
+<!-- 							<goal>exec</goal> -->
+<!-- 						</goals> -->
+<!-- 						<inherited>false</inherited> -->
+<!-- 						<configuration> -->
+<!-- 							<workingDirectory>${basedir}/target/classes/kr/co/itcall/jte/spring/BootApp.class</workingDirectory> -->
+<!-- 							<executable>cmd</executable> -->
+<!-- 							<arguments> -->
+<!-- 								<argument>/C</argument> -->
+<!-- 								<argument>copy</argument> -->
+<!-- 								<argument>${basedir}/../WebAppCore/target/classes/kr/co/itcall/jte/spring/BootApp.class</argument> -->
+<!-- 								<argument>${basedir}/target/classes/kr/co/itcall/jte/spring/</argument> -->
+<!-- 							</arguments> -->
+<!-- 						</configuration> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId> 
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!-- <version>${spring.boot.version}</version> -->
+				<configuration>
+					<downloadSources>false</downloadSources>
+					<downloadJavadocs>false</downloadJavadocs>
+				</configuration>
+				<executions>
+					<execution>
+						<configuration>
+<!-- 							<includes> -->
+<!-- 								<include> -->
+<!-- 									<groupId>kr.co.itcall.jte</groupId> -->
+<!-- 									<artifactId>WebAppCore</artifactId> -->
+<!-- 									<version>1.0.0</version> -->
+<!-- 								</include> -->
+<!-- 							</includes> -->
+							<mainClass>${start-class}</mainClass>
+<!-- 							<layout>ZIP</layout> -->
+						</configuration>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<warSourceDirectory>/src/main/webapp</warSourceDirectory>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<webResources>
+<!-- 						<webResource> -->
+<!-- 							<directory>${basedir}/../WebAppCore/target/classes</directory> -->
+<!-- 						</webResource> -->
+						<webResource>
+							<directory>${basedir}/src/main/webapp</directory>
+							<!-- 로컬에서 REMARK해야 사용하며, 배포시에는 apache에 별도로 올라가므로 주석을 해제한다. -->
+<!-- 							<excludes> -->
+<!-- 							<exclude>/static/**</exclude> -->
+<!-- 							</excludes> -->
+						</webResource>
+					</webResources>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+</project>

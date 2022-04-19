@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.mapper.ship.shipMgt.ShipMgtMapper">
+	<update id="shipStateUpdate" 
+	parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		UPDATE prs_ship_mgt
+		SET ship_state = #{shipState},
+		ship_date = now()
+		WHERE ship_id = #{shipId}
+	</update>
+	
+	<update id="lotStateUpdate" 
+	parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		UPDATE prs_lot_info
+		SET lot_state = #{lotState}
+		WHERE 1=1 
+		AND lot_id = #{lotId}
+	</update>
+	
+	<select id="selectLotQty" 
+	parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto"
+	resultType="java.lang.Integer">
+		SELECT SUM(lot_qty) AS lotQty 
+		FROM prs_lot_info
+		WHERE 1=1
+		AND lot_id = #{lotId}
+	</select>
+	
+	<select id="selectPackageStock"
+	parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto"
+	resultType="java.lang.Integer">
+		SELECT sum(item_package_stock) itemPackageStock
+		FROM cm_item_mgt
+		WHERE item_mgt_id = #{lotId}
+	</select>
+	
+	<update id="updateAfterCost"
+	parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		UPDATE prs_lot_info
+		SET lot_mtrl_cost_after =
+		(
+			SELECT mtrlCost.mtrlAfterCost
+			FROM (
+				SELECT IFNULL((ship.shipQty+SUM(bad.bad_qty)) * itemInfo.item_mtrl_cost,0) AS mtrlAfterCost
+				FROM prs_bad_product bad
+				INNER JOIN (
+					SELECT lot_id, SUM(ship_qty) AS shipQty 
+					FROM prs_ship_mgt
+					WHERE 1=1
+					AND lot_id = #{lotId}
+					AND ship_state = 'ship_dvry03'
+				) ship
+				ON bad.lot_id = ship.lot_id
+				INNER JOIN prs_lot_info lotInfo
+				ON bad.lot_id = lotInfo.lot_id
+				INNER JOIN bc_item_info itemInfo
+				ON lotInfo.item_id = itemInfo.item_id
+				WHERE bad.lot_id = #{lotId}
+			) AS mtrlCost
+		),
+		lot_person_cost_after = 
+		(
+			SELECT personCost.personAfterCost
+			FROM (
+				SELECT IFNULL((ship.shipQty+SUM(bad.bad_qty)) * itemInfo.item_person_cost,0) AS personAfterCost
+				FROM prs_bad_product bad
+				INNER JOIN (
+					SELECT lot_id, SUM(ship_qty) AS shipQty 
+					FROM prs_ship_mgt
+					WHERE 1=1
+					AND lot_id = #{lotId}
+					AND ship_state = 'ship_dvry03'
+				) ship
+				ON bad.lot_id = ship.lot_id
+				INNER JOIN prs_lot_info lotInfo
+				ON bad.lot_id = lotInfo.lot_id
+				INNER JOIN bc_item_info itemInfo
+				ON lotInfo.item_id = itemInfo.item_id
+				WHERE bad.lot_id = #{lotId}
+			) AS personCost
+		)
+		WHERE 1=1
+		AND lot_id = #{lotId}
+	</update>
+</mapper>

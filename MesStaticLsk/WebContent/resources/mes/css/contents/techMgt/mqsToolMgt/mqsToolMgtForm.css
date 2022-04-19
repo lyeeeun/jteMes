@@ -1,0 +1,174 @@
+
+/****** PC 메인 화면 관련_200805 youmi ******/
+
+.mqsToolMgtForm {
+	width:100%;
+}
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.mqsToolMgtForm.search-btn-area .k-textbox {
+	margin-left: 10px;
+}
+
+/***** PC 관련 공구 설정 > 추가 버튼 / 수정 버튼 클릭 시 팝업 관련_200805 youmi *****/
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.mqsToolMgtForm {
+	margin-top: 0.8em;
+}
+
+.mqsToolMgtForm .toolRegForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.mqsToolMgtForm .toolRegForm_master th {
+	text-align: left;	
+}
+
+.mqsToolMgtForm .toolRegForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.mqsToolMgtForm .search-btn {
+	width: 100%;
+}
+
+.mqsToolMgtForm .center-input {
+	width: 100%;
+}
+
+.mqsToolMgtForm .center-input.btn-input {
+	width: 100%;
+}
+
+.mqsToolMgtForm .col-left-title {
+	width: 20%;
+}
+
+.mqsToolMgtForm .col-left-content-1 {
+	width: 20%;
+}
+
+.mqsToolMgtForm .col-left-content-2 {
+	width: 9%;
+}
+
+.mqsToolMgtForm .col-right-title {
+	width: 22%;
+}
+
+.mqsToolMgtForm .col-right-content-1 {
+	width: 20%;
+}
+
+.mqsToolMgtForm .col-right-content-2 {
+	width: 9%;
+}
+
+/* .orderDetailMgtForm div.k-window-content{
+	overflow: unset; 팝업창의 스크롤 없앰
+} */
+
+.mqsToolMgtForm .grid-content {
+	width: 100%;
+}
+.mqsToolMgtForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+.mqsToolMgtForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 8px;
+}
+
+.mqsToolMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.mqsToolMgtForm .left-input {
+	width: 100%;
+}
+
+.mqsToolMgtForm .right-input {
+	width: 100%;
+}
+
+.mqsToolMgtForm .left-input.btn-input{
+	width: 95%;
+	float: left;
+}
+
+.mqsToolMgtForm .right-input.btn-input{
+	width: 95%;
+	float: left;
+}
+
+.mqsToolMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+} 
+
+/* #popArea .k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#popArea td {
+	padding: .4em .6em;
+}
+
+#popArea.k-widget.k-treeview.k-window-content.k-content{
+	background : #22364e;
+	color : white;
+} */
+
+/***** PC 관련 공구 설정 > 상세 정보 버튼 클릭 시 팝업 관련_200805 youmi *****/
+
+.mqsToolMgtForm {
+	margin-top: 0.8em;
+}
+
+.mqsToolMgtForm .toolInfoForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.mqsToolMgtForm .toolInfoForm_master th {
+	text-align: left;	
+}
+
+.mqsToolMgtForm .toolInfoForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.mqsToolMgtForm .popsc-col-left-title {
+	width: 22%;
+}
+
+.mqsToolMgtForm .popsc-col-left-content {
+	width: 27%;
+}
+
+.mqsToolMgtForm .popsc-col-right-title {
+	width: 24%;
+}
+
+.mqsToolMgtForm .popsc-col-right-content {
+	width: 27%;
+}

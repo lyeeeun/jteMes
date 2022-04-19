@@ -1,0 +1,19 @@
+/*20.08.06 왼쪽 셀 가운데 정렬 JJW*/
+.mtrlOdplanMgtForm.k-grid th:first-child, .mtrlOdplanMgtForm.k-grid td:first-child {
+	text-align: center;
+}
+
+/* 20.11.11 새로 생긴 팝업 안 검색 박스 */
+
+
+.mtrlOdplanMgtForm .k-input-icon {
+	width: 10px;
+}
+
+.mtrlOdplanMgtForm .k-input.k-valid {
+	border: 0px solid #FFFFFF;
+}
+
+.mtrlOdplanMgtForm .k-grid .k-header .k-grid-search {
+	float: left;
+}

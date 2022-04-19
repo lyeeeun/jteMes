@@ -1,0 +1,59 @@
+
+.performOrderChartForm {
+	width:100%;
+}
+
+.performOrderChartForm .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.performOrderChartForm .search-btn-area {
+	background-color: #eaeef2;
+	margin-bottom: 5px;
+}
+
+.performOrderChartForm .search-btn-area #orderNm{
+	margin: 15px 5px 15px 20px;
+}
+
+.performOrderChartForm.performEquipmentForm-gird {
+	width:100%;
+	margin-top: 5px;
+}
+
+.performOrderChartForm-table .col-left-content {
+	width:35%;
+}
+
+.performOrderChartForm-table .col-right-content {
+	width:65%;
+}
+
+.performOrderChartForm .performOrderChartForm-table {
+	width:100%;
+	margin-top: 5px;
+}
+
+.performOrderChartForm .performOrderChartForm-table .left-content-box {
+	border: 2px solid #2f455b;
+	font-size: 16px;
+	margin-right: 20px;
+	padding: 12px;
+	padding-top: 5px;
+}
+
+.performOrderChartForm .performOrderChartForm-table .right-content-box {
+	border: 2px solid #2f455b;
+	font-size: 16px;
+	padding: 15px;
+	padding-top: 5px;
+}
+
+.performOrderChartForm #performInfoChart {
+	font-size: 16px;
+}
+
+.performOrderChartForm #performOrderChart {
+	font-size: 16px;
+}

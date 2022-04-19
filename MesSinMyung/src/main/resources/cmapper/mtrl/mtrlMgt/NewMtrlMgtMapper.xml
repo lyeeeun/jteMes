@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.mtrl.mtrlMgt.NewMtrlMgtMapper">
+
+	<!-- 자재 관리정보 -->
+	<sql id="mtrlMgt_base">
+			mtrlMgt.mtrl_mgt_id					AS mtrlMgtId,
+			mtrlMgt.mtrl_mgt_purchase       	AS mtrlMgtPurchase,
+			mtrlMgt.mtrl_mgt_prescription   	AS mtrlMgtPrescription,
+			mtrlMgt.mtrl_mgt_cnt            	AS mtrlMgtCnt,
+			mtrlMgt.mtrl_mgt_scrap            	AS mtrlMgtScrap,
+			mtrlMgt.description             	AS mtrlMgtDesc,
+			mtrlMgt.creator_id              	AS creatorId,
+			mtrlMgt.created_at              	AS createdAt,
+			mtrlMgt.updator_id              	AS updatorId,
+			mtrlMgt.updated_at              	AS updatedAt,
+			mtrlMgt.mtrl_id                 	AS mtrlId,
+			mtrlMgt.lot_id 	                	AS lotId,
+			mtrlMgt.is_del 	                	AS isDel,
+			mtrlInfo.mtrl_nm         			AS mtrlNm, 
+			mtrlInfo.mtrl_type       			AS mtrlType, 
+			mtrlInfo.mtrl_HCD        			AS mtrlHCD,
+			mtrlInfo.mtrl_std01        			AS mtrlStd01, 
+			mtrlInfo.mtrl_std02        			AS mtrlStd02, 
+			mtrlInfo.mtrl_std03        			AS mtrlStd03, 
+			mtrlInfo.mtrl_std04     			AS mtrlStd04,
+			mtrlInfo.mtrl_std05     			AS mtrlStd05, 
+			mtrlInfo.mtrl_useday     			AS mtrlUseday, 
+			mtrlInfo.mtrl_cost       			AS mtrlCost, 
+			mtrlInfo.is_use          			AS isUse,  
+			mtrlInfo.description     			AS mtrlDiv,
+			mtrlInfo.mtrl_qual       			AS mtrlQual, 
+			mtrlInfo.mtrl_unit       			AS mtrlUnit,
+			mtrlInfo.mtrl_desc					AS mtrlDesc
+		FROM cm_mtrl_mgt mtrlMgt
+		LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlMgt.mtrl_id = mtrlInfo.mtrl_id
+		WHERE mtrlInfo.is_use = TRUE
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="mtrlId != null and mtrlId != '' ">
+			AND mtrlMgt.mtrl_id = #{mtrlId}
+		</if>
+		<if test="mtrlMgtId != null">
+			AND mtrlMgt.mtrl_mgt_id = #{mtrlMgtId}
+		</if>
+		<if test="isDel != null">
+			AND mtrlMgt.is_del = #{isDel}
+		</if>
+		<if test="lotId != null">
+			AND mtrlMgt.lot_id = #{lotId}
+		</if>
+	</sql>
+	
+	<!-- 자재정보(Page) select -->
+	<select id="selectMtrlMgtList"
+		parameterType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlMgtDto"
+		resultType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="mtrlMgt_base" />
+				)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- 자재정보 Count -->
+	<select id="selectMtrlMgtCount"
+		parameterType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="mtrlMgt_base" />
+				)c_table
+	</select>
+	
+	<!-- 자재정보 입력 -->
+	<insert id="insertMtrlMgt" parameterType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlMgtDto">
+	<selectKey keyProperty="mtrlMgtId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('INMTL') AS mtrlMgtId
+	</selectKey>
+		INSERT INTO cm_mtrl_mgt(
+			mtrl_mgt_id,
+			mtrl_mgt_purchase,
+			mtrl_mgt_prescription,
+			mtrl_mgt_cnt,
+			mtrl_mgt_scrap,
+			description,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at,
+			mtrl_id,
+			lot_id,
+			is_del
+		)VALUES(
+			#{mtrlMgtId},
+			#{mtrlMgtPurchase},
+			<choose>
+				<when test="mtrlMgtPrescription != null and mtrlMgtPrescription != '' ">
+					#{mtrlMgtPrescription},
+				</when>
+				<otherwise>
+					NULL,
+				</otherwise>
+			</choose>
+			#{mtrlMgtCnt},
+			#{mtrlMgtScrap},
+			#{mtrlMgtDesc},
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			NOW(),
+			#{mtrlId},
+			#{lotId},
+			FALSE
+		)
+	</insert>
+	
+	<!-- 자재 정보수정 -->
+	<update id="updateMtrlMgt" parameterType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlMgtDto">
+		UPDATE cm_mtrl_mgt
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="mtrlMgtPurchase != null and mtrlMgtPurchase != ''">	
+				,mtrl_mgt_purchase = #{mtrlMgtPurchase}
+			</if>
+			<if test="mtrlMgtPrescription != null and mtrlMgtPrescription != ''">	
+				,mtrl_mgt_prescription = #{mtrlMgtPrescription}
+			</if>
+			<if test="mtrlMgtCnt != null">	
+				,mtrl_mgt_cnt = #{mtrlMgtCnt}
+			</if>
+			<if test="mtrlMgtScrap != null">	
+				,mtrl_mgt_scrap = #{mtrlMgtScrap}
+			</if>
+			<if test="mtrlMgtDesc != null">	
+				,description = #{mtrlMgtDesc}
+			</if>
+		WHERE mtrl_mgt_id = #{mtrlMgtId}
+	</update>
+	
+	<!-- 반납 or 모두사용 -->
+	<update id="updateMtrlMgtIsDel" parameterType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlMgtDto">
+		UPDATE cm_mtrl_mgt
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="isDel != null">	
+				,is_del = #{isDel}
+			</if>
+		WHERE mtrl_mgt_id  = #{mtrlMgtId}
+	</update>	
+	<!-- 자재정보 삭제 -->
+	<delete id="deleteMtrlMgt" parameterType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlMgtDto">
+		DELETE FROM cm_mtrl_mgt
+		WHERE mtrl_mgt_id  = #{mtrlMgtId}
+	</delete>
+	
+	<!-- 자재 사용 히스토리-->
+	<sql id="mtrl_history">
+			mtrlMgtId,
+			mtrlQtyTarget,
+			mtrlQtyTargetCode,
+			mtrlQtyTotal, 
+			mtrlQtyDesc,
+			mtrlQtyPgCd,
+			mtrlQtyPgNm,
+			mtrlQtyDate,
+			mtrlQtyUser,
+			mtrlQtyUserNm
+		FROM(
+			-- 발주
+			SELECT
+				mgt.mtrl_mgt_id				AS mtrlMgtId, -- 자재개별코드
+				mgt.mtrl_qty_target			AS mtrlQtyTarget, -- 업무구분
+				mgt.mtrl_qty_target_code	AS mtrlQtyTargetCode, -- 업무코드
+				mgt.mtrl_qty_total			AS mtrlQtyTotal, -- 수량
+				odr.mtrl_order_desc			AS mtrlQtyDesc, -- 비고
+				form.mtrl_of_id				AS mtrlQtyPgCd, -- 주문코드
+				form.mtrl_of_nm				AS mtrlQtyPgNm, -- 주문명
+				odr.mtrl_order_date			AS mtrlQtyDate,-- 수주일(배송완료일)
+				odr.mtrl_order_user			AS mtrlQtyUser,  -- 수령자 아이디
+				userInfo.user_nm			AS mtrlQtyUserNm  -- 수령자 이름
+			-- SELECT *
+			FROM qm_mtrl_mgt mgt
+			LEFT OUTER JOIN prs_mtrl_order odr ON mgt.mtrl_qty_target_code = odr.mtrl_order_id
+			LEFT OUTER JOIN prs_mtrl_orderform form ON odr.mtrl_of_id = form.mtrl_of_id
+			LEFT OUTER JOIN mb_user_info userInfo ON userInfo.user_id = odr.mtrl_order_user
+			WHERE mgt.mtrl_qty_target = 'mtrl_tagt01'
+			<if test="mtrlMgtId != null">
+				AND mgt.mtrl_mgt_id = #{mtrlMgtId}
+			</if>
+			UNION
+			-- 작업
+			SELECT
+				mgt.mtrl_mgt_id				AS mtrlMgtId,  -- 자재개별코드
+				mgt.mtrl_qty_target			AS mtrlQtyTarget,  -- 업무구분
+				mgt.mtrl_qty_target_code	AS mtrlQtyTargetCode,  -- 업무코드
+				mgt.mtrl_qty_total			AS mtrlQtyTotal,  -- 수량
+				''							AS mtrlQtyDesc,  -- 비고(변경?)
+				workInfo.lot_id				AS mtrlQtyPgCd,  -- LOT코드
+				lot.lot_nm					AS mtrlQtyPgNm, -- LOT명
+				workInfo.prod_work_end		AS mtrlQtyDate,  -- 작업완료시간
+				workInfo.prod_work_user		AS mtrlQtyUser,   -- 작업자 아이디
+				userInfo.user_nm			AS mtrlQtyUserNm  -- 작업자 이름
+			FROM qm_mtrl_mgt mgt 
+			LEFT OUTER JOIN prs_mtrl_useinfo useInfo ON mgt.mtrl_qty_target_code = useInfo.mtrl_use_id 
+			LEFT OUTER JOIN prs_work_info workInfo ON useInfo.prod_work_id = workInfo.prod_work_id
+			LEFT OUTER JOIN prs_lot_info lot ON lot.lot_id = workInfo.lot_id
+			LEFT OUTER JOIN mb_user_info userInfo ON userInfo.user_id = workInfo.prod_work_user
+			WHERE mgt.mtrl_qty_target = 'mtrl_tagt02'
+			<if test="mtrlMgtId != null">
+				AND mgt.mtrl_mgt_id = #{mtrlMgtId}
+			</if>
+			UNION
+			-- 관리자(수동입력)
+			SELECT 
+				mgt.mtrl_mgt_id				AS mtrlMgtId, -- 자재개별코드
+				mgt.mtrl_qty_target			AS mtrlQtyTarget, -- 업무구분
+				mgt.mtrl_qty_target_code	AS mtrlQtyTargetCode, -- 업무코드
+				mgt.mtrl_qty_total			AS mtrlQtyTotal, -- 수량
+				manual.manual_desc			AS mtrlQtyDesc, -- 비고
+				manual.lot_id				AS mtrlQtyPgCd, -- 코드
+				''							AS mtrlQtyPgNm, -- 코드명
+				manual.manual_at			AS mtrlQtyDate,  -- 수동입력 날짜
+				manual.manual_user			AS mtrlQtyUser,  -- 수동입력 대상자 아이디
+				userInfo.user_nm			AS mtrlQtyUserNm  -- 수동입력 대상자 이름
+			FROM qm_mtrl_mgt mgt 
+			LEFT OUTER JOIN qm_manual_info manual ON mgt.mtrl_qty_target_code = manual.manual_id
+			LEFT OUTER JOIN mb_user_info userInfo ON userInfo.user_id = manual.manual_user
+			WHERE mgt.mtrl_qty_target = 'mtrl_tagt04'
+			<if test="mtrlMgtId != null">
+				AND mgt.mtrl_mgt_id = #{mtrlMgtId}
+			</if>
+			UNION
+			-- 불량1(작업)
+			SELECT
+				mgt.mtrl_mgt_id				AS mtrlMgtId, -- 자재개별코드
+				mgt.mtrl_qty_target			AS mtrlQtyTarget, -- 업무구분
+				mgt.mtrl_qty_target_code		AS mtrlQtyTargetCode, -- 업무코드
+				mgt.mtrl_qty_total			AS mtrlQtyTotal, -- 수량
+				badMgt.bad_desc				AS mtrlQtyDesc, -- 비고
+				workInfo.prod_work_id			AS mtrlQtyPgCd, -- 작업코드
+				asgn.prod_asm_nm			AS mtrlQtyPgNm, -- 작업지시명
+				badMgt.chk_date				AS mtrlQtyDate,  -- 작업완료시간
+				badMgt.chk_user				AS mtrlQtyUser,  -- 작업자 아이디
+				userInfo.user_nm			AS mtrlQtyUserNm  -- 작업자 이름
+			FROM qm_mtrl_mgt mgt 
+			JOIN prs_bad_product badMgt ON mgt.mtrl_qty_target_code = badMgt.bad_id AND badMgt.bad_target = 'qual_spec02'
+			LEFT OUTER JOIN prs_mtrl_useInfo useInfo ON useInfo.mtrl_use_id = badMgt.bad_target_code
+			LEFT OUTER JOIN prs_work_info workInfo ON workInfo.prod_work_id = useInfo.prod_work_id
+			LEFT OUTER JOIN prs_product_assignment asgn ON asgn.prod_asm_id = workInfo.prod_asm_id
+			LEFT OUTER JOIN mb_user_info userInfo ON userInfo.user_id = badMgt.chk_user
+			WHERE mgt.mtrl_qty_target = 'mtrl_tagt03'
+			<if test="mtrlMgtId != null">
+				AND mgt.mtrl_mgt_id = #{mtrlMgtId}
+			</if> 
+			UNION
+			-- 불량2(입고)
+			SELECT 
+				mgt.mtrl_mgt_id				AS mtrlMgtId, -- 자재개별코드
+				mgt.mtrl_qty_target			AS mtrlQtyTarget, -- 업무구분
+				mgt.mtrl_qty_target_code	AS mtrlQtyTargetCode, -- 업무코드
+				mgt.mtrl_qty_total			AS mtrlQtyTotal, -- 수량
+				badMgt.bad_desc				AS mtrlQtyDesc, -- 비고
+				badMgt.bad_target_code		AS mtrlQtyPgCd, -- 불량코드
+				form.mtrl_of_nm				AS mtrlQtyPgNm, -- LOT명
+				badMgt.chk_date				AS mtrlQtyDate,  -- 작업완료시간
+				badMgt.chk_user				AS mtrlQtyUser,  -- 작업자 아이디
+				userInfo.user_nm			AS mtrlQtyUserNm  -- 작업자 이름
+			FROM qm_mtrl_mgt mgt 
+			JOIN prs_bad_product badMgt ON mgt.mtrl_qty_target_code = badMgt.bad_id AND badMgt.bad_target = 'qual_spec01'
+			LEFT OUTER JOIN prs_mtrl_order odr ON badMgt.bad_target_code = odr.mtrl_order_id
+			LEFT OUTER JOIN prs_mtrl_orderform form ON odr.mtrl_of_id = form.mtrl_of_id
+			LEFT OUTER JOIN mb_user_info userInfo ON userInfo.user_id = badMgt.chk_user
+			WHERE mgt.mtrl_qty_target = 'mtrl_tagt03'
+			<if test="mtrlMgtId != null">
+				AND mgt.mtrl_mgt_id = #{mtrlMgtId}
+			</if>
+		UNION
+		-- 사급자재 등록
+		SELECT
+			mgt.mtrl_mgt_id				AS mtrlMgtId, -- 자재개별코드
+			mgt.mtrl_qty_target			AS mtrlQtyTarget, -- 업무구분
+			mgt.mtrl_qty_target_code	AS mtrlQtyTargetCode, -- 업무코드
+			mgt.mtrl_qty_total			AS mtrlQtyTotal, -- 수량
+			lot.lot_desc				AS mtrlQtyDesc, -- LOT에 등록된 비고
+			mtrlMgt.lot_id				AS mtrlQtyPgCd, -- LotId
+			lot.order_id				AS mtrlQtyPgNm, -- orderId
+			orderInfo.order_stdt		AS mtrlQtyDate,-- 수주일
+			lot.lot_pm					AS mtrlQtyUser,  -- LOT 담당자
+			userInfo.user_nm			AS mtrlQtyUserNm  -- LOT 담당자 이름
+		-- SELECT *
+		FROM qm_mtrl_mgt mgt
+		LEFT OUTER JOIN cm_mtrl_mgt mtrlMgt on mtrlMgt.mtrl_mgt_id = mgt.mtrl_mgt_id
+		LEFT OUTER JOIN prs_lot_info lot on lot.lot_id = mtrlMgt.lot_id and mtrlMgt.lot_id is not null
+		LEFT OUTER JOIN prs_order_info orderInfo on orderInfo.order_id = lot.order_id
+		LEFT OUTER JOIN mb_user_info userInfo ON userInfo.user_id = lot.lot_pm
+		WHERE mgt.mtrl_qty_target = 'mtrl_tagt05'
+		<if test="mtrlMgtId != null">
+			AND mgt.mtrl_mgt_id = #{mtrlMgtId}
+		</if>
+			  	
+		)u_table
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+<!-- 		<if test="mtrlMgtId != null and mtrlMgtId != '' "> -->
+<!-- 			AND u_table.mtrlMgtId = #{mtrlMgtId} -->
+<!-- 		</if> -->
+		<if test="mtrlQtyTarget != null and mtrlQtyTarget != '' ">
+			AND u_table.mtrlQtyTarget = #{mtrlQtyTarget}
+		</if>
+		<if test="mtrlQtyTargetCode != null and mtrlQtyTargetCode != '' ">
+			AND u_table.mtrlQtyTargetCode = #{mtrlQtyTargetCode}
+		</if>
+	</sql>
+
+
+		<!-- 자재구매업체(Page) select -->
+	<select id="selectMtrlHistoryList"
+		parameterType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlHistoryDto"
+		resultType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlHistoryDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY mtrlQtyDate desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="mtrl_history" />
+			)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+
+	<!-- 자재구매업체 Count -->
+	<select id="selectMtrlHistoryCount"
+		parameterType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlHistoryDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="mtrl_history" />
+				)c_table
+	</select>
+	
+	<!-- 자재 입고/사용 총수량 -->
+	<select id="selectMtrlHistoryTotal"
+		parameterType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlHistoryDto"
+		resultType="int">
+		SELECT IFNULL(SUM(mtrl_qty_total),0) AS mtrlQtyTotal FROM qm_mtrl_mgt
+		WHERE mtrl_mgt_id = #{mtrlMgtId}
+	</select>
+	
+	<!-- 자재 수량 관리 등록 -->
+	<insert id="insertMtrlHistory" parameterType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlHistoryDto">
+		INSERT INTO qm_mtrl_mgt(
+			mtrl_qty_target,
+			mtrl_qty_target_code,
+			mtrl_qty_total,
+			mtrl_mgt_id,
+			lot_id
+		)VALUES(
+			#{mtrlQtyTarget},
+			#{mtrlQtyTargetCode},
+			#{mtrlQtyTotal},
+			#{mtrlMgtId},
+			#{mtrlQtyPgCd}
+		)
+	</insert>
+	
+	<!-- 자재 수량 관리 수정 -->
+	<update id="updateMtrlHistory" parameterType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlHistoryDto">
+		UPDATE qm_mtrl_mgt
+		SET mtrl_qty_total = #{mtrlQtyTotal} 
+		WHERE mtrl_qty_target = #{mtrlQtyTarget} AND mtrl_qty_target_code  = #{mtrlQtyTargetCode} AND mtrl_mgt_id  = #{mtrlMgtId}
+	</update>
+	
+	<!-- 자재 수량 관리 삭제 -->
+	<delete id="deleteMtrlHistory" parameterType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlHistoryDto">
+		DELETE FROM qm_mtrl_mgt
+		WHERE mtrl_qty_target = #{mtrlQtyTarget} AND mtrl_qty_target_code  = #{mtrlQtyTargetCode} AND mtrl_mgt_id  = #{mtrlMgtId}
+	</delete>
+	
+	
+	<!-- 자재 히스토리 수동입력 -->
+	<insert id="insertManualInfo" parameterType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlHistoryDto">
+	<selectKey keyProperty="mtrlQtyTargetCode" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('MANUAL') AS mtrlQtyTargetCode
+	</selectKey>
+		INSERT INTO qm_manual_info(
+			manual_id,
+			manual_cnt,
+			manual_at,
+			manual_user,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at,
+			manual_desc,
+			lot_id
+		)VALUES(
+			#{mtrlQtyTargetCode},
+			#{mtrlQtyTotal},
+			#{mtrlQtyDate},
+			#{mtrlQtyUser},
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			NOW(),
+			#{mtrlQtyDesc},
+			#{mtrlQtyPgCd}
+		)
+	</insert>
+	
+		<!-- 자재 히스토리 수동수정 -->
+	<update id="updateManualInfo" parameterType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlHistoryDto">
+		UPDATE qm_manual_info
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="mtrlQtyTotal != null">	
+				,manual_cnt = #{mtrlQtyTotal}
+			</if>
+			<if test="mtrlQtyDate != null">	
+				,manual_at = #{mtrlQtyDate}
+			</if>
+			<if test="mtrlQtyUser != null">	
+				,manual_user = #{mtrlQtyUser}
+			</if>
+			<if test="mtrlQtyDesc != null">	
+				,manual_desc = #{mtrlQtyDesc}
+			</if>
+			<if test="mtrlQtyPgCd != null">	
+				,lot_id = #{mtrlQtyPgCd}
+			</if>
+		WHERE manual_id  = #{mtrlQtyTargetCode} 
+	</update>
+	
+	
+	<!-- 자재 히스토리 수동 삭제-->
+	<delete id="deleteManualInfo" parameterType="jin.mes.cform.mtrl.mtrlMgt.NewMtrlHistoryDto">
+		DELETE FROM qm_manual_info
+		WHERE manual_id  = #{mtrlQtyTargetCode}
+	</delete>
+</mapper>

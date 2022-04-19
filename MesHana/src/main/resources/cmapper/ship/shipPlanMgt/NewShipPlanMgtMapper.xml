@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.ship.shipPlanMgt.NewShipPlanMgtMapper">
+	<!-- 출하 계획 정보 -->
+	<!-- <sql id="shipPlan_base">
+			ship.ship_id				AS shipId,
+			ship.ship_plan_date 		AS shipPlanDate,
+			ship.ship_date				AS shipDate,
+			ship.ship_state				AS shipState,
+			ship.ship_qty				AS shipQty,
+			ship.ship_type				AS shipType,
+			ship.ship_user				AS shipUser,
+			ship.ship_order				AS shipOrder,
+			ship.ship_desc				AS shipDesc,
+			ship.comp_id				AS compId,
+			compInfo.comp_nm			AS compNm,
+			compInfo.comp_number		AS compNumber,
+			ship.comp_addr_id			AS compAddrId,
+			compAddr.comp_addr_detail 	AS compAddrDetail,
+			ship.lot_id 				AS lotId,
+			lotInfo.lot_seq				AS lotSeq,
+			itemInfo.item_id 			AS itemId,
+			itemInfo.item_Nm 			AS itemNm,
+			orderInfo.order_id			AS orderId,
+			orderInfo.order_nm			AS orderNm
+		FROM prs_ship_mgt ship
+		INNER JOIN bc_company_info compInfo
+		ON ship.comp_id = compInfo.comp_id
+		INNER JOIN bc_company_addr compAddr
+		ON ship.comp_addr_id = compAddr.comp_addr_id
+		INNER JOIN prs_lot_info lotInfo
+		ON ship.lot_id = lotInfo.lot_id AND ship.lot_seq = lotInfo.lot_seq
+		INNER JOIN prs_order_info orderInfo
+		ON lotInfo.order_id = orderInfo.order_id
+		INNER JOIN bc_item_info itemInfo
+		ON lotInfo.item_id = itemInfo.item_id
+		WHERE 1=1
+		<if test="orderId != null and orderId != '' ">
+			AND orderInfo.order_id = #{orderId}
+		</if>
+		<if test="lotId != null and lotId != '' ">
+			AND ship.lot_id = #{lotId}
+		</if>
+		<if test="searchText != null and searchText != '' ">
+			AND #{searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql> -->
+	
+	<sql id="shipPlan_base">
+			pkgWork.pkg_work_id AS pkgWorkId,
+			pkgWork.lot_id AS lotId,
+			pkgWork.item_id AS itemId,
+			itemInfo.item_nm AS itemNm,
+			lotInfo.lotQty AS lotQty,
+			shipTotal.shipTotalQty AS shipTotalQty,
+			pkgWork.prs_package_qty AS prsPackageQty,
+			shipMgt.ship_id AS shipId,
+			shipMgt.ship_plan_date AS shipPlanDate,
+			shipMgt.ship_date AS shipDate,
+			shipMgt.ship_qty AS shipQty,
+			IFNULL(shipMgt.ship_state,'출하 계획 미정') AS shipState,
+			IFNULL(shipMgt.comp_id,'') AS compId,
+			IFNULL(compInfo.comp_nm,'')	AS compNm,
+			IFNULL(compInfo.comp_number,'')		AS compNumber,
+			IFNULL(shipMgt.comp_addr_id,'')			AS compAddrId,
+			IFNULL(compAddr.comp_addr_detail ,'')	AS compAddrDetail,
+			orderInfo.order_id			AS orderId,
+			shipMgt.ship_desc AS shipDesc
+		FROM prs_package_work pkgWork
+		LEFT JOIN 
+		(
+			SELECT lot_id, order_id, item_id, SUM(lot_qty) AS lotQty
+			FROM prs_lot_info lotInfo
+			GROUP BY lot_id
+		) lotInfo
+		ON pkgWork.lot_id = lotInfo.lot_id
+		LEFT JOIN bc_item_info itemInfo
+		ON pkgWork.item_id = itemInfo.item_id
+		LEFT JOIN
+		(
+			SELECT lot_id, IFNULL(SUM(ship_qty),0) AS shipTotalQty
+			FROM prs_ship_mgt
+			WHERE 1=1 
+			AND ship_state = 'ship_dvry03'
+			GROUP BY lot_id
+		) shipTotal
+		ON pkgWork.lot_id = shipTotal.lot_id
+		LEFT JOIN prs_ship_mgt shipMgt
+		ON pkgWork.pkg_work_id = shipMgt.pkg_work_id
+		LEFT JOIN bc_company_info compInfo
+		ON shipMgt.comp_id = compInfo.comp_id
+		LEFT JOIN bc_company_addr compAddr
+		ON shipMgt.comp_addr_id = compAddr.comp_addr_id
+		LEFT JOIN prs_order_info orderInfo
+		ON lotInfo.order_id = orderInfo.order_id
+		WHERE 1=1
+		AND orderInfo.order_id = #{orderId}
+		<if test="programId != null and programId != '' ">
+			AND shipMgt.ship_id is not null
+		</if> 
+		<if test="lotId != null and lotId != '' ">
+			AND pkgWork.lot_id = #{lotId}
+		</if>
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<!-- 출하 계획 정보 -->
+	<sql id="shipComp_base">
+			compInfo.comp_id AS compId,
+			compInfo.comp_nm AS compNm,
+			compAddr.comp_addr_number AS compNumber,
+			compAddr.comp_addr_id AS compAddrId,
+			compAddr.comp_addr_detail AS compAddrDetail
+		FROM prs_lot_info lotInfo
+		INNER JOIN prs_order_info orderInfo
+		ON orderInfo.order_id = lotInfo.order_id
+		INNER JOIN bc_company_info compInfo
+		ON orderInfo.comp_id = compInfo.comp_id
+		RIGHT JOIN bc_company_addr compAddr
+		ON orderInfo.comp_id = compAddr.comp_id
+		WHERE lotInfo.lot_id = #{lotId}
+		<if test="searchText != null and searchText != '' ">
+			AND #{searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<!-- 출하 계획 조회 -->
+	<select id="selectShipPlanList"
+		parameterType="jin.mes.cform.ship.shipPlanMgt.NewShipPlanMgtDto"
+		resultType="jin.mes.cform.ship.shipPlanMgt.NewShipPlanMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY ship_id desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="shipPlan_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	<!-- 출하 계획 Count -->
+	<select id="rowCount"
+		parameterType="jin.mes.cform.ship.shipPlanMgt.NewShipPlanMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="shipPlan_base" />
+				)c_table
+	</select>
+	
+	<select id="selectShipCompleteQty"
+		parameterType="jin.mes.cform.ship.shipPlanMgt.NewShipPlanMgtDto"
+		resultType="java.lang.Integer">
+		SELECT IFNULL(SUM(ship_qty),0) AS shipTotalQty
+		FROM prs_ship_mgt
+		WHERE 1=1 
+		AND ship_state = 'ship_dvry03'
+		AND lot_id = #{lotId}
+		AND lot_seq = #{lotSeq}
+	</select>
+	
+	<!-- 출하 업체 조회 -->
+	<select id="selectShipCompList"
+		parameterType="jin.mes.cform.ship.shipPlanMgt.NewShipPlanMgtDto"
+		resultType="jin.mes.cform.ship.shipPlanMgt.NewShipPlanMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY comp_addr_detail asc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="shipComp_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	<!-- 출하 업체 Count -->
+	<select id="selectShipCompCount"
+		parameterType="jin.mes.cform.ship.shipPlanMgt.NewShipPlanMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="shipComp_base" />
+				)c_table
+	</select>
+	
+	<insert id="insertShipPlan" parameterType="jin.mes.cform.ship.shipPlanMgt.NewShipPlanMgtDto">
+		<selectKey keyProperty="shipId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('SHIPLN') AS ship_id
+		</selectKey>
+		INSERT INTO prs_ship_mgt(
+				ship_id,
+				ship_plan_date,
+				ship_date,
+				ship_state,
+				ship_qty,
+				ship_type,
+				ship_user,
+				ship_car,
+				ship_order,
+				ship_desc,
+				comp_id,
+				comp_addr_id,
+				lot_id,
+				lot_seq,
+				pkg_work_id
+		)VALUES(
+				#{shipId},
+				#{shipPlanDate},
+				NULL,
+				'ship_dvry01',
+				#{shipQty},
+				'NONE',
+				'NONE',
+				'NONE',
+				'NONE',
+				#{shipDesc},
+				#{compId},
+				#{compAddrId},
+				#{lotId},
+				#{lotSeq},
+				#{pkgWorkId}
+		)
+	</insert>
+	
+	<update id="updateShipPlan" parameterType="jin.mes.cform.ship.shipPlanMgt.NewShipPlanMgtDto">
+		UPDATE prs_ship_mgt
+		SET 
+			ship_id = ship_id
+			<if test="shipPlanDate != null and shipPlanDate != '' ">
+				,ship_plan_date = #{shipPlanDate} 
+			</if>
+			<if test="shipDate != null and shipDate != '' ">
+				,ship_date = #{shipDate} 
+			</if>
+			<if test="shipState != null and shipState != '' ">
+				,ship_state = #{shipState} 
+			</if>
+			<if test="shipQty != null and shipQty != '' ">
+				,ship_qty = #{shipQty} 
+			</if>
+			<if test="shipDesc != null and shipDesc != '' ">
+				,ship_desc = #{shipDesc} 
+			</if>
+			<if test="compId != null and compId != '' ">
+				,comp_id = #{compId} 
+			</if>
+			<if test="compAddrId != null and compAddrId != '' ">
+				,comp_addr_id = #{compAddrId} 
+			</if>
+			<if test="lotId != null and lotId != '' ">
+				,lot_id = #{lotId} 
+			</if>
+		WHERE 1=1
+		AND ship_id = #{shipId} 
+	</update>
+	
+	<delete id="deleteShipPlan" parameterType="jin.mes.cform.ship.shipPlanMgt.NewShipPlanMgtDto">
+		DELETE FROM prs_ship_mgt
+		WHERE ship_id = #{shipId}
+	</delete>
+	
+	
+	<select id="selectRtlBundleList"
+		parameterType="jin.mes.cform.ship.shipPlanMgt.NewShipPlanMgtDto"
+		resultType="jin.mes.cform.ship.shipPlanMgt.NewShipPlanMgtDto">
+		SELECT 
+			ship_id AS shipId,
+			bundle_unit AS bundleUnit,
+			bundle_qty AS bundleQty
+		FROM his_ship_bundle
+		WHERE ship_id = #{shipId}
+	</select>
+	
+	<insert id="insertBundleList" parameterType="jin.mes.cform.ship.shipPlanMgt.NewShipPlanMgtDto">
+		INSERT INTO his_ship_bundle
+		(
+			ship_id,
+			bundle_unit,
+			bundle_qty
+		)
+		VALUES
+		(
+			#{shipId},
+			#{bundleUnit},
+			#{bundleQty}
+		)
+	</insert>
+	
+	<update id="updateBundleList" parameterType="jin.mes.cform.ship.shipPlanMgt.NewShipPlanMgtDto">
+		UPDATE his_ship_bundle
+		SET
+			bundle_qty = #{bundleQty}
+		WHERE 1=1 
+		AND ship_id = #{shipId}
+		AND bundle_unit = #{bundleUnit}
+	</update>
+	
+	<delete id="deleteBundleList" parameterType="jin.mes.cform.ship.shipPlanMgt.NewShipPlanMgtDto">
+		DELETE FROM his_ship_bundle
+		WHERE 1=1
+		AND ship_id = #{shipId}
+		AND bundle_unit = #{bundleUnit}
+	</delete>
+	
+	<delete id="deleteAllBundleList" parameterType="jin.mes.cform.ship.shipPlanMgt.NewShipPlanMgtDto">
+		DELETE FROM his_ship_bundle
+		WHERE 1=1
+		AND ship_id = #{shipId}
+	</delete>
+</mapper>

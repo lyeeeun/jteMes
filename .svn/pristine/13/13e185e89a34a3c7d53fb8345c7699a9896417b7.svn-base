@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/rms_layout}" lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/css/rms/ReportData/dataDownload.css" />
+<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Insert title here</title>
+</head>
+<body>
+	<div id="container">
+		<!-- 본문내용 -->
+		<div class="content" layout:fragment="content">
+			<!-- 검색 -->
+			<div class="main_search">
+				<table class="search_table">
+					<colgroup>
+						<col style="width: 15%;" />
+						<col style="width: 85%;" />
+					</colgroup>
+					<tr>
+						<td>
+							<span class="search_title1" th:text="${Title}"></span>
+						</td>
+						<td>
+							<div id="works_search">
+								<form id="worksSearchForm" method="post">
+									<span class="search_title2">Report Data Search</span>
+									<span id="reportDateArea">
+										<input jintFormat="DATE" id="report_DATE" type="text" class="easyui-datebox jint_date" style="width: 120px;" />&nbsp;
+										<input jintFormat="HOUR" id="report_HOUR" class="easyui-combobox" style="width: 60px;" />H&nbsp;
+										<input jintFormat="MIN" id="report_MIN" class="easyui-combobox" style="width: 60px;" />M
+										<input jintFormat="SEC" id="report_SEC" class="easyui-combobox" style="width: 60px;" />S
+										<span id="tempCombo">
+											<input name="searchGubun" id="reportCombo" class="easyui-combobox" style="width: 120px;"/>
+										</span>
+									</span> 
+									<a id="worksSearchBtn" class="easyui-linkbutton" onclick="searchBtn();" data-options="iconCls:'icon-search'">Search</a>
+									<a id="excelDownloadBtn" class="easyui-linkbutton" href="/fileDown/Monthly_Report_R1">Report Format Download</a>
+									<div id="fieldCheckArea" style="display:none;">
+									</div>
+								</form>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<!-- 본문 영역 -->
+			<div class="content_layer">
+				<div id="reportDataContent" style="display:none;">
+					<a id="excelDownloadBtn" class="easyui-linkbutton" onclick="reportDataDownload()"style='margin:15px 10px 15px 10px;'>Report Data Download</a>
+					<table id="orderGridTable" style="min-width:300px; max-width:99%; min-height:200px;"
+						class="easyui-datagrid"
+						fitColumns="true"
+						singleSelect="true">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<!-- 각 페이지의 스크립트가 작성될 위치 -->
+<th:block layout:fragment="script">
+	<script src="/util/plotly-latest.min.js"></script>
+	<script src="/js/rms/ReportData/dataDownload.js"></script>
+</th:block>
+</html>

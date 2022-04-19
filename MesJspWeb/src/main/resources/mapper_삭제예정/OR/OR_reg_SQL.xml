@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "OR_reg">
+		           <!-- FN_CM_GETCOMNM(O.CTR_CD , 'PRODTYPE', P.PRODTYPE) AS PRODTYPE     
+			        FN_CM_GETCOMNM(O.CTR_CD , 'PRODSPEC', P.PRODSPEC) AS PRODSPEC      
+				    FN_CM_GETCOMNM(O.CTR_CD , 'PRODUNITCD',P.PRODUNIT_CD )  AS UNIT_NM -->
+<select id="orderList" parameterType="hashmap"
+		resultType="hashmap">
+		    SELECT  CTR_CD
+			       ,O.ORDER_NO
+			       ,DATE_FORMAT(O.ORDER_DATE,'%Y%m%d') AS ORDER_DATE
+			       ,DATE_FORMAT(O.DELIVERY_DATE,'%Y%m%d') AS DELIVERY_DATE
+			       ,O.CUSTOMERID
+			       ,C.CUSTOMERNAME 
+		           ,P.PRODNAME
+		           ,P.PRODMTRL
+		           ,P.PRODTYPE
+			       ,P.PRODSPEC  
+				   ,P.PRODUNIT_CD AS UNIT_NM
+			       ,O.CUST_USER
+			       ,O.PRODID
+			       ,O.QTY
+			       ,O.SHOPFLOOR_TOT_QTY
+			       ,O.OUT_TOT_QTY
+			       ,O.DEFECT_TOT_QTY
+			       ,O.DESTINATION
+			       ,O.REMARK
+			       ,O.DEL_GBN                                
+			  FROM TB_MESORDER O
+			INNER JOIN TB_CUSTOMER C ON O.CUSTOMERID=C.CUSTOMERID
+			INNER JOIN TB_PRODUCT P ON O.PRODID=P.PRODID
+			 WHERE 1 = 1
+		
+			<!--  삭제 구분에 N 즉 삭제된 데이터가 아닌경우 -->
+			<if test='DEL_GBN != "N"'>
+				AND O.DEL_GBN ='N'
+			</if>
+			<if test='CUSTOMERNAME != null and CUSTOMERNAME != ""'>
+				AND CUSTOMERNAME LIKE CONCAT("%"#{CUSTOMERNAME}"%")
+			</if>
+			<if test='PRODNAME != null and PRODNAME != ""'>
+				AND PRODNAME LIKE CONCAT("%"#{PRODNAME}"%") 
+			</if>
+			 <if test='STR_DT != null and STR_DT != ""'>
+				AND STR_TO_DATE(ORDER_DATE,'%Y-%m-%d') BETWEEN STR_TO_DATE(#{STR_DT},'%Y-%m-%d')
+				AND STR_TO_DATE(#{END_DT},'%Y-%m-%d')
+			</if>
+			<if test='STR_DT1 != null and STR_DT1 != ""'>
+				AND STR_TO_DATE(DELIVERY_DATE,'%Y-%m-%d') BETWEEN STR_TO_DATE(#{STR_DT1},'%Y-%m-%d')
+				AND STR_TO_DATE(#{END_DT1},'%Y-%m-%d')
+			</if>
+	
+		<![CDATA[
+			 ORDER BY ORDER_NO
+		]]>
+		
+		</select>
+	
+	
+	<select id="selectMenuId" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT ORDER_NO 
+  		      FROM TB_MESORDER
+               AND ORDER_NO = (SELECT MAX(ORDER_NO) AS ORDER_NO 
+              					FROM TB_MESORDER
+              				 
+              				  )
+             
+		]]>
+	</select> 
+	
+	<select id="insertPgmList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+			INSERT INTO TB_MESORDER(
+			                           CTR_CD
+			                          ,ORDER_NO
+			                          ,ORDER_DATE
+			                          ,DELIVERY_DATE
+			                          ,CUST_USER
+			                          ,PRODID
+			                          ,CUSTOMERID
+			                          ,QTY
+			                          ,DESTINATION
+			                          ,REMARK
+			                          ,DEL_GBN             
+									  ,REG_USER_ID           
+									  ,REG_PGM_ID            
+									  ,REG_DT                
+									  ,UPD_USER_ID          
+									  ,UPD_PGM_ID           
+									  ,UPD_DT              
+			                          )
+			                   VALUES( #{CTR_CD}
+			                          ,(SELECT ORDER_NO + 1 AS ORDER_NO FROM TB_MESORDER AS SUB_TABLE ORDER BY ORDER_NO DESC LIMIT 1) -- ,FN_CM_SEQ('ORDER_NO', NULL, NULL)	Function 미 존재
+			                          ,#{ORDER_DATE}
+			                          ,#{DELIVERY_DATE}
+			                          ,#{CUST_USER}
+			                          ,#{PRODID}
+			                          ,#{CUSTOMERID}
+			                          ,#{QTY}
+			                          ,#{DESTINATION}
+			                          ,#{REMARK}
+			                          ,'N'
+									  ,#{REG_USER_ID}
+									  ,#{REG_PGM_ID}
+									  ,now()
+									  ,#{UPD_USER_ID}
+									  ,#{UPD_DT}
+									  ,now()
+			                          )
+		]]>
+	</select>
+
+	<select id="updatePgmList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+			UPDATE TB_MESORDER
+			   SET  CTR_CD           = #{CTR_CD}
+			       ,ORDER_DATE       = #{ORDER_DATE}
+			       ,DELIVERY_DATE    = #{DELIVERY_DATE}
+			       ,CUST_USER        = #{CUST_USER}
+			       ,PRODID           = #{PRODID}
+			       ,CUSTOMERID       = #{CUSTOMERID}
+			       ,QTY              = #{QTY}
+			       ,DESTINATION      = #{DESTINATION}
+			       ,REMARK           = #{REMARK}
+			 WHERE ORDER_NO          = #{ORDER_NO}
+		]]>
+	</select>
+
+	
+				
+	
+	<select id="selectpreSave" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			/*SY_pgmMgmt 프로그램관리 _ 데이터 저장전 중복체크 */ 
+			SELECT COUNT(*) AS CNT			-- 갯수
+			FROM TB_MESORDER			-- [TB_프로그램목록]
+			WHERE ORDER_NO = #{ORDER_NO}
+		]]>
+	</select>
+	
+	
+	
+</mapper> 

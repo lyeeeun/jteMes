@@ -1,0 +1,33 @@
+package jin.mes.form.ship.shipMgt;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import jin.mes.form.ship.pickMgt.PickMgtDto;
+
+@Mapper
+public interface ShipMgtMapper {
+	
+	public List<ShipMgtDto> selectShipInfo(ShipMgtDto shipMgtDto);
+	public int selectShipInfoCount(ShipMgtDto shipMgtDto);
+
+	public List<ShipMgtDto> selectShipRtlBarcode(ShipMgtDto shipMgtDto);
+	public int selectShipRtlBarcodeCount(ShipMgtDto shipMgtDto);
+
+	public List<ShipMgtDto> selectBarcodeInfo(ShipMgtDto shipMgtDto);
+	public int selectBarcodeInfoCount(ShipMgtDto shipMgtDto);
+	
+	public void insertShipInfo(ShipMgtDto shipMgtDto);
+	public void updateShipInfo(ShipMgtDto shipMgtDto);
+	public void deleteShipInfo(ShipMgtDto shipMgtDto);
+	
+	public void insertShipRtlBarcode(ShipMgtDto shipMgtDto);
+	public void deleteShipRtlBarcode(ShipMgtDto shipMgtDto);
+	
+	public String selectLotState(ShipMgtDto shipMgtDto);
+	public void updateLotState(ShipMgtDto shipMgtDto);
+	
+	
+
+}

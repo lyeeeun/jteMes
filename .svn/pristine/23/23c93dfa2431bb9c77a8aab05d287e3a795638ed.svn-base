@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.techMgt.offsetMgt.NewOffsetMgtMapper">
+
+	<sql id="offsetData_base">
+				`Transfer_DT`	AS transferDt,
+				`ITEM_CD`		AS itemCd,
+				`OP_NO`			AS opNo,
+				`DIM_NO`		AS dimNo,
+				`AXIES_NO`		AS axiesNo,
+				`Half_Value`	AS halfValue,
+				`Max_Value`		AS `maxValue`,
+				`Min_Value`		AS `minValue`,
+				GA_Value		AS gaValue,
+				Distance_Value	AS distanceValue,
+				OFFSET_NO		AS offsetNo,
+				GU_OFFSET		AS guOffset,
+				OFFSET_Before	AS offsetBefore,
+				OFFSET_ADJUST	AS offsetAdjust,
+				OFFSET_AFTER	AS offsetAfter,
+				Machine_No		AS machineNo
+			FROM loffset
+			WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<select id="selectOffsetData"
+		parameterType="jin.mes.cform.techMgt.offsetMgt.NewOffsetMgtDto"
+		resultType="jin.mes.cform.techMgt.offsetMgt.NewOffsetMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY Transfer_DT asc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="offsetData_base"></include>
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+		
+	<!-- 수주정보 select -->
+	<select id="selectOffsetDataCount"
+		parameterType="jin.mes.cform.techMgt.offsetMgt.NewOffsetMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="offsetData_base"></include>
+		)c_table
+	</select>
+	
+</mapper>

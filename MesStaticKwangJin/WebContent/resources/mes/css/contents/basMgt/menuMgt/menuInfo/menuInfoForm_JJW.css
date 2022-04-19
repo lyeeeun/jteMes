@@ -1,0 +1,130 @@
+@CHARSET "UTF-8";
+
+/** 메인 그리드의 레이아웃 관련 **/
+
+.menuInfoForm {
+	width: 100%;
+	margin: 0 auto;
+/* 	text-align: center; */
+	vertical-align: middle;
+}
+
+.menuInfoForm .left-contents {
+	width: 20%;
+	display: inline-block;
+	height: 100%;
+}
+
+.menuInfoForm .middle-contents {
+	width: 5%;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.menuInfoForm .right-contents {
+	width: 74%;
+	display: inline-block;
+}
+
+.middle-contents .fas.fa-caret-square-right.fa-3x{
+	color: #3367D6;
+	padding-right: 24px;
+	
+}
+
+/** 왼쪽 트리 구조 형식 관련 **/
+
+.menuInfoForm #jteMasterTree {
+	font-size: 16px;
+	border: 2px solid #8aafff;
+	background:#ffffff;
+}
+
+/** 왼쪽 트리 구조 여백 따로 주기 위함**/
+.menuInfoForm.k-treeview .k-item {
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+/* 오른쪽 수정버튼 가운데 정렬*/
+
+.menuInfoForm.right-contents.k-grid td:first-child {
+	text-align: center;
+}
+
+/** 팝업의 통일감을 위해 추가**/
+
+.menuInfoForm #jtePopForm_master {
+	margin-top: 5px;
+}
+
+/*팝업 final-btn-area 위쪽 여백 조정_201111 YUMI*/
+
+.menuInfoForm-final-btn-area {
+	margin-top: 0;
+}
+
+
+/****** Excel 설정 팝업 관련 ******/
+
+/**검색 영역 좌측+상하 여백**/
+.menuInfoForm.excel-btn-area #tableId {
+	margin-left: 20px;
+	margin-top: 12px;
+	margin-bottom: 12px;	
+}
+
+/**버튼 영역 상하 여백**/
+.menuInfoForm.excel-btn-area .k-button {
+	margin-top: 12px;
+	margin-bottom: 12px;
+}
+
+/**버튼 영역 우측 여백**/
+.menuInfoForm .ExcelSet-btn {
+	margin-right: 20px;
+}
+
+/**그리드 영역 기본 형식**/
+.menuInfoForm#columnInfoTable {
+/* 	padding-left: 20px; */
+	padding-right: 20px;	
+}
+
+.menuInfoForm#columnInfoTable td {
+	padding-top: .45em;
+	padding-bottom: .45em;	
+}
+
+.menuInfoForm#columnInfoTable tr td input[type=text],
+.menuInfoForm#columnInfoTable tr td span.k-dropdown,
+.menuInfoForm#columnInfoTable tr td span.k-numerictextbox,
+.menuInfoForm#columnInfoTable tr td span.k-datepicker,
+.menuInfoForm#columnInfoTable tr td span.k-timepicker,
+.menuInfoForm#columnInfoTable tr td span.k-datetimepicker {
+	width: 100%;
+} 
+
+.menuInfoForm#columnInfoTable {
+	width: 100%;
+}
+
+/**그리드 체크박스 가운데 정렬 YUMI**/
+.menuInfoForm#columnInfoTable td:first-child,
+.menuInfoForm#columnInfoTable td:nth-child(4),
+.menuInfoForm#columnInfoTable td:nth-child(6),
+.menuInfoForm#columnInfoTable td:nth-child(8) {
+	text-align: center;
+}
+
+/**그리드 홀수번째 배경 색상 적용 YUMI**/
+.menuInfoForm#columnInfoTable tr:nth-child(2n+1) {
+	background-image : url(textures/highlight.png);	
+	background-color: #f0f4fd90;
+}
+
+.menuInfoForm#columnInfoTable tr:nth-child(1) {
+	background-image : url(textures/highlight.png);
+	background-color : #f0f4fd90;
+}

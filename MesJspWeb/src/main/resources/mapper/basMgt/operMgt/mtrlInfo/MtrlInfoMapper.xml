@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.mapper.basMgt.operMgt.mtrlInfo.MtrlInfoMapper">
+						
+	<!-- 자재정보 -->
+	<sql id="mtrlInfo_base">
+			mtrlInfo.mtrl_id 			AS mtrlId,
+			mtrlInfo.description     	AS mtrlDiv, 
+			mtrlInfo.mtrl_nm         	AS mtrlNm,
+			mtrlInfo.mtrl_type       	AS mtrlType, 
+			mtrlInfo.mtrl_std_str01     AS mtrlStdStr01, 
+			mtrlInfo.mtrl_std_str02     AS mtrlStdStr02, 
+			mtrlInfo.mtrl_std_str03     AS mtrlStdStr03, 
+			mtrlInfo.mtrl_std_str04     AS mtrlStdStr04,
+			mtrlInfo.mtrl_std_str05     AS mtrlStdStr05, 
+			mtrlInfo.mtrl_useday     	AS mtrlUseday, 
+			mtrlInfo.mtrl_cost       	AS mtrlCost, 
+			mtrlInfo.is_use          	AS isUse, 
+			mtrlInfo.creator_id      	AS creatorId, 
+			mtrlInfo.created_at      	AS createdAt, 
+			mtrlInfo.updator_id      	AS updatorId, 
+			mtrlInfo.updated_at      	AS updatedAt, 
+			mtrlInfo.mtrl_desc       	AS mtrlDesc,
+			mtrlInfo.mtrl_qual       	AS mtrlQual, 
+			mtrlInfo.mtrl_unit       	AS mtrlUnit
+		FROM bc_material_info mtrlInfo 
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="mtrlType != null and mtrlType != '' ">
+			AND mtrlInfo.mtrl_type = #{mtrlType}
+		</if>
+		<if test="mtrlId != null and mtrlId != '' ">
+			AND mtrlInfo.mtrl_id = #{mtrlId}
+		</if>
+		<if test="isUse != null and isUse != '' ">
+			AND mtrlInfo.is_use = #{isUse}
+		</if>
+	</sql>
+
+	<!-- 자재 구매업체 -->
+	<sql id="mtrl_rtl_comp">
+			comp.comp_id		AS compId,
+			comp.comp_nm		AS compNm,
+			comp.comp_managr	AS compManagr,
+			comp.comp_number	AS compNumber,
+			comp.comp_type		AS compType,
+			comp.comp_addr		AS compAddr,
+			comp.created_at		AS createdAt,
+			comp.updated_at		AS updatedAt,
+			comp.creator_id		AS creatorId,
+			comp.updator_id		AS updatorId,
+			comp.description	AS description,
+			comp.is_use			AS isUse,
+			rtl.mtrl_id			AS mtrlId
+		FROM bc_rtl_mtrl_comp rtl
+		LEFT OUTER JOIN bc_company_info comp on rtl.comp_id = comp.comp_Id
+		WHERE rtl.mtrl_id = #{mtrlId} AND comp.is_use = true
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<!-- 자재정보(Page) select -->
+	<select id="selectMtrlInfoList"
+		parameterType="jin.mes.form.basMgt.operMgt.mtrlInfo.MtrlInfoDto"
+		resultType="jin.mes.form.basMgt.operMgt.mtrlInfo.MtrlInfoDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="mtrlInfo_base" />
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+				</if>
+	</select>
+	
+	<!-- 자재정보 Count -->
+	<select id="selectMtrlInfoCount"
+		parameterType="jin.mes.form.basMgt.operMgt.mtrlInfo.MtrlInfoDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="mtrlInfo_base" />
+				)c_table
+	</select>
+	
+	<!-- 자재정보 입력 -->
+	<insert id="insertMtrlInfo" parameterType="jin.mes.form.basMgt.operMgt.mtrlInfo.MtrlInfoDto">
+	<selectKey keyProperty="mtrlId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('MTL') AS mtrlId
+	</selectKey>
+		INSERT INTO bc_material_info(
+			mtrl_id,
+			description,
+			mtrl_nm,
+			mtrl_type,
+			
+			
+			mtrl_std_str01,
+			mtrl_std_str02,
+			mtrl_std_str03,
+			mtrl_std_str04,
+			mtrl_std_str05,
+			mtrl_useday,
+			mtrl_cost,
+			is_use,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at,
+			mtrl_desc,
+			mtrl_qual,
+			mtrl_unit  
+		)VALUES(
+			#{mtrlId}, 
+			#{mtrlDiv},
+			#{mtrlNm}, 
+			#{mtrlType}, 
+			
+			
+			#{mtrlStdStr01},
+			#{mtrlStdStr02},
+			#{mtrlStdStr03},
+			#{mtrlStdStr04},
+			#{mtrlStdStr05},
+			#{mtrlUseday}, 
+			#{mtrlCost}, 
+			TRUE,
+			#{creatorId}, 
+			NOW(), 
+			#{updatorId}, 
+			NOW(), 
+			#{mtrlDesc},
+			#{mtrlQual}, 
+			#{mtrlUnit}
+		)
+	</insert>
+	
+	<!-- 자재 정보수정 -->
+	<update id="updateMtrlInfo" parameterType="jin.mes.form.basMgt.operMgt.mtrlInfo.MtrlInfoDto">
+		UPDATE bc_material_info
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="mtrlNm != null">	
+				,mtrl_nm = #{mtrlNm}
+			</if>
+			<if test="mtrlDesc != null">	
+				,mtrl_desc = #{mtrlDesc}
+			</if>	
+			<if test="mtrlType != null">	
+				,mtrl_type = #{mtrlType}
+			</if>
+					
+			
+			<if test="mtrlStdStr01 != null">	
+				,mtrl_std_str01 = #{mtrlStdStr01}
+			</if>
+			<if test="mtrlStdStr02 != null">	
+				,mtrl_std_str02 = #{mtrlStdStr02}
+			</if>
+			<if test="mtrlStdStr03 != null">	
+				,mtrl_std_str03 = #{mtrlStdStr03}
+			</if>
+			<if test="mtrlStdStr04 != null">	
+				,mtrl_std_str04 = #{mtrlStdStr04}
+			</if>
+			<if test="mtrlStdStr05 != null">	
+				,mtrl_std_str05 = #{mtrlStdStr05}
+			</if>
+			<if test="mtrlUseday != null">	
+				,mtrl_useday = #{mtrlUseday}
+			</if>
+			<if test="mtrlCost != null">	
+				,mtrl_cost = #{mtrlCost}
+			</if>
+			<if test="mtrlQual != null">	
+				,mtrl_qual = #{mtrlQual}
+			</if>
+			<if test="mtrlUnit != null">	
+				,mtrl_unit = #{mtrlUnit}
+			</if>
+			<if test="mtrlDiv != null">	
+				,description = #{mtrlDiv}
+			</if>
+			<if test="isUse != null">	
+				,is_use = #{isUse}
+			</if>
+		WHERE mtrl_id  = #{mtrlId}
+	</update>
+	
+	<!-- 자재정보 삭제 -->
+	<delete id="deleteMtrlInfo" parameterType="jin.mes.form.basMgt.operMgt.mtrlInfo.MtrlInfoDto">
+		DELETE FROM bc_material_info
+		WHERE mtrl_id  = #{mtrlId}
+	</delete>
+	
+		<!-- 자재구매업체(Page) select -->
+	<select id="selectMtrlRtlCompList"
+		parameterType="jin.mes.form.basMgt.operMgt.compMgt.CompMgtDto"
+		resultType="jin.mes.form.basMgt.operMgt.compMgt.CompMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="mtrl_rtl_comp" />
+			)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>
+	</select>
+
+	<!-- 자재구매업체 Count -->
+	<select id="selectMtrlRtlCompCount"
+		parameterType="jin.mes.form.basMgt.operMgt.compMgt.CompMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="mtrl_rtl_comp" />
+				)c_table
+	</select>
+	
+	<!-- 자재구매업체 입력 -->
+	<insert id="insertMtrlRtlComp" parameterType="jin.mes.form.basMgt.operMgt.compMgt.CompMgtDto">
+		INSERT INTO bc_rtl_mtrl_comp(
+			mtrl_id,
+			comp_id
+		)VALUES(
+			#{mtrlId}, 
+			#{compId}
+		)
+	</insert>
+	
+	<!-- 자재구매업체 삭제 -->
+	<delete id="deleteMtrlRtlComp" parameterType="jin.mes.form.basMgt.operMgt.compMgt.CompMgtDto">
+		DELETE FROM bc_rtl_mtrl_comp
+		WHERE mtrl_id  = #{mtrlId} AND comp_id = #{compId}
+	</delete>
+</mapper>

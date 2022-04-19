@@ -1,0 +1,17 @@
+/*20.08.05 JJW 왼쪽 체크박스 가운데 정렬*/
+
+.divInfoForm.k-grid th:first-child, .divInfoForm.k-grid td:first-child {
+	text-align: center;
+}
+
+/*20.12.09 YUMI 메인 그리드의 보기 버튼 가운데 정렬*/
+.divInfoForm.k-grid td:nth-child(2) {
+	text-align: center;
+}
+
+/*20.12.09 YUMI final-btn-area 위쪽 여백 조정*/
+
+.divInfoForm-final-btn-area {
+	margin-top: 0;
+}
+

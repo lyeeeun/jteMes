@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PROD_planResult">
+
+	<select id="selectPlOutList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+	    SELECT   A.PLAN_YEAR
+		       , A.PRODID
+		       , P.PRODNAME
+		       , P.PRODMTRL
+		       ,P.PRODTYPE
+			   ,P.PRODSPEC
+			   ,SUM(A.JAN) AS PLANJAN
+		       ,SUM(CASE WHEN DATE_FORMAT(B.WO_OUT_DATE, 'MM') = '01' THEN B.SHOPFLOOR_OUT_QTY
+		                 ELSE 0
+		            END) AS JAN
+		       ,SUM(A.FEB) AS PLANF
+		       ,SUM(CASE WHEN DATE_FORMAT(B.WO_OUT_DATE, 'MM') = '02' THEN B.SHOPFLOOR_OUT_QTY
+		                 ELSE 0
+		            END) AS FEB
+		       ,SUM(A.MAR) AS PLANMAR
+		       ,SUM(CASE WHEN DATE_FORMAT(B.WO_OUT_DATE, 'MM') = '03' THEN B.SHOPFLOOR_OUT_QTY
+		                 ELSE 0
+		            END) AS MAR
+		       ,SUM(A.APR) AS PLANAPR
+		       ,SUM(CASE WHEN DATE_FORMAT(B.WO_OUT_DATE, 'MM') = '04' THEN B.SHOPFLOOR_OUT_QTY
+		                 ELSE 0
+		            END) AS APR
+		       ,SUM(A.MAY) AS PLANMAY
+		       ,SUM(CASE WHEN DATE_FORMAT(B.WO_OUT_DATE, 'MM') = '05' THEN B.SHOPFLOOR_OUT_QTY
+		                 ELSE 0
+		            END) AS MAY
+		       ,SUM(A.JUN) AS PLANJUN
+		       ,SUM(CASE WHEN DATE_FORMAT(B.WO_OUT_DATE, 'MM') = '06' THEN B.SHOPFLOOR_OUT_QTY
+		                 ELSE 0
+		            END) AS JUN
+		       ,SUM(A.JULY) AS PLANJUL
+		       ,SUM(CASE WHEN DATE_FORMAT(B.WO_OUT_DATE, 'MM') = '07' THEN B.SHOPFLOOR_OUT_QTY
+		                 ELSE 0
+		            END) AS JULY
+		       ,SUM(A.AUG) AS PLANA
+		       ,SUM(CASE WHEN DATE_FORMAT(B.WO_OUT_DATE, 'MM') = '08' THEN B.SHOPFLOOR_OUT_QTY
+		                 ELSE 0
+		            END) AS AUG
+		       ,SUM(A.SEP) AS PLANS
+		       ,SUM(CASE WHEN DATE_FORMAT(B.WO_OUT_DATE, 'MM') = '09' THEN B.SHOPFLOOR_OUT_QTY
+		                 ELSE 0
+		            END) AS SEP
+		       ,SUM(A.OCT) AS PLANO
+		       ,SUM(CASE WHEN DATE_FORMAT(B.WO_OUT_DATE, 'MM') = '10' THEN B.SHOPFLOOR_OUT_QTY
+		                 ELSE 0
+		            END) AS OCT
+		       ,SUM(A.NOV) AS PLANN
+		       ,SUM(CASE WHEN DATE_FORMAT(B.WO_OUT_DATE, 'MM') = '11' THEN B.SHOPFLOOR_OUT_QTY
+		                 ELSE 0
+		            END) AS NOV
+		       ,SUM(A.DEC) AS PLAND
+		       ,SUM(CASE WHEN DATE_FORMAT(B.WO_OUT_DATE, 'MM') = '12' THEN B.SHOPFLOOR_OUT_QTY
+		                 ELSE 0
+		            END) AS DEC
+		      FROM TB_MESPLAN A
+		  LEFT JOIN  TB_MESWORKORDEROUT  B ON A.PRODID = B.PRODID
+		   AND A.PLAN_YEAR = DATE_FORMAT(B.WO_OUT_DATE, 'YYYY')
+		  LEFT JOIN TB_PRODUCT P ON P.PRODID =A.PRODID 
+		
+		     WHERE 1=1
+     ]]>
+		<!-- 검색 날짜가 null이 아닐경우 -->
+		
+	  GROUP BY A.CTR_CD, A.PLAN_YEAR, A.PRODID,P.PRODNAME ,P.PRODTYPE,P.PRODMTRL,P.PRODSPEC
+      ORDER BY PLAN_YEAR , PRODID
+	</select>
+
+
+	
+
+
+
+
+
+
+</mapper>

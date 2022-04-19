@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PROD_resultTotal">
+<!--               , FN_CM_GETCOMNM(A.CTR_CD , 'PRODTYPE', P.PRODTYPE) AS PRODTYPE         
+      		   , FN_CM_GETCOMNM(A.CTR_CD , 'PRODSPEC', P.PRODSPEC) AS PRODSPEC        
+       		   , FN_CM_GETCOMNM(A.CTR_CD , 'PRODUNITCD',P.PRODUNIT_CD )  AS UNIT_NM   -->
+
+	<select id="selectResultList" parameterType="hashmap"
+		resultType="hashmap">
+		
+		SELECT   PRODNAME
+               , PRODMTRL
+               , P.PRODTYPE        
+      		   , P.PRODSPEC       
+       		   , P.PRODUNIT_CD AS UNIT_NM   
+	   		   , IFNULL(SUM(SHOPFLOOR_QTY),0) AS TOT_SHOPFLOOR_QTY
+               , IFNULL(SUM(SHOPFLOOR_OUT_QTY),0) AS TOT_SHOPFLOOR_OUT_QTY
+               , IFNULL(SUM(DEFECT_QTY),0) AS TOT_DEFECT_QTY
+               , IFNULL(SUM(SHOPFLOOR_OUT_QTY)/SUM(SHOPFLOOR_QTY)*100,0) AS YIELD
+     
+         FROM TB_PRODUCT P
+      LEFT JOIN (SELECT  MW.PRODID
+                        ,MW.SHOPFLOOR_QTY
+                        ,WO.SHOPFLOOR_OUT_QTY
+                        ,WO.DEFECT_QTY
+                        ,MW.CTR_CD
+                 
+                 FROM TB_MESWORKORDER MW
+                 
+                 INNER JOIN TB_MESWORKORDEROUT WO
+                 ON MW.WOID = WO.WOID
+                 WHERE 1=1
+                 <if test='STR_DT != null and STR_DT != ""'>
+                 AND WO_DATE BETWEEN STR_TO_DATE(#{STR_DT},'%Y-%m-%d') 
+                                     AND STR_TO_DATE(#{END_DT},'%Y-%m-%d') 
+                 AND WO_OUT_DATE BETWEEN STR_TO_DATE(#{STR_DT},'%Y-%m-%d') 
+                                     AND STR_TO_DATE(#{END_DT},'%Y-%m-%d') 
+                 </if>
+                 <if test='DEL_GBN != "N"'>
+                 AND MW.DEL_GBN='N' 
+                 </if>
+                 <if test='DEL_GBN != "N"'>  
+                 AND WO.DEL_GBN='N' 
+                 </if>    
+                 ) AS A                                          
+    ON P.PRODID = A.PRODID
+    <!--  삭제 구분에 N 즉 삭제된 데이터가 아닌경우 -->
+	<if test='PRODIUSE != "N"'>
+    WHERE P.PRODIUSE='Y'  
+   	</if>
+   	<!--제품명이 null이 아닌 경우 제품명에 따른 검색이 가능하게함  -->
+	<if test='PRODNAME != null and PRODNAME != ""'>
+		AND PRODNAME LIKE CONCAT("%"#{PRODNAME}"%")
+	</if>
+    GROUP BY P.PRODID, PRODNAME , PRODTYPE,PRODMTRL,PRODSPEC,P.PRODUNIT_CD,A.CTR_CD
+    ORDER BY P.PRODID 
+	</select>
+
+
+
+
+	<!-- 제품 드롭박스 콤보에 들어가기 위해 필요 -->
+	<select id="selectProductList" parameterType="hashmap"
+		resultType="hashmap">
+
+		SELECT PRODNAME,
+		PRODID
+		FROM TB_PRODUCT
+		ORDER BY PRODID
+		
+	</select>
+	
+	
+
+</mapper>

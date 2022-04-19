@@ -1,0 +1,138 @@
+
+.productPlanForm .fa-info-circle:before {
+	color:#3367D6;
+}
+
+
+.final-btn-area {
+	text-align: center;
+	
+}
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.k-grid-toolbar .jte-search-aria #jteDoubleGrid_shSelTxt { /**200820 youmi 추가**/
+	margin-left: 5px;
+	margin-right: 3px;	
+}
+
+.productPlanForm .col-left-title {
+	width: 28%;
+}
+
+.productPlanForm .col-right-content {
+	width: 72%;
+}
+.productPlanForm .grid-content {
+	width: 100%;
+}
+
+.productPlanForm #jtePopForm_master th {
+	text-align: left;	
+}
+
+.productPlanForm #jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.productPlanForm #jteProdAsgnPop_master th {
+	text-align: left;	
+}
+
+.productPlanForm #jteProdAsgnPop_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.productPlanForm #jteProdAsgnPop_master {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.productPlanForm #jteProdProdWorkPop_master th {
+	text-align: left;	
+}
+
+.productPlanForm #jteProdProdWorkPop_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.productPlanForm #jteProdProdWorkPop_master {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+/*************************************************/
+
+.productPlanForm .popsc-col-left-title {
+	width: 22%;
+}
+
+.productPlanForm .popsc-col-left-content {
+	width: 28%;
+}
+
+.productPlanForm .popsc-col-right-title {
+	width: 22%;
+}
+
+.productPlanForm .popsc-col-right-content {
+	width: 28%;
+}
+
+/************************************************/
+
+.productPlanForm .left-input {
+	width: 100%;
+}
+
+.productPlanForm .right-input {
+	width: 100%;
+}
+
+.productPlanForm .center-input {
+	width: 100%;
+}
+
+.productPlanForm .search-btn {
+	width: 95%;
+	float: right;
+}
+
+.productPlanForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.productPlanForm .right-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.productPlanForm .left-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.productPlanForm .k-datetimepicker .k-select .k-link {
+	display: flex;
+}
+.productPlanForm .k-datetimepicker .k-select .k-link-date {
+	border-right: 1px solid #ffffff;
+}
+
+.productPlanForm #jtePopForm_tab {
+	padding-left: 20px;
+    padding-right: 20px;
+}
+
+.productPlanForm #jtePopForm_tab td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}

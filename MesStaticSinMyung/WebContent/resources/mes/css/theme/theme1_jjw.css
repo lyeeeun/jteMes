@@ -1,0 +1,401 @@
+@CHARSET "UTF-8";
+html{
+ 	overflow: hidden;
+}
+body{
+	width:100%;
+	margin:0px;
+	padding:0px;
+}
+
+::-webkit-scrollbar{width: 20px;}
+::-webkit-scrollbar-track {background-color:#ebf1fc;}
+/* 스크롤 색상 변경 jkkim 2020-05-20 */
+::-webkit-scrollbar-thumb { background-color:#b0c9ff; border-radius: 3px;}
+::-webkit-scrollbar-thumb:hover {background: #8eb0ed;}
+::-webkit-scrollbar-button:start:decrement,::-webkit-scrollbar-button:end:increment {
+width:0px;height:0px;background:#192534;}
+
+
+ul{
+	margin: 0px;
+	list-style: none;
+}
+
+/*03.12 JJW*/
+.menuName{
+	width: 95%;
+	font-size: 22px;
+	font-weight: bold;
+	margin-bottom: 5px;
+	border-left: 5px solid #3367D6;
+	padding-left: 10px;
+}
+.k-grid{
+	font-family: 'Nanum Gothic', 'serif';
+	font-size: 14px; /* 04.28 14에서 수정  */
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	min-height: 250px;
+}
+
+.fa-times {
+	/* margin-right: 4px; */
+	margin-top: 0px;
+}
+
+.ui-icon-home {
+	margin-top: 2px;
+	margin-bottom: 1px;
+	width: 15px;
+	cursor: pointer;
+	text-align: center;
+}
+
+.ui-tabs .ui-tabs-nav .ui-tabs-anchor {
+	float: left;
+	padding: .2em 0.5em 0 0.5em;  /*** tab css 변경 _20200225_JJW ***/
+	font-weight: bold; /*** tab css 변경 _20191211_PGW ***/
+	text-decoration: none;
+}
+
+txt .ui-tabs .ui-tabs-nav li {
+	padding-bottom: 5px;
+}
+
+.link home {
+	border: none;
+}
+
+/* 04.01 JJW 팝업 박스 수정*/
+
+#Popup_commonpopupcomPopup {
+	background-color: #ffffff;
+	border: none;
+	padding-top: 2em;
+	font-size: 1.3em;
+	box-shadow: none;
+}
+
+#_comn_popup_btn_ok {
+	padding-right: 20px;
+	padding-left: 20px;
+	align-content: center;
+	width: 50px;
+	font-size: 1.3em;
+	margin-left: 5px;
+	margin-right: 15px;
+	float: right;
+}
+#_comn_popup_btn_cls{
+	padding-right: 20px;
+	padding-left: 20px;
+	align-content: center;
+	width: 50px;
+	font-size: 1.3em;
+	margin-left: 15px;
+	margin-right: 5px;
+	float: right;
+}
+.k-window-titlebar.k-header {
+	font-size: 1.3em;
+	font-weight: bold;
+	background-color: #1760c5;
+	color: #ffffff;
+}
+
+#jteConfigForm {
+	text-align: left;
+}
+
+.fa-times {
+	padding-top: 0.25em;
+	/* padding-right: 0.6em; */
+}
+
+#jteConfigForm_master {
+	margin-top: 10px;
+}
+
+#jteConfigForm_master td {
+   text-align: left;
+   padding-left: 4%;
+}
+
+/* 04.22 헤더쪽*/
+
+.k-toolbar-resizable {
+	background-color: #ffffff;
+	boader-bottom: solid #000000 2px;
+}
+
+/* 20.04.23 정보 수정 창 수정  */
+.jteConfigFomr_pwZone {
+	display: none; /* <- 디폴트 값  */
+	/* 	display: block; */ 
+	/* visibility: visible; */
+}
+
+.jteConfigFomr_pwZone td {
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+.k-drawer-wrapper {
+	overflow-y: hidden;
+}
+
+/* 20.04.24 정보수정창 내부 스타일 옮김 */
+
+.tabMain_jteConfigForm .config-label {
+	margin-left: 20px;
+}
+
+.tabMain_jteConfigForm .k-checkbox-label:before {
+	border-color: #c5c5c5;
+    background: #fff;
+    border-radius: 3px;
+    border: 1px solid #067BEB;
+    height: 17px;
+    /* padding-top: 3px; */
+    width: 20px;
+    padding-bottom: 3px;
+}
+
+.tabMain_jteConfigForm .k-checkbox:checked+.k-checkbox-label:before {
+	color: #067BEB;
+}
+
+.Config-col-left {
+	width:30%;
+}
+
+.Config-col-right {
+	width:65%;
+}
+
+.jteConfigForm-title {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 12px;
+	text-align: left;
+}
+
+.Config-lang-input {
+	width: 50%;
+}
+
+.Config-password-input {
+	width: 80%;
+}
+
+.Config-password-title {
+	padding-left: 5px;
+}
+
+/* 04.28 팝업 전체 설정  */
+#_disable_jteMsgForm_master {
+	width:100%;
+}
+
+#_disable_jteMsgForm_master .msg-col-left-title {
+	width: 35%;
+}
+
+#_disable_jteMsgForm_master .msg-col-right-title {
+	width:65%;
+}
+
+
+#jtePopForm_master {
+	font-size: 14px;
+}
+
+#jtePopForm_master {
+	width: 100%;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 0;
+}
+
+#jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+#jteMsgForm_master {
+	/* font-size: 16px; */
+	width: 100%;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+#jteMsgForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+#jtePopToolAdd_form {
+	/* font-size: 16px; */
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+
+#jtePopToolAdd_form td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+#jtePopAddForm_master {
+	/* font-size: 16px; */
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 0;
+	padding-bottom: 2px;
+}
+
+#jtePopAddForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+#jtePopForm_master-2 {
+	/* font-size: 16px; */
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 0;
+	padding-bottom: 2px;
+}
+
+#jtePopForm_master-2 td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.center-input {
+	width: 100%;
+}
+
+.msg-input {
+	width: 100%;
+}
+
+.final-btn-area {
+	margin-top: 0;
+}
+
+div.k-window-content{
+   overflow: auto;
+}
+
+input:read-only {
+	background-color: rgba(255, 66, 123, 0.3);
+	border : 1px #ff427b solid;
+}
+
+input.k-textbox:hover:read-only {
+	background-color: rgba(255, 66, 123, 0.3);
+	border : 1px #ff427b solid;
+}
+
+input:read-only,
+input:read-only,
+input:read-only,
+input:read-only,
+input:read-only,
+input:read-only {
+	/* background-color: #DAE3F7;
+	border : 1px #92B5FC solid; */
+	background-color: #ebeff5;
+   border : 1px #b6c2d1 solid;
+}
+
+
+
+/* input:read-only,
+input.k-textbox:hover:read-only,
+.k-autocomplete:read-only,
+.k-numeric-wrap.k-state-default:read-only,
+.k-picker-wrap.k-state-default:read-only */
+
+
+input.k-textbox:hover:read-only {
+	background-color: rgba(255, 66, 123, 0.3);
+	border : 1px #ff427b solid;
+}
+
+
+.k-grid-toolbar .jte-search-aria #packageInfo_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}s
+
+/***** 200508 그리드 검색창 좌우 여백 추가_LYM *****/
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.k-grid-toolbar .jte-search-aria #jteSubGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.k-grid-toolbar .jte-search-aria #jtePopEqmtMtnc_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+#jtePopForm_grid_shSelBox {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+   margin-left: 5px;
+   margin-right: 3px;
+}
+
+.k-grid-toolbar .jte-search-aria #jteSubGrid_shSelTxt {
+   margin-left: 5px;
+   margin-right: 3px;
+}
+
+/* #jteSubGrid .k-grid-toolbar #jteSubGrd_shSelTxt {   오타 X, 메뉴 정보에 있음
+   margin-left: 5px;
+   margin-right: 3px;
+} */
+
+#popArea .k-header.k-grid-toolbar #jteComPopGrd_shSelTxt
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+   margin-left: 5px;
+   margin-right: 3px;
+}
+
+.k-grid-toolbar .jte-search-aria #jtePopEqmtMtnc_grid_shSelTxt {
+   margin-left: 5px;
+   margin-right: 3px;
+}
+
+#Popup_commonpopupcomPopup .fc-red.clboth {
+   padding-left: 1.5em;
+}

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.barcode.barcodeBase.BarcodeBaseMapper">
+	
+	<!--바코드 조회 기본 -->
+	<sql id="barcode_base">
+			barcode_id				AS barcodeId,
+			barcode.lot_id			AS lotId, 
+			lot.lot_nm				AS lotNm,
+			odr.order_nm			AS orderNm,
+			barcode.item_id			AS itemId,
+			item.item_nm			AS itemNm,
+			item.item_std_str01		AS itemStdStr01, -- 모델명
+			item.item_std_str02		AS itemStdStr02, -- 제품타입(zinix)
+			item.item_std_str03		AS itemStdStr03, -- 전압
+			item.item_std_str04		AS itemStdStr04, -- 소비전력
+			item.item_std_str05		AS itemStdStr05, -- 허가번호
+			item.item_std_str06		AS itemStdStr06, -- 제품코드(zinix)
+			item.item_unit			AS itemUnit, -- 포장단위
+			item.item_mtrl			AS itemMtrl, -- 보호형식
+			barcode.prod_asm_id		AS prodAsmId, 
+			plc_eqmt_id				AS plcEqmtId, 
+			barcode.package_id		AS packageId, 
+			barcode.ship_id			AS shipId, 
+			barcode.created_at		AS createdAt, 
+			barcode.creator_id		AS creatorId, 
+			barcode.updated_at		AS updatedAt, 
+			barcode.updator_id		AS updatorId
+		FROM prs_barcode_info2 barcode
+		LEFT JOIN prs_lot_info lot ON barcode.lot_id = lot.lot_id
+		LEFT JOIN prs_order_info odr ON odr.order_id = lot.order_id
+		LEFT JOIN bc_item_info item ON item.item_id = barcode.item_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="createdAt != null and createdAt != '' ">
+			AND DATE_FORMAT(barcode.created_at,'%Y-%m-%d') = DATE_FORMAT(#{createdAt},'%Y-%m-%d')
+		</if>
+		<if test="lotId != null and lotId != '' ">
+			AND barcode.lot_id = #{lotId}
+		</if>
+		<if test="itemId != null and itemId != '' ">
+			AND barcode.item_id = #{itemId}
+		</if>
+	</sql>
+	
+	<!--바코드 조회(Page) -->
+	<select id="selectBarcodeList"
+		parameterType="jin.mes.form.barcode.barcodeHistory.BarcodeHistoryDto"
+		resultType="jin.mes.form.barcode.barcodeHistory.BarcodeHistoryDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY createdAt desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="barcode_base" />
+			)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+
+	<!--바코드 조회(Count) -->
+	<select id="selectBarcodeCount"
+		parameterType="jin.mes.form.barcode.barcodeHistory.BarcodeHistoryDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="barcode_base" />
+				)c_table
+	</select>
+	
+	<!--바코드 입력 (최종검사시 최초 입력)-->
+	<insert id="insertBarcodeBase" parameterType="jin.mes.form.barcode.barcodeBase.BarcodeBaseDto">
+		INSERT INTO prs_barcode_info2
+		(
+			barcode_id, 
+			lot_id,
+			item_id, 
+			prod_asm_id, 
+			plc_eqmt_id, 
+			package_id, 
+			ship_id, 
+			created_at, 
+			creator_id,
+			updated_at, 
+			updator_id
+		)VALUES
+		(
+			#{barcodeId}, 
+			#{lotId},
+			#{itemId},
+			#{prodAsmId},
+			#{plcEqmtId},
+			#{packageId},
+			#{shipId},
+			now(), 
+			#{creatorId},
+			now(), 
+			#{updatorId}
+		)
+	</insert>
+	
+	<!--바코드 수정 (최종검사, 출고, 출하)-->
+	<update id="updateBarcodeBase"  parameterType="jin.mes.form.barcode.barcodeBase.BarcodeBaseDto">
+		UPDATE prs_barcode_info2 SET
+			updated_at = now(), 
+			updator_id = #{updatorId}
+			<if test="prodAsmId != null">
+				,prod_asm_id = #{prodAsmId}
+			</if>
+			<if test="plcEqmtId != null">
+				,plc_eqmt_id = #{plcEqmtId}
+			</if>
+			<if test="packageId != null">
+				package_id = #{packageId},
+			</if>
+			<if test="shipId != null">
+				ship_id = #{shipId},
+			</if>
+		WHERE barcode_id = #{barcodeId}
+	</update>
+	
+	<!--바코드 삭제 (최종검사)-->
+	<delete id="deleteBarcodeBase"  parameterType="jin.mes.form.barcode.barcodeBase.BarcodeBaseDto">
+		DELETE FROM prs_barcode_info2
+		WHERE barcode_id = #{barcodeId}
+	</delete>
+	
+</mapper>

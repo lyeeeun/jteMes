@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.orderMgt.costMgt.CostMgtMapper">
+	
+	<!-- 수주조회 -->
+	<sql id = "lotCost_base">
+		-- 예상 제조 비용
+			lotInfo.lot_id as lotId,
+			lotInfo.lot_nm as lotNm,
+			lotInfo.lot_qty as lotQty,
+			itemInfo.item_nm as itemNm,
+			itemInfo.item_mtrl_cost as itemMtrlCost,
+			ifnull(lotInfo.lot_qty, 0) * ifnull(itemInfo.item_mtrl_cost, 0) as predMtrlCost,
+			ifnull(presMtrlCostT.presMtrlCost, 0) as presMtrlCost
+		FROM prs_lot_info lotInfo
+		INNER JOIN bc_item_info itemInfo on lotInfo.item_id = itemInfo.item_id
+		LEFT JOIN (
+			-- 실 제조 비용
+			SELECT
+				lotId,
+				SUM(presMtrlCost) AS presMtrlCost
+			FROM (
+				-- 자재 투입
+				SELECT
+					workInfo.lot_id AS lotId,
+					SUM((mtrlInfo.mtrl_cost*ABS(qmMtrl.mtrl_qty_total))) AS presMtrlCost
+				FROM qm_mtrl_mgt qmMtrl
+				INNER JOIN prs_work_info workInfo ON qmMtrl.mtrl_qty_target_code = workInfo.prod_work_id
+				INNER JOIN cm_mtrl_mgt cmMtrl ON qmMtrl.mtrl_mgt_id = cmMtrl.mtrl_mgt_id
+				INNER JOIN bc_material_info mtrlInfo ON cmMtrl.mtrl_id = mtrlInfo.mtrl_id
+				GROUP BY workInfo.lot_id
+				
+				-- UNION 보다 UNION ALL이 퍼포먼스가 좋음. DISTINCT 안하므로.
+				UNION ALL
+				
+				-- 작업 불량
+				SELECT 
+					workInfo.lot_id as lotId, 
+					SUM((mtrlInfo.mtrl_cost*ABS(qmMtrl.mtrl_qty_total))) AS presMtrlCost
+				FROM qm_mtrl_mgt qmMtrl
+				INNER JOIN prs_bad_product badProduct ON qmMtrl.mtrl_qty_target_code = badProduct.bad_id
+				INNER JOIN cm_mtrl_mgt cmMtrl ON qmMtrl.mtrl_mgt_id = cmMtrl.mtrl_mgt_id
+				INNER JOIN bc_material_info mtrlInfo ON cmMtrl.mtrl_id = mtrlInfo.mtrl_id
+				INNER JOIN prs_work_info workInfo ON badProduct.bad_target_code = workInfo.prod_work_id
+				GROUP BY workInfo.lot_id
+				
+				UNION ALL
+				
+				-- A/S
+				SELECT 
+					asInfo.lot_id as lotId,
+					SUM((mtrlInfo.mtrl_cost*ABS(qmMtrl.mtrl_qty_total))) AS presMtrlCost
+				FROM qm_mtrl_mgt qmMtrl
+				INNER JOIN prs_bad_product badProduct ON qmMtrl.mtrl_qty_target_code = badProduct.bad_id
+				INNER JOIN cm_mtrl_mgt cmMtrl ON qmMtrl.mtrl_mgt_id = cmMtrl.mtrl_mgt_id
+				INNER JOIN bc_material_info mtrlInfo ON cmMtrl.mtrl_id = mtrlInfo.mtrl_id
+				INNER JOIN prs_ashis_info asInfo ON badProduct.bad_target_code = asInfo.ashis_id
+				GROUP BY asInfo.lot_id
+			) sub
+			GROUP BY sub.lotId
+		) presMtrlCostT ON lotInfo.lot_id = presMtrlCostT.lotId
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+		AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<select id="selectLotCostList"
+		parameterType="jin.mes.form.orderMgt.costMgt.CostMgtDto"
+		resultType="jin.mes.form.orderMgt.costMgt.CostMgtDto">
+			SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY lotInfo.lot_id desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="lotCost_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<select id="selectLotCostListCount"
+	parameterType="jin.mes.form.orderMgt.costMgt.CostMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="lotCost_base" />
+			)c_table
+	</select>
+	
+</mapper>

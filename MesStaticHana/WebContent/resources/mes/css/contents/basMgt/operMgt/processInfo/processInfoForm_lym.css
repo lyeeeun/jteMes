@@ -1,0 +1,136 @@
+@CHARSET "UTF-8";
+
+/** 200416 CSS 파일 생성_LYM **/
+
+.processInfoForm{
+	margin-top: 0.8em;	
+}
+
+.processInfoForm .btn_equipment_info {
+	width: 100%
+}
+
+.processInfoForm .center-input {
+	width: 100%;
+}
+
+.processInfoForm .col-left-title {
+	width: 20%;
+}
+
+.processInfoForm .col-left-content {
+	width: 30%;
+}
+
+.processInfoForm .col-right-title {
+	width: 20%;
+}
+
+.processInfoForm .col-right-content {
+	width: 30%;
+}
+
+.processInfoForm.equipment_info_div{
+	text-align: center;
+} 
+
+.processInfoForm .equipment_info_left {
+	width:49%;
+	float: left;
+	text-align: center;
+	font-weight: bold;
+}
+
+.processInfoForm .equipment_info_right {
+	width:49%;
+	float: right;
+	padding-right: 2%;
+	text-align: center;
+	font-weight: bold;
+}
+
+.processInfoForm .equipmentList {
+	width: 45%;
+}
+
+.processInfoForm .selectedEquipment {
+	width: 40%;
+}
+
+
+.processInfoForm div.k-window-content{
+	overflow: unset; /* 팝업창의 스크롤 없앰 */
+}
+
+.processInfoForm .grid-content {
+	width: 100%;
+}
+
+.processInfoForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+.processInfoForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 0px;
+}
+
+.processInfoForm .k-listbox.k-listbox-toolbar-right .k-listbox-toolbar {
+    margin-left: 8px;
+    margin-right: 4px; /* 200409 툴바 양옆으로 마진 부여_LYM */
+}
+
+.processInfoForm.k-window-titlebar{
+	margin-bottom: 0em;
+}
+
+.processInfoForm .search-area{
+	padding: 0.3em 0em;
+	background: linear-gradient(90deg, rgba(47,69,91,1) 0%, rgba(47,69,91,1) 47.8%, rgba(255,255,255,1) 47.9%, rgba(255,255,255,1) 50%, rgba(255,255,255,1) 50%, rgba(47,69,91,1) 50%, rgba(47,69,91,1) 100%);
+	margin-left: 1em;
+	margin-right: 1em;
+	margin-bottom: 0.8em;
+}
+
+.processInfoForm .searchEqmt{
+	width:41%;
+	margin-right: 0.6em;
+	margin-left: -0.3em;
+}
+
+.processInfoForm .searchSelectedEqmt{
+	width: 43%;
+	margin-left: 4.4%;
+	margin-right: 0.5em;
+}
+
+.processInfoForm .jtePopForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.processInfoForm .jtePopForm_master tr {
+	text-align: left;	
+}
+
+.processInfoForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.processInfoForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.processInfoForm .left-input {
+	width: 90%;
+}
+
+.processInfoForm .right-input {
+	width: 90%;
+	float: right;
+}

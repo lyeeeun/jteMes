@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.orderMgt.costMgt.NewCostMgtMapper">
+	
+	<!-- 수주조회 -->
+	<sql id = "orderCost_base">
+		orInfo.order_id 																			AS orderId,
+		MAX(orInfo.order_nm)																		AS orderNm, 
+		MAX(orInfo.order_manager)																	AS orderManager, 
+		MAX(orInfo.order_stdt)																		AS orderStdt, 
+		MAX(orInfo.order_eddt)																		AS orderEddt, 
+		MAX(orInfo.order_cost)																		AS orderCost, 
+		MAX(orInfo.comp_id)																			AS compId,
+		MAX(orInfo.order_state)																		AS orderState, 
+		MAX(orInfo.description)																		AS DESCRIPTION,
+		MAX(orInfo.created_at)																		AS createdAt, 
+		MAX(orInfo.creator_id)																		AS creatorId, 
+		MAX(orInfo.updated_at)																		AS updatedAt, 
+		MAX(orInfo.updator_id)																		AS updatorId,
+		MAX(urInfo.user_nm)																			AS orderManagerNm,
+		MAX(compInfo.comp_nm)																		AS compNm,
+		IFNULL(SUM(lotInfo.lot_mtrl_cost),0) + IFNULL(SUM(lotInfo.lot_person_cost),0) 				AS orderCostBefore,
+		IFNULL(SUM(lotInfo.lot_mtrl_cost_after),0) + IFNULL(SUM(lotInfo.lot_person_cost_after),0) 	AS orderCostAfter
+		FROM prs_order_info orInfo
+			LEFT OUTER JOIN prs_lot_info lotInfo ON orInfo.order_id = lotInfo.order_id
+			LEFT OUTER JOIN mb_user_info urInfo ON orInfo.order_manager = urInfo.user_id
+			LEFT OUTER JOIN bc_company_info compInfo ON orInfo.comp_id = compInfo.comp_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="orderId != null and orderId != '' ">
+			AND orInfo.order_id = #{orderId}
+		</if>
+		GROUP BY orInfo.order_id
+	</sql>
+	
+	<!-- 수주정보 select -->
+	<select id="selectOrderCostList"
+		parameterType="jin.mes.cform.orderMgt.orderDetailMgt.NewOrderDetailMgtDto"
+		resultType="jin.mes.cform.orderMgt.orderDetailMgt.NewOrderDetailMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="orderCost_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 수주정보 select -->
+	<select id="selectOrderCostListCount"
+	parameterType="jin.mes.cform.orderMgt.orderDetailMgt.NewOrderDetailMgtDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="orderCost_base" />
+			)c_table
+	</select>
+	
+	<!-- LoT 조회 -->
+	<sql id = "lotCost_base">
+		lot_id 															AS lotId,
+		lot_nm 															AS lotNm,
+		lot_type														AS lotType,
+		IFNULL(lot_person_cost,0)										AS lotPersonCost,
+		IFNULL(lot_person_cost_after,0)									AS lotPersonCostAfter,
+		IFNULL(lot_mtrl_cost,0)											AS lotMtrlCost,
+		IFNULL(lot_mtrl_cost_after,0)									AS lotMtrlCostAfter,
+		lot.lot_desc													AS lotDesc,
+		lot.item_id														AS lotItemId,
+		itemInfo.item_nm												AS itemNm
+	FROM prs_lot_info lot
+		LEFT OUTER JOIN bc_item_info itemInfo ON lot.item_id = itemInfo.item_id
+	WHERE 1=1 AND lot.order_id = #{orderId}
+		<if test="searchText != null and searchText != '' ">
+		AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	<!-- 해당 수주에 포함된 Lot 조회 select -->
+	<select id="selectLotCostList"
+		parameterType="jin.mes.cform.orderMgt.orderDetailMgt.NewLotInfoDto"
+		resultType="jin.mes.cform.orderMgt.orderDetailMgt.NewLotInfoDto">
+			SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="lotCost_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 해당 수주에 포함된 Lot 조회 select(Count) -->
+	<select id="selectLotCostListCount"
+	parameterType="jin.mes.cform.orderMgt.orderDetailMgt.NewLotInfoDto"
+		resultType="java.lang.Integer">
+		SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="lotCost_base" />
+			)c_table
+	</select>
+	
+</mapper>

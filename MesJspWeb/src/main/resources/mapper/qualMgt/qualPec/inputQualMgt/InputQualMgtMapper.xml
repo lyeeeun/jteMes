@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="jin.mes.mapper.qualMgt.qualPec.inputQualMgt.InputQualMgtMapper">
+
+	<!-- 입고검사   Main Grid -->
+	<sql id="inputQual_base">
+			mtrlOrder.mtrl_order_id				AS mtrlOrderId,
+			mtrlOrder.mtrl_order_qty			AS mtrlOrderQty,
+			mtrlOrder.mtrl_qual_qty				AS mtrlQualQty,
+			(mtrlOrder.mtrl_qual_qty - mtrlOrder.mtrl_bad_qty)				AS mtrlPassQty,
+			mtrlOrder.mtrl_bad_qty				AS mtrlBadQty,
+			mtrlOrder.mtrl_order_state			AS mtrlOrderState,
+			mtrlOrder.mtrl_order_date			AS mtrlQualStart,
+			mtrlOrder.mtrl_qual_date			AS mtrlQualEnd,
+			mtrlOrder.mtrl_charge_user			AS mtrlChargeUser,
+			urInfo.user_nm						AS mtrlChargeUserNm,
+			mtrlOrder.creator_id				AS mtrlRequestUser,
+			creator.user_nm						AS mtrlRequestUserNm,
+			mtrlOrder.mtrl_qual_sta				AS mtrlQualSta,
+			mtrlOrder.comp_id					AS compId,
+			compInfo.comp_nm					AS compNm,
+			ordForm.mtrl_of_id					AS mtrlOfId,
+			ordForm.mtrl_of_nm					AS mtrlOfNm,
+			mtrlOrder.mtrl_id					AS mtrlId,
+			mtrlInfo.mtrl_nm					AS mtrlNm,
+			mtrlOrder.created_at				AS createdAt,
+			mtrlOrder.updated_at				AS updatedAt,
+			mtrlOrder.creator_id				AS creatorId,
+			mtrlOrder.updator_id				AS updatorId
+		FROM prs_mtrl_order mtrlOrder
+		INNER JOIN prs_mtrl_orderform ordForm ON ordForm.mtrl_of_id = mtrlOrder.mtrl_of_id
+		INNER JOIN mb_user_info creator ON mtrlOrder.creator_id = creator.user_id
+		INNER JOIN mb_user_info urInfo ON mtrlOrder.mtrl_charge_user = urInfo.user_id
+		INNER JOIN bc_material_info mtrlInfo ON mtrlOrder.mtrl_id = mtrlInfo.mtrl_id
+		INNER JOIN bc_company_info compInfo ON mtrlOrder.comp_id = compInfo.comp_id
+		WHERE 1=1
+		AND mtrlOrder.mtrl_order_state = 'mtrl_order_end'
+		AND mtrlOrder.mtrl_qual_sta	 = #{mtrlQualSta}
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != '' ">
+			AND mtrl_order_date between #{searchStartDate} AND DATE_ADD(#{searchEndDate},INTERVAL 0 DAY)
+		</if>
+		<if test="mtrlOfId != null and mtrlOfId != '' ">
+			AND ordForm.mtrl_of_id = #{mtrlOfId}
+		</if>
+		<if test="mtrlOrderId != null and mtrlOrderId != '' ">
+			AND mtrlOrder.mtrl_order_id = #{mtrlOrderId}
+		</if>
+	</sql>
+	
+	<!-- 입고검사   Main Grid(Page) select -->
+	<select id="selectInputQualList"
+		parameterType="jin.mes.form.qualMgt.qualPec.inputQualMgt.InputQualMgtDto"
+		resultType="jin.mes.form.qualMgt.qualPec.inputQualMgt.InputQualMgtDto">
+		SELECT * FROM (
+		SELECT
+		<choose>
+			<when test="sort != null and sort != '' ">
+				ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+			</when>
+			<otherwise>
+				ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+			</otherwise>
+		</choose>
+		<include refid="inputQual_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>
+	</select>
+
+	<!-- 입고검사   Main Grid Count -->
+	<select id="selectInputQualCount"
+		parameterType="jin.mes.form.qualMgt.qualPec.inputQualMgt.InputQualMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM (
+		SELECT
+		<include refid="inputQual_base" />
+		)c_table
+	</select>
+	
+	<!-- 검사보류 처리 -->
+	<update id="updateInputQualHold" parameterType="jin.mes.form.qualMgt.qualPec.inputQualMgt.InputQualMgtDto">
+		UPDATE prs_mtrl_order
+		SET updator_id = #{updatorId},
+			updated_at = NOW(),
+			mtrl_qual_sta = 'inspecHolding'
+		WHERE mtrl_order_id  = #{mtrlOrderId}
+	</update>
+	
+	
+	<!-- 검사완료 처리 -->
+	<update id="updateInputQualPass" parameterType="jin.mes.form.qualMgt.qualPec.inputQualMgt.InputQualMgtDto">
+		UPDATE prs_mtrl_order
+		SET updator_id = #{updatorId},
+			updated_at = NOW(),
+			mtrl_qual_sta = 'inspecComplete',
+			mtrl_qual_date = NOW()
+		WHERE mtrl_order_id  = #{mtrlOrderId}
+	</update>	
+	
+	<!-- 입고검사 Control_No -->
+	<sql id="inputQualAdd_base">
+	
+		mtrlCtrl.control_no										AS controlNo,
+		mtrlOrder.mtrl_order_qty								AS mtrlOrderQty,
+		mtrlCtrl.mtrl_qual_qty									AS ctMtrlQualQty,
+		(mtrlCtrl.mtrl_qual_qty - mtrlCtrl.mtrl_bad_qty)		AS ctMtrlPassQty,
+		mtrlCtrl.mtrl_bad_qty									AS ctMtrlBadQty,
+		mtrlCtrl.heat_no										AS heatNo,
+		mtrlCtrl.bad_desc										AS badDesc,
+		mtrlCtrl.remark_desc									AS ctrlDesc,
+		mtrlCtrl.comp_id										AS compId,
+		compInfo.comp_nm										AS compNm,
+		mtrlCtrl.mfg_dt											AS mfgDate,
+		mtrlCtrl.exp_dt											AS expDate,
+		mtrlCtrl.creator_id										AS creatorId,
+		mtrlCtrl.created_at										AS createdAt,
+		mtrlCtrl.updator_id										AS updatorId,
+		mtrlCtrl.updated_at										AS updatedAt,
+		mtrlCtrl.mtrl_order_id									AS mtrlOrderId,
+		mtrlOrder.mtrl_of_id									AS mtrlOfId,
+		mtrlOrder.mtrl_id										AS mtrlId,
+		mtrlMgt.mtrl_mgt_id										AS mtrlMgtId,
+		bad.bad_id												AS badId,
+		bad.bad_code											AS badCode,
+		bad.bad_qty												AS badQty,
+		bad.chk_user											AS chkUser,
+		userInfo.user_nm										AS chkUserNm,
+		bad.chk_date											AS chkDate,
+		bad.bad_target											AS badTarget,
+		bad.bad_target_code										AS badTargetCode,
+		bad.bad_desc											AS badmDesc
+		
+		FROM prs_mtrl_control mtrlCtrl
+		LEFT OUTER JOIN prs_mtrl_order mtrlOrder ON mtrlOrder.mtrl_order_id = mtrlCtrl.mtrl_order_id 
+		LEFT OUTER JOIN prs_mtrl_orderform orderForm ON orderForm.mtrl_of_id = mtrlOrder.mtrl_of_id
+		LEFT OUTER JOIN cm_mtrl_mgt mtrlMgt ON mtrlMgt.lot_id = mtrlOrder.mtrl_order_id
+		LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlInfo.mtrl_id = mtrlOrder.mtrl_id
+		LEFT OUTER JOIN bc_company_info compInfo ON compInfo.comp_id = mtrlCtrl.comp_id
+		LEFT OUTER JOIN prs_bad_product bad ON bad.bad_target_code = mtrlCtrl.control_no
+		LEFT OUTER JOIN mb_user_info userInfo ON userInfo.user_id = bad.chk_user
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="mtrlOrderId != null and mtrlOrderId != '' ">
+			AND mtrlCtrl.mtrl_order_id = #{mtrlOrderId}
+		</if>
+		<if test="controlNo != null and controlNo != '' ">
+			AND mtrlCtrl.control_No = #{controlNo}
+		</if>
+	</sql>
+	
+	<sql id="inputQualAddGroup_base">
+			g_table.controlNo		AS controlNo,
+			g_table.mtrlOrderQty	AS mtrlOrderQty,
+			g_table.ctMtrlQualQty	AS ctMtrlQualQty,
+			g_table.ctmtrlPassQty	AS ctMtrlPassQty,
+			SUM(g_table.badQty)		AS ctMtrlBadQty,
+			MAX(g_table.heatNo)		AS heatNo,
+			MAX(g_table.badDesc)		AS badDesc,
+			MAX(g_table.ctrlDesc)		AS ctrlDesc,
+			MAX(g_table.compId)			AS compId,
+			MAX(g_table.compNm)			AS compNm,
+			g_table.mfgDate			AS mfgDate,
+			g_table.expDate			AS expDate,
+			g_table.creatorId		AS creatorId,
+			g_table.createdAt		AS createdAt,
+			g_table.updatorId		AS updatorId,
+			g_table.updatedAt		AS updatedAt,
+			g_table.mtrlOrderId	AS mtrlOrderId,
+			g_table.mtrlOfId		AS mtrlOfId,
+			g_table.mtrlId			AS mtrlId,
+			MAX(g_table.mtrlMgtId)		AS mtrlMgtId
+		FROM(
+			SELECT 
+				<include refid="inputQualAdd_base" />
+		)g_table
+		WHERE 1=1
+		<if test="controlNo != null and controlNo != '' ">
+			AND g_table.controlNo =  #{controlNo}
+		</if>
+		GROUP BY g_table.controlNo
+	</sql>
+	<!-- 입고검사 Control_No(Page) select -->
+	<select id="selectInputQualAddList"
+		parameterType="jin.mes.form.qualMgt.qualPec.inputQualMgt.InputQualMgtDto"
+		resultType="jin.mes.form.qualMgt.qualPec.inputQualMgt.InputQualMgtDto">
+		SELECT * FROM (
+		SELECT
+		<choose>
+			<when test="sort != null and sort != '' ">
+				ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+			</when>
+			<otherwise>
+				ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+			</otherwise>
+		</choose>
+		<include refid="inputQualAddGroup_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>
+	</select>
+
+	<!-- 입고검사 Control_No Count -->
+	<select id="selectInputQualAddCount"
+		parameterType="jin.mes.form.qualMgt.qualPec.inputQualMgt.InputQualMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM (
+		SELECT
+		<include refid="inputQualAddGroup_base" />
+		)c_table
+	</select>
+	
+	<!-- 입고검사 Control_No 입력 -->
+	<insert id="insertInputQualAdd"
+		parameterType="jin.mes.form.qualMgt.qualPec.inputQualMgt.InputQualMgtDto">
+		<selectKey keyProperty="controlNo" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('Q') AS controlNo
+		</selectKey>
+		INSERT INTO prs_mtrl_control (
+			control_no,
+			mfg_dt,
+			exp_dt,
+			mtrl_qual_qty,
+			mtrl_pass_qty,
+			mtrl_bad_qty,
+			heat_no,
+			comp_id,
+			bad_desc,
+			remark_desc,
+			mtrl_order_id,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at
+		)VALUES(
+			#{controlNo},
+			NULL,
+			NULL,
+			#{mtrlQualQty},
+			#{mtrlPassQty},
+			#{mtrlBadQty},
+			#{heatNo},
+			#{compId},
+			#{badDesc},
+			#{ctrlDesc},
+			#{mtrlOrderId},
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			NOW()
+		)
+	</insert>
+
+	<!-- 입고검사 Control_No 수정 -->
+	<update id="updateInputQualAdd"
+		parameterType="jin.mes.form.qualMgt.qualPec.inputQualMgt.InputQualMgtDto">
+		UPDATE prs_mtrl_control
+		SET updator_id = #{updatorId},
+		updated_at = NOW()
+		<if test="heatNo != null">
+			,heat_no = #{heatNo}
+		</if>
+		<if test="ctMtrlQualQty != null">
+			,mtrl_qual_qty = #{ctMtrlQualQty}
+		</if>
+		<if test="ctMtrlPassQty != null">
+			,mtrl_pass_qty = #{ctMtrlPassQty}
+		</if>
+		<if test="ctMtrlBadQty != null">
+			,mtrl_bad_qty = #{ctMtrlBadQty}
+		</if>
+		<if test="compId != null">
+			,comp_id = #{compId}
+		</if>
+		<if test="badDesc != null">
+			,bad_desc = #{badDesc}
+		</if>
+		<if test="ctrlDesc != null">
+			,remark_desc = #{ctrlDesc} 
+		</if>
+		<if test="mtrlOrderId != null">
+			,mtrl_order_id = #{mtrlOrderId}
+		</if>
+ 		<if test="mfgDate != null">
+			,mfg_dt = #{mfgDate}
+		</if>	
+		<if test="expDate != null">
+			,exp_dt = #{expDate}
+		</if>
+		WHERE control_No = #{controlNo}
+		
+	</update>
+	
+	<!-- 입고검사   Main Grid 정보수정 -->
+	<update id="updateInputQual"
+		parameterType="jin.mes.form.qualMgt.qualPec.inputQualMgt.InputQualMgtDto">
+		UPDATE prs_mtrl_order
+		SET updator_id = #{updatorId},
+			updated_at = NOW()
+		<if test="mtrlQualQty != null">
+			,mtrl_qual_qty = #{mtrlQualQty}
+		</if>
+		<if test="ctMtrlPassQty != null">
+			,mtrl_pass_qty = #{ctMtrlPassQty}
+		</if>
+		<if test="ctMtrlBadQty != null">
+			,mtrl_bad_qty = #{ctMtrlBadQty}
+		</if>
+		WHERE mtrl_order_id = #{mtrlOrderId}
+	</update>
+	
+	<!-- 입고검사 Control_No 삭제 -->
+	<delete id="deleteInputQualAdd"
+		parameterType="jin.mes.form.qualMgt.qualPec.inputQualMgt.InputQualMgtDto">
+		DELETE FROM prs_mtrl_control
+		WHERE control_No = #{controlNo}
+	</delete>
+	
+</mapper>

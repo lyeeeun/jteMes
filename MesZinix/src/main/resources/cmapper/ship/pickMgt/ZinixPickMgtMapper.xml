@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.ship.pickMgt.ZinixPickMgtMapper">
+	<!-- 출고 정보 SQL -->
+	<sql id="pick_base">
+			pickMgt.pick_id 	AS pickId,
+			pickMgt.item_mgt_id AS itemMgtId,
+			pickMgt.pick_qty 	AS pickQty,
+			pickMgt.description,
+			pickMgt.creator_id	AS creatorId,
+			pickMgt.created_at	AS createdAt
+		FROM prs_pick_mgt pickMgt
+		WHERE item_mgt_id = #{itemMgtId}
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<!-- Barcode 정보 SQL -->
+	<sql id="barcode_base">
+			barcodeInfo.lot_id AS itemMgtId,
+			barcodeInfo.barcode_id AS barcodeId,
+			barcodeInfo.package_id AS targetId
+		FROM prs_barcode_info2 barcodeInfo
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="pickId != null and pickId != '' ">
+			AND package_id = #{pickId}
+		</if>
+		<if test="itemMgtId != null and itemMgtId != '' ">
+			AND lot_id = #{itemMgtId}		
+		</if>
+		<if test="barcodeId != null and barcodeId != '' ">
+			AND barcode_id = #{barcodeId}
+		</if>
+	</sql>
+	
+	<!-- 출고 정보 조회(Paging) -->
+	<select id="selectPickInfo"
+		parameterType="jin.mes.cform.ship.pickMgt.ZinixPickMgtDto"
+		resultType="jin.mes.cform.ship.pickMgt.ZinixPickMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY pickMgt.created_at desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="pick_base" />
+				)s_table
+		WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 출고 정보 조회(Count) -->
+	<select id="selectPickInfoCount"
+		parameterType="jin.mes.cform.ship.pickMgt.ZinixPickMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="pick_base" />
+				)c_table
+	</select>
+	
+	<select id="selectBarcodeInfoAll"
+		parameterType="jin.mes.cform.ship.pickMgt.ZinixPickMgtDto"
+		resultType="jin.mes.cform.ship.pickMgt.ZinixPickMgtDto">
+			SELECT
+			'K'				AS	action,
+			<include refid="barcode_base" />
+	</select>
+	
+	<!-- Barcode 정보 조회(Paging) -->
+	<select id="selectBarcodeInfo"
+		parameterType="jin.mes.cform.ship.pickMgt.ZinixPickMgtDto"
+		resultType="jin.mes.cform.ship.pickMgt.ZinixPickMgtDto">
+			SELECT * FROM (
+					SELECT 
+						<choose>
+							<when test="sort != null and sort != '' ">
+								ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+							</when>
+							<otherwise>
+								ROW_NUMBER() OVER(ORDER BY barcodeInfo.barcode_id desc) AS RNUM,
+							</otherwise>
+						</choose>
+						<include refid="barcode_base" />
+					)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">					
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- Barcode 정보 조회(Count) -->
+	<select id="selectBarcodeInfoCount"
+		parameterType="jin.mes.cform.ship.pickMgt.ZinixPickMgtDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="barcode_base" />
+			)c_table
+	</select>
+	
+	<!-- 출고 정보 등록 -->
+	<insert id="insertPickInfo" parameterType="jin.mes.cform.ship.pickMgt.ZinixPickMgtDto">
+		<selectKey keyProperty="pickId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('PICK') AS pickId
+		</selectKey>
+		INSERT INTO prs_pick_mgt(
+				pick_id,
+				item_mgt_id,
+				pick_qty,
+				description,
+				creator_id,
+				created_at
+		)VALUES(
+				#{pickId},
+				#{itemMgtId},
+				#{pickQty},
+				#{description},
+				#{creatorId},
+				NOW()
+		)
+	</insert>
+	
+	<update id="updatePickInfo" parameterType="jin.mes.cform.ship.pickMgt.ZinixPickMgtDto">
+		UPDATE prs_pick_mgt
+		SET pick_qty = #{pickQty}
+		<if test="description != null and description != '' ">
+			,description = #{description}		
+		</if>
+		WHERE 1=1
+		AND pick_id = #{pickId}
+	</update>
+	
+<!-- 	기존
+	<insert id="insertBarcode" parameterType="jin.mes.cform.ship.pickMgt.ZinixPickMgtDto">
+		INSERT INTO prs_barcode_info(
+				item_mgt_id,
+				barcode,
+				target_id
+		)VALUES(
+				#{itemMgtId},
+				#{barcode},
+				#{pickId}
+		)
+	</insert> -->
+	
+	<!-- 출고 & Barcode Mapping-->
+	<update id="insertBarcode" parameterType="jin.mes.cform.ship.pickMgt.ZinixPickMgtDto">
+		UPDATE prs_barcode_info2
+		SET package_id = #{pickId}
+		WHERE 1=1
+		AND barcode_id = #{barcodeId}
+	</update>
+	
+	<update id="deleteBarcode" parameterType="jin.mes.cform.ship.pickMgt.ZinixPickMgtDto">
+		UPDATE prs_barcode_info2
+		SET package_id = NULL
+		WHERE package_id = #{pickId}
+		<if test="barcodeId != null and barcodeId != '' ">
+			AND barcode_id = #{barcodeId}		
+		</if>
+	</update>
+	
+	<!-- 기존 방식_Barcode 삭제
+	 <delete id="deleteBarcode" parameterType="jin.mes.cform.ship.pickMgt.ZinixPickMgtDto">
+		DELETE FROM prs_barcode_info
+		WHERE target_id = #{pickId}
+		<if test="barcode != null and barcode != '' ">
+			AND barcode_id = #{barcode}		
+		</if>
+	</delete> -->
+	
+	
+	
+	<update id="updatePackageStock" parameterType="jin.mes.cform.ship.pickMgt.ZinixPickMgtDto">
+		UPDATE cm_item_mgt
+		SET item_package_stock = item_package_stock + #{pickQty} 
+		WHERE 1=1
+		AND item_mgt_id = #{itemMgtId}
+	</update>
+	
+	<delete id="deletePickInfo" parameterType="jin.mes.cform.ship.pickMgt.ZinixPickMgtDto">
+		DELETE FROM prs_pick_mgt
+		WHERE pick_id = #{pickId}
+	</delete>
+	
+	
+	
+</mapper>

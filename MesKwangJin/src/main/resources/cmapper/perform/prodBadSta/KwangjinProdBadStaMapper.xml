@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.perform.prodBadSta.KwangjinProdBadStaMapper">
+	<sql id="prodBad_base">
+			itemInfo.item_id AS itemId, 
+			itemInfo.item_nm AS itemNm,
+			IFNULL(lotQty,0) AS itemOrderQty, 
+			IFNULL(itemAchieve,0) AS itemAchieveQty,
+			IFNULL(itemDefect,0) AS itemDefectQty, 
+			IFNULL(itemAchieve/lotQty*100,0) AS itemAchieveRate,
+			IFNULL(itemDefect/(IFNULL(itemDefect,0)+IFNULL(itemAchieve,0))*100,0) AS itemDefectRate,
+			IFNULL(itemAchieve/lotQty*100,0)+IFNULL((SUM(lotQty)-IFNULL(SUM(itemAchieve),0))/SUM(lotQty)*100,0) - IFNULL(itemDefect/(IFNULL(itemDefect,0)+IFNULL(itemAchieve,0))*100,0)	AS defectZeroRate,
+			IFNULL(itemAchieve/lotQty*100,0)+IFNULL((SUM(lotQty)-IFNULL(SUM(itemAchieve),0))/SUM(lotQty)*100,0)-IFNULL(itemAchieve/lotQty*100,0)+IFNULL(itemDefect/(IFNULL(itemDefect,0)+IFNULL(itemAchieve,0))*100,0) AS ZeroRate
+		FROM bc_item_info itemInfo
+		
+		LEFT JOIN (		
+		
+				SELECT 
+					lotInfo.item_id, 
+					SUM(lot_qty) AS lotQty,
+					qmItem.itemAchieve AS itemAchieve,
+					badItem.itemDefect AS itemDefect
+					
+				FROM prs_lot_info lotInfo
+				
+				LEFT JOIN (
+						SELECT lot_id, SUM(bad_qty) AS itemDefect
+						FROM prs_bad_product
+						WHERE 1=1
+						GROUP BY lot_id
+					) badItem ON lotInfo.lot_id = badItem.lot_id
+					
+				LEFT JOIN (
+						SELECT item_id, SUM(item_qty_total) itemAchieve
+						FROM qm_item_mgt
+						WHERE 1=1
+						AND item_qty_target != 'prod_tagt02'
+						GROUP BY item_id
+					) qmItem ON lotInfo.item_id = qmItem.item_id
+
+				WHERE 1=1
+				GROUP BY lotInfo.item_id
+		) lotInfo ON itemInfo.item_id = lotInfo.item_id
+		WHERE IFNULL(itemAchieve,0) > 0
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="itemId != null">
+			AND itemInfo.item_id = #{itemId}
+		</if>
+		GROUP BY itemInfo.item_id
+		HAVING 1=1
+	</sql>
+	
+	
+	<select id="selectProdBad"
+		parameterType="jin.mes.cform.perform.prodBadSta.KwangjinProdBadStaDto"
+		resultType="jin.mes.cform.perform.prodBadSta.KwangjinProdBadStaDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY itemDefectRate desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="prodBad_base"></include>
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<select id="selectProdBadCount"
+	parameterType="jin.mes.cform.perform.prodBadSta.KwangjinProdBadStaDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="prodBad_base"></include>
+		)c_table
+	</select>
+</mapper>

@@ -1,0 +1,43 @@
+package jin.mes.cform.basMgt.operMgt.mtrlInfo;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import jin.mes.form.basMgt.operMgt.compMgt.CompMgtDto;
+import jin.mes.form.basMgt.operMgt.mtrlInfo.MtrlInfoDto;
+
+@Mapper
+public interface ZinixMtrlInfoMapper {
+	
+	public List<ZinixMtrlInfoDto> selectMtrlInfoList(ZinixMtrlInfoDto mtrlInfoDto);
+	
+	//팝업조회
+	public ZinixMtrlInfoDto selectMtrlOne(ZinixMtrlInfoDto mtrlInfoDto);
+		
+	public int selectMtrlInfoCount(ZinixMtrlInfoDto mtrlInfoDto);
+	
+	public void insertMtrlInfo(ZinixMtrlInfoDto mtrlInfoDto);
+	
+	public void updateMtrlInfo(ZinixMtrlInfoDto mtrlInfoDto);
+	
+	public int deleteMtrlInfo(ZinixMtrlInfoDto mtrlInfoDto);
+	
+	// 포함된 Comp 조회(mtrl-child)
+	public List<CompMgtDto> selectMtrlChild(CompMgtDto compDto);
+	
+	public List<CompMgtDto> selectMtrlRtlCompList(CompMgtDto compDto);
+	
+	public int selectMtrlRtlCompCount(CompMgtDto compDto);
+	
+	public void insertMtrlRtlComp(CompMgtDto compDto);
+	
+	public int deleteMtrlRtlComp(CompMgtDto compDto);
+	
+	public List<ZinixMtrlInfoDto> selectMinOutOfStock();	
+
+	// 부품 제조원가 계산
+	public List<String> selectMtrlRtlItemList(String mtrlId);
+	
+	public int selectItemMtrlCost(String itemId);
+}

@@ -1,0 +1,3465 @@
+<!doctype html>
+<html ng-app="myApp">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta name="description" content="overview &amp; stats" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link type="text/css" href="style.css" rel="stylesheet" />
+<link href="toaster.css" rel="stylesheet" />
+<link href="bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+<link rel="stylesheet" href="style2.css" />
+<!-- JUI test -->
+<!-- Basic style components -->
+<link rel="stylesheet" href="/jui/dist/ui.min.css" />
+<link rel="stylesheet" href="/jui/dist/ui-jennifer.min.css" />
+
+<!-- Grid style components -->
+<link rel="stylesheet" href="/jui-grid/dist/grid.min.css" />
+<link rel="stylesheet" href="/jui-grid/dist/grid-jennifer.min.css" />
+
+
+</head>
+<body ng-controller="AppController">
+	<div id="container">
+		<div ng-controller="ServerHealthController">
+			<div ng-controller="QueryController">
+				<div class="sidebar-menu" ng-class="{'menu-closed':closed}">
+					<div class="menu-header">
+						<a style="font-size: 30px; font-family: Noto Sans KR, san-serif; font-weight: 900;">RMS</a>
+						<!-- 	<a href="#" ng-click="toggleSideMenu($event);" style="background-color: rgb(120, 190, 255);" onfocus='blur()'>
+							<i class="menubar" aria-hidden="true">
+								<img ng-src="menuimg.JPG" style="margin-bottom: 20px;"></img>
+							</i>
+						</a> -->
+					</div>
+					<div class="menu-content" style="margint-top: 20px;">
+						<div class="row" style="width: 200px;">
+							<div class="span6" style="width: 200px;">
+								<div style="padding: 10px; border: 1px solid #aaa; margin-left: 10px; width: 200px; height: 390px; margin-top: 20px; background-color: white;">
+									<ul class="breadcrumb">
+										<li ng-repeat="b in breadcrums" ng-class="{ active: $last }">{{ b }} <span class="divider" ng-show="!$last">/</span>
+										</li>
+									</ul>
+									<div tree-view="structure" tree-view-options="options"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="main-content">
+					<div id="tab9" class="tabcontent">
+						<a>TEST!!</a>
+					</div>
+
+					<div id="tab10" class="tabcontent">
+
+						<div class="control-group"></div>
+						<button id='toggleFiltering' ng-click="toggleFiltering()" class="btn btn-success">Toggle Filtering</button>
+						<br /> <br />
+						<div class="grid" ui-grid="gridOptions" ui-grid-pinning ui-grid-expandable ui-grid-pagination style="width: 1000px; height: 700px;"></div>
+					</div>
+
+					<div id="tab1" class="tabcontent" style="width: 100%-215px;">
+
+						<div style="width: 100%; height: 50px; margin: 15px 0 10px 0; width: 100%;">
+							<ul name="sel" id="que" style="height: 50px; list-style: none; text-align: center; border: 1px solid #BDBDBD; border-radius: 3px; display: inline-block; margin: 0px;">
+								<li ng-repeat="x in data" style="float: left; text-align: center; padding: 14px 16px;"><a ng-click="submit(x,'eng_Trend')" style="display: inline-block;" onclick="but_show()">{{x}}</a></li>
+							</ul>
+						</div>
+						<input type="hidden" id="hid_sel_engine" value="engine01"></input>
+						<div style="width: 100%; display: block;">
+							<select id="tag_id"></select>
+							<!-- 시간 입력 부분 -->
+							<span id="eng_Trend"> <span>직접 입력</span> <input type="checkbox" jintFormat="CHECK" id="engTrend_CHECK" /> <input type="text" jintFormat="DATE" id="engTrend_DATE" size="10" /> <select jintFormat="HOUR" id="engTrend_HOUR"></select> <select jintFormat="MIN" id="engTrend_MIN"></select> <select jintFormat="SEC" id="engTrend_SEC"></select>
+							</span>
+						</div>
+						<br />
+						<div id="myDiv" style="height: 370px;"></div>
+						<input type="button" class="btns" id="but1" value="저장" ng-click="Get()" style="display: none; margin-top: 350px;" /> <br />
+					</div>
+					<!-- OverView 오버뷰 -->
+					<div id="tab2" class="tabcontent current">
+						<div height="500">
+							<div style="margin: 10px 0;">
+								<div id="eng_over">
+									<span>시작시간 설정</span> <input type="checkbox" jintFormat="CHECK" id="engOver_CHECK"/> <input type="text" jintFormat="DATE" id="engOver_DATE" size="10" /> <select jintFormat="HOUR" id="engOver_HOUR"></select> <select jintFormat="MIN" id="engOver_MIN"></select> <select jintFormat="SEC" id="engOver_SEC"></select>
+								</div>
+								<span>반복실행 : <input type="text" id="secOverView" style="width: 50px; margin: 0px;" value="5" /> (단위:초)
+								</span> <span ng-click="startOverView('secOverView','eng_over');">▶</span> <span ng-click="stopOverView()">■</span>
+							</div>
+							<a>%Load</a> <br /> <br />
+							<table style="text-align: center;">
+								<tr>
+									<td width="50"></td>
+									<td>Engine#01</td>
+									<td>Engine#02</td>
+									<td>Engine#03</td>
+									<td>Engine#04</td>
+									<td>Engine#05</td>
+									<td>Engine#06</td>
+									<td>Engine#07</td>
+									<td>Engine#08</td>
+									<td>Engine#09</td>
+									<td>Engine#10</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td class="canvas-wrap" style="position: relative; width: 150px; height: 100px;"><canvas id="myCanvas" width="100" height="100"></canvas> <span id="procent" style="display: block; position: absolute; left: 50%; top: 50%; font-size: 20px; transform: translate(-50%, -50%); color: #F15F5F;"></span></td>
+
+									<td class="canvas-wrap" style="position: relative; width: 150px; height: 100px;"><canvas id="myCanvas1" width="100" height="100"></canvas> <span id="procent1" style="display: block; position: absolute; left: 50%; top: 50%; font-size: 20px; transform: translate(-50%, -50%); color: #F15F5F;"></span></td>
+
+									<td class="canvas-wrap" style="position: relative; width: 150px; height: 100px;"><canvas id="myCanvas2" width="100" height="100"></canvas> <span id="procent2" style="display: block; position: absolute; left: 50%; top: 50%; font-size: 20px; transform: translate(-50%, -50%); color: #F15F5F;"></span></td>
+
+									<td class="canvas-wrap" style="position: relative; width: 150px; height: 100px;"><canvas id="myCanvas3" width="100" height="100"></canvas> <span id="procent3" style="display: block; position: absolute; left: 50%; top: 50%; font-size: 20px; transform: translate(-50%, -50%); color: #F15F5F;"></span></td>
+
+									<td class="canvas-wrap" style="position: relative; width: 150px; height: 100px;"><canvas id="myCanvas4" width="100" height="100"></canvas> <span id="procent4" style="display: block; position: absolute; left: 50%; top: 50%; font-size: 20px; transform: translate(-50%, -50%); color: #F15F5F;"></span></td>
+
+									<td class="canvas-wrap" style="position: relative; width: 150px; height: 100px;"><canvas id="myCanvas5" width="100" height="100"></canvas> <span id="procent5" style="display: block; position: absolute; left: 50%; top: 50%; font-size: 20px; transform: translate(-50%, -50%); color: #F15F5F;"></span></td>
+
+									<td class="canvas-wrap" style="position: relative; width: 150px; height: 100px;"><canvas id="myCanvas6" width="100" height="100"></canvas> <span id="procent6" style="display: block; position: absolute; left: 50%; top: 50%; font-size: 20px; transform: translate(-50%, -50%); color: #F15F5F;"></span></td>
+
+									<td class="canvas-wrap" style="position: relative; width: 150px; height: 100px;"><canvas id="myCanvas7" width="100" height="100"></canvas> <span id="procent7" style="display: block; position: absolute; left: 50%; top: 50%; font-size: 20px; transform: translate(-50%, -50%); color: #F15F5F;"></span></td>
+
+									<td class="canvas-wrap" style="position: relative; width: 150px; height: 100px;"><canvas id="myCanvas8" width="100" height="100"></canvas> <span id="procent8" style="display: block; position: absolute; left: 50%; top: 50%; font-size: 20px; transform: translate(-50%, -50%); color: #F15F5F;"></span></td>
+
+									<td class="canvas-wrap" style="position: relative; width: 150px; height: 100px;"><canvas id="myCanvas9" width="100" height="100"></canvas> <span id="procent9" style="display: block; position: absolute; left: 50%; top: 50%; font-size: 20px; transform: translate(-50%, -50%); color: #F15F5F;"></span></td>
+
+								</tr>
+
+							</table>
+							<br />
+						</div>
+
+						<a> Power Plant Overview </a>
+
+						<div id="myDiv4" style="height: 300px"></div>
+						<div>
+							<a> Engine Information</a> <br /> <br />
+							<table style="border-right: none; border-left: none" width="100%" border="1">
+								<tr style="border-right: none; border-left: none;">
+									<td width="200px">Engine</td>
+									<td>ENGINE RPM</td>
+									<td>FREQUENCY</td>
+									<td>RUNNING</td>
+									<td>ACTIVE POWER(KW)</td>
+									<td>VOLTAGE R-S(V)</td>
+									<td>VOLTAGE S-T(V)</td>
+									<td>VOLTAGE T-R(V)</td>
+									<td>POWER FACTOR</td>
+								</tr>
+								<tr ng-repeat="x in hitsTab1 track by $index">
+									<td>{{x._index}}</td>
+									<td>{{x._source.EA0172}}</td>
+									<td>{{x._source.EA0170}}</td>
+									<td ng-if="x._source.ED1035 == 1">RUN</td>
+									<td ng-if="x._source.ED1035 == 0">STOP</td>
+									<td>{{x._source.EA0172}}</td>
+									<td>{{x._source.EA0164}}</td>
+									<td>{{x._source.EA0165}}</td>
+									<td>{{x._source.EA0166}}</td>
+									<td>{{x._source.EA0171}}</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+					<!-- EngineStatus 엔진스테이터스-->
+					<div id="tab3" class="tabcontent">
+						<ul name="sel" id="que2" style="height: 50px; list-style: none; text-align: center; border: 1px solid #BDBDBD; border-radius: 3px; display: inline-block; margin: 0px;">
+							<li ng-repeat="x in data" style="float: left; text-align: center; padding: 14px 16px;"><a style="diplay: inline-block;" ng-click="Engstat(x,'eng_Stat')" onclick="ShowT('mytable');">{{x}}</a></li>
+						</ul>
+						<br /> <br />
+						<!-- 시간 입력 부분 -->
+						<div id="eng_Stat">
+							<span>직접 입력</span> <input type="checkbox" jintFormat="CHECK" id="engStat_CHECK" /> <input type="text" jintFormat="DATE" id="engStat_DATE" size="10" /> <select jintFormat="HOUR" id="engStat_HOUR"></select> <select jintFormat="MIN" id="engStat_MIN"></select> <select jintFormat="SEC" id="engStat_SEC"></select>
+						</div>
+						<table class="mytable" id="mytable" style="table-layout: fixed; display: none; width:100%-220px;">
+							<tr>
+								<td width="45%"><a> Engine Status </a></td>
+								<td><a> Engine Speed </a></td>
+							<tr>
+								<td>
+									<table style="text-align: center;">
+										<tr>
+											<td><b />VOLTAGE R-S</td>
+											<td><b />ACTIVE ENERGY</td>
+											<td><b />ACTIVE POWER</td>
+										</tr>
+										<tr>
+											<td><canvas id="myCanvass" width="160" height="100"></canvas></td>
+											<td><canvas id="myCanvass1" width="160" height="100"></canvas></td>
+											<td><canvas id="myCanvass2" width="160" height="100"></canvas></td>
+										</tr>
+										<tr>
+											<td><b />VOLTAGE S-T</td>
+											<td><b />FREQUENCY</td>
+											<td><b />POWER FACTOR</td>
+										</tr>
+										<tr>
+											<td><canvas id="myCanvass3" width="160" height="100"></canvas></td>
+											<td><canvas id="myCanvass4" width="160" height="100"></canvas></td>
+											<td><canvas id="myCanvass5" width="160" height="100"></canvas></td>
+										</tr>
+										<tr>
+											<td><b />VOLTAGE T-R</td>
+											<td><b /></td>
+											<td><b /></td>
+										</tr>
+										<tr>
+											<td><canvas id="myCanvass6" width="160" height="100"></canvas></td>
+											<td colspan="2"></td>
+										</tr>
+
+									</table>
+								</td>
+								<td id="EngDiv2"></td>
+								<td id="EngDiv3"></td>
+							</tr>
+						</table>
+
+						<div id="Engdiv1" style="height: 350px;"></div>
+					</div>
+					<div id="tab4" class="tabcontent" style="background-color: #214365; color: white; height: 200vh;">
+						<toaster-container toaster-options="{'time-out': 7000,'position-class' : 'toast-bottom-left','showMethod': 'fadeIn','hideMethod': 'fadeOut'}"></toaster-container>
+						<ul name="sel" id="que3" style="height: 50px; list-style: none; text-align: center; border: 1px solid #BDBDBD; border-radius: 3px; display: inline-block; margin: 0px;">
+							<li ng-repeat="x in data" style="float: left; text-align: center; padding: 14px 16px;"><a style="diplay: inline-block;" ng-click="Alarm(x)" onclick="ShowT('myt');">{{x}}</a></li>
+						</ul>
+						<br /> <br /> <a style="color: white;"><b> Shutdown </a> <br />
+						<table class="myt" id="myt" style="table-layout: fixed; border-bottom: 10px double #153773;" width="100%">
+							<tr>
+								<td><canvas id="alarm1" width="50" height="30" ng-click="pop(0)"></canvas>DIFFERENTIAL CURRENT SHUTDOWN</td>
+								<td><canvas id="alarm2" width="50" height="30" ng-click="pop(1)"></canvas>GROUND OVER CURRENT SHUTDOWN</td>
+								<td><canvas id="alarm3" width="50" height="30" ng-click="pop(2)"></canvas>OVERVOLTAGE SHUTDOWN</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm4" width="50" height="30" ng-click="pop(3)"></canvas>EMERGENCY STOP SHUTDOWN(EGCP)</td>
+								<td><canvas id="alarm5" width="50" height="30" ng-click="pop(4)"></canvas>EMERGENCY STOP SHUTDOWN(HAM)</td>
+								<td><canvas id="alarm6" width="50" height="30" ng-click="pop(5)"></canvas>EMERGENCY STOP SHUTDOWN(PCMS)</td>
+							</tr>
+							<td><canvas id="alarm7" width="50" height="30" ng-click="pop(6)"></canvas>ENGINE SHUTDOWN (FROM MCP)</td>
+							<td><canvas id="alarm8" width="50" height="30" ng-click="pop(7)"></canvas>GEN. BEARING TEMP. SHUTDOWN (D.E)</td>
+							<td><canvas id="alarm9" width="50" height="30" ng-click="pop(8)"></canvas>GEN. BEARING TEMP. SHUTDOWN (N.D.E)</td>
+							<tr>
+								<td><canvas id="alarm10" width="50" height="30" ng-click="pop(9)"></canvas>GEN. BEARING OIL PRESS SHUTDOWN (D.E)</td>
+								<td><canvas id="alarm11" width="50" height="30" ng-click="pop(10)"></canvas>GEN. BEARING OIL PRESS SHUTDOWN (N.D.E)</td>
+								<td><canvas id="alarm12" width="50" height="30" ng-click="pop(11)"></canvas>module failure - AIO216_1 / - 1KA07 (SD)</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm13" width="50" height="30" ng-click="pop(12)"></canvas>TE05-1 Main bearing temp high Cyl. #1 (SD)</td>
+								<td><canvas id="alarm14" width="50" height="30" ng-click="pop(13)"></canvas>TE05-2 Main bearing temp high Cyl. #2 (SD)</td>
+								<td><canvas id="alarm15" width="50" height="30" ng-click="pop(14)"></canvas>TE05-3 Main bearing temp high Cyl. #3 (SD)</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm16" width="50" height="30" ng-click="pop(15)"></canvas>TE05-4 Main bearing temp high Cyl. #4 (SD)</td>
+								<td><canvas id="alarm17" width="50" height="30" ng-click="pop(16)"></canvas>TE05-5 Main bearing temp high Cyl. #5 (SD)</td>
+								<td><canvas id="alarm18" width="50" height="30" ng-click="pop(17)"></canvas>TE05-6 Main bearing temp high Cyl. #6 (SD)</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm19" width="50" height="30" ng-click="pop(18)"></canvas>TE05-7 Main bearing temp high Cyl. #7 (SD)</td>
+								<td><canvas id="alarm20" width="50" height="30" ng-click="pop(19)"></canvas>TE05-8 Main bearing temp high Cyl. #8 (SD)</td>
+								<td><canvas id="alarm21" width="50" height="30" ng-click="pop(20)"></canvas>TE05-9 Main bearing temp high Cyl. #9 (SD)</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm22" width="50" height="30" ng-click="pop(21)"></canvas>TE05-10 Main bearing temp high Cyl. #10 (SD)</td>
+								<td><canvas id="alarm23" width="50" height="30" ng-click="pop(22)"></canvas>TE05-11 Main bearing temp high Cyl. #11 (SD)</td>
+								<td><canvas id="alarm24" width="50" height="30" ng-click="pop(23)"></canvas>TE76 HT temp engine outlet high (SD)</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm25" width="50" height="30" ng-click="pop(24)"></canvas>TE26 EGT TC inlet high A-bank (SD)</td>
+								<td><canvas id="alarm26" width="50" height="30" ng-click="pop(25)"></canvas>TE26 EGT TC inlet high B-bank (SD)</td>
+								<td><canvas id="alarm27" width="50" height="30" ng-click="pop(26)"></canvas>PT62 LO press engine inlet low (SD)</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm28" width="50" height="30" ng-click="pop(27)"></canvas>TE78 HT CW temp. air cooler outlet high (SD)</td>
+								<td><canvas id="alarm29" width="50" height="30" ng-click="pop(28)"></canvas>LS923 Oil mist level high (SD)</td>
+								<td><canvas id="alarm30" width="50" height="30" ng-click="pop(29)"></canvas>Engine start fail (SD)</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm31" width="50" height="30" ng-click="pop(30)"></canvas>ZT50 Diesel actuator signal loss (SD)</td>
+								<td><canvas id="alarm32" width="50" height="30" ng-click="pop(31)"></canvas>FO actuator major alarm (SD)</td>
+								<td><canvas id="alarm33" width="50" height="30" ng-click="pop(32)"></canvas>DI Safety Device Open (SD)</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm34" width="50" height="30" ng-click="pop(33)"></canvas>ECS internal fail (SD)</td>
+								<td><canvas id="alarm35" width="50" height="30" ng-click="pop(34)"></canvas>ECS application (SD)</td>
+								<td><canvas id="alarm36" width="50" height="30" ng-click="pop(35)"></canvas>Slow turning failed (LO press low) (SD)</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm37" width="50" height="30" ng-click="pop(36)"></canvas>Slow turning failed (during cranking) (SD)</td>
+								<td><canvas id="alarm38" width="50" height="30" ng-click="pop(37)"></canvas>SE11x Engine speed (SD)</td>
+								<td><canvas id="alarm39" width="50" height="30" ng-click="pop(38)"></canvas>S340 Engine speed low (SD)</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm40" width="50" height="30" ng-click="pop(39)"></canvas>Stop command released in load run (SD)</td>
+								<td><canvas id="alarm41" width="50" height="30" ng-click="pop(40)"></canvas>DI Stop valve activated (SD)</td>
+								<td><canvas id="alarm42" width="50" height="30" ng-click="pop(41)"></canvas>module failure - GIO212_1 1KA0 (SD)</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm43" width="50" height="30" ng-click="pop(42)"></canvas>module failure - DIO280_1 / - 1KA0 (SD)</td>
+								<td><canvas id="alarm44" width="50" height="30" ng-click="pop(43)"></canvas>module failure - AIO208 (SD)</td>
+								<td><canvas id="alarm45" width="50" height="30" ng-click="pop(44)"></canvas>SE111,112 speed sensor fail (ESD)</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm46" width="50" height="30" ng-click="pop(45)"></canvas>SE111,112 Engine Overspeed (ESD)</td>
+								<td><canvas id="alarm47" width="50" height="30" ng-click="pop(46)"></canvas>ESD from remote (ESD)</td>
+								<td><canvas id="alarm48" width="50" height="30" ng-click="pop(47)"></canvas>ESD from LOP (ESD)</td>
+							</tr>
+						</table>
+
+
+						<a style="color: white;"><b> TRIP </a> <br />
+
+						<table class="myt" id="myt" style="table-layout: fixed; border-bottom: 10px double #103773;" width="100%" height="30">
+							<tr>
+								<td><canvas id="alarm49" width="50" height="30" ng-click="pop(48)"></canvas>OVER CURRENT TRIP</td>
+								<td><canvas id="alarm50" width="50" height="30" ng-click="pop(49)"></canvas>NEGATIVE SEQUENCE TRIP</td>
+								<td><canvas id="alarm51" width="50" height="30" ng-click="pop(50)"></canvas>UNDER VOLTAGE TRIP</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm52" width="50" height="30" ng-click="pop(51)"></canvas>REVERSE POWER TRIP</td>
+								<td><canvas id="alarm53" width="50" height="30" ng-click="pop(52)"></canvas>LOSS OF EXCITATION TRIP</td>
+								<td><canvas id="alarm54" width="50" height="30" ng-click="pop(53)"></canvas>OVER FREQUENCY TRIP</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm55" width="50" height="30" ng-click="pop(54)"></canvas>UNDER FREQUENCY TRIP</td>
+								<td><canvas id="alarm56" width="50" height="30" ng-click="pop(55)"></canvas>AVR FAULT</td>
+								<td><canvas id="alarm57" width="50" height="30" ng-click="pop(56)"></canvas>AVR OPEN DIODE / SHORT DIODE</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm58" width="50" height="30" ng-click="pop(57)"></canvas>AVR LOSS OF SENSOR</td>
+								<td><canvas id="alarm59" width="50" height="30" ng-click="pop(58)"></canvas>AVR LOSE OF FIELD / FIELD OVER CURRENT</td>
+								<td><canvas id="alarm60" width="50" height="30" ng-click="pop(59)"></canvas>AVR PMG SOURCE FAULT</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm61" width="50" height="30" ng-click="pop(60)"></canvas>GEN. WINDING TEMP. TRIP (R)</td>
+								<td><canvas id="alarm62" width="50" height="30" ng-click="pop(61)"></canvas>GEN. WINDING TEMP. TRIP (S)</td>
+								<td><canvas id="alarm63" width="50" height="30" ng-click="pop(62)"></canvas>GEN. WINDING TEMP. TRIP (T)</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm64" width="50" height="30" ng-click="pop(63)"></canvas>LOCKOUT RELAY ON</td>
+								<td><canvas id="alarm65" width="50" height="30" ng-click="pop(64)"></canvas>24 VOLT/HERTZ OVER EXCITATION TRIP</td>
+								<td><canvas id="alarm66" width="50" height="30" ng-click="pop(65)"></canvas>78 OUT OF STEP TRIP</td>
+							</tr>
+							<tr>
+								<td><canvas id="alarm67" width="50" height="30" ng-click="pop(66)"></canvas>51V VOLTAGE RESTRAINED TIME OVER CURRENT TRIP</td>
+								<td><canvas id="alarm68" width="50" height="30" ng-click="pop(67)"></canvas>50/27 ACCIDENTAL ENERGIZATION TRIP</td>
+								<td></td>
+							</tr>
+						</table>
+
+					</div>
+
+					<div id="tab5" class="tabcontent" style="color: black; font-size: 15px; height: 200vh;">
+						<ul name="sel" id="que4" style="height: 50px; list-style: none; text-align: center; border: 1px solid #BDBDBD; border-radius: 3px; display: inline-block; margin: 0px;">
+							<li ng-repeat="x in data" style="float: left; text-align: center; padding: 14px 16px;"><a style="diplay: inline-block;" ng-click="EngineM(x,'eng_Mot')">{{x}}</a></li>
+						</ul>
+						<br /> <br />
+						<!-- 시간 입력 부분 -->
+						<div id="eng_Mot">
+							<span>직접 입력</span> <input type="checkbox" jintFormat="CHECK" id="engMot_CHECK" /> <input type="text" jintFormat="DATE" id="engMot_DATE" size="10" /> <select jintFormat="HOUR" id="engMot_HOUR"></select> <select jintFormat="MIN" id="engMot_MIN"></select> <select jintFormat="SEC" id="engMot_SEC"></select>
+						</div>
+						<br />
+						<div>
+							<span style="font-size: 16px;">ENGINE READY TO START CONDITION</span>
+							<div class="EM_GROUP">
+								<table>
+									<tr id="READY_TO_START"></tr>
+								</table>
+							</div>
+							<span style="font-size: 16px;">START/STOP SEQUENCE</span>
+							<div class="EM_GROUP">
+								<table id="START_STOP_SEQUENCE">
+									<tr id="START_STOP_SEQUENCE"></tr>
+								</table>
+							</div>
+						</div>
+
+						<div style="height: 1500px;">
+							<div style="width: 310px; float: left; margin-right: 10px;">
+								<span style="font-size: 16px;">GENERATOR DATA</span>
+								<div class="EM_GROUP">
+									<table id="GENERATOR_DATA" style="width: 100%; border:">
+									</table>
+								</div>
+								<span style="font-size: 16px;">ENGINE CONTROL FACTOR</span>
+								<div class="EM_GROUP">
+									<table id="ENGINE_CONTROL_FACTOR" style="width: 100%">
+									</table>
+								</div>
+							</div>
+							<div style="width: 310px; float: left; margin-right: 10px;">
+								<span style="font-size: 16px;">ENGINE SPEED DATA</span>
+								<div class="EM_GROUP">
+									<table id="ENGINE_SPEED_DATA" style="width: 100%">
+									</table>
+								</div>
+								<span style="font-size: 16px;">FUEL GAS SYSTEM</span>
+								<div class="EM_GROUP">
+									<table id="FUEL_GAS_SYSTEM" style="width: 100%">
+									</table>
+								</div>
+								<span style="font-size: 16px;">LUBE OIL SYSTEM</span>
+								<div class="EM_GROUP">
+									<table id="LUBE_OIL_SYSTEM" style="width: 100%">
+									</table>
+								</div>
+								<span style="font-size: 16px;">COMPRESSED AIR SYSTEM</span>
+								<div class="EM_GROUP">
+									<table id="COMPRESSED_AIR_SYSTEM" style="width: 100%">
+									</table>
+								</div>
+							</div>
+							<div style="width: 310px; float: left; margin-right: 10px;">
+								<span style="font-size: 16px;">GENERATOR_SYSTEM</span>
+								<div class="EM_GROUP">
+									<table id="GENERATOR_SYSTEM" style="width: 100%">
+									</table>
+								</div>
+								<span style="font-size: 16px;">FUEL_OIL_SYSTEM</span>
+								<div class="EM_GROUP">
+									<table id="FUEL_OIL_SYSTEM" style="width: 100%">
+									</table>
+								</div>
+							</div>
+							<div style="width: 310px; float: left; margin-right: 10px;">
+								<span style="font-size: 16px;">COOLING WATER SYSTEM</span>
+								<div class="EM_GROUP">
+									<table id="COOLING_WATER_SYSTEM" style="width: 100%">
+									</table>
+								</div>
+								<span style="font-size: 16px;">CHARGE AIR SYSTEM</span>
+								<div class="EM_GROUP">
+									<table id="CHARGE_AIR_SYSTEM" style="width: 100%">
+									</table>
+								</div>
+							</div>
+						</div>
+						<div>
+							<div style="width: 310px; float: left; margin-right: 10px;">
+								<span style="font-size: 16px;">CYLINDER MONITORING BALANCING</span>
+								<div class="EM_GROUP">
+									<table id="CMB_PMAX" style="width: 100%">
+									</table>
+								</div>
+							</div>
+							<div style="width: 310px; float: left; margin-right: 10px;">
+								<div class="EM_GROUP">
+									<table id="CMB_IMEP" style="width: 100%">
+									</table>
+								</div>
+							</div>
+							<div style="width: 310px; float: left; margin-right: 10px;">
+								<span style="font-size: 16px;">EXH GAS CYLINDER TEMP</span>
+								<div class="EM_GROUP">
+									<table id="EXH_GAS_CYLINDER_TEMP" style="width: 100%">
+									</table>
+								</div>
+							</div>
+							<div style="width: 310px; float: left; margin-right: 10px;">
+								<span style="font-size: 16px;">MAIN BEARING TEMP</span>
+								<div class="EM_GROUP">
+									<table id="MAIN_BEARING_TEMP" style="width: 100%">
+									</table>
+								</div>
+								<span style="font-size: 16px;">ENGINE RUN HOUR</span>
+								<div class="EM_GROUP">
+									<table id="ENGINE_RUN_HOUR" style="width: 100%">
+									</table>
+								</div>
+							</div>
+						</div>
+
+						<!-- 
+						<table class="mytable5" id="mytable5" width=1700px
+							style="border-bottom: 10px double #153773;">
+							<tr>
+								<td>Engine status</td>
+								<td>Main Bearing Temp</td>
+								<td>Exh.Gas.Temp</td>
+							</tr>
+							<tr>
+								<td style="vertical-align: top;">
+									<table class="mytable6" width=600>
+										<tr align=right>
+											<td width=150>ENGINE RUNNING</td>
+											<td><canvas id="Encan1" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>ENGINE SPEED</td>
+											<td><canvas id="Encan7" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>RADIATOR STATUS</td>
+											<td><canvas id="Encan12" width="400" height="50"></canvas></td>
+										</tr>
+									</table>
+									<table class="mytable6" width=600 style="display: none;">
+										<tr align=right>
+											<td width=150>FO ENGINE RUNNING</td>
+											<td><canvas id="Encan32" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>ENGINE SPEED</td>
+											<td><canvas id="Encan33" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>RADIATOR STATUS</td>
+											<td><canvas id="Encan34" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>CHARGE AIR TEMP</td>
+											<td><canvas id="Encan35" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>T/C INLET TEMP</td>
+											<td><canvas id="Encan36" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>T/C OUTLET TEMP</td>
+											<td><canvas id="Encan37" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>STARTING AIR PRESS</td>
+											<td><canvas id="Encan38" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>LO INLET PRESS</td>
+											<td><canvas id="Encan39" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>LO INLET TEMP</td>
+											<td><canvas id="Encan40" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>LTCW INLET TEMP</td>
+											<td><canvas id="Encan41" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>LTCW OUTLET TEMP</td>
+											<td><canvas id="Encan42" width="400" height="50"></canvas></td>
+										</tr>
+									</table>
+								</td>
+								<td>
+									<table class="mytable7" width="600">
+										<tr align=right>
+											<td width=150>NO.1 MAIN BEARING</td>
+											<td><canvas id="Encan43" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>NO.2 MAIN BEARING</td>
+											<td><canvas id="Encan44" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>NO.3 MAIN BEARING</td>
+											<td><canvas id="Encan45" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>NO.4 MAIN BEARING</td>
+											<td><canvas id="Encan46" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>NO.5 MAIN BEARING</td>
+											<td><canvas id="Encan47" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>NO.6 MAIN BEARING</td>
+											<td><canvas id="Encan48" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>NO.7 MAIN BEARING</td>
+											<td><canvas id="Encan49" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>NO.8 MAIN BEARING</td>
+											<td><canvas id="Encan50" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>NO.9 MAIN BEARING</td>
+											<td><canvas id="Encan51" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right style="display: none;">
+											<td width=150>THRUST BEARING</td>
+											<td><canvas id="Encan52" width="400" height="50"></canvas></td>
+										</tr>
+										<tr></tr>
+									</table>
+								</td>
+								<td>
+									<table class="mytable8" width="600">
+										<tr align=right>
+											<td width=150>NO.1 EXH GAS TEMP</td>
+											<td><canvas id="Encan53" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>NO.2 EXH GAS TEMP</td>
+											<td><canvas id="Encan54" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>NO.3 EXH GAS TEMP</td>
+											<td><canvas id="Encan55" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>NO.4 EXH GAS TEMP</td>
+											<td><canvas id="Encan56" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>NO.5 EXH GAS TEMP</td>
+											<td><canvas id="Encan57" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>NO.6 EXH GAS TEMP</td>
+											<td><canvas id="Encan58" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>NO.7 EXH GAS TEMP</td>
+											<td><canvas id="Encan59" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>NO.8 EXH GAS TEMP</td>
+											<td><canvas id="Encan60" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>NO.9 EXH GAS TEMP</td>
+											<td><canvas id="Encan61" width="400" height="50"></canvas></td>
+										</tr>
+										<tr align=right>
+											<td width=150>EXH GAS TEMP AVERAGE</td>
+											<td><canvas id="Encan62" width="400" height="50"></canvas></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+
+						<table class="tables" id="tabless" width=1700px
+							style="border-bottom: 10px double #153773; display: none;">
+							<tr style="display: none;">Engine statu
+							</tr>
+							<tr align="right">
+								<td width=150>ENGINE RUNNING</td>
+								<td><canvas id="Encan1" width="350" height="50"></canvas></td>
+								<td width=150>ENGINE SPEED</td>
+								<td><canvas id="Encan7" width="350" height="50"></canvas></td>
+								<td width=150>LO PRIMING PUMP</td>
+								<td><canvas id="Encan11" width="350" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>ENGINE STOPPING</td>
+								<td><canvas id="Encan2" width="350" height="50"></canvas></td>
+								<td width=150>TURBOCHARGER SPEED</td>
+								<td><canvas id="Encan8" width="350" height="50"></canvas></td>
+								<td width=150>RADIATOR STATUS</td>
+								<td><canvas id="Encan12" width="350" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>GENERATOR VCB</td>
+								<td><canvas id="Encan3" width="350" height="50"></canvas></td>
+								<td width=150>ENGINE ALARM</td>
+								<td><canvas id="Encan9" width="350" height="50"></canvas></td>
+								<td width=150>RADIATOR FAN STATUS</td>
+								<td><canvas id="Encan13" width="350" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>START BLOCKING</td>
+								<td><canvas id="Encan4" width="350" height="50"></canvas></td>
+								<td width=150>ENGINE SHUTDOWN</td>
+								<td><canvas id="Encan10" width="350" height="50"></canvas></td>
+								<td width=150>LT CW EXPANSION TANK</td>
+								<td><canvas id="Encan14" width="350" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>FUEL MODE</td>
+								<td><canvas id="Encan5" width="350" height="50"></canvas></td>
+								<td width=150></td>
+								<td></td>
+								<td width=150>HT CW EXPANSION TANK</td>
+								<td><canvas id="Encan15" width="350" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150></td>
+								<td><canvas id="Encan6" width="350" height="50"></canvas></td>
+								<td width=150></td>
+								<td></td>
+								<td width=150></td>
+								<td></td>
+							</tr>
+
+						</table>
+						<br />
+
+						<table class="mytable4" id="mytable4" width="1700px"
+							style="border-bottom: 10px double #153773;">
+							<tr>Generator Data
+							</tr>
+							<tr align="right">
+								<td width=150>VOLTAGE R-S</td>
+								<td><canvas id="Encan16" width="350" height="50"></canvas></td>
+								<td width=150>FREQUENCY</td>
+								<td><canvas id="Encan22" width="350" height="50"></canvas></td>
+								<td width=150>GEN R PHASE WINDING TEMP</td>
+								<td><canvas id="Encan27" width="350" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>VOLTAGE S-T</td>
+								<td><canvas id="Encan17" width="350" height="50"></canvas></td>
+								<td width=150>POWER FACTOR</td>
+								<td><canvas id="Encan23" width="350" height="50"></canvas></td>
+								<td width=150>GEN S PHASE WINDING TEMP</td>
+								<td><canvas id="Encan28" width="350" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>VOLTAGE T-R</td>
+								<td><canvas id="Encan18" width="350" height="50"></canvas></td>
+								<td width=150>ACTIVE POWER</td>
+								<td><canvas id="Encan24" width="350" height="50"></canvas></td>
+								<td width=150>GEN T PHASE WINDING TEMP</td>
+								<td><canvas id="Encan29" width="350" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>CURRENT R</td>
+								<td><canvas id="Encan19" width="350" height="50"></canvas></td>
+								<td width=150>REACTIVE POWER</td>
+								<td><canvas id="Encan25" width="350" height="50"></canvas></td>
+								<td width=150>GEN BEARING TEMP(DE)</td>
+								<td><canvas id="Encan30" width="350" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>CURRENT S</td>
+								<td><canvas id="Encan20" width="350" height="50"></canvas></td>
+								<td width=150>ACTIVE ENERGY</td>
+								<td><canvas id="Encan26" width="350" height="50"></canvas></td>
+								<td width=150>GEN BEARING TEMP(NDE)</td>
+								<td><canvas id="Encan31" width="350" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>CURRENT T</td>
+								<td><canvas id="Encan21" width="350" height="50"></canvas></td>
+								<td width=150></td>
+								<td></td>
+								<td width=150></td>
+								<td></td>
+							</tr>
+
+						</table>
+						<br />
+-->
+					</div>
+					<div id="tab6" class="tabcontent" style="background-color: #214365; color: white; height: 200vh;">
+
+						<ul name="sel" id="quee" style="height: 50px; list-style: none; text-align: center; border: 1px solid #BDBDBD; border-radius: 3px; display: inline-block; margin: 0px;">
+							<li ng-repeat="x in data" style="float: left; text-align: center; padding: 14px 16px;"><a style="diplay: inline-block;" ng-click="Elec(x)">{{x}}</a></li>
+						</ul>
+						<br /> <br />
+						<table class="mytable2" id="mytable2" width=1700px style="border-bottom: 10px double #153773;">
+							<tr>Generator Data
+							</tr>
+							<tr align="right">
+								<td width=150>VOLTAGE R-S</td>
+								<td><canvas id="Ecan" width="400" height="50"></canvas></td>
+								<td width=150>CURRENT R</td>
+								<td><canvas id="Ecan1" width="400" height="50"></canvas></td>
+								<td width=150>POWER FACTOR</td>
+								<td><canvas id="Ecan2" width="400" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>VOLTAGE S-T</td>
+								<td><canvas id="Ecan3" width="400" height="50"></canvas></td>
+								<td width=150>CURRENT S</td>
+								<td><canvas id="Ecan4" width="400" height="50"></canvas></td>
+								<td width=150>ACTIVE POWER</td>
+								<td><canvas id="Ecan5" width="400" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>VOLTAGE T-R</td>
+								<td><canvas id="Ecan6" width="400" height="50"></canvas></td>
+								<td width=150>CURRENT T</td>
+								<td><canvas id="Ecan7" width="400" height="50"></canvas></td>
+								<td width=150>REACTIVE POWER</td>
+								<td><canvas id="Ecan8" width="400" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>FREQUENCY</td>
+								<td><canvas id="Ecan9" width="400" height="50"></canvas></td>
+								<td width=150>ACTIVE ENERGY</td>
+								<td><canvas id="Ecan10" width="400" height="50"></canvas></td>
+								<td width=150></td>
+								<td></td>
+							</tr>
+
+
+						</table>
+
+						<table class="mytable3" id="mytable3" width=1700px>
+							<tr>Common Data
+							</tr>
+							<tr align="right">
+								<td width=150>#1 OUTGOING RS</td>
+								<td><canvas id="Ecan11" width="400" height="50"></canvas></td>
+								<td width=150>#1 AUX Voltage</td>
+								<td><canvas id="Ecan20" width="400" height="50"></canvas></td>
+								<td width=150>#1 INCOMMING Voltage</td>
+								<td><canvas id="Ecan28" width="400" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>#1 OUTGOING ST</td>
+								<td><canvas id="Ecan12" width="400" height="50"></canvas></td>
+								<td width=150>#1 AUX Current</td>
+								<td><canvas id="Ecan21" width="400" height="50"></canvas></td>
+								<td width=150>#1 INCOMMING CURRENT</td>
+								<td><canvas id="Ecan29" width="400" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>#1 OUTGOING TR</td>
+								<td><canvas id="Ecan13" width="400" height="50"></canvas></td>
+								<td width=150>#1 AUX Hz</td>
+								<td><canvas id="Ecan22" width="400" height="50"></canvas></td>
+								<td width=150>#1 INCOMMING FREQUENCY</td>
+								<td><canvas id="Ecan30" width="400" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>#1 OUTGOING R</td>
+								<td><canvas id="Ecan14" width="400" height="50"></canvas></td>
+								<td width=150>#1 AUX PF</td>
+								<td><canvas id="Ecan23" width="400" height="50"></canvas></td>
+								<td width=150>#1 INCOMMING POWER FACTOR</td>
+								<td><canvas id="Ecan31" width="400" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>#1 OUTGOING S</td>
+								<td><canvas id="Ecan15" width="400" height="50"></canvas></td>
+								<td width=150>#1 AUX KW</td>
+								<td><canvas id="Ecan24" width="400" height="50"></canvas></td>
+								<td width=150>#1INCOMMING POWER</td>
+								<td><canvas id="Ecan32" width="400" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>#1 OUTGOING T</td>
+								<td><canvas id="Ecan16" width="400" height="50"></canvas></td>
+								<td width=150>#1 AUX KVAR</td>
+								<td><canvas id="Ecan25" width="400" height="50"></canvas></td>
+								<td width=150>#1INCOMMING Kvar</td>
+								<td><canvas id="Ecan33" width="400" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>#1 OUTGOING HZ</td>
+								<td><canvas id="Ecan17" width="400" height="50"></canvas></td>
+								<td width=150>#1 AUX MVARH</td>
+								<td><canvas id="Ecan26" width="400" height="50"></canvas></td>
+								<td width=150>#1INCOMMING Mvarh</td>
+								<td><canvas id="Ecan34" width="400" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>#1 OUTGOING PF</td>
+								<td><canvas id="Ecan18" width="400" height="50"></canvas></td>
+								<td width=150>#1 AUX Mwh</td>
+								<td><canvas id="Ecan27" width="400" height="50"></canvas></td>
+								<td width=150>#1INCOMMING mwh</td>
+								<td><canvas id="Ecan35" width="400" height="50"></canvas></td>
+							</tr>
+							<tr align="right">
+								<td width=150>#1 OUTGOING KW</td>
+								<td><canvas id="Ecan19" width="400" height="50"></canvas></td>
+								<td width=150></td>
+								<td></td>
+								<td width=150></td>
+								<td></td>
+							</tr>
+						</table>
+						<br /> <br /> <br /> <br /> <br /> <br /> <br />
+					</div>
+
+					<div id="tab7" class="tabcontent" style="font-family: helvetica font-weight : 100; font-size: 14px; margin: 0 auto;">
+						<div id="notebook2" class="notebook">
+							<input type="text" id="query" ng-model="query" /> <select ng-model="orderList" style="border: 1px solid #FFD32E; box-shadow: 0 0 10px rgba(255, 255, 0, 0.1);">
+								<option value="index">By name</option>
+								<option value="-DATE">Newest</option>
+								<option value="DATE">Oldest</option>
+							</select>
+							<ul id="notebook_ul" style="margin: 0 auto; padding: 0; max-height: 1000px; overflow-y: auto; border: 1px solid rgba(0, 0, 0, 0.1); padding: 5px 5px 0 5px; border-left: none; border-right: none;">
+								<li ng-repeat="list in listdata | filter:query | orderBy: orderList" style="list-style: none; background-color: rgba(0, 0, 0, 0.05); background-image: linear-gradient(90deg, #FFD32E 10px, #EEE 10px, #EEE 11px, transparent 11px); padding: 10px 15px 10px 25px; border: 1px solid #CCC; box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.5); margin-bottom: 5px; width: 100%; box-sizing: border-box; cursor: pointer; border-radius: 3px;">name: {{list.index}}<br /> event: {{list.value}}<br /> alarm : {{list.alarmname}}<br />
+									<div class="right top">{{list.DATE}}</div>
+								</li>
+							</ul>
+							<span>Number of Event: {{listdata.length}}</span>
+						</div>
+					</div>
+
+					<div id="tab8" class="tabcontent">
+
+						<table id="mytt" style="width: 100%-215px;">
+							<tr>
+								<td><a> Event </a> <br /> <svg style="position: absolute; width: 850px; margin-left: -150px; height: 400px;">
+										<g id="canvas" style="width:1000px;">
+										<g id="art" />
+										
+										<g id="labels" /></g></svg></td>
+								<td>
+									<div style="font-family: helvetica font-weight : 100; font-size: 12px; margin: 0 auto;">
+										<div id="notebooks" class="notebook" style="height: 430px; width: 600px; margin-left: 880px; margin-top: -5px;">
+											<a> Event Ranking </a> 
+											<div>
+												<select ng-model="orderList" style="margin: 0px 5px; height: 35px;">
+													<option value="count">Count asc</option>
+													<option selected value="-count">Count desc</option>
+												</select>
+												<input type="text" id="query" ng-model="query" />
+											</div> 
+											<ul id="notebook_ul" style="margin: 0 auto; padding: 0; max-height: 300px; overflow-y: auto; border: 1px solid rgba(0, 0, 0, 0.1); padding: 5px 5px 0 5px; border-left: none; border-right: none;">
+												<li ng-repeat="eventcount in listdata2 | filter:query | orderBy: orderList" style="list-style: none; background-color: rgba(0, 0, 0, 0.05); background-image: linear-gradient(90deg, #FFD32E 10px, #EEE 10px, #EEE 11px, transparent 11px); padding: 10px 15px 10px 25px; border: 1px solid #CCC; box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.5); width: 100%; box-sizing: border-box; cursor: pointer; border-radius: 3px;">{{eventcount.value}} <br />
+													<div class="right top">{{eventcount.count}}</div>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</td>
+						</table>
+						<div id="Eventranking" style="position: absolute; width: 1340px; margin: 0 auto; margin-top: 420px; height: 350px;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+<!-- JUI TEST -->
+<script src="/jui-core/dist/core.min.js"></script>
+
+<!-- Basic script components -->
+<script src="/jui/dist/ui.min.js"></script>
+
+<!-- Grid script components -->
+<script src="/jui-grid/dist/grid.min.js"></script>
+
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
+		<script src="node_modules/jquery/dist/jquery.min.js"></script>
+		<script src="node_modules/angular/angular.js"></script>
+		<script src="node_modules/elasticsearch-browser/elasticsearch.angular.js"></script>
+		<script src="node_modules/angular-animate/angular-animate.js"></script>
+		<script src="ui-grid/angular-touch.min.js"></script>
+		<script src="ui-grid/csv.js"></script>
+		<script src="ui-grid/pdfmake.js"></script>
+		<script src="ui-grid/vfs_fonts.js"></script>
+		<script src="ui-grid/lodash.min.js"></script>
+		<script src="ui-grid/jszip.min.js"></script>
+		<script src="ui-grid/excel-builder.dist.js"></script>
+		<script src="ui-grid/ui-grid.js"></script>
+		<script src="ui-grid/ui-grid.woff"></script>
+		<script src="ui-grid/ui-grid.ttf"></script>
+		<script src="treeView.js"></script>
+		<script src="toaster.js"></script>
+		<script src="d3.min.js" charset="utf-8"></script>
+		<script src="plotly-latest.min.js"></script>
+		<link rel="stylesheet" href="ui-grid/ui-grid.css">
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+		<script src="//code.jquery.com/jquery.min.js"></script>
+		<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+		<script src="jquery-ui.min.js"></script>
+		<script type="text/javascript">
+
+		var Conf_json;
+		$(document).ready(function(){
+			$.ajax({
+			url: "DB4_conf.xml",              //ajax로 ajax_xml.xml파일을 불러온다.
+			cache: true,                     //사용자캐시를 사용할 것인가.
+			dataType: "xml",                  //서버로부터 받을 것으로 예상되는 데이터 타입.
+			success: function(data){          //ajax요청을 통해 반환되는 데이터 data.
+				/* var json_data = '{ "TAG" : ['; */
+				var json_data = "[";
+				var pGroup = "";
+				var nGroup = "";
+				var trend_selbox = new Array('');
+				var g_count = 0;
+				$(data).find("TAG").each(function(index){
+					json_data += '{ "id": "' + $(this).find('id').text() + '","name": "' + $(this).find('name').text() + '","GROUP": "' + $(this).find('GROUP').text() + '","unit": "' + $(this).find('unit').text() + '"},';
+					// trend viewer select box init
+					if( index == 0 ) {
+						pGroup = $(this).find('GROUP').text();
+					}
+					nGroup = $(this).find('GROUP').text();
+					if (pGroup != nGroup && $(this).find('id').text().indexOf("EA") != -1 && nGroup != "COMMON" && nGroup != "불필요" ) {
+						
+						$('#tag_id').append('<option value="'+ trend_selbox[g_count].substring(0, trend_selbox[g_count].length-1) +'">'+ pGroup +'</option>');
+						
+						pGroup = nGroup;
+						g_count++;
+						trend_selbox[g_count] = $(this).find('id').text() + ",";
+					} else if (pGroup == nGroup && $(this).find('id').text().indexOf("EA") != -1 && nGroup != "COMMON" && nGroup != "불필요" ) {
+						trend_selbox[g_count] += $(this).find('id').text() + ",";
+					}
+				});
+				
+				
+				json_data = json_data.substring(0,json_data.length-1) + "]";
+				Conf_json = JSON.parse(json_data);
+				
+			}
+			});			
+			});
+		
+  function ShowT(wtable) {
+    eval(wtable).style.display="";
+  }
+
+  function ShowT2(wtable,wtable2) {
+    eval(wtable).style.display="";
+    eval(wtable2).style.display="";
+
+  }
+  function ShowT3(wtable,wtable2,wtable3) {
+    eval(wtable).style.display="";
+    eval(wtable2).style.display="";
+    eval(wtable3).style.display="";
+
+  }
+  function but_show() {
+    document.getElementById("but1").style.display="block";
+  }
+    var myApp = angular.module('myApp', ['elasticsearch','ngAnimate','ngTouch','ui.grid','ui.grid.expandable','ui.grid.selection','ui.grid.pinning','ui.grid.pagination','toaster','AxelSoft']);
+    // Create the es service from the esFactory
+
+
+    myApp.service('es', function (esFactory) {
+        return esFactory({ host: 'http://ojooy.iptime.org:9200'});
+    });
+
+    myApp.controller("AppController",function($scope){
+      $scope.toggleSideMenu = function($event){
+        $event.preventDefault();
+        $scope.closed=!$scope.closed;
+      };
+    });
+    myApp.controller('ServerHealthController', function($scope, es, esFactory) {
+
+        es.cat.indices(function (err, resp) {
+            if (err) {
+                $scope.data = err.message;
+
+            } else {
+
+                var i = 12;
+                var j = 0;
+                var k = 25;
+                var l = 0;
+                var indexlist = new Array();
+                var id = new Array();
+                var idlist = new Array();
+
+                while (j < resp.length ){
+                  idlist[j] = resp[j];
+                  j++;
+                }
+
+
+                while (true){
+
+                  k++;
+
+                    while (idlist[i] !== " "){
+
+                      indexlist[j] = idlist[i];
+
+                      i++;
+                      j++;
+
+                    }
+
+
+
+                  if(idlist[k] == "\n")
+                  {
+                    i = k + 13;
+                    k = k + 30;
+                    indexlist.length = j;
+                    id[l] = indexlist.join('');
+
+                    l++;
+                    j=0;
+                  }
+
+                  if(k > idlist.length)
+                  {
+                    break;
+                  }
+                }
+                $scope.data = id.sort();
+
+            }
+        });
+    });
+
+    myApp.controller('QueryController', function($scope, es, esFactory, toaster, uiGridConstants) {
+     	
+    	
+      $scope.fresh = function() {
+        $( "#tab2" ).load(window.location.href + "#tab2");
+      }
+
+      $scope.breadcrums = [''];
+
+      $scope.structure = {
+      folders: [ { name: 'Overview' }, { name: 'Engine status' }, {name: 'Eng. monitoring'}, {name: 'Engine Alarm'}, {name: 'Trend viewer'},
+          { name: 'Event'  , files: [
+          { name: 'Event viewer' },
+          { name: 'Event Ranking'}]
+      }]};
+
+      $scope.options = {
+        onNodeSelect: function (node, breadcrums) {
+          $scope.breadcrums = breadcrums;
+          console.log(node);
+          $scope.menus = node.name;
+          var test = JSON.stringify($scope.menus);
+          console.log($scope.menus);
+          if ($scope.menus == "Overview") {
+            var subf = $('#tab2');
+            console.log(subf);
+            $('.tabcontent').removeClass('current');
+            subf.addClass('current');
+            $scope.stopOverView();
+            var jsonData = {"match_all" : {}};
+            $scope.Gbarchart(jsonData);
+          }
+          else if($scope.menus == "Engine status") {
+            var subf = $('#tab3');
+            console.log(subf);
+            $('.tabcontent').removeClass('current');
+            subf.addClass('current');
+          }
+          else if($scope.menus == "Eng. monitoring") {
+            var subf = $('#tab5');
+            console.log(subf);
+            $('.tabcontent').removeClass('current');
+            subf.addClass('current');
+            $scope.EngineM("engine01");
+          }
+          else if($scope.menus == "Engine Alarm") {
+            var subf = $('#tab4');
+            console.log(subf);
+            $('.tabcontent').removeClass('current');
+            subf.addClass('current');
+          }
+          else if($scope.menus == "Trend viewer") {
+            var subf = $('#tab1');
+            console.log(subf);     
+            $('.tabcontent').removeClass('current');
+            subf.addClass('current');
+          }
+          else if($scope.menus == "Event viewer") {
+            var subf = $('#tab10');
+            console.log(subf);
+            $('.tabcontent').removeClass('current'); 
+            subf.addClass('current');
+            $scope.eventlist2();
+          }
+          else if($scope.menus == "Event Ranking") {
+            var subf = $('#tab8');
+            console.log(subf);
+            $('.tabcontent').removeClass('current');
+            subf.addClass('current');
+            $scope.eventlist();
+          }
+        }
+      };
+
+      var iconClassMap = {
+        txt: 'icon-file-text',
+        jpg: 'icon-picture blue',
+        png: 'icon-picture orange',
+        gif: 'icon-picture'
+      },
+        defaultIconClass = 'icon-file';
+
+                $(function() {
+                        $('ul.tab li > ul.sub-menu li').click(function() {
+                          var activeTab = $(this).attr('data-tab');
+                          alert(activeTab);
+                          $('ul.tab li').removeClass('current');
+                          $('.tabcontent').removeClass('current');
+                          $(this).addClass('current');
+                          $('#' + activeTab).addClass('current');
+
+                        })
+                      });
+
+
+              $('.tab li > .sub-menu').parent().click(function() {
+                  var submenu = $(this).children('.sub-menu');
+                  if ( $(submenu).is(':hidden') ) {
+            document.getElementById('plus').innerHTML = "-";
+            $(submenu).slideDown(200);
+            }else{
+            document.getElementById('plus').innerHTML = "+";
+            $(submenu).slideUp(200);
+            }
+        });
+        /////////
+        var correctTotalPaginationTemplate = "<div role=\"contentinfo\" class=\"ui-grid-pager-panel\" ui-grid-pager ng-show=\"grid.options.enablePaginationControls\"><div role=\"navigation\" class=\"ui-grid-pager-container\"><div role=\"menubar\" class=\"ui-grid-pager-control\"><button type=\"button\" role=\"menuitem\" class=\"ui-grid-pager-first\" ui-grid-one-bind-title=\"aria.pageToFirst\" ui-grid-one-bind-aria-label=\"aria.pageToFirst\" ng-click=\"pageFirstPageClick()\" ng-disabled=\"cantPageBackward()\"><div class=\"first-triangle\"><div class=\"first-bar\"></div></div></button> <button type=\"button\" role=\"menuitem\" class=\"ui-grid-pager-previous\" ui-grid-one-bind-title=\"aria.pageBack\" ui-grid-one-bind-aria-label=\"aria.pageBack\" ng-click=\"pagePreviousPageClick()\" ng-disabled=\"cantPageBackward()\"><div class=\"first-triangle prev-triangle\"></div></button> <input type=\"number\" ui-grid-one-bind-title=\"aria.pageSelected\" ui-grid-one-bind-aria-label=\"aria.pageSelected\" class=\"ui-grid-pager-control-input\" ng-model=\"grid.options.paginationCurrentPage\" min=\"1\" max=\"{{ paginationApi.getTotalPages() }}\" required> <span class=\"ui-grid-pager-max-pages-number\" ng-show=\"paginationApi.getTotalPages() > 0\"><abbr ui-grid-one-bind-title=\"paginationOf\">/</abbr> {{ paginationApi.getTotalPages() }}</span> <button type=\"button\" role=\"menuitem\" class=\"ui-grid-pager-next\" ui-grid-one-bind-title=\"aria.pageForward\" ui-grid-one-bind-aria-label=\"aria.pageForward\" ng-click=\"pageNextPageClick()\" ng-disabled=\"cantPageForward()\"><div class=\"last-triangle next-triangle\"></div></button> <button type=\"button\" role=\"menuitem\" class=\"ui-grid-pager-last\" ui-grid-one-bind-title=\"aria.pageToLast\" ui-grid-one-bind-aria-label=\"aria.pageToLast\" ng-click=\"pageLastPageClick()\" ng-disabled=\"cantPageToLast()\"><div class=\"last-triangle\"><div class=\"last-bar\"></div></div></button></div><div class=\"ui-grid-pager-row-count-picker\" ng-if=\"grid.options.paginationPageSizes.length > 1\"><select ui-grid-one-bind-aria-labelledby-grid=\"'items-per-page-label'\" ng-model=\"grid.options.paginationPageSize\" ng-options=\"o as o for o in grid.options.paginationPageSizes\"></select><span ui-grid-one-bind-id-grid=\"'items-per-page-label'\" class=\"ui-grid-pager-row-count-label\">&nbsp;{{sizesLabel}}</span></div><span ng-if=\"grid.options.paginationPageSizes.length <= 1\" class=\"ui-grid-pager-row-count-label\">{{grid.options.paginationPageSize}}&nbsp;{{sizesLabel}}</span></div><div class=\"ui-grid-pager-count-container\"><div class=\"ui-grid-pager-count\"><span ng-show=\"grid.options.totalItems > 0\">{{(((grid.options.paginationCurrentPage-1)*grid.options.paginationPageSize)+1)}} <abbr ui-grid-one-bind-title=\"paginationThrough\">-</abbr> {{(grid.options.paginationCurrentPage*grid.options.paginationPageSize>grid.options.totalItems?grid.options.totalItems:grid.options.paginationCurrentPage*grid.options.paginationPageSize)}} {{paginationOf}} {{grid.options.totalItems}} {{totalItemsLabel}}</span></div></div></div>";
+
+        $scope.gridOptions = {
+          enableFiltering: false,
+          onRegisterApi: function(gridApi){
+            $scope.gridApi = gridApi;
+          },
+          expandableRowTemplate: 'expandableRowTemplate.html',
+          expandableRowHeight: 200,
+          //subGridVariable will be available in subGrid scope
+          expandableRowScope: {
+            subGridVariable: 'subGridScopeVariable'
+          },
+          paginationPageSizes: [10, 20, 30],
+          paginationPageSize: 10,
+          paginationTemplate: correctTotalPaginationTemplate
+        }
+
+        $scope.gridOptions.columnDefs = [
+          { name: 'DATE', headerCellClass: 'headercolor' }
+        ];
+
+        $scope.toggleFiltering = function(){
+          $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+          $scope.gridApi.core.notifyDataChange( uiGridConstants.dataChange.COLUMN );
+        };
+
+$scope.eventlist2 = function() {
+
+  es.search({
+      index: ["engine01","engine02","engine03","engine04","engine05","engine06","engine07","engine08","engine09","engine10"],
+      body: {
+        "query":
+          {
+            "bool":{
+              "should":[
+		{"match" : {"ED0001" : true}},
+                {"match" : {"ED0002" : true}},
+                {"match" : {"ED0003" : true}},
+                {"match" : {"ED0004" : true}},
+                {"match" : {"ED0005" : true}},
+                {"match" : {"ED0006" : true}},
+                {"match" : {"ED0007" : true}},
+                {"match" : {"ED0008" : true}},
+                {"match" : {"ED0009" : true}},
+                {"match" : {"ED0010" : true}},
+                {"match" : {"ED0011" : true}},
+                {"match" : {"ED0012" : true}},
+                {"match" : {"ED0013" : true}},
+                {"match" : {"ED0014" : true}},
+                {"match" : {"ED0015" : true}},
+                {"match" : {"ED0016" : true}},
+                {"match" : {"ED0017" : true}},
+                {"match" : {"ED0018" : true}},
+                {"match" : {"ED0019" : true}},
+                {"match" : {"ED0020" : true}},
+                {"match" : {"ED0021" : true}},
+                {"match" : {"ED0022" : true}},
+                {"match" : {"ED0023" : true}},
+                {"match" : {"ED0024" : true}},
+                {"match" : {"ED0025" : true}},
+                {"match" : {"ED0026" : true}},
+                {"match" : {"ED0027" : true}},
+                {"match" : {"ED0028" : true}},
+                {"match" : {"ED0029" : true}},
+                {"match" : {"ED0030" : true}},
+                {"match" : {"ED0031" : true}},
+                {"match" : {"ED0032" : true}},
+                {"match" : {"ED0033" : true}},
+                {"match" : {"ED0034" : true}},
+                {"match" : {"ED0035" : true}},
+                {"match" : {"ED0036" : true}},
+                {"match" : {"ED0037" : true}},
+                {"match" : {"ED0038" : true}},
+                {"match" : {"ED0039" : true}},
+                {"match" : {"ED0040" : true}},
+                {"match" : {"ED0041" : true}},
+                {"match" : {"ED0042" : true}},
+                {"match" : {"ED0043" : true}},
+                {"match" : {"ED0044" : true}},
+                {"match" : {"ED0045" : true}},
+                {"match" : {"ED0046" : true}},
+                {"match" : {"ED0047" : true}},
+                {"match" : {"ED0048" : true}},
+                {"match" : {"ED0049" : true}},
+                {"match" : {"ED0050" : true}},
+                {"match" : {"ED0051" : true}},
+                {"match" : {"ED0052" : true}},
+                {"match" : {"ED0053" : true}},
+                {"match" : {"ED0054" : true}},
+                {"match" : {"ED0055" : true}},
+                {"match" : {"ED0056" : true}},
+                {"match" : {"ED0057" : true}},
+                {"match" : {"ED0058" : true}},
+                {"match" : {"ED0059" : true}},
+                {"match" : {"ED0060" : true}},
+                {"match" : {"ED0061" : true}},
+                {"match" : {"ED0062" : true}},
+                {"match" : {"ED0063" : true}},
+                {"match" : {"ED0064" : true}},
+                {"match" : {"ED0065" : true}},
+                {"match" : {"ED0066" : true}},
+                {"match" : {"ED0067" : true}},
+                {"match" : {"ED0068" : true}}
+              ]
+            }
+          },
+          "sort": {"DATE" : {"order":"desc"}, "_index" : {"order":"asc"}},
+         "_source": ["DATE","ED0001","ED0002","ED0003","ED0004","ED0005","ED0006","ED0007","ED0008","ED0009","ED0010","ED0011","ED0012","ED0013","ED0014","ED0015","ED0016","ED0017","ED0018","ED0019","ED0020","ED0021","ED0022","ED0023","ED0024","ED0025","ED0026","ED0027","ED0028","ED0029","ED0030","ED0031","ED0032","ED0033","ED0034","ED0035","ED0036","ED0037","ED0038","ED0039","ED0040","ED0041","ED0042","ED0043","ED0044","ED0045","ED0046","ED0047","ED0048","ED0049","ED0050","ED0051","ED0052","ED0053","ED0054","ED0055","ED0056","ED0057","ED0058","ED0059","ED0060","ED0061","ED0062","ED0063","ED0064","ED0065","ED0066","ED0067","ED0068"],
+          size:500    // Number of documents to show
+          }
+
+  }).then(function (response) {
+    var data = new Array();
+    var aJsonArray = new Array();
+    $scope.griddata = response.hits.hits;
+    var i=0;
+    while(i < $scope.griddata.length)
+    {
+      aJsonArray[i] = $scope.griddata[i];
+      data[i] = {"id":i, "DATE" : aJsonArray[i]._source.DATE, "sub" : [{"id":i,"index":aJsonArray[i]._index}]};
+      i++;
+    }
+
+    console.log(JSON.stringify(data));
+
+     for(i = 0; i < data.length; i++){
+        data[i].subGridOptions = {
+          columnDefs: [{name:"index", field: "index"},{name:"id", field:"id"}],
+          data: data[i].sub
+        }
+      }
+
+    $scope.gridOptions.data = data;
+
+
+    $scope.gridOptions.onRegisterApi = function(gridApi){
+      $scope.gridApi = gridApi;
+    };
+
+    $scope.expandAllRows = function() {
+      $scope.gridApi.expandable.expandAllRows();
+    }
+
+    $scope.collapseAllRows = function() {
+      $scope.gridApi.expandable.collapseAllRows();
+    }
+      }).catch(function (err) {
+                      if (err.status === 404) {
+                        alert("error 404" );
+
+                      } else {
+                        alert("error : " + err );
+
+                      }
+                    });
+};
+
+
+
+     $scope.eventlist = function() {
+       es.search({
+           index: ["engine01","engine02","engine03","engine04","engine05","engine06","engine07","engine08","engine09","engine10"] ,
+           body: {
+             "query":
+               {
+                 "bool":{
+                   "should":[
+		{"match" : {"ED0001" : true}},
+                {"match" : {"ED0002" : true}},
+                {"match" : {"ED0003" : true}},
+                {"match" : {"ED0004" : true}},
+                {"match" : {"ED0005" : true}},
+                {"match" : {"ED0006" : true}},
+                {"match" : {"ED0007" : true}},
+                {"match" : {"ED0008" : true}},
+                {"match" : {"ED0009" : true}},
+                {"match" : {"ED0010" : true}},
+                {"match" : {"ED0011" : true}},
+                {"match" : {"ED0012" : true}},
+                {"match" : {"ED0013" : true}},
+                {"match" : {"ED0014" : true}},
+                {"match" : {"ED0015" : true}},
+                {"match" : {"ED0016" : true}},
+                {"match" : {"ED0017" : true}},
+                {"match" : {"ED0018" : true}},
+                {"match" : {"ED0019" : true}},
+                {"match" : {"ED0020" : true}},
+                {"match" : {"ED0021" : true}},
+                {"match" : {"ED0022" : true}},
+                {"match" : {"ED0023" : true}},
+                {"match" : {"ED0024" : true}},
+                {"match" : {"ED0025" : true}},
+                {"match" : {"ED0026" : true}},
+                {"match" : {"ED0027" : true}},
+                {"match" : {"ED0028" : true}},
+                {"match" : {"ED0029" : true}},
+                {"match" : {"ED0030" : true}},
+                {"match" : {"ED0031" : true}},
+                {"match" : {"ED0032" : true}},
+                {"match" : {"ED0033" : true}},
+                {"match" : {"ED0034" : true}},
+                {"match" : {"ED0035" : true}},
+                {"match" : {"ED0036" : true}},
+                {"match" : {"ED0037" : true}},
+                {"match" : {"ED0038" : true}},
+                {"match" : {"ED0039" : true}},
+                {"match" : {"ED0040" : true}},
+                {"match" : {"ED0041" : true}},
+                {"match" : {"ED0042" : true}},
+                {"match" : {"ED0043" : true}},
+                {"match" : {"ED0044" : true}},
+                {"match" : {"ED0045" : true}},
+                {"match" : {"ED0046" : true}},
+                {"match" : {"ED0047" : true}},
+                {"match" : {"ED0048" : true}},
+                {"match" : {"ED0049" : true}},
+                {"match" : {"ED0050" : true}},
+                {"match" : {"ED0051" : true}},
+                {"match" : {"ED0052" : true}},
+                {"match" : {"ED0053" : true}},
+                {"match" : {"ED0054" : true}},
+                {"match" : {"ED0055" : true}},
+                {"match" : {"ED0056" : true}},
+                {"match" : {"ED0057" : true}},
+                {"match" : {"ED0058" : true}},
+                {"match" : {"ED0059" : true}},
+                {"match" : {"ED0060" : true}},
+                {"match" : {"ED0061" : true}},
+                {"match" : {"ED0062" : true}},
+                {"match" : {"ED0063" : true}},
+                {"match" : {"ED0064" : true}},
+                {"match" : {"ED0065" : true}},
+                {"match" : {"ED0066" : true}},
+                {"match" : {"ED0067" : true}},
+                {"match" : {"ED0068" : true}}
+                   ]
+                 }
+               },
+               "sort": {"DATE" : {"order":"desc"}, "_index" : {"order":"asc"}},
+         "_source": ["DATE","ED0001","ED0002","ED0003","ED0004","ED0005","ED0006","ED0007","ED0008","ED0009","ED0010","ED0011","ED0012","ED0013","ED0014","ED0015","ED0016","ED0017","ED0018","ED0019","ED0020","ED0021","ED0022","ED0023","ED0024","ED0025","ED0026","ED0027","ED0028","ED0029","ED0030","ED0031","ED0032","ED0033","ED0034","ED0035","ED0036","ED0037","ED0038","ED0039","ED0040","ED0041","ED0042","ED0043","ED0044","ED0045","ED0046","ED0047","ED0048","ED0049","ED0050","ED0051","ED0052","ED0053","ED0054","ED0055","ED0056","ED0057","ED0058","ED0059","ED0060","ED0061","ED0062","ED0063","ED0064","ED0065","ED0066","ED0067","ED0068"],
+               size:500    // Number of documents to show
+               }
+
+       }).then(function (response) {
+           $scope.hitsTab5 = response.hits.hits;
+           console.log(JSON.stringify($scope.hitsTab5))
+           var i = 0;
+           var c = 0;
+           var e1=0;
+           var e2=0;
+           var e3=0, e4=0, e5=0, e6=0, e7=0, e8=0, e9=0;
+           var q=0;
+           var c2=0;
+           var KW = new Array();
+           var aJsonAr = new Array();
+           
+	   $scope.count = new Array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+           var val = new Array("DIFFERENTIAL CURRENT SHUTDOWN","GROUND OVER CURRENT SHUTDOWN","OVERVOLTAGE SHUTDOWN","EMERGENCY STOP SHUTDOWN(EGCP)","EMERGENCY STOP SHUTDOWN(HAM)","EMERGENCY STOP SHUTDOWN(PCMS)","ENGINE SHUTDOWN (FROM MCP)","GEN. BEARING TEMP. SHUTDOWN (D.E)","GEN. BEARING TEMP. SHUTDOWN (N.D.E)",
+           "GEN. BEARING OIL PRESS SHUTDOWN (D.E)","GEN. BEARING OIL PRESS SHUTDOWN (N.D.E)","module failure - AIO216_1 / - 1KA07 (SD)","TE05-1 Main bearing temp high Cyl. #1 (SD)","TE05-2 Main bearing temp high Cyl. #2 (SD)","TE05-3 Main bearing temp high Cyl. #3 (SD)","TE05-4 Main bearing temp high Cyl. #4 (SD)",
+           "TE05-5 Main bearing temp high Cyl. #5 (SD)","TE05-6 Main bearing temp high Cyl. #6 (SD)","TE05-7 Main bearing temp high Cyl. #7 (SD)",
+           "TE05-8 Main bearing temp high Cyl. #8 (SD)","TE05-9 Main bearing temp high Cyl. #9 (SD)","TE05-10 Main bearing temp high Cyl. #10 (SD)","TE05-11 Main bearing temp high Cyl. #11 (SD)","TE76 HT temp engine outlet high (SD)",
+           "TE26 EGT TC inlet high A-bank (SD)","TE26 EGT TC inlet high B-bank (SD)","PT62 LO press engine inlet low (SD)","TE78 HT CW temp. air cooler outlet high (SD)","LS923 Oil mist level high (SD)",
+           "Engine start fail (SD)","ZT50 Diesel actuator signal loss (SD)","FO actuator major alarm (SD)","DI Safety Device Open (SD)","ECS internal fail (SD)",
+           "ECS application (SD)","Slow turning failed (LO press low) (SD)","Slow turning failed (during cranking) (SD)","SE11x Engine speed (SD)","S340 Engine speed low (SD)","Stop command released in load run (SD)",
+           "DI Stop valve activated (SD)","module failure - GIO212_1 1KA0 (SD)","module failure - DIO280_1 / - 1KA0 (SD)","module failure - AIO208 (SD)",
+           "SE111,112 speed sensor fail (ESD)","SE111,112 Engine Overspeed (ESD)","ESD from remote (ESD)","ESD from LOP (ESD)","OVER CURRENT TRIP","NEGATIVE SEQUENCE TRIP","UNDER VOLTAGE TRIP","REVERSE POWER TRIP",
+           "LOSS OF EXCITATION TRIP","OVER FREQUENCY TRIP","UNDER FREQUENCY TRIP","AVR FAULT","AVR OPEN DIODE / SHORT DIODE","AVR LOSS OF SENSOR",
+           "AVR LOSE OF FIELD / FIELD OVER CURRENT","AVR PMG SOURCE FAULT","GEN. WINDING TEMP. TRIP (R)","GEN. WINDING TEMP. TRIP (S)","GEN. WINDING TEMP. TRIP (T)",
+           "LOCKOUT RELAY ON","24 VOLT/HERTZ OVER EXCITATION TRIP","78 OUT OF STEP TRIP","51V VOLTAGE RESTRAINED TIME OVER CURRENT TRIP","50/27 ACCIDENTAL ENERGIZATION TRIP"
+           );
+
+
+	   $scope.listdata = new Array();
+           console.log($scope.hitsTab5.length)
+
+           var Mdate = new Array();
+
+           while(i < $scope.hitsTab5.length)
+           {
+             aJsonAr[i] = $scope.hitsTab5[i];
+	     Mdate[i] = aJsonAr[i]._source.DATE;
+
+
+		if(aJsonAr[i]._source.ED0001)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[0]++; }  
+		if(aJsonAr[i]._source.ED0002)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[1]++; }  
+		if(aJsonAr[i]._source.ED0003)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[2]++; }  
+		if(aJsonAr[i]._source.ED0004)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[3]++; }  
+		if(aJsonAr[i]._source.ED0005)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[4]++; }  
+		if(aJsonAr[i]._source.ED0006)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[5]++; }  
+		if(aJsonAr[i]._source.ED0007)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[6]++; }  
+		if(aJsonAr[i]._source.ED0008)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[7]++; }  
+		if(aJsonAr[i]._source.ED0009)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[8]++; }  
+		if(aJsonAr[i]._source.ED0010)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[9]++; }  
+		if(aJsonAr[i]._source.ED0011)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[10]++; }  
+		if(aJsonAr[i]._source.ED0012)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[11]++; }  
+		if(aJsonAr[i]._source.ED0013)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[12]++; }  
+		if(aJsonAr[i]._source.ED0014)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[13]++; }  
+		if(aJsonAr[i]._source.ED0015)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[14]++; }  
+		if(aJsonAr[i]._source.ED0016)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[15]++; }  
+		if(aJsonAr[i]._source.ED0017)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[16]++; }  
+		if(aJsonAr[i]._source.ED0018)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[17]++; }  
+		if(aJsonAr[i]._source.ED0019)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[18]++; }  
+		if(aJsonAr[i]._source.ED0020)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[19]++; }  
+		if(aJsonAr[i]._source.ED0021)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[20]++; }  
+		if(aJsonAr[i]._source.ED0022)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[21]++; }  		
+		if(aJsonAr[i]._source.ED0023)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[22]++; }  
+		if(aJsonAr[i]._source.ED0024)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[23]++; }  
+		if(aJsonAr[i]._source.ED0025)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[24]++; }  
+		if(aJsonAr[i]._source.ED0026)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[25]++; }  
+		if(aJsonAr[i]._source.ED0027)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[26]++; }  
+		if(aJsonAr[i]._source.ED0028)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[27]++; }  
+		if(aJsonAr[i]._source.ED0029)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[28]++; }  
+		if(aJsonAr[i]._source.ED0030)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[29]++; }  
+		if(aJsonAr[i]._source.ED0031)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[30]++; }  
+		if(aJsonAr[i]._source.ED0032)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[31]++; }  
+		if(aJsonAr[i]._source.ED0033)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[32]++; }  
+		if(aJsonAr[i]._source.ED0034)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[33]++; }  
+		if(aJsonAr[i]._source.ED0035)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[34]++; }  
+		if(aJsonAr[i]._source.ED0036)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[35]++; }  
+		if(aJsonAr[i]._source.ED0037)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[36]++; }  
+		if(aJsonAr[i]._source.ED0038)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[37]++; }  
+		if(aJsonAr[i]._source.ED0039)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[38]++; }  
+		if(aJsonAr[i]._source.ED0040)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[39]++; }  
+		if(aJsonAr[i]._source.ED0041)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[40]++; }  
+		if(aJsonAr[i]._source.ED0042)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[41]++; }  
+		if(aJsonAr[i]._source.ED0043)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[42]++; }  
+		if(aJsonAr[i]._source.ED0044)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[43]++; }  
+		if(aJsonAr[i]._source.ED0045)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[44]++; }  
+		if(aJsonAr[i]._source.ED0046)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[45]++; }  
+		if(aJsonAr[i]._source.ED0047)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[46]++; }  
+		if(aJsonAr[i]._source.ED0048)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[47]++; }  
+		if(aJsonAr[i]._source.ED0049)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[48]++; }  
+		if(aJsonAr[i]._source.ED0050)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[49]++; }  
+		if(aJsonAr[i]._source.ED0051)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[50]++; }  
+		if(aJsonAr[i]._source.ED0052)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[51]++; }  
+		if(aJsonAr[i]._source.ED0053)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[52]++; }  
+		if(aJsonAr[i]._source.ED0054)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[53]++; }  
+		if(aJsonAr[i]._source.ED0055)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[54]++; }  
+		if(aJsonAr[i]._source.ED0056)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[55]++; }  
+		if(aJsonAr[i]._source.ED0057)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[56]++; }  
+		if(aJsonAr[i]._source.ED0058)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[57]++; }  
+		if(aJsonAr[i]._source.ED0059)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[58]++; }  
+		if(aJsonAr[i]._source.ED0060)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[59]++; }  
+		if(aJsonAr[i]._source.ED0061)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[60]++; }  
+		if(aJsonAr[i]._source.ED0062)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[61]++; }  
+		if(aJsonAr[i]._source.ED0063)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[62]++; }  
+		if(aJsonAr[i]._source.ED0064)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[63]++; }  
+		if(aJsonAr[i]._source.ED0065)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[64]++; }  
+		if(aJsonAr[i]._source.ED0066)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[65]++; }  
+		if(aJsonAr[i]._source.ED0067)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[66]++; }  
+		if(aJsonAr[i]._source.ED0068)
+		{ $scope.listdata[c] = { "alarmname" : "E0132","index" : aJsonAr[i]._index,"DATE" : Mdate[i], "value":"OVERSPEED SHUTDOWN"}; c++; $scope.count[67]++; }  
+		
+
+           if(q=0){
+               q = q+c;
+               c2 = c;
+             }
+             else{
+             q = c-c2;
+             c2 = c;
+             }
+
+             if(aJsonAr[i]._index == "engine01") e1 = e1 + q;
+             if(aJsonAr[i]._index == "engine02") e2 = e2 + q;
+             if(aJsonAr[i]._index == "engine03") e3 = e3 + q;
+             if(aJsonAr[i]._index == "engine04") e4 = e4 + q;
+             if(aJsonAr[i]._index == "engine05") e5 = e5 + q;
+             if(aJsonAr[i]._index == "engine06") e6 = e6 + q;
+             if(aJsonAr[i]._index == "engine07") e7 = e7 + q;
+             if(aJsonAr[i]._index == "engine08") e8 = e8 + q;
+             if(aJsonAr[i]._index == "engine09") e9 = e9 + q;
+
+
+             i++;
+           }
+           console.log(JSON.stringify($scope.listdata))
+
+           var k=0;
+           var j=0;
+           $scope.listdata2 = new Array();
+           $scope.listdata3 = new Array();
+           var othercount = 0;
+           while(k<$scope.count.length-1)
+           {
+             $scope.listdata2[k] = {"value":val[k],"count":$scope.count[k]};
+
+             if($scope.count[k]/$scope.listdata.length*100 > 10){
+             $scope.listdata3[j] = {"name":val[k],"count":$scope.count[k],"value":$scope.count[k]/$scope.listdata.length*100};
+             j++;
+           }
+            else {
+              othercount = othercount + $scope.count[k];
+
+            }
+              k++;
+           }
+           $scope.listdata3[$scope.listdata3.length] = {"name":"other","count":othercount,"value":othercount/$scope.listdata.length*100};
+           console.log(JSON.stringify($scope.listdata.length))
+
+           $scope.orderList = "index";
+           var aJson21 = new Array();
+           var q=0;
+
+
+           console.log(e1 + e2 + e3 + e4 + e5)
+
+           var xValue = ['ENGINE#01', 'ENGINE#02', 'ENGINE#03', 'ENGINE#04', 'ENGINE#05','ENGINE#06', 'ENGINE#07', 'ENGINE#08', 'ENGINE#09'];
+
+
+           var yValue = [e1, e2, e3, e4, e5, e6, e7, e8, e9];
+
+           var Bartrace1 = {
+             x: xValue,
+             y: yValue,
+             type: 'bar',
+             name: 'System',
+             text: yValue,
+             textposition: 'auto',
+             hoverinfo: 'none',
+             opacity: 0.5,
+             marker: {
+               color: 'rgb(158,202,225)',
+               line: {
+                 color: 'rbg(8,48,107)',
+                 width: 1.5
+               }
+             }
+           };
+
+           var Bardata = [Bartrace1];
+
+           var layouts2 = {
+             title : 'Event status'
+           };
+
+           Plotly.newPlot('Eventranking', Bardata, layouts2);
+
+if($scope.hitsTab5.length > 0){
+
+var data = $scope.listdata3;
+
+data.sort(function(a, b){
+    return b.value - a.value;
+});
+
+var svg = d3.select('svg'),
+    canvas = d3.select('#canvas'),
+    art = d3.select('#art'),
+    labels = d3.select('#labels');
+
+var d3Pie = d3.layout.pie();
+d3Pie.value(function(d) {
+    return d.value;
+});
+
+// store our chart dimensions
+var cDim = {
+  height: 400,
+  width: 900,
+  innerRadius: 50,
+  outerRadius: 150,
+  labelRadius: 180
+};
+
+svg.attr({
+  height: cDim.height,
+  width: cDim.width
+});
+
+canvas.attr('transform', 'translate(' + (cDim.width/2) + ', ' + (cDim.height/2) + ')');
+
+var pieData = d3Pie(data);
+
+var pieArc = d3.svg.arc()
+                .innerRadius(cDim.innerRadius)
+                .outerRadius(cDim.outerRadius);
+
+
+var colors = d3.scale.category20();
+
+var enteringArcs = art.selectAll('.wedge').data(pieData).enter();
+
+enteringArcs.append('path')
+            .attr('class', 'wedge')
+            .attr('d', pieArc)
+            .style('fill', function(d, i){ return colors(i); });
+
+
+
+
+var enteringLabels = labels.selectAll('.label').data(pieData).enter();
+var labelGroups = enteringLabels.append('g').attr('class', 'label');
+
+var lines = labelGroups.append('line').attr({
+  x1: function(d, i) {
+    return pieArc.centroid(d)[0];
+  },
+  y1: function(d) {
+    return pieArc.centroid(d)[1];
+  },
+  x2: function(d) {
+    var centroid = pieArc.centroid(d),
+        midAngle = Math.atan2(centroid[1], centroid[0]);
+    return Math.cos(midAngle) * cDim.labelRadius;
+  },
+  y2: function(d) {
+    var centroid = pieArc.centroid(d),
+        midAngle = Math.atan2(centroid[1], centroid[0]);
+    return Math.sin(midAngle) * cDim.labelRadius;
+  },
+  
+  'class': 'label-line',
+  'stroke': function(d, i) {
+    return colors(i);
+  }
+});
+
+var textLabels = labelGroups.append('text').attr({
+    x: function(d, i) {
+      var centroid = pieArc.centroid(d),
+          midAngle = Math.atan2(centroid[1], centroid[0]),
+          x = Math.cos(midAngle) * cDim.labelRadius,
+          sign = x > 0? 1: -1;
+      return x + (5*sign);
+    },
+  
+    y: function(d, i) {
+      var centroid = pieArc.centroid(d),
+          midAngle = Math.atan2(centroid[1], centroid[0]),
+          y = Math.sin(midAngle) * cDim.labelRadius;
+      return y;
+    },
+  
+    'text-anchor': function(d, i) {
+      var centroid = pieArc.centroid(d),
+          midAngle = Math.atan2(centroid[1], centroid[0]),
+          x = Math.cos(midAngle) * cDim.labelRadius;
+      return x > 0? 'start' : 'end';
+    },
+  
+    'class': 'label-text'
+}).text(function(d){
+  return d.data.name ;
+})
+
+
+// relax the label!
+var alpha = 0.5,
+    spacing = 15;
+
+function relax() {
+  var again = false;
+  textLabels.each(function(d, i) {
+       var a = this,
+           da = d3.select(a),
+           y1 = da.attr('y');
+        textLabels.each(function(d, j) {
+           var b = this;
+            if (a === b) {
+              return ;
+            }
+          
+            db = d3.select(b);
+            if (da.attr('text-anchor') !== db.attr('text-anchor')) {
+              return ;
+            }
+          
+            var y2 = db.attr('y');
+            deltaY = y1 - y2;
+            
+            if (Math.abs(deltaY) > spacing) {
+              return ;
+            }
+          
+            again = true;
+            sign = deltaY > 0? 1: -1;
+            var adjust = sign * alpha;
+            da.attr('y', +y1 + adjust);
+            db.attr('y', +y2 - adjust);
+        });
+  });
+  
+  if (again) {
+      var labelElements = textLabels[0];
+      lines.attr('y2', function(d, i) {
+          var labelForLine = d3.select(labelElements[i]);
+          return labelForLine.attr('y');
+      });
+      setTimeout(relax, 20);
+  }
+}
+
+relax();
+}
+
+                  }).catch(function (err) {
+                    if (err.status === 404) {
+                      alert("error 404" );
+
+                    } else {
+                      alert("error : " + err );
+
+                    }
+                  });
+     }
+     
+	//overview 시작점 -jkkim
+     $scope.Gbarchart = function(jsonData) {
+		try{
+		var realIndex = new Array();
+		var count = 0;
+       for(i = 0; i < ($scope.data).length; i++)
+    	{
+			es.search({
+	           index: $scope.data[i],
+	           body: {
+	               "query":jsonData,
+	               "sort": {"DATE" : {"order":"desc"}, "_index" : {"order":"asc"}},
+	               size : 1
+	               }
+	       }).then(function (response) {
+	    	   realIndex[count] = response.hits.hits[0];
+	    	   count++;
+	    	   if(realIndex.length == ($scope.data).length){
+	    		   fn_OverView(realIndex);
+	    	   }
+	       });
+    	}
+     }catch(err){
+    	 alert(err);
+     }
+	}
+	
+	setTimeout(function() {
+        var jsonData = {"match_all" : {}};
+        $scope.Gbarchart(jsonData);
+	},2000);
+	
+	
+	 function fn_OverView(realIndex){
+		 $scope.hitsTab1 = realIndex
+         var i = 0;
+         var KW = new Array();
+         var aJsonAr = new Array();
+         //정렬
+         $scope.hitsTab1.sort(function(a,b){
+        	return a._index < b._index ? -1 : a._index > b._index ? 1:0;
+         });
+         while(i < 10)
+         {
+           aJsonAr[i] = $scope.hitsTab1[i];
+           
+    		//시간 표시하기
+    		var engOver_TEMP = aJsonAr[0]._source.DATE.split(' ');
+            //날짜
+            $("#engOver_DATE").val(engOver_TEMP[0]);
+           
+            var engOver_TIME = engOver_TEMP[1].split(":");
+            //시간
+            $("#engOver_HOUR").val(engOver_TIME[0]);
+            //분
+            $("#engOver_MIN").val(engOver_TIME[1]);
+            //초
+            $("#engOver_SEC").val(engOver_TIME[2]);
+           
+           KW[i] = aJsonAr[i]._source.EA0172;
+           i++;
+         }
+         
+
+
+         var xValue = ['ENGINE#01', 'ENGINE#02', 'ENGINE#03', 'ENGINE#04', 'ENGINE#05', 'ENGINE#06', 'ENGINE#07', 'ENGINE#08', 'ENGINE#09','ENGINE#10'];
+         var yValue = [8900, 8900, 8900, 8900, 8900, 8900, 8900, 8900, 8900,8900];
+         var yValue2 = [KW[0], KW[1], KW[2], KW[3], KW[4], KW[5], KW[6], KW[7], KW[8], KW[9]];
+
+         var Bartrace1 = {
+           x: xValue,
+           y: yValue,
+           type: 'bar',
+           name: 'Rated Power(KW)',
+           text: yValue,
+           textposition: 'auto',
+           hoverinfo: 'none',
+           opacity: 0.5,
+           marker: {
+             color: 'rgb(158,202,225)',
+             line: {
+               color: 'rbg(8,48,107)',
+             }
+           }
+         };
+         var Bartrace2 = {
+           x: xValue,
+           y: yValue2,
+           type: 'bar',
+           name: 'Active Power(KW)',
+           text: yValue2,
+           textposition: 'auto',
+           hoverinfo: 'none',
+           marker: {
+             color: 'rgba(58,200,225,.5)',
+             line: {
+               color: 'rbg(8,48,107)',
+               width: 1.5
+             }
+           }
+         };
+         var Bardata = [Bartrace1, Bartrace2];
+
+         var layouts = {
+           title : 'Engine (KW)'
+
+         };
+
+         Plotly.newPlot('myDiv4', Bardata, layouts);
+
+var can = document.getElementById('myCanvas'),
+spanProcent0 = document.getElementById('procent'),
+c0 = can.getContext('2d');
+
+var posX = can.width / 2,
+posY = can.height / 2,
+fps = 1000 / 200,
+procent = 0,
+oneProcent = 360 / 100,
+result = oneProcent * ((KW[0]/8900)*100).toFixed(1);
+
+c0.lineCap = 'round';
+arcMove(c0, spanProcent0,result);
+
+var can1 = document.getElementById('myCanvas1'),
+spanProcent1 = document.getElementById('procent1'),
+c1 = can1.getContext('2d');
+posX = can1.width / 2,
+  posY = can1.height / 2,
+  fps = 1000 / 200,
+  procent = 0,
+  oneProcent = 360 / 100,
+result = oneProcent * ((KW[1]/8900)*100).toFixed(1);
+
+
+c1.lineCap = 'round';
+arcMove(c1, spanProcent1,result);
+
+var can2 = document.getElementById('myCanvas2'),
+spanProcent2 = document.getElementById('procent2'),
+c2 = can2.getContext('2d');
+posX = can2.width / 2,
+posY = can2.height / 2,
+    fps = 1000 / 200,
+    procent = 0,
+    oneProcent = 360 / 100,
+result = oneProcent * ((KW[2]/8900)*100).toFixed(1);
+
+
+c2.lineCap = 'round';
+arcMove(c2, spanProcent2,result);
+
+var can3 = document.getElementById('myCanvas3'),
+ spanProcent3 = document.getElementById('procent3'),
+  c3 = can3.getContext('2d');
+  posX = can3.width / 2,
+      posY = can3.height / 2,
+      fps = 1000 / 200,
+      procent = 0,
+      oneProcent = 360 / 100,
+result = oneProcent * ((KW[3]/8900)*100).toFixed(1);
+
+
+c3.lineCap = 'round';
+arcMove(c3, spanProcent3,result);
+
+var can4 = document.getElementById('myCanvas4'),
+   spanProcent4 = document.getElementById('procent4'),
+    c4 = can4.getContext('2d');
+    posX = can4.width / 2,
+        posY = can4.height / 2,
+        fps = 1000 / 200,
+        procent = 0,
+        oneProcent = 360 / 100,
+result = oneProcent * ((KW[4]/8900)*100).toFixed(1);
+
+
+ c4.lineCap = 'round';
+ arcMove(c4, spanProcent4,result);
+
+ var can5 = document.getElementById('myCanvas5'),
+     spanProcent5 = document.getElementById('procent5'),
+      c5 = can5.getContext('2d');
+      posX = can5.width / 2,
+          posY = can5.height / 2,
+          fps = 1000 / 200,
+          procent = 0,
+          oneProcent = 360 / 100,
+ result = oneProcent * ((KW[5]/8900)*100).toFixed(1);
+
+
+   c5.lineCap = 'round';
+   arcMove(c5, spanProcent5,result);
+
+   var can6 = document.getElementById('myCanvas6'),
+       spanProcent6 = document.getElementById('procent6'),
+        c6 = can6.getContext('2d');
+        posX = can6.width / 2,
+            posY = can6.height / 2,
+            fps = 1000 / 200,
+            procent = 0,
+            oneProcent = 360 / 100,
+   result = oneProcent * ((KW[6]/8900)*100).toFixed(1);
+
+
+     c6.lineCap = 'round';
+     arcMove(c6, spanProcent6,result);
+
+     var can7 = document.getElementById('myCanvas7'),
+         spanProcent7 = document.getElementById('procent7'),
+          c7 = can7.getContext('2d');
+          posX = can7.width / 2,
+              posY = can7.height / 2,
+              fps = 1000 / 200,
+              procent = 0,
+              oneProcent = 360 / 100,
+     result = oneProcent * ((KW[7]/8900)*100).toFixed(1);
+
+
+       c7.lineCap = 'round';
+       arcMove(c7, spanProcent7,result);
+
+       var can8 = document.getElementById('myCanvas8'),
+           spanProcent8 = document.getElementById('procent8'),
+            c8 = can8.getContext('2d');
+            posX = can8.width / 2,
+                posY = can8.height / 2,
+                fps = 1000 / 200,
+                procent = 0,
+                oneProcent = 360 / 100,
+       result = oneProcent * ((KW[8]/8900)*100).toFixed(1);
+
+
+         c8.lineCap = 'round';
+         arcMove(c8, spanProcent8,result);
+
+ var can9 = document.getElementById('myCanvas9'),
+           spanProcent9 = document.getElementById('procent9'),
+            c9 = can9.getContext('2d');
+            posX = can9.width / 2,
+                posY = can9.height / 2,
+                fps = 1000 / 200,
+                procent = 0,
+                oneProcent = 360 / 100,
+       result = oneProcent * ((KW[9]/8900)*100).toFixed(1);
+
+
+         c9.lineCap = 'round';
+         arcMove(c9, spanProcent9,result);
+         function arcMove(c, spanProcents, result){
+    		 var deegres = 0;
+    		 var acrInterval = setInterval (function() {
+    		 deegres += 1;
+    		 c.clearRect( 0, 0, can.width, can.height );
+    		 procent = deegres / oneProcent;
+
+    		 spanProcents.innerHTML = procent.toFixed();
+
+    		 c.beginPath();
+    		 c.arc( posX, posY, 35, (Math.PI/180) * 270, (Math.PI/180) * (270 + 360) );
+    		 c.strokeStyle = '#b1b1b1';
+    		 c.lineWidth = '7';
+    		 c.stroke();
+    		 c.beginPath();
+    		 c.strokeStyle = '#F15F5F';
+    		 c.lineWidth = '7';
+    		 c.arc( posX, posY, 35, (Math.PI/180) * 270, (Math.PI/180) * (270 + deegres) );
+    		 c.stroke();
+    		 if( deegres >= result ) clearInterval(acrInterval);
+    		 }, fps);
+    	}	 
+	 }
+	 
+//engine monitoring 수정_190312 gwpark
+     $scope.EngineM = function(engine,timeArea) {
+
+       var id = engine;
+       var jsonData;
+       
+     //조회날짜 최근, 지정날짜
+		if($("#" + timeArea).find(".jint_check").is(":checked")){
+			//Date 조각 합치기
+			var engMotDate = dateCombine(timeArea);
+			jsonData = {"bool":{"should":{"match" : {"DATE" : engMotDate}}}};
+		}else{
+			jsonData = {"match_all" : {}};
+		}
+     es.search({
+           index: id,
+           body: {
+        	   "query" : jsonData,
+               "sort": {"DATE" : {"order":"desc"}},
+               size : 1
+               }
+
+       }).then(function (response) {
+
+         $scope.hitsTab4 = response.hits.hits;
+         var i=0;
+         var aJsonAr = new Array();
+         
+         $('#GENERATOR_DATA').empty();
+         $('#ENGINE_CONTROL_FACTOR').empty();
+         $('#ENGINE_SPEED_DATA').empty();
+         $('#FUEL_GAS_SYSTEM').empty();
+         $('#LUBE_OIL_SYSTEM').empty();
+         $('#COMPRESSED_AIR_SYSTEM').empty();
+         $('#GENERATOR_SYSTEM').empty();
+         $('#FUEL_OIL_SYSTEM').empty();
+         $('#COOLING_WATER_SYSTEM').empty();
+         $('#CHARGE_AIR_SYSTEM').empty();
+         $('#CMB_PMAX').empty();
+         $('#CMB_IMEP').empty();
+         $('#EXH_GAS_CYLINDER_TEMP').empty();
+         $('#MAIN_BEARING_TEMP').empty();
+         $('#ENGINE_RUN_HOUR').empty();
+         $('#READY_TO_START').empty();
+         $('#START_STOP_SEQUENCE').empty();
+
+         aJsonAr[0] = $scope.hitsTab4[0];
+         var canvas, context;
+         $.each(Conf_json, function(key,value) {
+        	if(value.GROUP == "GENERATOR DATA") {
+        		$('#GENERATOR_DATA').append('<tr><td style="width:65%; color: #005580;">' + value.name + '</td>' + 
+        	        	'<td style="width:35%; height:50px;"><table style="color:white; background-color: #005580; width:100%; height:30px;"><tr style="border:1px solid #bdbdbd;"><td style="width:50%; text-align:right;">'+ aJsonAr[0]._source[value.id] +'</td><td style="width:50%;">&nbsp;'+ value.unit +'</td></tr></td><tr>');
+        	} else if (value.GROUP == "ENGINE CONTROL FACTOR") {
+        		$('#ENGINE_CONTROL_FACTOR').append('<tr><td style="width:65%; color: #005580;">' + value.name + '</td>' + 
+        	        	'<td style="width:35%; height:50px;"><table style="color:white; background-color: #005580; width:100%; height:30px;"><tr style="border:1px solid #bdbdbd;"><td style="width:50%; text-align:right;">'+ aJsonAr[0]._source[value.id] +'</td><td style="width:50%;">&nbsp;'+ value.unit +'</td></tr></td><tr>');
+        	} else if (value.GROUP == "ENGINE SPEED DATA") {
+        		$('#ENGINE_SPEED_DATA').append('<tr><td style="width:65%; color: #005580;">' + value.name + '</td>' + 
+        	        	'<td style="width:35%; height:50px;"><table style="color:white; background-color: #005580; width:100%; height:30px;"><tr style="border:1px solid #bdbdbd;"><td style="width:50%; text-align:right;">'+ aJsonAr[0]._source[value.id] +'</td><td style="width:50%;">&nbsp;'+ value.unit +'</td></tr></td><tr>');
+        	} else if (value.GROUP == "FUEL GAS SYSTEM") {
+        		$('#FUEL_GAS_SYSTEM').append('<tr><td style="width:65%; color: #005580;">' + value.name + '</td>' + 
+        	        	'<td style="width:35%; height:50px;"><table style="color:white; background-color: #005580; width:100%; height:30px;"><tr style="border:1px solid #bdbdbd;"><td style="width:50%; text-align:right;">'+ aJsonAr[0]._source[value.id] +'</td><td style="width:50%;">&nbsp;'+ value.unit +'</td></tr></td><tr>');
+        	} else if (value.GROUP == "LUBE OIL SYSTEM") {
+        		$('#LUBE_OIL_SYSTEM').append('<tr><td style="width:65%; color: #005580;">' + value.name + '</td>' + 
+        	        	'<td style="width:35%; height:50px;"><table style="color:white; background-color: #005580; width:100%; height:30px;"><tr style="border:1px solid #bdbdbd;"><td style="width:50%; text-align:right;">'+ aJsonAr[0]._source[value.id] +'</td><td style="width:50%;">&nbsp;'+ value.unit +'</td></tr></td><tr>');
+        	} else if (value.GROUP == "COMPRESSED AIR SYSTEM") {
+        		$('#COMPRESSED_AIR_SYSTEM').append('<tr><td style="width:65%; color: #005580;">' + value.name + '</td>' + 
+        	        	'<td style="width:35%; height:50px;"><table style="color:white; background-color: #005580; width:100%; height:30px;"><tr style="border:1px solid #bdbdbd;"><td style="width:50%; text-align:right;">'+ aJsonAr[0]._source[value.id] +'</td><td style="width:50%;">&nbsp;'+ value.unit +'</td></tr></td><tr>');
+        	} else if (value.GROUP == "GENERATOR SYSTEM") {
+        		$('#GENERATOR_SYSTEM').append('<tr><td style="width:65%; color: #005580;">' + value.name + '</td>' + 
+        	        	'<td style="width:35%; height:50px;"><table style="color:white; background-color: #005580; width:100%; height:30px;"><tr style="border:1px solid #bdbdbd;"><td style="width:50%; text-align:right;">'+ aJsonAr[0]._source[value.id] +'</td><td style="width:50%;">&nbsp;'+ value.unit +'</td></tr></td><tr>');
+        	} else if (value.GROUP == "FUEL OIL SYSTEM") {
+        		$('#FUEL_OIL_SYSTEM').append('<tr><td style="width:65%; color: #005580;">' + value.name + '</td>' + 
+        	        	'<td style="width:35%; height:50px;"><table style="color:white; background-color: #005580; width:100%; height:30px;"><tr style="border:1px solid #bdbdbd;"><td style="width:50%; text-align:right;">'+ aJsonAr[0]._source[value.id] +'</td><td style="width:50%;">&nbsp;'+ value.unit +'</td></tr></td><tr>');
+        	} else if (value.GROUP == "COOLING WATER SYSTEM") {
+        		$('#COOLING_WATER_SYSTEM').append('<tr><td style="width:65%; color: #005580;">' + value.name + '</td>' + 
+        	        	'<td style="width:35%; height:50px;"><table style="color:white; background-color: #005580; width:100%; height:30px;"><tr style="border:1px solid #bdbdbd;"><td style="width:50%; text-align:right;">'+ aJsonAr[0]._source[value.id] +'</td><td style="width:50%;">&nbsp;'+ value.unit +'</td></tr></td><tr>');
+        	} else if (value.GROUP == "CHARGE AIR SYSTEM") {
+        		$('#CHARGE_AIR_SYSTEM').append('<tr><td style="width:65%; color: #005580;">' + value.name + '</td>' + 
+        	        	'<td style="width:35%; height:50px;"><table style="color:white; background-color: #005580; width:100%; height:30px;"><tr style="border:1px solid #bdbdbd;"><td style="width:50%; text-align:right;">'+ aJsonAr[0]._source[value.id] +'</td><td style="width:50%;">&nbsp;'+ value.unit +'</td></tr></td><tr>');
+        	} else if (value.GROUP == "CYLINDER MONITORING & BALANCING") {
+        		if(value.name.indexOf('Pmax') != -1) {
+	        		$('#CMB_PMAX').append('<tr><td style="width:65%; color: #005580;">' + value.name + '</td>' + 
+	        	        	'<td style="width:35%; height:50px;"><table style="color:white; background-color: #005580; width:100%; height:30px;"><tr style="border:1px solid #bdbdbd;"><td style="width:50%; text-align:right;">'+ aJsonAr[0]._source[value.id] +'</td><td style="width:50%;">&nbsp;'+ value.unit +'</td></tr></td><tr>');
+        		} else if( value.name.indexOf('IMEP') != -1 ) {
+        			$('#CMB_IMEP').append('<tr><td style="width:65%; color: #005580;">' + value.name + '</td>' + 
+            	        	'<td style="width:35%; height:50px;"><table style="color:white; background-color: #005580; width:100%; height:30px;"><tr style="border:1px solid #bdbdbd;"><td style="width:50%; text-align:right;">'+ aJsonAr[0]._source[value.id] +'</td><td style="width:50%;">&nbsp;'+ value.unit +'</td></tr></td><tr>');
+        		} 
+        	} else if (value.GROUP == "EXH. GAS CYLINDER TEMP") {
+        		$('#EXH_GAS_CYLINDER_TEMP').append('<tr><td style="width:65%; color: #005580;">' + value.name + '</td>' + 
+        	        	'<td style="width:35%; height:50px;"><table style="color:white; background-color: #005580; width:100%; height:30px;"><tr style="border:1px solid #bdbdbd;"><td style="width:50%; text-align:right;">'+ aJsonAr[0]._source[value.id] +'</td><td style="width:50%;">&nbsp;'+ value.unit +'</td></tr></td><tr>');
+        	} else if (value.GROUP == "MAIN BEARING TEMP") {
+        		$('#MAIN_BEARING_TEMP').append('<tr><td style="width:65%; color: #005580;">' + value.name + '</td>' + 
+        	        	'<td style="width:35%; height:50px;"><table style="color:white; background-color: #005580; width:100%; height:30px;"><tr style="border:1px solid #bdbdbd;"><td style="width:50%; text-align:right;">'+ aJsonAr[0]._source[value.id] +'</td><td style="width:50%;">&nbsp;'+ value.unit +'</td></tr></td><tr>');
+        	} else if (value.GROUP == "ENGINE RUN HOUR") {
+        		$('#ENGINE_RUN_HOUR').append('<tr><td style="width:65%; color: #005580;">' + value.name + '</td>' + 
+        	        	'<td style="width:35%; height:50px;"><table style="color:white; background-color: #005580; width:100%; height:30px;"><tr style="border:1px solid #bdbdbd;"><td style="width:50%; text-align:right;">'+ aJsonAr[0]._source[value.id] +'</td><td style="width:50%;">&nbsp;'+ value.unit +'</td></tr></td><tr>');
+        	} else if (value.GROUP == "ready to start") {
+        		$('#READY_TO_START').append('<td style="font-size:8pt; padding-right: 10px;"><canvas id="encan' + key + '" width="30" height="30"></canvas><span style="vertical-align: super;">' + value.name +'</span></td>');
+        		canvas = document.getElementById("encan" + key);
+         		context = canvas.getContext("2d");
+         		draw(context, aJsonAr[0]._source[value.id]);
+        	} else if (value.GROUP == "START/STOP SEQUENCE") {
+        		$('#START_STOP_SEQUENCE').append('<td style="font-size:8pt; padding-right: 12px;"><canvas id="encan' + key + '" width="30" height="30"></canvas><span style="vertical-align: super;">' + value.name +'</span></td>');
+        		canvas = document.getElementById("encan" + key);
+         		context = canvas.getContext("2d");
+         		draw(context, aJsonAr[0]._source[value.id]);
+        	}
+         });
+         
+         //검색된 날짜 바인딩
+         var engMot_TEMP = aJsonAr[0]._source.DATE.split(' ');
+         //날짜
+         $("#engMot_DATE").val(engMot_TEMP[0]);
+        
+         var engMot_TIME = engMot_TEMP[1].split(":");
+         //시간
+         $("#engMot_HOUR").val(engMot_TIME[0]);
+         //분
+         $("#engMot_MIN").val(engMot_TIME[1]);
+         //초
+         $("#engMot_SEC").val(engMot_TIME[2]);
+         
+         
+         function setCanvas(key, value, unit) {
+        	canvas = document.getElementById("encan" + key);
+     		context = canvas.getContext("2d");
+     		roundRect(context, 0, 45, 150, 80, 40);
+     		context_font_fill(context,aJsonAr[0]._source[value] + " " + unit,10,95);
+         }
+        	 
+         
+
+         function roundRect(context, x, y, width, height, radius) {
+
+           context.clearRect(0, 0, canvas.width, canvas.height);
+           if(width < 1) return;
+           context.beginPath();
+           context.moveTo(x + radius, y); //오른쪽 상단 모서리를 그리기 위한 시작점으로 이동
+           context.arcTo((x+width), y, (x+width), (y+height), radius);  //오른쪽 상단 모서리
+           context.arcTo((x+width), (y+height), x, (y+height), radius); //오른쪽 하단 모서리
+           context.arcTo(x, (y+height), x, y, radius); //왼쪽 하단 모서리
+           context.arcTo(x, y, (x+radius), y, radius); //왼쪽 상단 모서리
+           context.font = "20pt Arial";
+           context.fillStyle = "#005580";
+           context.fill();
+           context.color = "white";
+           context.strokeStyle="#005580";
+           context.stroke();
+
+         }
+         
+         function context_font_fill(context, value, width, height) {
+        	 context.fillStyle = "white";
+        	 context.fillText(value, width, height);
+        	 
+         }
+         
+         function draw(context, value) {
+             
+        	 context.clearRect(0, 0, canvas.width, canvas.height);
+        	 context.beginPath();
+
+             if(!value){
+            	 context.shadowColor="red";
+            	 context.fillStyle= "red";
+             }
+             if(value){
+            	 context.shadowColor="green";
+            	 context.fillStyle = "green";
+             }
+             context.shadowOffsetX=1;
+             context.shadowOffsetY=1;
+             context.shadowBlur=7;
+             context.arc(15,20,5,-30, 2 * Math.PI);
+
+             context.fill();
+             context.stroke();
+
+ 		    }
+         
+         
+       }).catch(function (err) {
+         if (err.status === 404) {
+           alert("error 404" );
+
+         } else {
+           alert("error : " + err );
+
+         }
+       });
+
+     }
+
+     $scope.Elec = function(engine) {
+
+       var id = engine;
+
+
+       es.search({
+           index: [id,"common01"],
+           body: {
+             "query":
+               {
+                 "match_all" : {}
+               },
+               "sort": {"DATE" : {"order":"desc"}},
+
+               size : 2
+                                // Number of documents to show
+               }
+
+       }).then(function (response) {
+
+         $scope.hitsTab3 = response.hits.hits;
+         console.log(JSON.stringify(response.hits.hits));
+
+         var i = 0;
+
+         var volt = new Array();
+         var cur = new Array();
+         var com = new Array();
+
+
+         var aJsonAr = new Array();
+
+
+         aJsonAr[0] = $scope.hitsTab3[0];
+         if(aJsonAr[0]._index == "common01"){
+           aJsonAr[1] = $scope.hitsTab3[0];
+           aJsonAr[0] = $scope.hitsTab3[1];
+         }
+         else{
+           aJsonAr[1] = $scope.hitsTab3[1];
+
+         }
+
+
+         console.log(aJsonAr[0])
+
+
+
+       function roundRect(context, x, y, width, height, radius) {
+         context.clearRect(0, 0, canvas.width, canvas.height);
+         if(width < 1) return;
+         context.beginPath();
+         context.moveTo(x + radius, y); //오른쪽 상단 모서리를 그리기 위한 시작점으로 이동
+         context.arcTo((x+width), y, (x+width), (y+height), radius);  //오른쪽 상단 모서리
+         context.arcTo((x+width), (y+height), x, (y+height), radius); //오른쪽 하단 모서리
+         context.arcTo(x, (y+height), x, y, radius); //왼쪽 하단 모서리
+         context.arcTo(x, y, (x+radius), y, radius); //왼쪽 상단 모서리
+         context.font = "12px Arial";
+         context.fillStyle = "white";
+         context.color = "white";
+         context.strokeStyle="white";
+         context.stroke();
+
+       }
+
+         var canvas = document.getElementById("Ecan");
+         var canvas1 = document.getElementById("Ecan1");
+         var canvas2 = document.getElementById("Ecan2");
+         var canvas3 = document.getElementById("Ecan3");
+         var canvas4 = document.getElementById("Ecan4");
+         var canvas5 = document.getElementById("Ecan5");
+         var canvas6 = document.getElementById("Ecan6");
+         var canvas7 = document.getElementById("Ecan7");
+         var canvas8 = document.getElementById("Ecan8");
+         var canvas9 = document.getElementById("Ecan9");
+         var canvas10 = document.getElementById("Ecan10");
+         var canvas11 = document.getElementById("Ecan11");
+         var canvas12 = document.getElementById("Ecan12");
+         var canvas13 = document.getElementById("Ecan13");
+         var canvas14 = document.getElementById("Ecan14");
+         var canvas15 = document.getElementById("Ecan15");
+         var canvas16 = document.getElementById("Ecan16");
+         var canvas17 = document.getElementById("Ecan17");
+         var canvas18 = document.getElementById("Ecan18");
+         var canvas19 = document.getElementById("Ecan19");
+         var canvas20 = document.getElementById("Ecan20");
+         var canvas21 = document.getElementById("Ecan21");
+         var canvas22 = document.getElementById("Ecan22");
+         var canvas23 = document.getElementById("Ecan23");
+         var canvas24 = document.getElementById("Ecan24");
+         var canvas25 = document.getElementById("Ecan25");
+         var canvas26 = document.getElementById("Ecan26");
+         var canvas27 = document.getElementById("Ecan27");
+         var canvas28 = document.getElementById("Ecan28");
+         var canvas29 = document.getElementById("Ecan29");
+         var canvas30 = document.getElementById("Ecan30");
+         var canvas31 = document.getElementById("Ecan31");
+         var canvas32 = document.getElementById("Ecan32");
+         var canvas33 = document.getElementById("Ecan33");
+         var canvas34 = document.getElementById("Ecan34");
+         var canvas35 = document.getElementById("Ecan35");
+
+
+         var context = canvas.getContext("2d");
+         var context1 = canvas1.getContext("2d");
+         var context2 = canvas2.getContext("2d");
+         var context3 = canvas3.getContext("2d");
+         var context4 = canvas4.getContext("2d");
+         var context5 = canvas5.getContext("2d");
+         var context6 = canvas6.getContext("2d");
+         var context7 = canvas7.getContext("2d");
+         var context8 = canvas8.getContext("2d");
+         var context9 = canvas9.getContext("2d");
+         var context10 = canvas10.getContext("2d");
+         var context11 = canvas11.getContext("2d");
+         var context12 = canvas12.getContext("2d");
+         var context13 = canvas13.getContext("2d");
+         var context14 = canvas14.getContext("2d");
+         var context15 = canvas15.getContext("2d");
+         var context16 = canvas16.getContext("2d");
+         var context17 = canvas17.getContext("2d");
+         var context18 = canvas18.getContext("2d");
+
+         var context19 = canvas19.getContext("2d");
+         var context20 = canvas20.getContext("2d");
+         var context21 = canvas21.getContext("2d");
+         var context22 = canvas22.getContext("2d");
+         var context23 = canvas23.getContext("2d");
+         var context24 = canvas24.getContext("2d");
+         var context25 = canvas25.getContext("2d");
+         var context26 = canvas26.getContext("2d");
+         var context27 = canvas27.getContext("2d");
+         var context28 = canvas28.getContext("2d");
+         var context29 = canvas29.getContext("2d");
+         var context30 = canvas30.getContext("2d");
+         var context31 = canvas31.getContext("2d");
+         var context32 = canvas32.getContext("2d");
+         var context33 = canvas33.getContext("2d");
+         var context34 = canvas34.getContext("2d");
+         var context35 = canvas35.getContext("2d");
+
+
+
+
+
+
+
+
+         roundRect(context, 20, 15, 110, 30, 10);
+         roundRect(context1, 20, 15, 110, 30, 10);
+         roundRect(context2, 20, 15, 110, 30, 10);
+         roundRect(context3, 20, 15, 110, 30, 10);
+         roundRect(context4, 20, 15, 110, 30, 10);
+         roundRect(context5, 20, 15, 110, 30, 10);
+         roundRect(context6, 20, 15, 110, 30, 10);
+         roundRect(context7, 20, 15, 110, 30, 10);
+         roundRect(context8, 20, 15, 110, 30, 10);
+         roundRect(context9, 20, 15, 110, 30, 10);
+         roundRect(context10, 20, 15, 110, 30, 10);
+         roundRect(context11, 20, 15, 110, 30, 10);
+         roundRect(context12, 20, 15, 110, 30, 10);
+         roundRect(context13, 20, 15, 110, 30, 10);
+         roundRect(context14, 20, 15, 110, 30, 10);
+         roundRect(context15, 20, 15, 110, 30, 10);
+         roundRect(context16, 20, 15, 110, 30, 10);
+         roundRect(context17, 20, 15, 110, 30, 10);
+         roundRect(context18, 20, 15, 110, 30, 10);
+         roundRect(context19, 20, 15, 110, 30, 10);
+         roundRect(context20, 20, 15, 110, 30, 10);
+         roundRect(context21, 20, 15, 110, 30, 10);
+         roundRect(context22, 20, 15, 110, 30, 10);
+         roundRect(context23, 20, 15, 110, 30, 10);
+         roundRect(context24, 20, 15, 110, 30, 10);
+         roundRect(context25, 20, 15, 110, 30, 10);
+         roundRect(context26, 20, 15, 110, 30, 10);
+         roundRect(context27, 20, 15, 110, 30, 10);
+         roundRect(context28, 20, 15, 110, 30, 10);
+         roundRect(context29, 20, 15, 110, 30, 10);
+         roundRect(context30, 20, 15, 110, 30, 10);
+         roundRect(context31, 20, 15, 110, 30, 10);
+         roundRect(context32, 20, 15, 110, 30, 10);
+         roundRect(context33, 20, 15, 110, 30, 10);
+         roundRect(context34, 20, 15, 110, 30, 10);
+         roundRect(context35, 20, 15, 110, 30, 10);
+
+         context.fillText(aJsonAr[0]._source.E0229 + " V", 60, 35);
+         context1.fillText(aJsonAr[0]._source.E0218 + " A", 60, 35);
+       //                    context1.font = "12px verdana";
+         context2.fillText(aJsonAr[0]._source.E0223 + " pf", 60, 35);
+       //                    context2.font = "12px verdana";
+         context3.fillText(aJsonAr[0]._source.E0230 + " V", 60, 35);
+       //                    context3.font = "12px verdana";
+         context4.fillText(aJsonAr[0]._source.E0219 + " A", 60, 35);
+         context5.fillText(aJsonAr[0]._source.E0224 + " kW", 60, 35);
+         context6.fillText(aJsonAr[0]._source.E0231 + " V", 60, 35);
+         context7.fillText(aJsonAr[0]._source.E0220 + " A", 60, 35);
+         context8.fillText(aJsonAr[0]._source.E0225 + " kVar", 60, 35);
+         context9.fillText(aJsonAr[0]._source.E0232.toFixed(1) + " hz", 60, 35);
+         context10.fillText(aJsonAr[0]._source.E0250 + " MWh", 60, 35);
+         context11.fillText(aJsonAr[1]._source.C0001 + " V", 60, 35);
+         context12.fillText(aJsonAr[1]._source.C0002 + " V", 60, 35);
+         context13.fillText(aJsonAr[1]._source.C0003 + " V", 60, 35);
+         context14.fillText(aJsonAr[1]._source.C0004 + " A", 60, 35);
+         context15.fillText(aJsonAr[1]._source.C0005 + " A", 60, 35);
+         context16.fillText(aJsonAr[1]._source.C0006 + " A", 60, 35);
+         context17.fillText(aJsonAr[1]._source.C0007.toFixed(2) + " hz", 60, 35);
+         context18.fillText(aJsonAr[1]._source.C0008 + " pf", 60, 35);
+         context19.fillText("-" + aJsonAr[1]._source.C0009 + " kW", 60, 35);
+         context20.fillText(aJsonAr[1]._source.C0010 + " V", 60, 35);
+         context21.fillText(aJsonAr[1]._source.C0011 + " A", 60, 35);
+         context22.fillText(aJsonAr[1]._source.C0012.toFixed(2) + " hz", 60, 35);
+         context23.fillText(aJsonAr[1]._source.C0013.toFixed(2) + " pf", 60, 35);
+         context24.fillText(aJsonAr[1]._source.C0014 + " kW", 60, 35);
+         context25.fillText(aJsonAr[1]._source.C0015 + " kVar", 60, 35);
+         context26.fillText(aJsonAr[1]._source.C0016 + " MVarh", 60, 35);
+         context27.fillText(aJsonAr[1]._source.C0017 + " mWh", 60, 35);
+         context28.fillText(aJsonAr[1]._source.C0018 + " V", 60, 35);
+         context29.fillText(aJsonAr[1]._source.C0019 + " A", 60, 35);
+         context30.fillText(aJsonAr[1]._source.C0020.toFixed(2) + " hz", 60, 35);
+         context31.fillText(aJsonAr[1]._source.C0021.toFixed(2) + " pf", 60, 35);
+         context32.fillText(aJsonAr[1]._source.C0022 + " kVar", 60, 35);
+         context33.fillText(aJsonAr[1]._source.C0023 + " kVar", 60, 35);
+         context34.fillText(aJsonAr[1]._source.C0024 + " MVarh", 60, 35);
+         context35.fillText(aJsonAr[1]._source.C0025 + " MWh", 60, 35);
+       }).catch(function (err) {
+         if (err.status === 404) {
+           alert("error 404" );
+
+         } else {
+           alert("error : " + err );
+
+         }
+       });
+
+     }
+
+      ///
+      $scope.pop = function(i){
+      if(!$scope.Al[i]){
+        toaster.pop('success', "정상!!", $scope.Aldetail);
+      }else{
+      toaster.pop('warning', "Alarm!!", $scope.Aldetail);
+      }
+      };
+      //
+      $scope.Alarm = function(engine){
+
+        var id = engine;
+
+
+        es.search({
+            index: id,
+            body: {
+              "query":
+                {
+                  "match_all" : {}
+                },
+                size: 1,
+                "sort": {"DATE" : {"order":"desc"}}
+//                "_source": "ED*",
+
+
+
+                    // Number of documents to show
+                }
+
+        }).then(function (response) {
+
+
+            $scope.hitsTab1 = response.hits.hits;
+  //          console.log(JSON.stringify(response))
+
+            var i = 0;
+
+            var Al = new Array();
+
+            var aJsonAr = new Array();
+            var canvas;
+            var cav = new Array();
+            var altoast = new String();
+            $scope.Al = new Array();
+            $scope.Aldetail = new Array();
+            console.log($scope.hitsTab1.length)
+            aJsonAr[0] = $scope.hitsTab1[$scope.hitsTab1.length-1];
+            $scope.Aldetail = [
+                              { "DATE" : aJsonAr[0]._source.DATE, "Engine" : aJsonAr[0]._index},
+                              ];
+
+
+	    $scope.Al[0] = aJsonAr[0]._source.ED0001;
+            $scope.Al[1] = aJsonAr[0]._source.ED0002;
+            $scope.Al[2] = aJsonAr[0]._source.ED0003;
+            $scope.Al[3] = aJsonAr[0]._source.ED0004;
+            $scope.Al[4] = aJsonAr[0]._source.ED0005;
+            $scope.Al[5] = aJsonAr[0]._source.ED0006;
+            $scope.Al[6] = aJsonAr[0]._source.ED0007;
+            $scope.Al[7] = aJsonAr[0]._source.ED0008;
+            $scope.Al[8] = aJsonAr[0]._source.ED0009;
+            $scope.Al[9] = aJsonAr[0]._source.ED0010;
+            $scope.Al[10] = aJsonAr[0]._source.ED0011;
+            $scope.Al[11] = aJsonAr[0]._source.ED0012;
+            $scope.Al[12] = aJsonAr[0]._source.ED0013;
+            $scope.Al[13] = aJsonAr[0]._source.ED0014;
+            $scope.Al[14] = aJsonAr[0]._source.ED0015;
+            $scope.Al[15] = aJsonAr[0]._source.ED0016;
+            $scope.Al[16] = aJsonAr[0]._source.ED0017;
+            $scope.Al[17] = aJsonAr[0]._source.ED0018;
+            $scope.Al[18] = aJsonAr[0]._source.ED0019;
+            $scope.Al[19] = aJsonAr[0]._source.ED0020;
+            $scope.Al[20] = aJsonAr[0]._source.ED0021;
+            $scope.Al[21] = aJsonAr[0]._source.ED0022;
+            $scope.Al[22] = aJsonAr[0]._source.ED0023;
+            $scope.Al[23] = aJsonAr[0]._source.ED0024;
+            $scope.Al[24] = aJsonAr[0]._source.ED0025;
+            $scope.Al[25] = aJsonAr[0]._source.ED0026;
+            $scope.Al[26] = aJsonAr[0]._source.ED0027;
+            $scope.Al[27] = aJsonAr[0]._source.ED0028;
+            $scope.Al[28] = aJsonAr[0]._source.ED0029;
+            $scope.Al[29] = aJsonAr[0]._source.ED0030;
+            $scope.Al[30] = aJsonAr[0]._source.ED0031;
+            $scope.Al[31] = aJsonAr[0]._source.ED0032;
+            $scope.Al[32] = aJsonAr[0]._source.ED0033;
+            $scope.Al[33] = aJsonAr[0]._source.ED0034;
+            $scope.Al[34] = aJsonAr[0]._source.ED0035;
+            $scope.Al[35] = aJsonAr[0]._source.ED0036;
+            $scope.Al[36] = aJsonAr[0]._source.ED0037;
+            $scope.Al[37] = aJsonAr[0]._source.ED0038;
+            $scope.Al[38] = aJsonAr[0]._source.ED0039;
+            $scope.Al[39] = aJsonAr[0]._source.ED0040;
+            $scope.Al[40] = aJsonAr[0]._source.ED0041;
+            $scope.Al[41] = aJsonAr[0]._source.ED0042;
+            $scope.Al[42] = aJsonAr[0]._source.ED0043;
+            $scope.Al[43] = aJsonAr[0]._source.ED0044;
+            $scope.Al[44] = aJsonAr[0]._source.ED0045;
+            $scope.Al[45] = aJsonAr[0]._source.ED0046;
+            $scope.Al[46] = aJsonAr[0]._source.ED0047;
+            $scope.Al[47] = aJsonAr[0]._source.ED0048;
+            $scope.Al[48] = aJsonAr[0]._source.ED0049;
+            $scope.Al[49] = aJsonAr[0]._source.ED0050;
+            $scope.Al[50] = aJsonAr[0]._source.ED0051;
+            $scope.Al[51] = aJsonAr[0]._source.ED0052;
+            $scope.Al[52] = aJsonAr[0]._source.ED0053;
+            $scope.Al[53] = aJsonAr[0]._source.ED0054;
+            $scope.Al[54] = aJsonAr[0]._source.ED0055;
+            $scope.Al[55] = aJsonAr[0]._source.ED0056;
+            $scope.Al[56] = aJsonAr[0]._source.ED0057;
+            $scope.Al[57] = aJsonAr[0]._source.ED0058;
+            $scope.Al[58] = aJsonAr[0]._source.ED0059;
+            $scope.Al[59] = aJsonAr[0]._source.ED0060;
+            $scope.Al[60] = aJsonAr[0]._source.ED0061;
+            $scope.Al[61] = aJsonAr[0]._source.ED0062;
+            $scope.Al[62] = aJsonAr[0]._source.ED0063;
+            $scope.Al[63] = aJsonAr[0]._source.ED0064;
+            $scope.Al[64] = aJsonAr[0]._source.ED0065;
+            $scope.Al[65] = aJsonAr[0]._source.ED0066;
+            $scope.Al[66] = aJsonAr[0]._source.ED0067;
+            $scope.Al[67] = aJsonAr[0]._source.ED0068;
+            
+	   		canvas1 = document.getElementById("alarm1");
+            canvas2 = document.getElementById("alarm2");
+            canvas3 = document.getElementById("alarm3");
+            canvas4 = document.getElementById("alarm4");
+            canvas5 = document.getElementById("alarm5");
+            canvas6 = document.getElementById("alarm6");
+            canvas7 = document.getElementById("alarm7");
+            canvas8 = document.getElementById("alarm8");
+            canvas9 = document.getElementById("alarm9");
+            canvas10 = document.getElementById("alarm10");
+            canvas11 = document.getElementById("alarm11");
+            canvas12 = document.getElementById("alarm12");
+            canvas13 = document.getElementById("alarm13");
+            canvas14 = document.getElementById("alarm14");
+            canvas15 = document.getElementById("alarm15");
+            canvas16 = document.getElementById("alarm16");
+            canvas17 = document.getElementById("alarm17");
+            canvas18 = document.getElementById("alarm18");
+            canvas19 = document.getElementById("alarm19");
+            canvas20 = document.getElementById("alarm20");
+            canvas21 = document.getElementById("alarm21");
+            canvas22 = document.getElementById("alarm22");
+            canvas23 = document.getElementById("alarm23");
+            canvas24 = document.getElementById("alarm24");
+            canvas25 = document.getElementById("alarm25");
+            canvas26 = document.getElementById("alarm26");
+            canvas27 = document.getElementById("alarm27");
+            canvas28 = document.getElementById("alarm28");
+            canvas29 = document.getElementById("alarm29");
+            canvas30 = document.getElementById("alarm30");
+            canvas31 = document.getElementById("alarm31");
+            canvas32 = document.getElementById("alarm32");
+            canvas33 = document.getElementById("alarm33");
+            canvas34 = document.getElementById("alarm34");
+            canvas35 = document.getElementById("alarm35");
+            canvas36 = document.getElementById("alarm36");
+            canvas37 = document.getElementById("alarm37");
+            canvas38 = document.getElementById("alarm38");
+            canvas39 = document.getElementById("alarm39");
+            canvas40 = document.getElementById("alarm40");
+            canvas41 = document.getElementById("alarm41");
+            canvas42 = document.getElementById("alarm42");
+            canvas43 = document.getElementById("alarm43");
+            canvas44 = document.getElementById("alarm44");
+            canvas45 = document.getElementById("alarm45");
+            canvas46 = document.getElementById("alarm46");
+            canvas47 = document.getElementById("alarm47");
+            canvas48 = document.getElementById("alarm48");
+            canvas49 = document.getElementById("alarm49");
+            canvas50 = document.getElementById("alarm50");
+            canvas51 = document.getElementById("alarm51");
+            canvas52 = document.getElementById("alarm52");
+            canvas53 = document.getElementById("alarm53");
+            canvas54 = document.getElementById("alarm54");
+            canvas55 = document.getElementById("alarm55");
+            canvas56 = document.getElementById("alarm56");
+            canvas57 = document.getElementById("alarm57");
+            canvas58 = document.getElementById("alarm58");
+            canvas59 = document.getElementById("alarm59");
+            canvas60 = document.getElementById("alarm60");
+            canvas61 = document.getElementById("alarm61");
+            canvas62 = document.getElementById("alarm62");
+            canvas63 = document.getElementById("alarm63");
+            canvas64 = document.getElementById("alarm64");
+            canvas65 = document.getElementById("alarm65");
+            canvas66 = document.getElementById("alarm66");
+            canvas67 = document.getElementById("alarm67");
+            canvas68 = document.getElementById("alarm68");
+            
+            ctx = canvas1.getContext("2d"); draw($scope.Al[0]);
+            ctx = canvas2.getContext("2d"); draw($scope.Al[1]);
+            ctx = canvas3.getContext("2d"); draw($scope.Al[2]);
+            ctx = canvas4.getContext("2d"); draw($scope.Al[3]);
+            ctx = canvas5.getContext("2d"); draw($scope.Al[4]);
+            ctx = canvas6.getContext("2d"); draw($scope.Al[5]);
+            ctx = canvas7.getContext("2d"); draw($scope.Al[6]);
+            ctx = canvas8.getContext("2d"); draw($scope.Al[7]);
+            ctx = canvas9.getContext("2d"); draw($scope.Al[8]);
+            ctx = canvas10.getContext("2d"); draw($scope.Al[9]);
+            ctx = canvas11.getContext("2d"); draw($scope.Al[10]);
+            ctx = canvas12.getContext("2d"); draw($scope.Al[11]);
+            ctx = canvas13.getContext("2d"); draw($scope.Al[12]);
+            ctx = canvas14.getContext("2d"); draw($scope.Al[13]);
+            ctx = canvas15.getContext("2d"); draw($scope.Al[14]);
+            ctx = canvas16.getContext("2d"); draw($scope.Al[15]);
+            ctx = canvas17.getContext("2d"); draw($scope.Al[16]);
+            ctx = canvas18.getContext("2d"); draw($scope.Al[17]);
+            ctx = canvas19.getContext("2d"); draw($scope.Al[18]);
+            ctx = canvas20.getContext("2d"); draw($scope.Al[19]);
+            ctx = canvas21.getContext("2d"); draw($scope.Al[20]);
+            ctx = canvas22.getContext("2d"); draw($scope.Al[21]);
+            ctx = canvas23.getContext("2d"); draw($scope.Al[22]);
+            ctx = canvas24.getContext("2d"); draw($scope.Al[23]);
+            ctx = canvas25.getContext("2d"); draw($scope.Al[24]);
+            ctx = canvas26.getContext("2d"); draw($scope.Al[25]);
+            ctx = canvas27.getContext("2d"); draw($scope.Al[26]);
+            ctx = canvas28.getContext("2d"); draw($scope.Al[27]);
+            ctx = canvas29.getContext("2d"); draw($scope.Al[28]);
+            ctx = canvas30.getContext("2d"); draw($scope.Al[29]);
+            ctx = canvas31.getContext("2d"); draw($scope.Al[30]);
+            ctx = canvas32.getContext("2d"); draw($scope.Al[31]);
+            ctx = canvas33.getContext("2d"); draw($scope.Al[32]);
+            ctx = canvas34.getContext("2d"); draw($scope.Al[33]);
+            ctx = canvas35.getContext("2d"); draw($scope.Al[34]);
+            ctx = canvas36.getContext("2d"); draw($scope.Al[35]);
+            ctx = canvas37.getContext("2d"); draw($scope.Al[36]);
+            ctx = canvas38.getContext("2d"); draw($scope.Al[37]);
+            ctx = canvas39.getContext("2d"); draw($scope.Al[38]);
+            ctx = canvas40.getContext("2d"); draw($scope.Al[39]);
+            ctx = canvas41.getContext("2d"); draw($scope.Al[40]);
+            ctx = canvas42.getContext("2d"); draw($scope.Al[41]);
+            ctx = canvas43.getContext("2d"); draw($scope.Al[42]);
+            ctx = canvas44.getContext("2d"); draw($scope.Al[43]);
+            ctx = canvas45.getContext("2d"); draw($scope.Al[44]);
+            ctx = canvas46.getContext("2d"); draw($scope.Al[45]);
+            ctx = canvas47.getContext("2d"); draw($scope.Al[46]);
+            ctx = canvas48.getContext("2d"); draw($scope.Al[47]);
+            ctx = canvas49.getContext("2d"); draw($scope.Al[48]);
+            ctx = canvas50.getContext("2d"); draw($scope.Al[49]);
+            ctx = canvas51.getContext("2d"); draw($scope.Al[50]);
+            ctx = canvas52.getContext("2d"); draw($scope.Al[51]);
+            ctx = canvas53.getContext("2d"); draw($scope.Al[52]);
+            ctx = canvas54.getContext("2d"); draw($scope.Al[53]);
+            ctx = canvas55.getContext("2d"); draw($scope.Al[54]);
+            ctx = canvas56.getContext("2d"); draw($scope.Al[55]);
+            ctx = canvas57.getContext("2d"); draw($scope.Al[56]);
+            ctx = canvas58.getContext("2d"); draw($scope.Al[57]);
+            ctx = canvas59.getContext("2d"); draw($scope.Al[58]);
+            ctx = canvas60.getContext("2d"); draw($scope.Al[59]);
+            ctx = canvas61.getContext("2d"); draw($scope.Al[60]);
+            ctx = canvas62.getContext("2d"); draw($scope.Al[61]);
+            ctx = canvas63.getContext("2d"); draw($scope.Al[62]);
+            ctx = canvas64.getContext("2d"); draw($scope.Al[63]);
+            ctx = canvas65.getContext("2d"); draw($scope.Al[64]);
+            ctx = canvas66.getContext("2d"); draw($scope.Al[65]);
+            ctx = canvas67.getContext("2d"); draw($scope.Al[66]);
+            ctx = canvas68.getContext("2d"); draw($scope.Al[67]);
+
+        function draw(value) {
+            ctx.clearRect(0, 0, canvas1.width, canvas1.height);
+			ctx.beginPath();
+
+            if(value){
+            ctx.shadowColor="red";
+            ctx.fillStyle= "red";
+            }
+            if(!value){
+            ctx.shadowColor="green";
+            ctx.fillStyle = "green";
+            }
+            ctx.shadowOffsetX=1;
+            ctx.shadowOffsetY=1;
+            ctx.shadowBlur=7;
+            ctx.arc(10,20,5,-30, 2 * Math.PI);
+
+            ctx.fill();
+			      ctx.stroke();
+
+		    }
+
+      }).catch(function (err) {
+        if (err.status === 404) {
+          alert("error 404" );
+
+        } else {
+          alert("error : " + err );
+
+        }
+      });
+
+}
+
+		function draw() {
+		  ctx.beginPath();
+		  ctx.arc(200,100,80,0, 2 * Math.PI);
+		  ctx.stroke
+		}
+
+	  //Engine Status 그려주기 -- jkkim
+      $scope.Engstat = function(engine,timeArea) {
+		var id = engine;
+		
+		var jsonData;
+		//조회날짜 최근, 지정날짜
+		if($("#" + timeArea).find(".jint_check").is(":checked")){
+			//Date 조각 합치기
+			var engStatDate = dateCombine(timeArea);
+			//Date 특정값 계산
+			var engStatCalcDate = dateCalc(engStatDate,-3600);
+			jsonData =  {"bool" : {"must" : {"range" : {"DATE" : {"gte" :engStatCalcDate , "lte" :engStatDate }}}}};
+		}else{
+			jsonData = {"match_all" : {}};
+		}
+		
+        es.search({
+            index: id,
+            body: {
+            	"query":jsonData,
+                "sort": {"DATE" : {"order":"desc"}},
+                "_source":["DATE","EA0172","EA0140","EA0141","EA0142","EA0174","EA0164","EA0172","EA0165","EA0170","EA0171","EA0166"],
+                size : 3600
+                }
+        }).then(function (response) {
+            $scope.hitsTab2 = response.hits.hits;
+            var i=0;
+            var arr=new Array();
+            var data=new Array();
+            var aJsonArray = new Array();
+            var aJson = new Object();
+            var aJsonAr = new Array();
+            var Mdate = new Array();
+            var Mkw = new Array();
+
+            var c=0;
+            while(c<$scope.hitsTab2.length)
+            {
+              aJsonAr[c] = $scope.hitsTab2[c];
+              Mkw[c] = aJsonAr[c]._source.EA0172;
+              Mdate[c] = aJsonAr[c]._source.DATE;
+              c++;
+            }
+
+            var trace10 = {
+		           type: "scatter",
+		           mode: "lines",
+		           name: 'KW',
+		           x: Mdate,
+		           y: Mkw,
+		           line: {color: '#FF5050'}
+           }
+
+           var data2 = [trace10];
+
+           var layout2 = {
+            title: 'Time Series with Rangeslider',
+            xaxis: {
+             autorange: true,
+             range: [Mdate[Mdate.length-1], Mdate[0]],
+             rangeselector: {buttons: [
+              {
+                count: 1,
+                label: '1d',
+                step: 'day',
+                stepmode: 'backward'
+              },
+              {
+                count: 6,
+                label: '1m',
+                step: 'month',
+                stepmode: 'backward'
+              },
+              {step: 'all'}
+             ]},
+             rangeslider: {range: [Mdate[0], Mdate[Mdate.length-1]]},
+             type: 'date'
+            },
+            yaxis: {
+            autorange: true,
+            range: [0, 4000],
+            type: 'linear'
+           }
+           };
+
+                        Plotly.newPlot('Engdiv1', data2, layout2);
+
+                        var level = aJsonAr[0]._source.EA0140;
+
+                        // Trig to calc meter point
+                        var degrees = 1200 - level,
+                             radius = .5;
+                        var radians = degrees * Math.PI / 1200;
+                        var x = radius * Math.cos(radians);
+                        var y = radius * Math.sin(radians);
+
+                        // Path: may have to change to create a better triangle
+                        var mainPath = 'M -.0 -0.025 L .0 0.025 L ',
+                             pathX = String(x),
+                             space = ' ',
+                             pathY = String(y),
+                             pathEnd = ' Z';
+                        var path = mainPath.concat(pathX,space,pathY,pathEnd);
+
+                        var gaugedata = [{ type: 'scatter',
+                           x:[0], y:[0],
+                            marker: {size: 20, color:'850000'},
+                            showlegend: true,
+                            name: 'ENGINE Speed',
+                            text: level,
+                            hoverinfo: 'text+name'},
+                          { values: [50/6, 50/6, 50/6, 50/6, 50/6, 50/6, 50],
+                          rotation: 90,
+                          text: ['1001-1200', '801-1000', '601-801', '401-600',
+                                    '201-400', '1-200', ''],
+                          textinfo: 'text',
+                          textposition:'inside',
+                          marker: {colors:['rgba(14, 127, 0, .5)', 'rgba(110, 154, 22, .5)',
+                                                 'rgba(170, 202, 42, .5)', 'rgba(255, 0, 0, .10)',
+                                                 'rgba(255, 0, 0, .5)', 'rgba(255, 0, 0, 5)',
+                                                 'rgba(255, 255, 255, 0)']},
+                          labels: ['1001-1200', '801-1000', '601-801', '401-600',
+                                    '201-400', '1-200', ''],
+                          hoverinfo: 'label',
+                          hole: .5,
+                          type: 'pie',
+                          showlegend: false
+                        }];
+
+                        var layout2 = {
+                          shapes:[{
+                              type: 'path',
+                              path: path,
+                              fillcolor: '850000',
+                              line: {
+                                color: '850000'
+                              }
+                            }],
+                          title: 'Engine Speed [ ' + level  + ' rpm ]',
+                          height: 400,
+                          width: 400,
+                          xaxis: {zeroline:false, showticklabels:false,
+                                     showgrid: false, range: [-1, 1]},
+                          yaxis: {zeroline:false, showticklabels:false,
+                                     showgrid: false, range: [-1, 1]}
+                        };
+
+                        Plotly.newPlot('EngDiv2', gaugedata, layout2);
+
+                        var level = (aJsonAr[0]._source.EA0141 + aJsonAr[0]._source.EA0142)/2;
+
+                        // Trig to calc meter point
+                        var degrees = 24000 - level,
+                             radius = .5;
+                        var radians = degrees * Math.PI / 24000;
+                        var x = radius * Math.cos(radians);
+                        var y = radius * Math.sin(radians);
+
+                        // Path: may have to change to create a better triangle
+                        var mainPath = 'M -.0 -0.025 L .0 0.025 L ',
+                             pathX = String(x),
+                             space = ' ',
+                             pathY = String(y),
+                             pathEnd = ' Z';
+                        var path = mainPath.concat(pathX,space,pathY,pathEnd);
+
+                        var gaugedata2 = [{ type: 'scatter',
+                           x: [0], y:[0],
+                            marker: {size: 20, color:'850000'},
+                            showlegend: true,
+                            name: 'T/C Speed',
+                            text: level,
+                            hoverinfo: 'text+name'},
+                          { values: [70/6, 70/6, 70/6, 70/6, 70/6, 70/6, 30],
+                          rotation: 90,
+                          text: ['20001-24000', '16001-20000', '12001-14000', '8001-12000',
+                                    '4001-8000', '1-4000', ''],
+                          textinfo: 'text',
+                          textposition:'inside',
+                          marker: {colors:['rgba(14, 127, 0, .5)', 'rgba(110, 154, 22, .5)',
+                                                 'rgba(170, 202, 42, .5)', 'rgba(255, 0, 0, .10)',
+                                                 'rgba(255, 0, 0, .5)', 'rgba(255, 0, 0, 5)',
+                                                 'rgba(255, 255, 255, 0)']},
+                          labels: ['20001-24000', '16001-20000', '12001-14000', '8001-12000',
+                                    '4001-8000', '1-4000', ''],
+                          hoverinfo: 'label',
+                          hole: .9,
+                          type: 'pie',
+                          showlegend: false
+                        }];
+
+                        var layout3 = {
+                          shapes:[{
+                              type: 'path',
+                              path: path,
+                              fillcolor: '850000',
+                              line: {
+                                color: '850000'
+                              }
+                            }],
+                          title: 'T/C Speed [ ' + level  + ' rpm ]',
+                          height: 400,
+                          width: 400,
+                          xaxis: {zeroline:false, showticklabels:false,
+                                     showgrid: false, range: [-1, 1]},
+                          yaxis: {zeroline:false, showticklabels:false,
+                                     showgrid: false, range: [-1, 1]}
+                        };
+
+                        Plotly.newPlot('EngDiv3', gaugedata2, layout3);
+
+                        function roundRect(context, x, y, width, height, radius) {
+                          context.clearRect(0, 0, canvas1.width, canvas1.height);
+                          if(width < 1) return;
+                          context.beginPath();
+                          context.moveTo(x + radius, y); //오른쪽 상단 모서리를 그리기 위한 시작점으로 이동
+                          context.arcTo((x+width), y, (x+width), (y+height), radius);  //오른쪽 상단 모서리
+                          context.arcTo((x+width), (y+height), x, (y+height), radius); //오른쪽 하단 모서리
+                          context.arcTo(x, (y+height), x, y, radius); //왼쪽 하단 모서리
+                          context.arcTo(x, y, (x+radius), y, radius); //왼쪽 상단 모서리
+                          context.font = "15px Arial";
+                          context.stroke();
+                        }
+
+                          var canvas = document.getElementById("myCanvass");
+                          var canvas1 = document.getElementById("myCanvass1");
+                          var canvas2 = document.getElementById("myCanvass2");
+                          var canvas3 = document.getElementById("myCanvass3");
+                          var canvas4 = document.getElementById("myCanvass4");
+                          var canvas5 = document.getElementById("myCanvass5");
+                          var canvas6 = document.getElementById("myCanvass6");
+			  			  var context = canvas.getContext("2d");
+                          var context1 = canvas1.getContext("2d");
+                          var context2 = canvas2.getContext("2d");
+                          var context3 = canvas3.getContext("2d");
+                          var context4 = canvas4.getContext("2d");
+                          var context5 = canvas5.getContext("2d");
+                          var context6 = canvas6.getContext("2d");
+
+                          roundRect(context, 50, 5, 100, 30, 10);
+			  			  roundRect (context1, 50, 5, 100, 30, 10);
+                          roundRect(context2, 50, 5, 100, 30, 10);
+                          roundRect(context3, 50, 5, 100, 30, 10);
+                          roundRect(context4, 50, 5, 100, 30, 10);
+                          roundRect(context5, 50, 5, 100, 30, 10);
+                          roundRect(context6, 50, 5, 100, 30, 10);
+		
+
+			  			  context.fillText(aJsonAr[0]._source.EA0164 + " V", 70, 25);
+                          context1.fillText(aJsonAr[0]._source.EA0174 + " MWh", 60, 25);
+                          context2.fillText(aJsonAr[0]._source.EA0172 + " kW", 70, 25);
+                          context3.fillText(aJsonAr[0]._source.EA0165 + " V", 70, 25);
+                          context4.fillText(aJsonAr[0]._source.EA0170.toFixed(1) + " hz", 70, 25);
+                          context5.fillText(aJsonAr[0]._source.EA0171.toFixed(1) + " pf", 70, 25);
+                          context6.fillText(aJsonAr[0]._source.EA0166 + " V", 70, 25);
+                          
+                          var engStat_TEMP = aJsonAr[0]._source.DATE.split(' ');
+                          //날짜
+                          $("#engStat_DATE").val(engStat_TEMP[0]);
+                         
+                          var engStat_TIME = engStat_TEMP[1].split(":");
+                          //시간
+                          $("#engStat_HOUR").val(engStat_TIME[0]);
+                          //분
+                          $("#engStat_MIN").val(engStat_TIME[1]);
+                          //초
+                          $("#engStat_SEC").val(engStat_TIME[2]);
+
+        }).catch(function (err) {
+          if (err.status === 404) {
+            alert("error 404" );
+
+          } else {
+            alert("error : " + err );
+
+          }
+        });
+      }
+
+	  
+	  //trend_viewer 수정_190312 gwpark
+      $scope.submit = function(param, timeArea) {
+      var ab = "";      
+      if(param == "btn_click") {
+		ab = $('#hid_sel_engine').val();
+      } else { 
+		$('#hid_sel_engine').val(param);
+		ab = param;
+      }
+
+      var fd = $('#fd').val();
+      $scope.td = fd;
+      
+      var tag_id = $('#tag_id').val();
+      var tag_id_bae = $('#tag_id').val().split(',');
+      tag_id_bae.push("DATE");
+      
+      var tag_name = $('#tag_id option:checked').text();
+      
+		var jsonData;
+		//조회날짜 최근, 지정날짜
+		if($("#" + timeArea).find(".jint_check").is(":checked")){
+			//Date 조각 합치기
+			var engTrendDate = dateCombine(timeArea);
+			//Date 특정값 계산
+			var engTrendCalcDate = dateCalc(engTrendDate, -10000);
+			jsonData =  {"bool" : {"must" : {"range" : {"DATE" : {"gte" : engTrendCalcDate, "lte" : engTrendDate}}}}};
+		}else{
+			jsonData = {"match_all" : {}};
+		}
+      if(fd == ""){fd = true}        
+      
+      es.search({
+            index: ab,
+            body: {
+              "query":jsonData,
+                "sort": {"DATE" : {"order":"desc"}},
+				"_source": tag_id_bae ,
+                size : 10000,
+                }
+        }).then(function (response) {
+            $scope.hits = response.hits.hits;
+            var i=0;
+            var arr=new Array();
+            var data=new Array();
+            var aJsonArray = new Array();
+            var aJson = new Object();
+            var aJsonAr = new Array();
+            var Mdate = new Array();
+	        var Mvalue = new Array();
+            
+            var c2=0;
+            
+            //while문 에러나서 for문으로 고침 --jkkim
+			for(c=0; c <$scope.hits.length-1; c++){
+              aJsonAr[c] = $scope.hits[c];
+              aJson = JSON.stringify(aJsonAr[c]._source);
+              while(c2<tag_id_bae.length-1)  {
+           	  	  if(c == 0) {
+            	  	Mvalue[c2] = new Array();
+           	  	  }
+            	  Mvalue[c2][c] =  aJsonAr[c]._source[tag_id_bae[c2]];
+            	  c2++;
+              }
+              c2=0;
+			  Mdate[c] = aJsonAr[c]._source.DATE;
+              aJsonArray[c] = JSON.parse(aJson);
+        	}
+
+			
+            var engTrend_TEMP = aJsonAr[0]._source.DATE.split(' ');
+            //날짜
+            $("#engTrend_DATE").val(engTrend_TEMP[0]);
+           
+            var engTrend_TIME = engTrend_TEMP[1].split(":");
+            //시간
+            $("#engTrend_HOUR").val(engTrend_TIME[0]);
+            //분
+            $("#engTrend_MIN").val(engTrend_TIME[1]);
+            //초
+            $("#engTrend_SEC").val(engTrend_TIME[2]);
+            
+            var data = new Array();
+            var trace;
+            c=0;
+            $.each(Conf_json, function(key,value) {
+              	if(value.GROUP == tag_name) {
+              		trace = {
+              	            type: "scatter",
+              	            mode: "lines",
+              	            name: value.name,
+              	            x: Mdate,
+              	            y: Mvalue[c],
+              	          	hoverlabel: {namelength :-1},
+              	            line: {color: '#' + Math.floor( Math.random() * 16777215).toString(16)}
+              	            };
+              		data.push(trace)
+              		c++;
+              	}
+              });
+
+            var layout = {
+            title: 'Time Series with Rangeslider',
+            xaxis: {
+            autorange: true,
+            range: [Mdate[Mdate.length-1], Mdate[0]],
+            rangeselector: {buttons: [
+             {
+               count: 1,
+               label: '1d',
+               step: 'day',
+               stepmode: 'backward'
+             },
+             {
+               count: 6,
+               label: '1m',
+               step: 'month',
+               stepmode: 'backward'
+             },
+             {step: 'all'}
+            ]},
+            rangeslider: {range: [Mdate[0], Mdate[Mdate.length-1]]},
+            type: 'date'
+            },
+            yaxis: {
+            autorange: true,
+            range: [0, 8000],
+            type: 'linear'
+            },
+            height: 700,
+            width: 1350
+            };
+
+            Plotly.newPlot('myDiv', data, layout);
+			
+            //trend_viewer csv 파일 저장 수정_190312 gwpark
+            $scope.Get = function(){
+              alert("원하는 영역을 드래그 하시오.");
+              myDiv.on('plotly_relayout',
+                  function(eventdata){
+            	  	var tag_name = $('#tag_id option:checked').text();	
+     			  	var ab = $('#hid_sel_engine').val();
+     				var tag_id_bae = $('#tag_id').val().split(',');
+     	    		tag_id_bae.push("DATE");
+     	    		var field = new Array();
+     	    		field[0] = "DATE";
+     	   			$.each(Conf_json, function(key,value) {
+             			if(value.GROUP == tag_name) {
+             				field.push(value.name.replace(/,/gi," "));
+             			}
+     	   			});
+            		var fd = field;
+
+		      		time1 = eventdata['xaxis.range[0]'].substring(0, eventdata['xaxis.range[0]'].indexOf(".", 0));
+		      		time2 = eventdata['xaxis.range[1]'].substring(0, eventdata['xaxis.range[1]'].indexOf(".", 0));
+
+                      alert( '해당 영역을 저장합니다!' + '\n\n' + 'Event data:' + '\n' +
+                             JSON.stringify(eventdata)  + '\n\n'  +
+                             'First date:' + time1 + '\n' +
+                             'Last date:' + time2);
+
+                             es.search({
+                                 index: ab,
+                                 body: {
+                                   "query":
+                                     {
+                                       "bool" : {
+                                         "must" : {
+                                           "range" : {
+                                             "DATE" : {
+                                               "gte" : time1,
+                                               "lte" : time2
+                                             }
+
+                                           }
+                                         }
+                                       }
+                                     },
+                                     "sort": {"DATE" : {"order":"asc"}},
+                                     "_source": tag_id_bae,
+                                     size:10000
+                                            // Number of documents to show
+                                     }
+
+                             }).then(function (response) {
+                                 $scope.hits2 = response.hits.hits;
+                                 console.log(JSON.stringify($scope.htis2))
+
+                                 var aJsonAr2 = new Array();
+                                 var aJson2 = new Object();
+                                 var aJsonArray2 = new Array();
+                                 c=0;
+                                 var c2=0;
+                                 var d=0;
+                                 var e=1;
+                                 var data = new Array();
+                                 var data2 = new Array();
+                                 data2[0] = fd;
+                                 while(c<$scope.hits.length)
+                                 {
+
+                                   aJsonAr2[c] = $scope.hits2[c];
+                                   aJson2 = JSON.stringify(aJsonAr2[c]._source);
+
+                                   data[d] = JSON.stringify(aJsonAr2[c]._source.DATE).slice(1,-1);
+                                   d++;
+                                   
+                                   while(c2<tag_id_bae.length-1)  {
+                                	  data[d] =  aJsonAr[c]._source[tag_id_bae[c2]];
+                                 	  c2++;
+                                 	  d++;
+                                   }
+                                   c2=0;
+        			      
+
+                                  data2[e] = data.join(',');
+
+                                   if(time2 == aJsonAr2[c]._source.DATE) break;
+
+                                   aJsonArray2[c] = JSON.parse(aJson2);
+                                   c++;
+                                   e++;
+                                   d=0;
+                                 }
+                                 
+
+                  				 var filename = "newfile001.csv";
+                                 if(!data) {
+                         			console.error('Console.save: No data')
+                         			return;
+                     			 }
+
+                     			 if(!filename) filename = 'console.json';
+
+                     			 var blob = new Blob([data2.join("\n")], {type: 'text/plain'}),
+                         		 e    = document.createEvent('MouseEvents'),
+                         		 a    = document.createElement('a')
+						// FOR IE:
+
+				               if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+				                   window.navigator.msSaveOrOpenBlob(blob, filename);
+				               }
+				               else{
+				                   var e = document.createEvent('MouseEvents'),
+				                       a = document.createElement('a');
+				
+				                   a.download = filename;
+				                   a.href = window.URL.createObjectURL(blob);
+				                   a.dataset.downloadurl = ['text/plain', a.download, a.href].join(':');
+				                   e.initEvent('click', true, false, window,
+				                       0, 0, 0, 0, 0, false, false, false, false, 0, null);
+				                   a.dispatchEvent(e);
+				               }
+                             }).catch(function (err) {
+                               if (err.status === 404) {
+                                 alert("error 404" );
+                               } else {
+                                 alert("error : " + err );
+                               }
+                             });
+                  });
+            }
+        }).catch(function (err) {
+          if (err.status === 404) {
+            alert("error 404" );
+
+          } else {
+            alert("error : " + err );
+
+          }
+        });
+      }
+	  
+  	//OverView Auto Refresh관련 --jkkim
+  	var playOverView;
+  	$scope.startOverView = function(sec,timeArea){
+  		var playSec = parseInt($('#'+sec).val());
+  		try{
+  			
+  			clearInterval(playOverView);
+  			if(playSec >= 5){
+  		  		playOverView  = setInterval(function(){	
+	  		  		var jsonData;
+	  		      	//조회날짜 최근, 지정날짜
+	  		 		if($("#" + timeArea).find(".jint_check").is(":checked")){
+	  		 			//Date 조각 합치기
+	  		 			var engOverDate = dateCombine(timeArea);
+	  		 			var engOverCalcDate = engOverDate = dateCalc(engOverDate,5);
+	  		 			jsonData = {"bool":{"should":{"match" : {"DATE" : engOverCalcDate}}}};
+	  		 		}else{
+	  		 			jsonData = {"match_all" : {}};
+	  		 		}
+	  		 		$scope.Gbarchart(jsonData)
+  		  		}, (playSec * 1000));
+  			}else{
+  				alert("5초이상 설정하세요.");
+  			}
+  		}catch(err){
+  			alert("숫자만 입력하세요");
+  		}
+  		
+  		
+  	}
+  	$scope.stopOverView = function(){
+  		clearInterval(playOverView);
+  	}
+  	
+
+    });
+</script>
+</body>
+</html>

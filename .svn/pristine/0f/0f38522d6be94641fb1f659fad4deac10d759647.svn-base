@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.mtrl.mtrlOdMgt.mtrlOdcursitMgt.ZinixMtrlOdcursitMgtMapper">
+
+	<!-- 발주주문서  정보 -->
+	<sql id="mtrlOrderForm_base">
+			mtrlOrderForm.mtrl_of_id	AS mtrlOfId,
+			mtrlOrderForm.mtrl_of_nm	AS mtrlOfNm,
+			mtrlOrderForm.mtrl_of_date	AS mtrlOfDate,
+			mtrlOrderForm.mtrl_of_cost	AS mtrlOfCost,
+			mtrlOrderForm.mtrl_of_state	AS mtrlOfState,
+			mtrlOrderForm.mtrl_of_desc	AS mtrlOfDesc,
+			mtrlOrderForm.created_at	AS createdAt,
+			mtrlOrderForm.updated_at	AS updatedAt,
+			mtrlOrderForm.creator_id	AS creatorId,
+			creator.user_nm				AS creatorNm,
+			mtrlOrderForm.updator_id	AS updatorId,
+			mtrlOrderForm.mtrl_of_claim	AS mtrlOfClaim,
+			mtrlOrderForm.mtrl_receipt	AS mtrlReceipt,
+			mtrlOrderForm.receipt_way	AS receiptWay,
+			mtrlOrderForm.receipt_status	AS receiptStatus,
+			mtrlOrderForm.receipt_user	AS receiptUser,
+			receipt.user_nm				AS receiptUserNm
+		FROM prs_mtrl_orderform mtrlOrderForm 
+		LEFT OUTER JOIN mb_user_info creator ON mtrlOrderForm.creator_id = creator.user_id
+		LEFT OUTER JOIN mb_user_info receipt ON mtrlOrderForm.receipt_user = receipt.user_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="mtrlOfId != null and mtrlOfId != '' ">
+			AND mtrlOrderForm.mtrl_of_id = #{mtrlOfId}
+		</if>
+		<if test="mtrlOfState != null and mtrlOfState != '' ">
+			AND mtrlOrderForm.mtrl_of_state = #{mtrlOfState}
+		</if>
+	</sql>
+		
+	<!-- 발주주문서(Page) select -->
+	<select id="selectMtrlOrderFormList"
+		parameterType="jin.mes.cform.mtrl.mtrlOdMgt.mtrlOdcursitMgt.ZinixMtrlOdcursitMgtDto"
+		resultType="jin.mes.cform.mtrl.mtrlOdMgt.mtrlOdcursitMgt.ZinixMtrlOdcursitMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="mtrlOrderForm_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 발주주문서 Count -->
+	<select id="selectMtrlOrderFormCount"
+		parameterType="jin.mes.cform.mtrl.mtrlOdMgt.mtrlOdplanMgt.ZinixMtrlOdplanMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="mtrlOrderForm_base" />
+				)c_table
+	</select>
+	
+	<!-- 발주주문서 입력 -->
+	<insert id="insertMtrlOrderForm" parameterType="jin.mes.cform.mtrl.mtrlOdMgt.mtrlOdcursitMgt.ZinixMtrlOdcursitMgtDto">
+	<selectKey keyProperty="mtrlOfId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('ODRSH') as mtrlOfId
+	</selectKey>
+		INSERT INTO prs_mtrl_orderform(
+			mtrl_of_id,
+			mtrl_of_nm,
+			mtrl_of_date,
+			mtrl_of_cost,
+			mtrl_of_state,
+			mtrl_of_desc,
+			mtrl_of_claim,
+			created_at,
+			updated_at,
+			creator_id,
+			updator_id,
+			receipt_status
+		)VALUES(
+			#{mtrlOfId},
+			#{mtrlOfNm},
+			#{mtrlOfDate},
+			#{mtrlOfCost},
+			#{mtrlOfState},
+			#{mtrlOfDesc},
+			#{mtrlOfClaim},
+			NOW(),
+			NOW(),
+			#{creatorId},
+			#{updatorId},
+			"mtrl_not_receipt"
+		)
+	</insert>
+	
+	<!-- 발주주문서 수정 -->
+	<update id="updateMtrlOrderForm" parameterType="jin.mes.cform.mtrl.mtrlOdMgt.mtrlOdcursitMgt.ZinixMtrlOdcursitMgtDto">
+		UPDATE prs_mtrl_orderform
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="mtrlOfNm != null and action != 'END'">	
+				,mtrl_of_nm = #{mtrlOfNm}
+			</if>
+			<if test="mtrlOfDate != null and action != 'END'">	
+				,mtrl_of_date = #{mtrlOfDate}
+			</if>
+			<if test="mtrlOfCost != null and action != 'END'">	
+				,mtrl_of_cost = #{mtrlOfCost}
+			</if>
+			<if test="mtrlOfState != null">	
+				,mtrl_of_state = #{mtrlOfState}
+			</if>
+			<if test="mtrlOfDesc != null and action != 'END'">	
+				,mtrl_of_desc = #{mtrlOfDesc}
+			</if>
+			<if test="mtrlOfClaim != null">	
+				,mtrl_of_claim = #{mtrlOfClaim}
+			</if>
+			<if test="mtrlReceipt != null and action != 'END'">	
+				,mtrl_receipt = #{mtrlReceipt}
+			</if>
+			<if test="receiptWay != null and action != 'END'">	
+				,receipt_way = #{receiptWay}
+			</if>
+			<if test="receiptStatus != null and action != 'END'">	
+				,receipt_status = #{receiptStatus}
+			</if>
+			<if test="receiptUser != null and action != 'END'">	
+				,receipt_user = #{receiptUser}
+			</if>
+		WHERE mtrl_of_id  = #{mtrlOfId}
+	</update>
+	
+	<!-- 발주주문서 삭제 -->
+	<delete id="deleteMtrlOrderForm" parameterType="jin.mes.cform.mtrl.mtrlOdMgt.mtrlOdcursitMgt.ZinixMtrlOdcursitMgtDto">
+		DELETE FROM prs_mtrl_orderform
+		WHERE mtrl_of_id  = #{mtrlOfId}
+	</delete>
+</mapper>

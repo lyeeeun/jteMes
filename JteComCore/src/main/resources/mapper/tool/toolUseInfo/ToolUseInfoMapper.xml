@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.tool.toolUseInfo.ToolUseInfoMapper">
+	<!-- 공구 관리정보 -->
+	<sql id="toolUse_base">
+			toolMgt.tool_mgt_id				AS toolMgtId,
+			toolMgt.tool_mgt_purchase		AS toolMgtPurchase,
+			toolMgt.tool_mgt_state			AS toolMgtState,
+			toolMgt.tool_mgt_limit			AS toolMgtLimit,
+			toolMgt.tool_mgt_use			AS toolMgtUse,
+			toolMgt.tool_mgt_verif			AS toolMgtVerif,
+			toolMgt.tool_mgt_gbn			AS toolMgtGbn,
+			toolMgt.tool_mgt_desc			AS toolMgtDesc,
+			toolMgt.is_del					AS isDel,
+			toolMgt.created_at				AS createdAt,
+			toolMgt.creator_id				AS creatorId,
+			toolMgt.updated_at				AS updatedAt,
+			toolMgt.updator_id				AS updatorId,
+			toolMgt.comp_id					AS compId,
+			compInfo.comp_nm				AS compNm,
+			toolMgt.tool_id					AS toolId,
+			toolInfo.tool_nm				AS toolNm
+		FROM cm_tool_mgt toolMgt
+		LEFT JOIN bc_company_info compInfo ON toolMgt.comp_id = compInfo.comp_id
+		LEFT JOIN bc_tool_info toolInfo ON toolMgt.tool_id = toolInfo.tool_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="toolId != null">
+			AND toolInfo.tool_id = #{toolId}
+		</if>
+	</sql>
+
+	<!-- 공구 관리정보(Page) select -->
+	<select id="selectToolUseList"
+		parameterType="jin.mes.form.tool.toolUseInfo.ToolUseInfoDto"
+		resultType="jin.mes.form.tool.toolUseInfo.ToolUseInfoDto">
+		SELECT * FROM (
+		SELECT
+		<choose>
+			<when test="sort != null and sort != '' ">
+				ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+			</when>
+			<otherwise>
+				ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+			</otherwise>
+		</choose>
+		<include refid="toolUse_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>
+	</select>
+
+	<!-- 공구 관리정보 Count -->
+	<select id="selectToolUseCount"
+		parameterType="jin.mes.form.tool.toolUseInfo.ToolUseInfoDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM (
+		SELECT
+		<include refid="toolUse_base" />
+		)c_table
+	</select>
+	
+		<!--공구 사용정보 -->
+	<sql id="toolUseInfo_base">
+		toolUse.tool_use_qty 	AS toolUseQty,
+		toolUse.tool_use_start 	AS toolUseStart,
+		toolUse.tool_use_end 	AS toolUseEnd,
+		toolUse.tool_use_desc 	AS toolUseDesc,
+		toolUse.prod_work_id 	AS prodWorkId,
+		toolUse.tool_id 		AS toolId,
+		toolUse.tool_mgt_id 	AS toolMgtId,
+		toolUse.lot_id 			AS lotId
+		FROM prs_tool_useinfo toolUse
+		WHERE 1=1 
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="toolMgtId != null and toolMgtId != '' ">
+			AND toolUse.tool_mgt_id = #{toolMgtId}
+		</if>
+		<if test="prodWorkId != null and prodWorkId != '' ">
+			AND toolUse.prod_work_id = #{prodWorkId}
+		</if>
+		<if test="toolId != null and toolId != '' ">
+			AND toolUse.tool_id = #{toolId}
+		</if>
+	</sql>
+
+	<!-- 공구 사용정보(Page) select -->
+	<select id="selectToolUseInfoList"
+		parameterType="jin.mes.form.tool.toolUseInfo.ToolUseInfoDto"
+		resultType="jin.mes.form.tool.toolUseInfo.ToolUseInfoDto">
+		SELECT * FROM (
+		SELECT
+		<choose>
+			<when test="sort != null and sort != '' ">
+				ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+			</when>
+			<otherwise>
+				ROW_NUMBER() OVER(ORDER BY toolUseStart desc) AS RNUM,
+			</otherwise>
+		</choose>
+		<include refid="toolUseInfo_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>
+	</select>
+
+	<!-- 공구 사용정보Count -->
+	<select id="selectToolUseInfoCount"
+		parameterType="jin.mes.form.tool.toolUseInfo.ToolUseInfoDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM (
+		SELECT
+		<include refid="toolUseInfo_base" />
+		)c_table
+	</select>
+	
+</mapper>

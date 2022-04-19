@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.basMgt.operMgt.mtrlInfo.KwangjinMtrlInfoMapper">
+						
+	<!-- 자재정보 -->
+	<sql id="mtrlInfo_base">
+		subQ.*
+		FROM (
+			SELECT 
+				mtrlInfo.mtrl_id 		AS mtrlId,
+				mtrlInfo.description	AS mtrlDiv, 
+				mtrlInfo.mtrl_nm		AS mtrlNm,
+				mtrlInfo.mtrl_type		AS mtrlType,
+				mtrlInfo.mtrl_std01		AS mtrlStd01,
+				mtrlInfo.mtrl_std02		AS mtrlStd02,
+				mtrlInfo.mtrl_std03		AS mtrlStd03,
+				mtrlInfo.mtrl_std04		AS mtrlStd04,
+				mtrlInfo.mtrl_std05		AS mtrlStd05, 
+				mtrlInfo.mtrl_std_str01	AS mtrlStdStr01, 
+				mtrlInfo.mtrl_std_str02	AS mtrlStdStr02, 
+				mtrlInfo.mtrl_std_str03	AS mtrlStdStr03, 
+				mtrlInfo.mtrl_std_str04	AS mtrlStdStr04,
+				mtrlInfo.mtrl_std_str05	AS mtrlStdStr05, 
+				mtrlInfo.mtrl_cost		AS mtrlCost, 
+				mtrlInfo.is_use			AS isUse, 
+				mtrlInfo.creator_id		AS creatorId, 
+				mtrlInfo.created_at		AS createdAt, 
+				mtrlInfo.updator_id		AS updatorId, 
+				mtrlInfo.updated_at		AS updatedAt, 
+				mtrlInfo.mtrl_desc		AS mtrlDesc,
+				GROUP_CONCAT(comp_nm)	AS compNm
+			FROM bc_material_info mtrlInfo 
+			LEFT JOIN bc_rtl_mtrl_comp rtlComp ON mtrlInfo.mtrl_id = rtlComp.mtrl_id
+			LEFT JOIN bc_company_info compInfo ON rtlComp.comp_id = compInfo.comp_id
+			<if test="itemId != null and itemId != ''">
+			LEFT JOIN bc_bom_info bomInfo ON mtrlInfo.mtrl_id = bomInfo.bom_target_id
+			</if>
+			WHERE 1=1
+			<if test="itemId != null and itemId != ''">
+				AND bomInfo.item_id = #{itemId}
+			</if>
+			<if test="searchText != null and searchText != '' and searchGubun != 'compNm' ">
+				AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+			</if> 
+			<if test="mtrlType != null and mtrlType != '' ">
+				AND mtrlInfo.mtrl_type = #{mtrlType}
+			</if>
+			<if test="mtrlId != null and mtrlId != '' ">
+				AND mtrlInfo.mtrl_id = #{mtrlId}
+			</if>
+			<if test="isUse != null and isUse != '' ">
+				AND mtrlInfo.is_use = #{isUse}
+			</if>
+			GROUP BY mtrlInfo.mtrl_id
+			<if test="searchText != null and searchText != '' and searchGubun == 'compNm' ">
+			HAVING ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+			</if>
+			) subQ
+	</sql>
+
+	<!-- 자재정보(Page) select -->
+	<select id="selectMtrlInfoList"
+		parameterType="jin.mes.cform.basMgt.operMgt.mtrlInfo.KwangjinMtrlInfoDto"
+		resultType="jin.mes.cform.basMgt.operMgt.mtrlInfo.KwangjinMtrlInfoDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="mtrlInfo_base" />
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+				</if>
+	</select>
+	
+	<!-- 자재정보 Count -->
+	<select id="selectMtrlInfoCount"
+		parameterType="jin.mes.cform.basMgt.operMgt.mtrlInfo.KwangjinMtrlInfoDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="mtrlInfo_base" />
+				)c_table
+	</select>
+	
+	<!-- 자재정보 select(mtrl-child) -->
+	<select id="selectMtrlOne"
+	parameterType="jin.mes.cform.basMgt.operMgt.mtrlInfo.KwangjinMtrlInfoDto"
+		resultType="jin.mes.cform.basMgt.operMgt.mtrlInfo.KwangjinMtrlInfoDto">
+				SELECT
+				<include refid="mtrlInfo_base" />
+	</select>
+	
+	<!-- 자재정보 입력 -->
+	<insert id="insertMtrlInfo" parameterType="jin.mes.cform.basMgt.operMgt.mtrlInfo.KwangjinMtrlInfoDto">
+	<selectKey keyProperty="mtrlId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('MTL') AS mtrlId
+	</selectKey>
+		INSERT INTO bc_material_info(
+			mtrl_id,
+			description,
+			mtrl_nm,
+			mtrl_type,
+			mtrl_std01,
+			mtrl_std02,
+			mtrl_std03,
+			mtrl_std04,
+			mtrl_std05,
+			mtrl_std_str01,
+			mtrl_std_str02,
+			mtrl_std_str03,
+			mtrl_std_str04,
+			mtrl_std_str05,
+			mtrl_cost,
+			is_use,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at,
+			mtrl_desc
+		)VALUES(
+			#{mtrlId}, 
+			#{mtrlDiv},
+			#{mtrlNm}, 
+			#{mtrlType}, 
+			#{mtrlStd01},
+			#{mtrlStd02},
+			#{mtrlStd03},
+			#{mtrlStd04},
+			#{mtrlStd05},
+			#{mtrlStdStr01},
+			#{mtrlStdStr02},
+			#{mtrlStdStr03},
+			#{mtrlStdStr04},
+			#{mtrlStdStr05},
+			#{mtrlCost}, 
+			TRUE,
+			#{creatorId}, 
+			NOW(), 
+			#{updatorId}, 
+			NOW(), 
+			#{mtrlDesc}
+		)
+	</insert>
+	
+	<!-- 자재 정보수정 -->
+	<update id="updateMtrlInfo" parameterType="jin.mes.cform.basMgt.operMgt.mtrlInfo.KwangjinMtrlInfoDto">
+		UPDATE bc_material_info
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			
+			<if test="mtrlNm != null and mtrlNm != ''">	
+				,mtrl_nm = #{mtrlNm}
+			</if>
+			<if test="mtrlDesc != null and mtrlDesc != ''">	
+				,mtrl_desc = #{mtrlDesc}
+			</if>	
+			<if test="mtrlType != null and mtrlType != ''">	
+				,mtrl_type = #{mtrlType}
+			</if>
+			<if test="mtrlStd01 != null and mtrlStd01 != ''">	
+				,mtrl_std01 = #{mtrlStd01}
+			</if>
+			<if test="mtrlStd02 != null and mtrlStd02 != ''">	
+				,mtrl_std02 = #{mtrlStd02}
+			</if>
+			<if test="mtrlStd03 != null and mtrlStd03 != ''">	
+				,mtrl_std03 = #{mtrlStd03}
+			</if>
+			<if test="mtrlStd04 != null and mtrlStd04 != ''">	
+				,mtrl_std04 = #{mtrlStd04}
+			</if>
+			<if test="mtrlStd05 != null and mtrlStd05 != ''">	
+				,mtrl_std05 = #{mtrlStd05}
+			</if>
+			<if test="mtrlStdStr01 != null and mtrlStdStr01 != ''">	
+				,mtrl_std_str01 = #{mtrlStdStr01}
+			</if>
+			<if test="mtrlStdStr02 != null and mtrlStdStr02 != ''">	
+				,mtrl_std_str02 = #{mtrlStdStr02}
+			</if>
+			<if test="mtrlStdStr03 != null and mtrlStdStr03 != ''">	
+				,mtrl_std_str03 = #{mtrlStdStr03}
+			</if>
+			<if test="mtrlStdStr04 != null and mtrlStdStr04 != ''">	
+				,mtrl_std_str04 = #{mtrlStdStr04}
+			</if>
+			<if test="mtrlStdStr05 != null and mtrlStdStr05 != ''">	
+				,mtrl_std_str05 = #{mtrlStdStr05}
+			</if>
+			<if test="mtrlCost != null and mtrlCost != ''">	
+				,mtrl_cost = #{mtrlCost}
+			</if>
+			<if test="isUse != null">	
+				,is_use = #{isUse}
+			</if>
+		WHERE mtrl_id  = #{mtrlId}
+	</update>
+	
+	<!-- 자재정보 삭제 -->
+	<delete id="deleteMtrlInfo" parameterType="jin.mes.cform.basMgt.operMgt.mtrlInfo.KwangjinMtrlInfoDto">
+		DELETE FROM bc_material_info
+		WHERE mtrl_id  = #{mtrlId}
+	</delete>
+	
+	<!-- 자재 구매업체 -->
+	<sql id="mtrl_rtl_comp">
+			comp.comp_id		AS compId,
+			comp.comp_nm		AS compNm,
+			comp.comp_managr	AS compManagr,
+			comp.comp_number	AS compNumber,
+			comp.comp_type		AS compType,
+			comp.comp_addr		AS compAddr,
+			comp.created_at		AS createdAt,
+			comp.updated_at		AS updatedAt,
+			comp.creator_id		AS creatorId,
+			comp.updator_id		AS updatorId,
+			comp.description	AS description,
+			comp.is_use			AS isUse,
+			rtl.mtrl_id			AS mtrlId,
+			rtl.mtrl_price		AS mtrlPrice,
+			comp.comp_std01		AS compStd01,
+			comp.comp_std02		AS compStd02,
+			comp.comp_std03		AS compStd03,
+			comp.comp_std04		AS compStd04,
+			comp.comp_std05		AS compStd05,
+			comp.comp_std_str01		AS compStdStr01,
+			comp.comp_std_str02		AS compStdStr02,
+			comp.comp_std_str03		AS compStdStr03,
+			comp.comp_std_str04		AS compStdStr04,
+			comp.comp_std_str05		AS compStdStr05
+		FROM bc_rtl_mtrl_comp rtl
+		LEFT OUTER JOIN bc_company_info comp on rtl.comp_id = comp.comp_Id
+		WHERE rtl.mtrl_id = #{mtrlId} AND comp.is_use = true
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="compId != null">
+			AND rtl.comp_id = #{compId}
+		</if>
+	</sql>
+	
+		<!-- 자재구매업체(Page) select -->
+	<select id="selectMtrlRtlCompList"
+		parameterType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompMgtDto"
+		resultType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="mtrl_rtl_comp" />
+			)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>
+	</select>
+
+	<!-- 자재구매업체 Count -->
+	<select id="selectMtrlRtlCompCount"
+		parameterType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="mtrl_rtl_comp" />
+				)c_table
+	</select>
+	
+	<!-- 자재에 포함된 업체조회(mtrl-child) -->
+	<select id="selectMtrlChild"
+		parameterType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompMgtDto"
+		resultType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompMgtDto">
+			SELECT 
+			'K'	AS action, -- 저장행위 기본상태(K인 경우 DB에 저장되지 않는다.) 
+			<include refid="mtrl_rtl_comp" />
+	</select>
+	
+	<!-- 자재구매업체 입력 -->
+	<insert id="insertMtrlRtlComp" parameterType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompMgtDto">
+		INSERT INTO bc_rtl_mtrl_comp(
+			mtrl_id,
+			comp_id,
+			mtrl_price
+		)VALUES(
+			#{mtrlId}, 
+			#{compId},
+			#{mtrlPrice}
+		)
+	</insert>
+	
+	<!-- 자재구매업체 삭제 -->
+	<delete id="deleteMtrlRtlComp" parameterType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompMgtDto">
+		DELETE FROM bc_rtl_mtrl_comp
+		WHERE mtrl_id  = #{mtrlId}
+		<if test="compId != null"> 
+			AND comp_id = #{compId}
+		</if>
+	</delete>
+	
+	<!-- 자재 최소 필요  수량 검색 -->
+	<select id="selectMinOutOfStock" resultType="jin.mes.cform.basMgt.operMgt.mtrlInfo.KwangjinMtrlInfoDto">
+		SELECT 
+			mtrlInfo.mtrl_std04		AS mtrlStd04,
+			mtrlMgt.mtrl_mgt_cnt		AS mtrlMgtCnt,
+			mtrlMgt.mtrl_mgt_id		AS mtrlMgtId  
+		FROM cm_mtrl_mgt mtrlMgt
+		INNER JOIN bc_material_info mtrlInfo ON mtrlMgt.mtrl_id = mtrlInfo.mtrl_id
+		WHERE mtrlInfo.mtrl_std04 >= mtrlMgt.mtrl_mgt_cnt
+	</select>
+	
+	<select id="selectMtrlRtlItemList" parameterType="String" resultType="String">
+		SELECT item_id	as itemId 
+		FROM bc_bom_info
+		WHERE bom_target_id = #{mtrlId}
+		AND item_id IS NOT NULL
+	</select>
+	
+	<select id="selectItemMtrlCost" parameterType="String" resultType="java.lang.Integer">
+		SELECT SUM(calMtrlPrice) AS itemMtrlCost
+		FROM (
+			WITH RECURSIVE bomRecursive AS 
+			(
+			SELECT  
+				bom_id AS bomId,
+				bom_target AS bomTarget,
+				bom_target_id AS bomTargetId,
+				bom_target_cnt AS bomTargetCnt,
+				bom_parent_id AS bomParentId,
+			1 lvl
+			FROM bc_bom_info AS bomInfo
+			WHERE bom_parent_id = #{itemId}
+			UNION ALL
+			SELECT
+				bomInfo.bom_id AS bomId,
+				bomInfo.bom_target AS bomTarget,
+				bomInfo.bom_target_id AS bomTargetId,
+				bomInfo.bom_target_cnt AS bomTargetCnt,
+				bomInfo.bom_parent_id AS bomParentId,
+				lvl + 1 lvl
+			FROM bc_bom_info AS bomInfo
+			INNER JOIN bomRecursive bomRec ON bomInfo.bom_parent_id = bomRec.bomId
+			)
+			SELECT 	
+				bomId,
+				bomTarget,
+				bomTargetId,
+				IFNULL(bomTargetCnt,0) AS bomTargetCnt,
+				bomParentId,
+				mtrlComp.comp_id AS compId,
+				AVG(IFNULL(mtrlComp.mtrl_price,0))  AS mtrlPrice,
+				AVG(IFNULL(mtrlComp.mtrl_price,0)) * IFNULL(bomTargetCnt,0) AS calMtrlPrice
+			FROM bomRecursive bomRec
+			LEFT JOIN bc_rtl_mtrl_comp mtrlComp ON bomRec.bomTargetId = mtrlComp.mtrl_id
+			WHERE bomRec.bomTarget = "prcs_bom02"
+			GROUP BY bomTargetId
+		) itemMtrlCost
+	</select>
+	
+</mapper>

@@ -1,0 +1,174 @@
+/** shSelTxt 좌우 여백 CSS 모음_2020.11.30 JJW&YUMI 누락 시 추가 바람**/
+
+#barcodeInfo_grid_shSelTxt,
+#jteBadItemChkPop_grid_shSelTxt,
+#jteComPopGrd_shSelTxt,
+#jteDoubleGrid_shSelTxt,
+#jteMasterGrid_shSelTxt,
+#jteMtrlOrdChkPop_grid_shSelTxt,
+#jteMtrlOrderGrid_shSelTxt,
+#jtePopEqmtMtnc_grid_shSelTxt,
+#jtePopForm_Claim_grid_shSelTxt,
+#jtePopForm_grid_shSelTxt,
+#jtePopInputQualAdd_grid_shSelTxt,
+#jtePopToolMtnc_grid_shSelTxt,
+#jteQualBadChkPop_grid_shSelTxt,
+#jteSingleGrid_shSelTxt,
+#jteSubGrid_shSelTxt,
+#packageInfo_grid_shSelTxt,
+#_tabBack_jteSingleGrid_shSelTxt {
+	margin-left: 3px;
+	margin-right: 3px;
+}
+
+/** BasicForm CSS_2020.11.30 JJW&YUMI **/
+
+.fa-info-circle:before {
+	color:#3367D6;
+}
+
+.BasicTable {
+	/* width: 100%; */
+	padding-left: 20px;
+	padding-right: 20px;	
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
+.BasicTable th {
+	text-align: left;	
+}
+
+.BasicTable td {
+	padding-top: .45em;
+	padding-bottom: .45em;	
+}
+ 
+.BasicTable tr td button {
+	width: 80px;
+	margin-left: 10px;
+	padding: 6px 0px;
+}
+
+.BasicTable tr td input[type=text],
+.BasicTable tr td span.k-dropdown,
+.BasicTable tr td span.k-numerictextbox,
+.BasicTable tr td span.k-datepicker,
+.BasicTable tr td span.k-timepicker,
+.BasicTable tr td span.k-datetimepicker {
+	width: 100%;
+} 
+
+.BasicTable tr td span.k-textarea {
+	width: 100%;
+	padding: 0;
+	padding-top: .17857143em;
+}
+
+.BasicTable tr td input.btn-input {
+	width: calc( 100% - 90px );
+	float: left;
+}
+
+.BasicTable tr td:nth-child(3) {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.BasicTable .final-btn-area {
+	margin-top: 20px;
+	text-align: center;
+}
+
+/* 팝업 단순 view 굵은글씨 - jkkim 추가  */
+.BasicTable label{
+	font-weight : bold;
+}
+
+/* 팝업 내부 그리드 스타일 - jkkim 추가   */
+.pop-grid{
+	width:98%;
+	margin:auto;
+}
+
+/**YUMI 텍스트 입력 영역 외곽선 색상 변경 **/
+
+.k-widget.k-textarea {
+	border: 1px solid #a0bbf3;
+}
+
+.k-widget.k-textarea.k-state-focused {
+	border-color: #078aeb;
+	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.03), 0 4px 5px 0 rgba(0, 0, 0, 0.04);
+}
+
+/**팝업 > 위치 조회 팝업 여백 **/
+
+.k-widget.k-window .k-widget.k-treeview.k-window-content {
+	padding-left: 20px;
+}
+
+/** 팝업 상하 여백이 적용되지 않을 때-개별 CSS에 넣을 때 참고_2020.12.02**/
+
+/* #jtePopQcDocAdd_master {
+   padding-top: 10px;
+   padding-bottom: 2px;
+}
+
+#jteQualBadChkPop_master {
+   font-size: 16px;
+   padding-top: 10px;
+   padding-bottom: 2px;
+}
+
+/** 팝업 좌우 여백이 적용되지 않을 때  - 개별 CSS에 넣을 때 참고_2020.12.03**/
+
+/* .jtePopForm_master,
+.jtePopEqmtAdd_master,
+.jteBadItemChkPop_master,
+.jteProdAsgnPop_master,
+.mtrlUseSavePop_table,
+.itemBadSavePop_table {
+	width: 100%;
+	padding-left: 20px;
+	padding-right: 20px;
+} */
+
+/** 팝업 그리드 th 왼쪽 정렬이 적용되지 않을 때  - 개별 CSS에 넣을 때 참고_2020.12.03**/
+
+/* .jtePopForm_master th,
+.jtePopEqmtAdd_master th,
+.jteBadItemChkPop_master th,
+.jteProdAsgnPop_master th,
+.mtrlUseSavePop_table th,
+.itemBadSavePop_table th {
+	text-align: left;
+} */
+
+/** 팝업 그리드 td 상하 여백이 적용되지 않을 때  - 개별 CSS에 넣을 때 참고_2020.12.03**/
+
+/* .jtePopForm_master td,
+.jtePopEqmtAdd_master td,
+.jteBadItemChkPop_master td,
+.jteProdAsgnPop_master td,
+.mtrlUseSavePop_table td,
+.itemBadSavePop_table td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+} */ 
+
+/** 좌우 그리드 영역 적용 시-개별 CSS에 넣을 때 참고_2020.11.30**/
+
+/* .bomMgtForm-jteSingleGrid {
+   width:44.5%;
+   height:100%;
+   float:left;
+}
+
+.bomMgtForm-jteSubGrid {
+   width: 54.5%;
+   height:100%;
+   float:right;
+} */

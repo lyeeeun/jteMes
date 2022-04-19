@@ -1,0 +1,75 @@
+<!doctype html> 
+<html ng-app> 
+<head> 
+	<title>Angular with JQuery EasyUI</title>
+	
+	<link rel="stylesheet" type="text/css" href="http://www.jeasyui.com/easyui/themes/metro/easyui.css">
+	<link rel="stylesheet" type="text/css" href="http://www.jeasyui.com/easyui/themes/icon.css">
+<!-- 	<link rel="stylesheet" type="text/css" href="/jquery-easyui/themes/metro/easyui.css"> -->
+<!-- 	<link rel="stylesheet" type="text/css" href="/jquery-easyui/themes/icon.css"> -->
+	<style type="text/css">
+		#ff label{
+			display:block;
+			width:100px;
+		}
+	</style>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js"></script>  
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
+	<script type="text/javascript" src="http://www.jeasyui.com/easyui/jquery.easyui.min.js"></script>
+	
+<!-- 	<script src="/angularjs/angular.min.js"></script>   -->
+<!-- 	<script type="text/javascript" src="/jquery-easyui/jquery.min.js"></script> -->
+<!-- 	<script type="text/javascript" src="/jquery-easyui/jquery.easyui.min.js"></script> -->
+	
+	<script src="/js/sample/FormAndTable.js"></script> 
+ 
+</head>
+</body>  
+	<div style="padding:3px 2px;border-bottom:1px solid #ccc">Compose Email</div>
+	<form id="ff" method="post" ng-controller="FormTableCtrl">
+		<div>
+			<label for="name">Name:</label> <input class="easyui-validatebox"
+				ng-model="name" type="text" name="name" required="true"></input>
+		</div>
+		<div>
+			<label for="email">Email:</label> <input class="easyui-validatebox"
+				ng-model="email" type="text" name="email" required="true"
+				validType="email"></input>
+		</div>
+		<div>
+			<label for="subject">Subject:</label> <input
+				class="easyui-validatebox" ng-model="subject" type="text"
+				name="subject" required="true"></input>
+		</div>
+		<div>
+			<label for="message">Message:</label>
+			<textarea name="message" ng-model="message" style="height: 60px;"></textarea>
+		</div>
+		<div>
+			<input type="button" value="Send" ng-click="sendEmail()"></input>
+		</div>
+	</form>
+	
+	<br>
+	<hr>
+	<div style="padding:3px 2px;border-bottom:1px solid #ccc">Email history</div>
+	<br>
+	<div id="patient_table"  ng-controller="FormTableCtrl">
+		<table id="emailhistory" class="easyui-datagrid"
+			data-options="singleSelect:true,collapsible:true,data:{{tableItems}}"
+			style="width: 560px; height: 400px">
+			<thead>
+				<tr>
+					<th data-options="field:'name',width:'120'">Name</th>
+					<th data-options="field:'email',width:'120'">Email</th>
+					<th data-options="field:'subject',width:'120'">Subject</th>
+					<th data-options="field:'message',width:'200',resizable:true">Message</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+
+</body> 
+</html>
+ 

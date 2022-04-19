@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="SY_userRegMgmt">
+	<!-- selectUserList 
+	FN_CM_GETCOMNM(CTR_CD, COMP_CD, 'GENDER', GENDER) AS GENDER_NM 
+	FN_CM_GETCOMNM(CTR_CD, COMP_CD, 'DEPT', DEPT_CD) AS DEPT_NM -->
+	<select id="selectUserList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT		
+		       CTR_CD         AS CTR_CD                                     
+		     , ADMIN_ID       AS ADMIN_ID                                      
+		     , ADMIN_ID       AS ORG_ADMIN_ID                                 
+		     , ADMIN_NM       AS ADMIN_NM                                     
+		     , ADMIN_HP       AS ADMIN_HP                                     
+		     , ADMIN_PW		  AS ADMIN_PW									  
+		     , ADDR           AS ADDR                                        
+		     , POST_NO        AS POST_NO                                   
+		     , BIRTH          AS BIRTH                                        
+		     , GENDER         AS GENDER_CD                                    
+		     , GENDER         AS GENDER_NM
+		     , GENDER AS GENDER_NM
+		     , DEPT_CD        AS DEPT_CD                                    
+		     , DEPT_CD        AS DEPT_NM
+		     , DEPT_CD AS DEPT_NM 
+		     , AUTH_GRP_CD    AS AUTH_GRP_CD                         
+		     , (SELECT AUTH_GRP_NM 
+		          FROM TB_AUTHGRPINF
+		         WHERE CTR_CD = A.CTR_CD 
+		           AND AUTH_GRP_CD = A.AUTH_GRP_CD)             AS AUTH_GRP_NM 
+		     --, CASE WHEN PIC_LOC IS NOT NULL THEN 'V'
+		     --  ELSE '�벑濡�' END AS PIC_YN                                       -- 
+		     , PIC_LOC        AS PIC_LOC                                    
+		     , REG_DT         AS REG_DT                                    
+		     , REG_USER_ID    AS REG_USER_ID                                
+		     , REG_PGM_ID     AS REG_PGM_ID                                
+		     , WD_YN          AS WD_YN										 
+		     , GRADE_LEVEL    AS GRADE_LEVEL 								 
+		     , BP_CD  		  AS BP_CD										 
+		  FROM TB_ADMININF A                                                
+		 WHERE CTR_CD = #{CTR_CD}                                                
+		   AND NVL(ADMIN_NM, '%') LIKE NVL(#{ADMIN_NM}, '%') || '%'              
+		   AND NVL(DEPT_CD, '%') LIKE NVL(#{DEPT_CD}, '%')                       
+		   AND NVL(AUTH_GRP_CD, '%') LIKE NVL(#{AUTH_GRP_CD}, '%')               
+		   AND WD_YN LIKE NVL(#{WD_YN}, '%') || '%'  
+		]]>
+	</select>
+
+	<select id="selectCtrlList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT	
+				DISTINCT
+					CTR_NM	AS CTR_NM,		
+					CTR_CD	AS CTR_CD		
+			  FROM TB_CTRINF
+		]]>
+	</select>
+ 
+	<select id="selectAuthList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT AUTH_GRP_CD AS AUTH_GRP_CD 
+				 , AUTH_GRP_NM AS AUTH_GRP_NM 
+			  FROM TB_AUTHGRPINF		
+			 WHERE 1=1
+		]]>
+		
+	</select>
+
+	<select id="selectDeptList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT 
+				  COM_CD	AS COM_CD
+				, COM_NM	AS COM_NM
+			 FROM TB_COMCDINF
+			WHERE GRP_CD = 'DEPT'
+		]]>
+		
+	</select>
+
+	<select id="selectpreSave" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT COUNT(*) AS CNT				
+			FROM TB_ADMININF						
+			WHERE ADMIN_ID = #{ADMIN_ID}		
+		]]>
+	</select>
+
+	<select id="insertUserList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+			INSERT INTO TB_ADMININF (  
+				CTR_CD          	
+				, ADMIN_ID       
+				, ADMIN_NM      
+				, ADMIN_HP       
+				, POST_NO       
+				, ADDR           
+				, BIRTH           
+				, GENDER          
+				, DEPT_CD        
+				, AUTH_GRP_CD     
+				, PIC_LOC         
+				, SND_YN         
+				, REG_DT          	 
+				, REG_USER_ID   
+				, REG_PGM_ID      
+				, ADMIN_PW        
+				, WD_YN         
+				, GRADE_LEVEL	
+				, BP_CD			
+			)VALUES(
+				#{CTR_CD}
+				, UPPER(#{ADMIN_ID})
+				, #{ADMIN_NM}
+				, #{ADMIN_HP}
+				, #{POST_NO}
+				, #{ADDR}
+				, #{BIRTH}
+				, #{GENDER_CD}
+				, #{DEPT_CD}
+				, #{AUTH_GRP_CD}
+				, #{PIC_LOC}
+				, 'N'
+				, SYSDATE
+				, #{REG_USER_ID}
+				, #{REG_PGM_ID}
+				, 1
+				, 'N'
+				, #{GRADE_LEVEL}
+				, #{BP_CD}
+			)
+		]]>
+
+	</select>
+
+	<select id="updateUserList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+			UPDATE    SY_userRegMgmt 
+			       TB_ADMININF					  
+			   SET  
+			       ADMIN_ID     = UPPER(#{ADMIN_ID})     
+			     , ADMIN_NM     = #{ADMIN_NM}     
+			     , ADMIN_HP     = #{ADMIN_HP}    
+			     , POST_NO      = #{POST_NO}      
+			     , ADDR         = #{ADDR}        
+			     , BIRTH        = #{BIRTH}      
+			     , GENDER       = #{GENDER_CD}    
+			     , DEPT_CD      = #{DEPT_CD}     
+			     , AUTH_GRP_CD  = #{AUTH_GRP_CD}  
+			     , PIC_LOC      = #{PIC_LOC}     
+			     , SND_YN       = 'N'          
+			     , UPD_DT       = SYSDATE      
+			     , UPD_USER_ID  = #{UPD_USER_ID} 
+			     , UPD_PGM_ID   = #{UPD_PGM_ID}  
+			     , GRADE_LEVEL  = #{GRADE_LEVEL} 
+			     , WD_YN        = #{WD_YN}		
+			     , BP_CD        = #{BP_CD}		
+			 WHERE CTR_CD       = #{CTR_CD}       
+			   AND ADMIN_ID     = #{ORG_ADMIN_ID} 
+		]]>
+	</select>
+
+	<select id="deleteUserList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+			UPDATE    
+			       TB_ADMININF                 
+			   SET
+			       WD_YN = 'Y'                 
+			     , UPD_DT = SYSDATE              
+			     , UPD_USER_ID  = #{UPD_USER_ID}   
+			     , UPD_PGM_ID   = #{UPD_PGM_ID}    
+			 WHERE CTR_CD       = #{CTR_CD}        
+			   AND ADMIN_ID     = #{ORG_ADMIN_ID}  
+		]]>
+	</select>
+
+	<select id="savePwChg" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+			UPDATE     -- [사용자등록관리](SY_userRegMgmt)
+			       TB_ADMININF              
+			   SET
+			       ADMIN_PW    = 1
+			     , SND_YN      = 'N'              
+			     , UPD_DT      = SYSDATE         
+			     , UPD_USER_ID  = #{UPD_USER_ID}  
+			     , UPD_PGM_ID   = #{UPD_PGM_ID}  
+			 WHERE CTR_CD      = #{CTR_CD}         
+			   AND ADMIN_ID    = #{ORG_ADMIN_ID}   
+		]]>
+	</select>
+
+</mapper>

@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.ship.shipMgt.ShipMgtMapper">
+		<!-- 출고 정보 SQL -->
+	<sql id="ship_base">
+			shipMgt.ship_id				AS shipId,
+			shipMgt.item_mgt_id			AS itemMgtId,
+			shipMgt.ship_type			AS shipType,
+			shipMgt.ship_qty			AS shipQty,
+			shipMgt.ship_state			AS shipState,
+			shipMgt.ship_start_date		AS shipStartDate,
+			shipMgt.ship_complete_date	AS shipCompleteDate,
+			shipMgt.ship_desc			AS shipDesc,
+			shipMgt.comp_id				AS compId,
+			shipMgt.comp_addr_id		AS compAddrId,
+			compInfo.comp_nm			AS compNm,
+			compAddr.comp_addr_detail	AS compAddrDetail,
+			compAddr.comp_addr_number	AS compAddrNumber
+		FROM prs_ship_mgt shipMgt
+		INNER JOIN bc_company_info compInfo ON shipMgt.comp_id = compInfo.comp_id
+		INNER JOIN bc_company_addr compAddr ON shipMgt.comp_addr_id = compAddr.comp_addr_id
+		WHERE 1=1
+		<if test="shipId != null">
+			AND shipMgt.ship_id = #{shipId}
+		</if>
+		<if test="itemMgtId != null">
+			AND shipMgt.item_mgt_id = #{itemMgtId}
+		</if>
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<!-- 출하 관련 Barcode 정보 -->
+	<sql id="shipRtlBarcode_base">
+			shipBarcode.ship_id 	AS shipId,
+			shipBarcode.barcode_id	AS barcodeId
+		FROM prs_barcode_info2 shipBarcode
+		WHERE ship_id = #{shipId}
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<!-- 출하 정보 조회(Paging) -->
+	<select id="selectShipInfo"
+		parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto"
+		resultType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY shipMgt.ship_id desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="ship_base" />
+				)s_table
+		WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 출하 정보 조회(Count) -->
+	<select id="selectShipInfoCount"
+		parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="ship_base" />
+				)c_table
+	</select>
+	
+	<!-- 출하 관련 Barcode 정보 조회 -->
+	<select id="selectShipRtlBarcode"
+		parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto"
+		resultType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		SELECT 
+		'K'				AS	action,
+		<include refid="shipRtlBarcode_base" />
+	</select>
+	
+	<!-- 출하 관련 Barcode 정보 조회(Paging) -->
+	<select id="selectBarcodeInfo"
+		parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto"
+		resultType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+			SELECT * FROM (
+					SELECT 
+						<choose>
+							<when test="sort != null and sort != '' ">
+								ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+							</when>
+							<otherwise>
+								ROW_NUMBER() OVER(ORDER BY shipBarcode.barcode_id desc) AS RNUM,
+							</otherwise>
+						</choose>
+						<include refid="shipRtlBarcode_base" />
+					)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- 출하 관련 Barcode 정보 조회(Count) -->
+	<select id="selectBarcodeInfoCount"
+		parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="shipRtlBarcode_base" />
+			)c_table
+	</select>
+	
+	<!-- 출하 정보 등록 -->
+	<insert id="insertShipInfo" parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		<selectKey keyProperty="shipId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('SHIP') AS shipId
+		</selectKey>
+		INSERT INTO prs_ship_mgt(
+				ship_id,
+				item_mgt_id,
+				ship_type,
+				ship_qty,
+				ship_state,
+				ship_start_date,
+				ship_complete_date,
+				ship_desc,
+				comp_id,
+				comp_addr_id
+		)VALUES(
+				#{shipId},
+				#{itemMgtId},
+				#{shipType},
+				#{shipQty},
+				#{shipState},
+				#{shipStartDate},
+				NULL,
+				#{shipDesc},
+				#{compId},
+				#{compAddrId}
+		)
+	</insert>
+
+	<update id="updateShipInfo" parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		UPDATE prs_ship_mgt
+		SET ship_id = ship_id
+			<if test="shipType != null">
+				,ship_type = #{shipType}
+			</if>
+			<if test="shipQty != null">	
+				,ship_qty = #{shipQty}
+			</if>	
+			<if test="shipDesc != null">	
+				,ship_desc = #{shipDesc}
+			</if>
+			<if test="compId != null">	
+				,comp_id = #{compId}
+			</if>
+			<if test="compAddrId != null">	
+				,comp_addr_id = #{compAddrId}
+			</if>
+			<if test="shipStartDate != null">
+				,ship_start_date = #{shipStartDate}
+			</if>
+			<if test="shipCompleteDate != null">
+				,ship_complete_date = #{shipCompleteDate}
+			</if>
+			<if test="shipState != null">
+				,ship_state = #{shipState}
+				,ship_complete_date = NOW()
+			</if>
+		WHERE 1=1
+			<if test="shipId != null">
+				AND ship_id = #{shipId}
+			</if>
+			<if test="itemMgtId != null">
+				AND item_mgt_id = #{itemMgtId}
+			</if>
+		
+	</update>
+	
+	<delete id="deleteShipInfo" parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		DELETE FROM prs_ship_mgt
+		WHERE ship_id = #{shipId}
+	</delete>
+	
+		
+<!-- 기존 
+	<insert id="insertShipRtlBarcode" parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		INSERT INTO prs_rtl_ship_barcode(
+				ship_id,
+				barcode
+		)VALUES(
+				#{shipId},
+				#{barcode}
+		)
+	</insert>
+	
+	<delete id="deleteShipRtlBarcode" parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		DELETE FROM prs_rtl_ship_barcode
+		WHERE ship_id = #{shipId}
+		<if test="barcode != null and barcode != '' ">
+			AND barcode = #{barcode}
+		</if>
+	</delete>
+-->	
+
+	<!-- 출하 & Barcode Mapping-->
+	<update id="insertShipRtlBarcode" parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		UPDATE prs_barcode_info2
+		SET ship_id = #{shipId}
+		WHERE 1=1
+		AND barcode_id = #{barcodeId}
+	</update>
+	
+	<update id="deleteShipRtlBarcode" parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		UPDATE prs_barcode_info2
+		SET ship_id = NULL
+		WHERE ship_id = #{shipId}
+		<if test="barcodeId != null and barcodeId != '' ">
+			AND barcode_id = #{barcodeId}
+		</if>
+	</update>
+ 
+	<!-- Lot 상태 변경 -->
+	<update id="updateLotState" parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		UPDATE prs_lot_info
+		SET lot_state = #{lotState}
+		WHERE lot_id = #{itemMgtId}
+	</update>
+	
+	<select id="selectLotState" 
+		parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto"
+		resultType="String">
+		SELECT 
+			lot_state AS lotState 
+		FROM prs_lot_info
+		where lot_id = #{itemMgtId}
+	</select>
+	
+</mapper>

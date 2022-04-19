@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.facilMgt.currentMountTool.CurrentMountToolMapper">
+
+<!-- 설비 관리정보 -->
+	<sql id="eqmtMgt_base">
+			eqmtMgt.eqmt_mgt_id				AS eqmtMgtId,
+			eqmtMgt.eqmt_mgt_gbn			AS eqmtMgtGbn,
+			eqmtMgt.eqmt_mgt_mtnc			AS eqmtMgtMtnc,
+			eqmtMgt.eqmt_mgt_nm				AS eqmtMgtNm,
+			eqmtMgt.eqmt_mgt_purchase		AS eqmtMgtPurchase,
+			eqmtMgt.eqmt_mgt_verif			AS eqmtMgtVerif,
+			eqmtMgt.eqmt_mgt_desc			AS eqmtMgtDesc,
+			eqmtMgt.eqmt_mgt_file			AS eqmtMgtFile,
+			eqmtMgt.is_use					AS isUse,
+			eqmtMgt.creator_id				AS creatorId,
+			eqmtMgt.created_at				AS createdAt,
+			eqmtMgt.updator_id				AS updatorId,
+			eqmtMgt.updated_at				AS updatedAt,
+			eqmtMgt.place_id				AS placeId,
+			place.place_nm					AS placeNm,
+			eqmtMgt.comp_id					AS compId,
+			comp.comp_nm					AS compNm,
+			eqmtMgt.day_target				AS dayTarget,
+			eqmtMgt.eqmt_mgt_std01			AS eqmtMgtStd01,
+			eqmtMgt.eqmt_mgt_std02			AS eqmtMgtStd02,
+			eqmtMgt.eqmt_mgt_std03			AS eqmtMgtStd03,
+			eqmtMgt.eqmt_mgt_std04			AS eqmtMgtStd04,
+			eqmtMgt.eqmt_mgt_std05			AS eqmtMgtStd05,
+			eqmtMgt.eqmt_mgt_std_str01		AS eqmtMgtStdStr01,
+			eqmtMgt.eqmt_mgt_std_str02		AS eqmtMgtStdStr02,
+			eqmtMgt.eqmt_mgt_std_str03		AS eqmtMgtStdStr03,
+			eqmtMgt.eqmt_mgt_std_str04		AS eqmtMgtStdStr04,
+			eqmtMgt.eqmt_mgt_std_str05		AS eqmtMgtStdStr05
+			
+		FROM bc_equipment_mgt eqmtMgt
+		LEFT OUTER JOIN bc_company_info comp ON comp.comp_id = eqmtMgt.comp_id 
+		LEFT OUTER JOIN bc_place_info place ON place.place_id = eqmtMgt.place_id 
+		WHERE 1=1
+		
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="eqmtMgtId != null and eqmtMgtId != '' ">
+			AND eqmtMgt.eqmt_mgt_id = #{eqmtMgtId}
+		</if>
+		<if test="isUse != null and isUse != '' ">
+			AND eqmtMgt.is_use = #{isUse}
+		</if>
+	</sql>
+	
+	<!-- 설비 관리정보(Page) select -->
+	<select id="selectEqmtToolList"
+		parameterType="jin.mes.form.facilMgt.currentMountTool.CurrentMountToolDto"
+		resultType="jin.mes.form.facilMgt.currentMountTool.CurrentMountToolDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="eqmtMgt_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 설비 관리정보 Count -->
+	<select id="selectEqmtToolListCount"
+		parameterType="jin.mes.form.facilMgt.currentMountTool.CurrentMountToolDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="eqmtMgt_base" />
+				)c_table
+	</select>
+	
+		<select id="selectRtlToolList"
+		parameterType="jin.mes.form.facilMgt.currentMountTool.CurrentMountToolDto"
+		resultType="jin.mes.form.facilMgt.currentMountTool.CurrentMountToolDto">
+		SELECT * 
+		FROM prs_rtl_tool_eqip a
+		LEFT JOIN bc_tool_info b
+		ON a.tool_id = b.tool_id
+		WHERE eqmt_mgt_id = #{eqmtMgtId}
+	</select>
+	
+	<select id="selectRtlToolCount"
+		parameterType="jin.mes.form.facilMgt.currentMountTool.CurrentMountToolDto"
+		resultType="int">
+		SELECT COUNT(*) 
+		FROM prs_rtl_tool_eqip a
+		LEFT JOIN bc_tool_info b
+		ON a.tool_id = b.tool_id
+		WHERE eqmt_mgt_id = #{eqmtMgtId}
+	</select>
+	
+	<select id="selectEqmtToolinfo"
+		parameterType="jin.mes.form.facilMgt.currentMountTool.CurrentMountToolDto"
+		resultType="jin.mes.form.facilMgt.currentMountTool.CurrentMountToolDto">
+				SELECT
+				<include refid="eqmtMgt_base" />
+	</select>
+	
+		<update id="updateEqmtTool" parameterType="jin.mes.form.facilMgt.currentMountTool.CurrentMountToolDto">
+		UPDATE bc_equipment_mgt
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			
+			<if test="eqmtMgtNm != null and eqmtMgtNm != ''">	
+				,eqmt_mgt_nm = #{eqmtMgtNm}
+			</if>
+			<if test="eqmtMgtGbn != null and eqmtMgtGbn != ''">	
+				,eqmt_mgt_gbn = #{eqmtMgtGbn}
+			</if>
+			<if test="eqmtMgtMtnc != null and eqmtMgtMtnc != ''">	
+				,eqmt_mgt_mtnc = #{eqmtMgtMtnc}
+			</if>
+			<if test="eqmtMgtPurchase != null and eqmtMgtPurchase != ''">	
+				,eqmt_mgt_purchase = #{eqmtMgtPurchase}
+			</if>
+			<if test="eqmtMgtVerif != null and eqmtMgtVerif != ''">	
+				,eqmt_mgt_verif = #{eqmtMgtVerif}
+			</if>
+			<if test="eqmtMgtDesc != null and eqmtMgtDesc != ''">	
+				,eqmt_mgt_desc = #{eqmtMgtDesc}
+			</if>
+			<if test="eqmtMgtFile != null and eqmtMgtFile != ''">	
+				,eqmt_mgt_file = #{eqmtMgtFile}
+			</if>
+			<if test="eqmtMgtStd01 != null and eqmtMgtStd01 != ''">	
+				,eqmt_mgt_std01 = #{eqmtMgtStd01}
+			</if>
+			<if test="eqmtMgtStd02 != null and eqmtMgtStd02 != ''">	
+				,eqmt_mgt_std02 = #{eqmtMgtStd02}
+			</if>
+			<if test="eqmtMgtStd03 != null and eqmtMgtStd03 != ''">	
+				,eqmt_mgt_std03 = #{eqmtMgtStd03}
+			</if>
+			<if test="eqmtMgtStd04 != null and eqmtMgtStd04 != ''">	
+				,eqmt_mgt_std04 = #{eqmtMgtStd04}
+			</if>
+			<if test="eqmtMgtStd05 != null and eqmtMgtStd05 != ''">	
+				,eqmt_mgt_std05 = #{eqmtMgtStd05}
+			</if>
+			<if test="eqmtMgtStdStr01 != null and eqmtMgtStdStr01 != ''">	
+				,eqmt_mgt_std_str01 = #{eqmtMgtStdStr01}
+			</if>
+			<if test="eqmtMgtStdStr02 != null and eqmtMgtStdStr02 != ''">	
+				,eqmt_mgt_std_str02 = #{eqmtMgtStdStr02}
+			</if>
+			<if test="eqmtMgtStdStr03 != null and eqmtMgtStdStr03 != ''">	
+				,eqmt_mgt_std_str03 = #{eqmtMgtStdStr03}
+			</if>
+			<if test="eqmtMgtStdStr04 != null and eqmtMgtStdStr04 != ''">	
+				,eqmt_mgt_std_str04 = #{eqmtMgtStdStr04}
+			</if>
+			<if test="eqmtMgtStdStr05 != null and eqmtMgtStdStr05 != ''">	
+				,eqmt_mgt_std_str05 = #{eqmtMgtStdStr05}
+			</if>
+			<if test="isUse != null">	
+				,is_use = #{isUse}
+			</if>
+			<if test="dayTarget != null and dayTarget != ''">	
+				,day_target = #{dayTarget}
+			</if>
+		WHERE eqmt_mgt_id  = #{eqmtMgtId}
+	</update>
+	
+		<!-- 설비구매업체 입력 -->
+	<insert id="insertRtlTool" parameterType="jin.mes.form.facilMgt.currentMountTool.MountDto">
+		INSERT INTO prs_rtl_tool_eqip
+		(
+			eqmt_mgt_id,
+			tool_id
+		)
+		VALUES
+		(
+			#{eqmtMgtId}, 
+			#{toolId}
+		)
+	</insert>
+	
+	<!-- 설비구매업체 삭제 -->
+	<delete id="deleteRtlTool" parameterType="jin.mes.form.facilMgt.currentMountTool.MountDto">
+		DELETE FROM prs_rtl_tool_eqip
+		WHERE 1=1
+		AND eqmt_mgt_id  = #{eqmtMgtId}
+		AND tool_id = #{toolId}
+	</delete>
+	
+	<!-- 설비 구매 업체-->
+	<sql id="eqmt_rtl_tool">
+			rtl.eqmt_mgt_id				AS eqmtMgtId,
+			tool.tool_id				AS toolId, 
+			tool.tool_nm     			AS toolNm, 
+			tool.tool_type   			AS toolType,
+			tool.tool_dc				AS toolDc,
+			tool.tool_price  			AS toolPrice, 
+			tool.tool_limit  			AS toolLimit, 
+			tool.tool_desc   			AS toolDesc,
+			tool.is_use      			AS isUse, 
+			tool.creator_id  			AS creatorId, 
+			tool.created_at  			AS createdAt,
+			tool.updator_id  			AS updatorId,
+			tool.updated_at  			AS updatedAt,
+			tool.tool_std01  			AS toolStd01,
+			tool.tool_std02  			AS toolStd02,
+			tool.tool_std03  			AS toolStd03,
+			tool.tool_std04  			AS toolStd04,
+			tool.tool_std05  			AS toolStd05,
+			tool.tool_std_str01  		AS toolStdStr01,
+			tool.tool_std_str02  		AS toolStdStr02,
+			tool.tool_std_str03  		AS toolStdStr03,
+			tool.tool_std_str04  		AS toolStdStr04,
+			tool.tool_std_str05  		AS toolStdStr05
+		FROM prs_rtl_tool_eqip rtl
+		JOIN bc_tool_info tool ON rtl.tool_id = tool.tool_id
+			WHERE 1=1 
+			AND eqmt_mgt_id = #{eqmtMgtId}
+			AND tool.is_use = TRUE
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	
+	<select id="selectEqmtToolChild"
+		parameterType="jin.mes.form.facilMgt.currentMountTool.MountDto"
+		resultType="jin.mes.form.facilMgt.currentMountTool.MountDto">
+
+			SELECT 
+			'K'	AS action,
+			<include refid="eqmt_rtl_tool" />
+		
+	</select>
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.perform.facilStaMgt.performEquipment.PerformEquipmentMapper">
+	
+	<select id="selectPerformEquipInfo"
+		parameterType="jin.mes.form.perform.facilStaMgt.performEquipment.PerformEquipmentDto"
+		resultType="jin.mes.form.perform.facilStaMgt.performEquipment.PerformEquipmentDto">
+		SELECT * 
+		FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY lotId ASC) AS RNUM,
+						</otherwise>
+					</choose> 
+					lotInfo.lot_id																								AS lotId,
+					itemInfo.item_nm																							AS itemNm,
+					assign.prod_asm_nm																							AS prodAsmNm,
+					assign.prod_asm_date																						AS prodAsmDate,
+					prodWork.prod_asm_id																						AS prodAsmId,
+					prodWork.eqmt_mgt_id																						AS eqmtMgtId,
+					prodWork.prod_work_start																					AS prodWorkStart,
+					prodWork.prod_work_user																						AS prodWorkUser,
+					prodWork.prod_work_qty																						AS prodWorkQty,
+					prodWork.prod_work_good																						AS prodWorkGood,
+					prodWork.prod_work_bad																						AS prodWorkBad,
+					IF(prodWork.prod_work_status IS NULL, "work_wait", "work_prs") 												AS prodWorkStatus,
+					IFNULL(prodWork.prod_work_good/prodWork.prod_work_qty*100,0)												AS prodWorkRate,
+					IFNULL(prodWork.prod_work_bad/(IFNULL(prodWork.prod_work_good,0)+IFNULL(prodWork.prod_work_bad,0))*100,0)	AS prodDefectRate
+				FROM prs_work_info prodWork
+				LEFT JOIN prs_lot_info lotInfo ON prodWork.lot_id = lotInfo.lot_id
+				LEFT JOIN bc_item_info itemInfo ON lotInfo.item_id = itemInfo.item_id
+				LEFT JOIN prs_product_assignment assign ON prodWork.prod_asm_id = assign.prod_asm_id
+				WHERE 1=1
+				AND prodWork.prod_work_status = 'work_prs'
+				AND prodWork.eqmt_mgt_id IS NOT NULL
+				
+				GROUP BY lotId
+				ORDER BY prodAsmDate DESC
+				) s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+
+	<select id="rowCount"
+	parameterType="jin.mes.form.perform.facilStaMgt.performEquipment.PerformEquipmentDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+				SELECT 
+					lotInfo.lot_id																								AS lotId,
+					itemInfo.item_nm																							AS itemNm,
+					assign.prod_asm_nm																							AS prodAsmNm,
+					assign.prod_asm_date																						AS prodAsmDate,
+					prodWork.prod_asm_id																						AS prodAsmId,
+					prodWork.eqmt_mgt_id																						AS eqmtMgtId,
+					prodWork.prod_work_start																					AS prodWorkStart,
+					prodWork.prod_work_user																						AS prodWorkUser,
+					prodWork.prod_work_qty																						AS prodWorkQty,
+					prodWork.prod_work_good																						AS prodWorkGood,
+					prodWork.prod_work_bad																						AS prodWorkBad,
+					IF(prodWork.prod_work_status IS NULL, "work_wait", "work_prs") 												AS prodWorkStatus,
+					IFNULL(prodWork.prod_work_good/prodWork.prod_work_qty*100,0)												AS prodWorkRate,
+					IFNULL(prodWork.prod_work_bad/(IFNULL(prodWork.prod_work_good,0)+IFNULL(prodWork.prod_work_bad,0))*100,0)	AS prodDefectRate
+				FROM prs_work_info prodWork
+				LEFT JOIN prs_lot_info lotInfo ON prodWork.lot_id = lotInfo.lot_id
+				LEFT JOIN bc_item_info itemInfo ON lotInfo.item_id = itemInfo.item_id
+				LEFT JOIN prs_product_assignment assign ON prodWork.prod_asm_id = assign.prod_asm_id
+				WHERE 1=1
+				AND prodWork.prod_work_status = 'work_prs'
+				AND prodWork.eqmt_mgt_id IS NOT NULL
+				
+				GROUP BY lotId
+				ORDER BY prodAsmDate DESC
+		)c_table
+	</select>
+		
+	<select id="selectPlaceAll" resultType="jin.mes.form.basMgt.operMgt.rlehoMgt.RlehoMgtDto">
+		SELECT
+			placeId,
+			placeNm,
+			hasChildren
+		FROM 
+			(
+				SELECT
+					place.place_id		AS placeId,
+					place.place_nm		AS placeNm,
+					place.place_parent	AS placeParent,
+					place.place_manager	AS placeManager,
+					place.is_use		AS isUse,
+					urInfo.user_nm		AS placeManagerNm,
+					IF((SELECT COUNT(1)FROM bc_place_info child  WHERE child.place_parent = place.place_id) > 0 ,TRUE,FALSE) AS hasChildren
+				FROM bc_place_info place
+				LEFT OUTER JOIN mb_user_info urInfo ON place.place_manager = urInfo.user_id
+				WHERE place.is_use = TRUE
+			) placeInfo
+		WHERE hasChildren != 1
+		AND placeNm IS NOT NULL
+	</select>
+</mapper>

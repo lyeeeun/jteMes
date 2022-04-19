@@ -1,0 +1,44 @@
+package kr.co.itcall.jte.api.sample.model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import kr.co.itcall.jte.spring.config.jpa.JpaModel;
+import lombok.Data;
+import lombok.Getter;
+import lombok.ToString;
+
+//@Entity
+//@Table(name = "tb_sample_answers")
+@Data
+public class SampleAnswer extends JpaModel {
+
+	private static final long serialVersionUID = -8572272477590673762L;
+
+//	@Id
+//	@GeneratedValue(generator = "answer_generator")
+//	@SequenceGenerator(name = "answer_generator", sequenceName = "answer_sequence", initialValue = 1000)
+	private Long sampleId;
+
+//	@Column(columnDefinition = "text")
+	private String sampleText;
+
+//	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+//	@JoinColumn(name = "question_id", nullable = false)
+//	@OnDelete(action = OnDeleteAction.CASCADE)
+//	@JsonIgnore
+	private SampleQuestion sampleQuestion;
+
+}

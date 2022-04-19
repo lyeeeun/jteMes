@@ -1,0 +1,133 @@
+
+/*04.09 JJW 내부 스타일 옮김*/
+
+.bomMgtForm #jtePopForm_form {
+	text-align: left;
+/* 	padding-top: 20px; */
+}
+
+.bomMgtForm .jtePopForm_master th {
+   text-align: left;   
+}
+
+.bomMgtForm #jtePopForm_master {
+	padding-top: 0;
+}
+
+/* .bomMgtForm .jtePopForm_form {
+	margin-left: 45px;
+	margin-top: 10px;
+} */
+
+/* .bomMgtForm jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+} */
+
+.bomMgtForm .final-btn-area {
+	margin-top: 20px;
+	text-align: center;
+}
+
+.bomMgtForm .k-autocomplete .k-input, .k-dropdown-wrap .k-input, .k-multiselect-wrap .k-input, .k-numeric-wrap .k-input, .k-picker-wrap .k-input, .k-selectbox .k-input, .k-textbox>input {
+	text-indent: 0;
+}
+
+/*윤민*/
+
+.bomMgtForm .bomTargetInfo {
+   width: 100%;
+}
+
+.bomMgtForm .col-left-title{
+   width:30%;
+}
+
+.bomMgtForm .col-left-content{
+   width:20%;
+}
+
+.bomMgtForm .col-center-content{
+   width:20%;
+}
+
+.bomMgtForm .col-right-content{
+   width:30%;
+}
+
+
+.bomMgtForm .grid-content {
+   width:100%;
+}
+
+.bomMgtForm .jtePopForm_master{
+   width:100%;
+   float: left;
+/*     margin-top: 20px; */
+}
+
+/* .bomMgtForm .jtePopForm_master th {
+	text-align: left;
+	padding-left: 4%;
+	width: 25%;
+} */
+
+.bomMgtForm .jteBomGrid{  /* 200413 그리드 고정 + 스크롤_LYM */
+     width: 100%;
+     table-layout: fixed;
+}
+
+.bomMgtForm .normal-input .btn-input{
+	width: 100%;
+}
+
+.bomMgtForm .normal-input{
+	width: 100%;
+}
+
+.bomMgtForm .right-content-box {
+   border:solid #B9CBF1;
+}
+
+.bomMgtForm .tb-col-left-content{  /* 200413 그리드 고정 + 스크롤_LYM */
+	vertical-align: top;
+	width: 31%;
+	overflow: auto;
+}
+
+.bomMgtForm .tb-col-right-content{
+   width:69%;
+}
+
+.bomMgtForm #jteSingleGrid {
+	height: 770px;
+}
+
+.bomMgtForm .bomAddBtn {
+	display:none;
+	margin: 10px;
+	bottom: 50px;
+	left: 10px; /* 20200525 JJW */
+}
+
+/*mediaquery*/
+@media screen and (max-width: 1380px){
+	.bomMgtForm div#bomTree.k-widget.k-diagram {
+		height: 420px;
+	}
+	
+	.right-content-box {
+		height: 350px;
+	}
+	
+	.bomMgtForm .bomAddBtn {
+	   display:none;
+	    margin: 10px;
+	    bottom: 0; /* 20200525 JJW */
+	    left: 0;
+	}
+	
+	.bomMgtForm #jteSingleGrid {
+		height: 480px;
+	}
+}

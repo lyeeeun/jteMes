@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.perform.itemAggregation.ItemAggregationMapper">
+	<sql id="itemAgrregation_base">	 
+			item_id				AS itemId, 
+			item_nm				AS itemNm,
+			item_std_str02		AS itemStdStr02, 
+			item_std_str06		AS itemStdStr06,
+			max(item_qty_total)	AS itemGood, 
+			max(prod_work_bad)	AS itemBad,
+			max(prod_work_bad)/max(item_qty_total)	AS itemBadPercent	-- 불량률
+		FROM(
+			-- 양품량 - 제품 생산 목록
+			SELECT 
+				item.item_id, 
+				item.item_nm, 
+				item.item_std_str02, 
+				item.item_std_str06,
+				sum(itemQty.item_qty_total) as item_qty_total,
+				null as prod_work_bad, 
+				'good' as qtyGubun
+			FROM bc_item_info item
+			LEFT OUTER JOIN qm_item_mgt itemQty ON item.item_id = itemQty.item_id 
+				AND itemQty.item_qty_target IN ('ADMIN','prod_tagt01') AND date_format(item_qty_date,'%Y-%m-%d') BETWEEN #{searchStartDate} AND #{searchEndDate}
+			GROUP BY item.item_id
+			UNION ALL
+			-- 불량량 - 작업목록에서 불량량 집계(지닉스는 품목불량이 없다.)
+			SELECT 
+				item.item_id, 
+				item.item_nm, 
+				item.item_std_str02, 
+				item.item_std_str06,
+				null as item_qty_total, 
+				SUM(prod_work_bad) AS prod_work_bad, 
+				'bad' as qtyGubun
+			FROM bc_item_info item
+			LEFT OUTER JOIN prs_lot_info lot ON item.item_id = lot.item_id
+			LEFT OUTER JOIN prs_work_info workInfo ON lot.lot_id = workInfo.lot_id 
+				AND IF(IFNULL(prod_work_end,'') = '', date_format(prod_work_start,'%Y-%m-%d') BETWEEN #{searchStartDate} AND #{searchEndDate}, date_format(prod_work_end,'%Y-%m-%d') BETWEEN #{searchStartDate} AND #{searchEndDate}) 
+			GROUP BY item.item_id
+		)aggr
+		GROUP BY aggr.item_id
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<select id="selectItemAggregation"
+		parameterType="jin.mes.form.perform.itemAggregation.ItemAggregationDto"
+		resultType="jin.mes.form.perform.itemAggregation.ItemAggregationDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY itemGood desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="itemAgrregation_base"></include>
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<!-- 수주정보 select -->
+	<select id="selectItemAggregationCount"
+	parameterType="jin.mes.form.perform.itemAggregation.ItemAggregationDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="itemAgrregation_base"></include>
+		)c_table
+	</select>
+</mapper>

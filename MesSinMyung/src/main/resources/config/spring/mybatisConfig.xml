@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+    <!-- 데이터 접속을 지원해주는 라이브러리(프레임웍?) -->
+<configuration>
+    <settings>
+        <setting name="callSettersOnNulls" value="true"/>
+        <!-- 가져온 값이 null일때 setter나 맵의 put 메소드를 호출할지를 명시 Map.keySet() 이나 null값을 초기화할때 유용하다.
+         int, boolean 등과 같은 원시타입은 null을 설정할 수 없다는 점은 알아두면 좋다. -->
+        <setting name="jdbcTypeForNull" value="NULL" />
+        <!-- JDBC타입을 파라미터에 제공하지 않을때 null값을 처리한 JDBC타입을 명시한다. 
+               일부 드라이버는 칼럼의 JDBC타입을 정의하도록 요구하지만 대부분은 NULL, VARCHAR 나 OTHER 처럼 일반적인 값을 사용해서 동작한다. -->
+
+		<setting name="cacheEnabled" value="false" />
+<!-- 		<setting name="useGeneratedKeys" value="false" /> -->
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+		<setting name="defaultExecutorType" value="REUSE" /><!-- SIMPLE, REUSE, BATCH -->
+		<setting name="logPrefix" value="mapper." />
+
+    </settings>
+</configuration>

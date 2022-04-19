@@ -1,0 +1,54 @@
+@CHARSET "UTF-8";
+
+/*** Popup Style ***/
+.k-edit-form-container{
+	width: 30em;
+}
+.popupHeader{
+	margin: 0.5em;
+}
+.popupContent{
+	margin: 0.7em;
+	line-height: 3em;
+}
+.popupLangCd{
+	width: 10%;
+	border: none;
+}
+.popupMsgView{
+	width: 70%;
+	margin-left:0.3em;
+}
+.k-edit-field{
+	/*** inline Edit Popup - editable false 적용 필드 텍스트 위치 조정 ***/
+	line-height: 2.1em;
+}
+
+/* html{
+	overflow: hidden;
+}
+body{
+	width:100%;
+	margin:0px;
+	padding:0px;
+}
+ul{
+	margin:0px;
+}
+.menuName{
+	width: 95%;
+	font-size: 22px;
+	font-weight: bold;
+	margin-top: 30px;
+}
+.container-fluid{
+	height: 100%;
+}
+.k-grid  {
+	font-family: 'NanumGothic', 'serif';
+	font-size: 14px;
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	min-height: 150px;
+} */

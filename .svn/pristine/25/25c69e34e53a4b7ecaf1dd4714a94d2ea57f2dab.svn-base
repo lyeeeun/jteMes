@@ -1,0 +1,53 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Example - example-directive-drag-jquery</title>
+
+	<link rel="stylesheet" type="text/css" href="/jquery-easyui/themes/metro/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/jquery-easyui/themes/icon.css">
+	<style type="text/css">
+		#ff label {
+			display: block;
+			width: 100px;
+		}
+	</style>
+
+	<script src="/angularjs/angular.min.js"></script>
+	<script type="text/javascript" src="/jquery-easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="/jquery-easyui/jquery.easyui.min.js"></script>
+
+	<script src="/js/sample/angular/drag/drag.js"></script>
+
+
+</head>
+
+<body ng-app="dragModule">
+
+	<p><a href="http://jui.io/?p=chart">Jui Chart 데모 확인하기</a></p>
+	<p><a href="https://angular.kr/docs">Angular 한글메뉴얼 확인하기</a></p>
+	<p><a href="https://www.thymeleaf.org/doc/tutorials/2.1/usingthymeleaf.html">Thymeleaf 2.x 문서보기</a></p>
+
+	<span main-draggable>Drag Me</span>
+
+	<div id="subBody">
+		<table sub-draggable style="border: 1px solid #444444; width: 300px; /* height: 600px */ border-collapse: collapse; padding: 10px; text-align: center;">
+			<thead>
+				<tr>
+					<th style="border: 1px solid #444444; width: 30%; padding: 10px;">서버에서 전달하는 키</th>
+					<th style="border: 1px solid #444444; width: 70%; padding: 10px;">서버에서 전달된 값을 보여준다.</th>
+				</tr>
+				<tr>
+					<td style="border: 1px solid #444444; padding: 10px;">th:text="${key}"</td>
+					<td style="border: 1px solid #444444; padding: 10px; text-align: left;" th:text="${key}">
+						SampleController.sampleDrag에서 전달된 key에 들어있는 값을 표시한다. 서버에서 특정한 표나 그래프값을 전달하여 이동시킬수도 있다.
+					</td>
+				</tr>
+			</thead>
+		</table>
+	</div>
+
+</body>
+
+</html>

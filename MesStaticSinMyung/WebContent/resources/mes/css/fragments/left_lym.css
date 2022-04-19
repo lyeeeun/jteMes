@@ -1,0 +1,68 @@
+@charset "UTF-8";
+.left-area{
+	height:100%;
+	display: flex;
+	flex-direction: column;
+}
+.left-header{
+	background:#192534;
+	height:80px;
+	line-height:80px;
+	text-align:center;
+}
+.left-header i{
+	color:white;
+	font-size:60px;
+	vertical-align:middle;
+}
+#panelbar{
+	width:100%;
+	padding:0px;
+	background:#ffffff; /* 200408 LEFT 배경 색상 수정_LYM */
+	flex: 1; 
+}
+#panelbar li{
+	width:100%;
+	
+}
+#menuPathNaviTop {
+	background:#192534;
+	color:#E3E3E3;
+	padding: 7px;
+}
+
+#btnMyInfo {
+	color: #ffffff;	
+}
+
+#btnLogout {
+	color: #ffffff;
+}
+
+.k-drawer-wrapper,.k-drawer-items{
+	height:100%;
+}
+.k-drawer-left.k-drawer-expanded .k-drawer{
+	border:none;
+}
+.k-block, .k-draghandle, .k-inline-block, .k-widget{
+	border:none;
+}
+
+.k-treeview .k-in.k-state-selected {
+    color: #fff;
+    background-color: #299bc9;  /* 200410 LEFT 메뉴 선택시  색상 수정_LYM */
+}
+
+.k-treeview .k-in:hover, .k-treeview .k-in.k-state-hover {
+	color: #000000;
+	background-color: #badfed;  /* 200410 LEFT 메뉴 호버시  색상 수정_LYM */
+}
+
+.k-menu:not(.k-context-menu)>.k-item {  /* 200410 유저 정보 폰트 색상 수정_LYM */
+	color: #081332;  
+}
+
+.k-menu:not(.k-context-menu)>.k-item >.k-state-hover {  /* 200410 유저 정보 호버, 선택 시 색상 수정_LYM */
+	color: #ffffff;
+}

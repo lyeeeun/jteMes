@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="SY_pgmMgmt">
+	<select id="selectPgmList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+		    SELECT  PGM_ID
+			       ,SCR_ID
+			       ,PGM_NAME
+			       ,USE_YN
+			  FROM TB_PGMINF_NEW 
+			 WHERE 1 = 1
+		]]>
+		<if test='PGM_ID != null and PGM_ID != ""'>
+			AND PGM_ID = #{PGM_ID}
+		</if>
+		<if test='PGM_NM != null and PGM_NM != ""'>
+			AND PGM_NAME LIKE #{PGM_NM} '%'
+		</if>
+		<if test='USE_CHK == null or USE_CHK == ""'>
+			AND USE_YN = 'Y'
+		</if>
+		<![CDATA[
+			 ORDER BY PGM_ID
+		]]>
+	</select>
+
+	<select id="insertPgmList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		
+			INSERT INTO TB_PGMINF_NEW( PGM_ID
+			                          ,SCR_ID
+			                          ,PGM_NAME
+			                          ,USE_YN
+			                          ,REG_DT
+			                          ,REG_USER_NO
+			                          ,REG_PGM_ID
+			                          )
+			                   VALUES( #{PGM_ID}
+			                          ,#{SCR_ID}
+			                          ,#{PGM_NAME}
+			                          ,#{USE_YN}
+			                          ,now()
+			                          ,#{REG_USER_NO}
+			                          ,#{REG_PGM_ID}
+			                          )
+		
+	</select>
+
+	<select id="updatePgmList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+			UPDATE TB_PGMINF_NEW
+			   SET  SCR_ID      = #{SCR_ID}
+			       ,PGM_NAME    = #{PGM_NAME}
+			       ,USE_YN      = #{USE_YN}
+			       ,UPD_DT      = SYSDATE
+			       ,UPD_USER_NO = #{REG_USER_NO}
+			       ,UPD_PGM_ID  = #{REG_PGM_ID}
+			 WHERE PGM_ID = #{PGM_ID}
+		]]>
+	</select>
+
+	<select id="deletePgmList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			DELETE TB_PGMINF_NEW
+			 WHERE PGM_ID = #{PGM_ID}
+		]]>
+	</select>
+
+	<select id="selectpreSave" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			/*SY_pgmMgmt 프로그램관리 _ 데이터 저장전 중복체크 */ 
+			SELECT COUNT(*) AS CNT		
+			FROM TB_PGMINF_NEW				
+			WHERE PGM_ID = #{PGM_ID}
+		]]>
+	</select>
+</mapper>

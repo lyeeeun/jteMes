@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.mtrl.mtrlInputSta.MtrlInputStaMapper">
+
+	<!-- Lot별 주문 정보 -->
+	<sql id="lot_base">
+			lot.order_id	As orderId,
+			orderInfo.order_nm		AS orderNm,
+			lot.lot_id		As lotId,
+			lot.lot_nm		As lotNm,
+			lot.lot_qty		As lotQty,
+			lot.updated_at	As updatedAt,
+			item.item_id	As itemId,
+			item.item_nm	As itemNm
+		FROM prs_lot_info lot
+			LEFT OUTER JOIN bc_item_info item on lot.item_id = item.item_id
+			LEFT OUTER JOIN prs_order_info orderInfo ON lot.order_id = orderInfo.order_id
+		
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="orderId != null and orderId != '' ">
+			AND lot.order_id = #{orderId}
+		</if>	
+	</sql >
+	
+	
+	<!-- lot별 주문정보 select -->
+	<select id="selectLotList"
+		parameterType = "jin.mes.form.mtrl.mtrlInputSta.MtrlInputStaDto"
+		resultType= "jin.mes.form.mtrl.mtrlInputSta.MtrlInputStaDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="lot_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>	
+	</select>
+	<select id="selectLotCount"
+		parameterType = "jin.mes.form.mtrl.mrcalMgt.MrcalMgtDto"
+		resultType= "java.lang.Integer">
+			SELECT count(*)
+			FROM (
+				SELECT 
+					<include refid="lot_base" />
+			)c_table
+	</select>
+	
+	
+	
+	<!-- 작업지시별 자재사용량 산출 -->
+	<sql id = "mtrlInput_base"> 
+			asgn.prod_asm_id				AS prodAsmId,
+			asgn.prod_asm_nm				AS prodAsmNm,
+			mtrlInfo.mtrl_id                        	AS mtrlId,
+			mtrlInfo.mtrl_nm                        	AS mtrlNm,
+			sum(workInfo.prod_work_good)				AS prodWorkGood,
+			sum(workInfo.prod_work_bad)					AS prodWorkBad,
+			bom.bom_target_cnt							AS bomTargetCnt,
+			SUM((workInfo.prod_work_good+workInfo.prod_work_bad)*bom.bom_target_cnt)	AS inputQty
+		FROM prs_lot_info lot
+		LEFT OUTER JOIN bc_item_info item ON lot.item_id = item.item_id
+		LEFT OUTER JOIN bc_bom_info bom ON bom.item_id = item.item_id AND bom.bom_target = 'prcs_bom02'
+		LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlInfo.mtrl_id = bom.bom_target_id
+		LEFT OUTER JOIN prs_work_info workInfo ON workInfo.lot_id = lot.lot_id
+		LEFT OUTER JOIN prs_product_assignment asgn ON asgn.prod_asm_id = workInfo.prod_asm_id
+		
+		WHERE asgn.prod_asm_state = ("prod_sta01" OR "prod_sta02")
+		<if test="lotId != null and lotId != '' ">
+				AND lot.lot_id = #{lotId}
+		</if>
+			 
+		group by asgn.prod_asm_id, mtrlInfo.mtrl_id
+	</sql>
+	
+	<!-- 작업지시별 자재투입량 select -->
+	<select id="selectMtrlInputList"
+		parameterType = "jin.mes.form.mtrl.mtrlInputSta.MtrlInputStaDto"
+		resultType= "jin.mes.form.mtrl.mtrlInputSta.MtrlInputStaDto">
+		SELECT 
+		<include refid="mtrlInput_base" />
+		
+	</select>
+	
+	
+	<select id="selectMtrlInputCount"
+		parameterType = "jin.mes.form.mtrl.mtrlInputSta.MtrlInputStaDto"
+		resultType= "java.lang.Integer">
+			SELECT count(*)
+			FROM (
+				SELECT 
+					<include refid="mtrlInput_base" />
+			)c_table
+	</select>
+	
+</mapper>

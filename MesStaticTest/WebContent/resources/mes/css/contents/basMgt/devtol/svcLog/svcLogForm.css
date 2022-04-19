@@ -1,0 +1,5 @@
+
+/* 20.11.11 YUMI 왼쪽 셀 가운데 정렬 */
+.svcLogForm.k-grid th:first-child, .svcLogForm.k-grid td:first-child {
+	text-align: center;
+}

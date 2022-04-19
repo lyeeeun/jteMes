@@ -1,0 +1,191 @@
+package jin.mes.form.ship.shipMgt;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import jin.mes.form.ship.pickMgt.PickMgtDto;
+import jin.mes.form.ship.pickMgt.PickMgtMapper;
+import kr.co.itcall.jte.common.mvc.PageInfo;
+import kr.co.itcall.jte.common.mvc.PageRequestVo;
+import kr.co.itcall.jte.spring.config.exception.BusinessException;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Transactional(transactionManager="transactionManager")
+@Slf4j
+public class ShipMgtService {
+	
+	@Resource
+    protected ShipMgtMapper shipMgtMapper;
+	
+	@Resource
+    protected PickMgtMapper pickMgtMapper;
+	
+	
+	public PageInfo<ShipMgtDto> selectShipInfo(ShipMgtDto shipMgtDto, PageRequestVo pageRequestVo){
+		List<ShipMgtDto> shipInfoList = null;
+		int rowCount = 0;
+
+		shipMgtDto.setFirstIndex(pageRequestVo.getBlockFirstPage());
+		shipMgtDto.setLastIndex(pageRequestVo.getBlockLastPage());
+
+		try {
+			rowCount = shipMgtMapper.selectShipInfoCount(shipMgtDto);
+			if (rowCount > 0) {
+				shipInfoList = shipMgtMapper.selectShipInfo(shipMgtDto);
+			}
+		} catch (Exception e) {
+			log.error(e.toString());
+		}
+
+		if (shipInfoList == null) {
+			shipInfoList = new ArrayList<ShipMgtDto>();
+			if(!shipMgtDto.getCurrentMenuId().equals(null) && shipMgtDto.getCurrentMenuId().equals("asHisMgt")) {
+				shipInfoList.add(new ShipMgtDto());
+			}else if(!shipMgtDto.getCurrentMenuId().equals(null) && shipMgtDto.getCurrentMenuId().equals("barcodeHistory")) {
+				shipInfoList.add(new ShipMgtDto());
+			}
+		}
+		return new PageInfo<ShipMgtDto>(shipInfoList, pageRequestVo, rowCount);
+	}
+
+	public ShipMgtDto selectShipRtlBarcode(ShipMgtDto shipMgtDto){
+		try {
+			shipMgtDto.setShipRtlBarcodeList(shipMgtMapper.selectShipRtlBarcode(shipMgtDto));
+		} catch (Exception e) {
+			log.error(e.toString());
+		}
+		return shipMgtDto;
+	}
+	
+	public PageInfo<ShipMgtDto> selectBarcodeInfo(ShipMgtDto shipMgtDto, PageRequestVo pageRequestVo){
+		List<ShipMgtDto> barcodeInfoList = null;
+		int rowCount = 0;
+
+		shipMgtDto.setFirstIndex(pageRequestVo.getBlockFirstPage());
+		shipMgtDto.setLastIndex(pageRequestVo.getBlockLastPage());
+
+		try {
+			rowCount = shipMgtMapper.selectBarcodeInfoCount(shipMgtDto);
+			if (rowCount > 0) {
+				barcodeInfoList = shipMgtMapper.selectBarcodeInfo(shipMgtDto);
+			}
+		} catch (Exception e) {
+			log.error(e.toString());
+		}
+
+		if (barcodeInfoList == null) {
+			barcodeInfoList = new ArrayList<ShipMgtDto>();
+		}
+		return new PageInfo<ShipMgtDto>(barcodeInfoList, pageRequestVo, rowCount);
+	}
+	
+	
+	@Transactional
+	public void setShipInfo(ShipMgtDto shipMgtDto){
+		try {
+			
+			if(shipMgtDto.getAction().equals("C")) {
+				// shipMgtDto.setShipQty(shipMgtDto.getShipRtlBarcodeList().size());
+				//상태 - 납기 진행
+				shipMgtDto.setShipState("ship_dvry02");
+				shipMgtMapper.insertShipInfo(shipMgtDto);
+				shipMgtDto.setLotState("ord_sta03");
+				shipMgtMapper.updateLotState(shipMgtDto);
+				
+				setShipRtlBarcode(shipMgtDto);
+				updatePackageStock(shipMgtDto);
+			} else if (shipMgtDto.getAction().equals("U")) {
+				if(shipMgtDto.getShipCompleteDate() == "") {
+					shipMgtDto.setShipCompleteDate(null);
+				}
+				shipMgtMapper.updateShipInfo(shipMgtDto);
+				
+				if(shipMgtDto.getLotState() != null) {
+					if(!shipMgtDto.getLotState().equals("ord_sta03")) {
+						shipMgtDto.setLotState("ord_sta04");
+						shipMgtMapper.updateLotState(shipMgtDto);
+					}
+				}
+				
+				if(shipMgtDto.getShipRtlBarcodeList() != null) {
+					setShipRtlBarcode(shipMgtDto);
+					
+					shipMgtDto.setShipQty(shipMgtDto.getUpdateShipQty());
+					updatePackageStock(shipMgtDto);
+				}
+			}
+			
+			
+		} catch (Exception e) {
+			throw new BusinessException("setShipInfo : " + e.getMessage());
+		}
+	}
+	
+	@Transactional
+	public void setShipRtlBarcode(ShipMgtDto shipMgtDto) {
+		String shipId = shipMgtDto.getShipId();
+		for(ShipMgtDto shipInfo : shipMgtDto.getShipRtlBarcodeList()) {
+			shipInfo.setShipId(shipId);
+			if(shipInfo.getAction().equals("C")) {
+				shipMgtMapper.insertShipRtlBarcode(shipInfo);
+			} else if(shipInfo.getAction().equals("D")) {
+				shipMgtMapper.deleteShipRtlBarcode(shipInfo);
+			}
+		}
+	}
+	
+	@Transactional
+	public void deleteShipInfo(List<ShipMgtDto> shipMgtDto){
+		try {
+			for(ShipMgtDto shipInfo : shipMgtDto) {
+				shipMgtMapper.deleteShipInfo(shipInfo);
+				shipMgtMapper.deleteShipRtlBarcode(shipInfo);
+				
+				shipInfo.setShipQty(-shipInfo.getShipQty());
+				updatePackageStock(shipInfo);
+			}
+		} catch (Exception e) {
+			throw new BusinessException("deleteShipInfo : " + e.getMessage());
+		}
+	}
+	
+	public void updatePackageStock(ShipMgtDto shipMgtDto) {
+		try {
+			// 상태 변경 시 동작
+			PickMgtDto pickMgtDto = new PickMgtDto();
+			pickMgtDto.setItemMgtId(shipMgtDto.getItemMgtId());
+			pickMgtDto.setPickQty(-shipMgtDto.getShipQty());
+			pickMgtMapper.updatePackageStock(pickMgtDto);
+			
+		} catch (Exception e) {
+			throw new BusinessException("updatePackageStock : " + e.getMessage());
+		}
+	}
+	
+	public ShipMgtDto selectLotState(ShipMgtDto shipMgtDto){
+		try {
+			shipMgtDto.setLotState(shipMgtMapper.selectLotState(shipMgtDto));
+		} catch (Exception e) {
+			log.error(e.toString());
+		}
+		return shipMgtDto;
+	}
+	
+	public void allShipComplete(ShipMgtDto shipMgtDto) {
+		try {
+			shipMgtDto.setLotState("ord_sta04");
+			shipMgtMapper.updateLotState(shipMgtDto);
+			shipMgtDto.setShipState("ship_dvry03");
+			shipMgtMapper.updateShipInfo(shipMgtDto);
+		} catch (Exception e) {
+			throw new BusinessException("allShipComplete : " + e.getMessage());
+		}
+	}
+
+}

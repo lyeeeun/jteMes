@@ -1,0 +1,37 @@
+
+.k-autocomplete .k-input, .k-dropdown-wrap .k-input, .k-multiselect-wrap .k-input, .k-numeric-wrap .k-input, .k-picker-wrap .k-input, .k-selectbox .k-input, .k-textbox>input {
+	text-indent: 0;
+}
+
+/*20.08.05 왼쪽 셀 가운데 정렬 JJW*/
+.compMgtForm.k-grid th:first-child, .compMgtForm.k-grid td:first-child {
+	text-align: center;
+}
+
+
+/** 20.11.11 업체 등록 팝업 - 업체 주소 검색 박스 **/
+
+.compMgtForm .k-input-icon {
+	width: 10px;
+}
+
+.compMgtForm .k-input.k-valid {
+	border: 0px solid #FFFFFF;
+}
+
+.compMgtForm .k-grid .k-header .k-grid-search {
+	float: left;
+}
+
+/* 20.11.12 YUMI 업체 등록 팝업 - 업체 주소 검색 박스 안에 검은 외곽선이 생기는 오류 수정 */
+
+.compMgtForm .k-grid .k-header .k-grid-search > input {
+	border-style: none;
+}
+
+
+/** 20.12.04 YUMI 업체주소 등록 팝업 - final-btn-area 위쪽 여백 조정 **/
+
+#jtePopAddForm .compMgtForm-final-btn-area {
+	margin-top: 0;
+}

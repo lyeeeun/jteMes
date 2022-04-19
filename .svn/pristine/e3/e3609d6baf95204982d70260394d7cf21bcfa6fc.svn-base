@@ -1,0 +1,31 @@
+@charset "UTF-8";
+.EM_GROUP {
+	border: 2px inset rgb(120, 190, 255);
+	padding:0px 7px 0px 7px;
+	font-family: "Noto Sans KR", san-serif;
+	font-size: 12px;
+	height:100%;
+}
+/* .EM_GROUP > table, .EM_GROUP > table > td > table{
+	font-size: 12px;
+} */
+  .engMot_Table {
+/* 	height:100%; */ 
+/* height:max; */
+}    
+ 
+.engMot_Row{
+	vertical-align:top;
+}
+.engMot_Row > td{
+	width:250px; 
+	height:100%;/*   
+	padding-top:0px; */
+}
+.engMot_Row > td > span {
+	font-weight: bold;
+}
+.engMot_Row >td > div{
+	/* height:100%; */
+	margin-right:10px;
+}

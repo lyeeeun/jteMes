@@ -1,0 +1,68 @@
+
+/*20.12.10 메인 그리드의 수정 버튼 가운데 정렬 YUMI*/
+.itemMgtForm.k-grid td:first-child {
+	text-align: center;
+}
+
+/*20.12.10 팝업 그리드의 체크박스 가운데 정렬 YUMI*/
+#jtePopForm #jtePopForm_form #jtePopForm_grid.itemMgtForm.k-grid th:first-child, 
+#jtePopForm #jtePopForm_form #jtePopForm_grid.itemMgtForm.k-grid td:first-child {
+	text-align: center;
+}
+
+/** 업체 정보 추가 버튼 **/
+
+.itemMgtForm .btn_company_info {
+   width: 100%;
+   margin-left: 0;
+}
+
+/** 업체 정보 추가 팝업 - 전체적인 형식 관련 **/
+
+.itemMgtForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /*** listbox inline 표시 위해_gwpark ***/
+    display: inline-flex; 
+}
+
+.company_info_left {
+    width: 40%;
+    float: left;
+    font-size: 20px;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    margin-left: 45px;
+    font-weight: bold;
+}
+
+.company_info_right {
+    width: 40%;
+    float: right;
+    font-size: 20px;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    margin-right: 45px;
+    font-weight: bold;
+}
+
+.itemMgtForm .k-widget .k-listbox .k-listbox-toolbar-right {
+	width: 45%;
+}
+
+.itemMgtForm .k-listbox.k-listbox-toolbar-right .k-listbox-toolbar {
+	margin-left: 9px;
+	margin-right: 5px;
+}
+
+.k-autocomplete .k-input, .k-dropdown-wrap .k-input, .k-multiselect-wrap .k-input, .k-numeric-wrap .k-input, .k-picker-wrap .k-input, .k-selectbox .k-input, .k-textbox>input {
+	text-indent: 0;
+}
+
+.itemMgtForm .companyList {
+   width: 45%;
+}
+
+.itemMgtForm .selectedCompany {
+   width: 38%;
+}

@@ -1,0 +1,97 @@
+/********* 클레임 관리 그리드 더블클릭 → 팝업창 하단 그리드 좌측의 클레임 정보 입력 버튼 클릭 → 불량 정보 등록 버튼 클릭 시의 팝업창**********/
+
+.toolInfoPopup_form .toolInfo-div {
+	height: 250px;
+	margin: 10px;
+	border: 1px solid #D5E0F5;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+.toolInfoPopup_form .final-btn-area {
+	margin-top: 0;
+	vertical-align: bottom;
+}
+
+#toolInfo-title .claimMgtForm {
+	width: 100%;
+    font-size: 20px;
+    font-weight: bold;
+    float: left;
+}
+
+.toolInfo-div .toolInfo .claimMgtForm .claimMgtFormtoolInfo-content {
+	padding-left: 5px;
+	width: 100%;
+}
+
+.plus-minus-btn-area {
+	padding: 10px;
+/* 	text-align: center; */
+}
+
+.plus-minus-btn {
+	width: 50px;
+	font-size: 26px;
+	font-weight: bold;
+	padding: 4px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-right: 10px;
+}
+
+
+.tool-checkbox-td {
+	width: 10%;
+	text-align: center;
+}
+
+.claimMgtForm .toolInfo-title{
+	width: 100%;
+	font-weight: bolder;
+	margin-bottom: -10px;
+}
+
+.claimMgtForm .toolInfo-content {
+	width: 100%;
+}
+
+.claimMgtForm .toolInfo tr {
+	text-align: left;	
+}
+
+.claimMgtForm .toolInfo th {
+	text-align: left;
+}
+
+.claimMgtForm .toolInfo td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+	
+}
+
+.claimMgtForm .toolInfo-title td {
+	text-align: left;
+	font-size: 20px;
+}
+
+.claimMgtForm .toolInfo-content .badCode {
+	width: 95%;
+	float: left;
+	font-size: 20px;
+}
+
+.claimMgtForm .toolInfo-content .badQty {
+	width: 98%;
+	float: left;
+	font-size: 20px;
+}
+
+.claimMgtForm .col-toolInfo {
+	width: 24%;
+}
+
+/*20.08.06 왼쪽 셀 가운데 정렬 JJW*/
+.claimMgtForm.k-grid th:first-child, .claimMgtForm.k-grid td:first-child {
+	text-align: center;
+}

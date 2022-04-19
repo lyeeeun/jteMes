@@ -1,0 +1,56 @@
+@CHARSET "UTF-8";
+
+/***** 메인 페이지 관련 *****/
+
+.techDocMgtForm {
+	width: 100%;
+	margin: 0 auto;
+/* 	text-align: center; */
+	vertical-align: middle;
+}
+
+.techDocMgtForm .left-contents {
+	width: 20%;
+	display: inline-block;
+	height: 100%;
+}
+
+.techDocMgtForm .middle-contents {
+	width: 5%;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.techDocMgtForm .right-contents {
+	width: 74%;
+	display: inline-block;
+}
+
+.techDocMgtForm .middle-contents .fas.fa-caret-square-right.fa-3x{
+	color: #3367D6;
+	padding-right: 24px;
+	
+}
+
+.techDocMgtForm #jteMasterTree {
+	font-size: 16px;
+	border: 2px solid #8aafff;
+	background:#ffffff;
+}
+
+/** 20.08.10 JJW 왼쪽 트리 구조 여백 따로 주기 위함**/
+.techDocMgtForm.k-treeview .k-item {
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+ /**20.12.18 메인 그리드의 기술문서 등록/수정 버튼 가운데 정렬 YUMI**/
+.techDocMgtForm.k-grid td:first-child {
+	text-align: center;
+}
+
+ /**20.12.18 기술 문서 정보 관리 팝업의 수정 버튼 가운데 정렬 YUMI**/
+#techDocRegPop_grid.k-grid td:first-child {
+	text-align: center;
+}

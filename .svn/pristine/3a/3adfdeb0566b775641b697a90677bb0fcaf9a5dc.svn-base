@@ -1,0 +1,45 @@
+package jin.mes.form.perform.itemAggregation;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.co.itcall.jte.common.mvc.PageInfo;
+import kr.co.itcall.jte.common.mvc.PageRequestVo;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Transactional(transactionManager="transactionManager")
+@Slf4j
+public class ItemAggregationService {
+
+	@Resource
+    protected ItemAggregationMapper itemAggregationMapper;
+
+	public PageInfo<ItemAggregationDto> getItemAggregation(ItemAggregationDto itemAggregationDto, PageRequestVo pageRequestVo){
+		List<ItemAggregationDto> itemAggregationList = null;
+		int rowCount = 0;
+
+		if(!itemAggregationDto.getPagingYN().equals("N")) {
+			itemAggregationDto.setFirstIndex(pageRequestVo.getBlockFirstPage());
+			itemAggregationDto.setLastIndex(pageRequestVo.getBlockLastPage());
+		}
+		try {
+			rowCount = itemAggregationMapper.selectItemAggregationCount(itemAggregationDto);
+			if (rowCount > 0) {
+				itemAggregationList = itemAggregationMapper.selectItemAggregation(itemAggregationDto);
+			}
+		} catch (Exception e) {
+			log.error(e.toString());
+		}
+
+		if (itemAggregationList == null) {
+			itemAggregationList = new ArrayList<ItemAggregationDto>();
+		}
+ 		return new PageInfo<ItemAggregationDto>(itemAggregationList, pageRequestVo, rowCount);
+	}
+}

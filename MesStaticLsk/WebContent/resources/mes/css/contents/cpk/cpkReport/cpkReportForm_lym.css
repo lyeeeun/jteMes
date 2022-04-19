@@ -1,0 +1,15 @@
+	.machineRun, .performanceGood {
+		font-weight: bold;
+		background-color: rgba(3, 107, 55, 0.7); /**200318 수정_ lym : 원래는 Green**/
+		color: #ffffff;   /**200318 추가_ lym**
+	}
+	.machineStop, .performanceBad {
+		font-weight: bold;
+		background-color: rgba(208, 6, 6, 0.7); /**200318 수정_ lym : 원래는 red**/
+		color: #ffffff;   /**200318 추가_ lym**/
+	}
+	.machineHold {
+		font-weight: bold;
+		background-color: rgba(185, 26, 185, 0.7); /**200318 수정_ lym : 원래는 magenta**/
+		color: #ffffff;   /**200318 추가_ lym**/
+	}

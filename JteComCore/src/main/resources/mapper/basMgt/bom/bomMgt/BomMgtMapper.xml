@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.basMgt.bom.bomMgt.BomMgtMapper">
+	<select id="selectBomList"
+		parameterType="jin.mes.form.basMgt.bom.bomMgt.BomMgtDto"
+		resultType="jin.mes.form.basMgt.bom.bomMgt.BomMgtDto">
+			WITH RECURSIVE bomRecursive AS 
+		(
+		SELECT  
+			bom_id AS bomId,
+			bom_nm AS bomNm,
+			bom_target AS bomTarget,
+			bom_target_id AS bomTargetId,
+			bom_target_nm AS bomTargetNm,
+			bom_target_cnt AS bomTargetCnt,
+			bom_std01		AS bomStd01,
+			bom_std02		AS bomStd02,
+			bom_std03		AS bomStd03,
+			bom_std04		AS bomStd04,
+			bom_std05		AS bomStd05,
+			bom_std_str01	AS bomStdStr01,
+			bom_std_str02	AS bomStdStr02,
+			bom_std_str03	AS bomStdStr03,
+			bom_std_str04	AS bomStdStr04,
+			bom_std_str05	AS bomStdStr05,
+			IFNULL(description,'') AS DESCRIPTION,
+			bom_seq AS bomSeq,
+			bom_parent_id AS bomParentId,
+			created_at AS createdAt,
+			creator_id AS creatorId, 
+			updated_at AS updatedAt,
+			updator_id AS updatorId,
+			item_id AS itemId,
+		1 lvl
+		FROM bc_bom_info AS bomInfo
+		WHERE bom_parent_id = #{itemId}
+		UNION ALL
+		SELECT
+			bomInfo.bom_id AS bomId,
+			bomInfo.bom_nm AS bomNm,
+			bomInfo.bom_target AS bomTarget,
+			bomInfo.bom_target_id AS bomTargetId,
+			bomInfo.bom_target_nm AS bomTargetNm,
+			bomInfo.bom_target_cnt AS bomTargetCnt,
+			bomInfo.bom_std01		AS bomStd01,
+			bomInfo.bom_std02		AS bomStd02,
+			bomInfo.bom_std03		AS bomStd03,
+			bomInfo.bom_std04		AS bomStd04,
+			bomInfo.bom_std05		AS bomStd05,
+			bomInfo.bom_std_str01	AS bomStdStr01,
+			bomInfo.bom_std_str02	AS bomStdStr02,
+			bomInfo.bom_std_str03	AS bomStdStr03,
+			bomInfo.bom_std_str04	AS bomStdStr04,
+			bomInfo.bom_std_str05	AS bomStdStr05,
+			IFNULL(bomInfo.description,'') AS DESCRIPTION,
+			bomInfo.bom_seq AS bomSeq,
+			bomInfo.bom_parent_id AS bomParentId,
+			bomInfo.created_at AS createdAt,
+			bomInfo.creator_id AS creatorId, 
+			bomInfo.updated_at AS updatedAt,
+			bomInfo.updator_id AS updatorId,
+			bomInfo.item_id AS itemId,
+			lvl + 1 lvl
+		FROM bc_bom_info AS bomInfo
+		INNER JOIN bomRecursive bomRec
+		ON bomInfo.bom_parent_id = bomRec.bomId
+		)
+		SELECT 	
+			bomId,
+			bomNm,
+			bomTarget,
+			bomTargetId,
+			bomTargetNm,
+			bomTargetCnt,
+			bomStd01,
+			bomStd02,
+			bomStd03,
+			bomStd04,
+			bomStd05,
+			bomStdStr01,
+			bomStdStr02,
+			bomStdStr03,
+			bomStdStr04,
+			bomStdStr05,
+			bomRec.DESCRIPTION,
+			bomSeq,
+			bomParentId,
+			createdAt,
+			creatorId, 
+			updatedAt,
+			updatorId,
+			itemId,
+			item.item_nm AS itemNm,
+			mtrlMgt.mtrl_mgt_id AS mtrlMgtId
+		FROM bomRecursive bomRec
+		LEFT OUTER JOIN cm_mtrl_mgt mtrlMgt ON bomRec.bomTargetId = mtrlMgt.mtrl_id
+		LEFT OUTER JOIN bc_item_info item ON item.item_id = bomRec.itemId
+		WHERE 1=1
+		<if test="bomTarget != null and bomTarget != '' ">
+			AND bomTarget = #{bomTarget}
+		</if>
+		GROUP BY bomId
+	</select>
+	
+<!-- 	bom 트리 조회 -->
+	<select id="selectBomTree"
+		parameterType="jin.mes.form.basMgt.bom.bomMgt.BomMgtDto"
+		resultType="jin.mes.form.basMgt.bom.bomMgt.BomMgtDto">
+		SELECT
+			bom_id AS bomId,
+			bom_nm AS bomNm,
+			bom_target AS bomTarget,
+			bom_target_id AS bomTargetId,
+			bom_target_nm AS bomTargetNm,
+			bom_target_cnt AS bomTargetCnt,
+			bom_std01		AS bomStd01,
+			bom_std02		AS bomStd02,
+			bom_std03		AS bomStd03,
+			bom_std04		AS bomStd04,
+			bom_std05		AS bomStd05,
+			bom_std_str01	AS bomStdStr01,
+			bom_std_str02	AS bomStdStr02,
+			bom_std_str03	AS bomStdStr03,
+			bom_std_str04	AS bomStdStr04,
+			bom_std_str05	AS bomStdStr05,
+			IFNULL(bom.description,'') AS DESCRIPTION,
+			bom_seq AS bomSeq,
+			bom_parent_id AS bomParentId,
+			bom.created_at AS createdAt,
+			bom.creator_id AS creatorId, 
+			bom.updated_at AS updatedAt,
+			bom.updator_id AS updatorId,
+			bom.item_id AS itemId,
+			mtrlMgt.mtrl_mgt_id AS mtrlMgtId,
+			item.item_nm AS itemNm,
+			mtrlInfo.mtrl_nm AS mtrlNm,
+			IF((SELECT COUNT(1)FROM bc_bom_info child  WHERE child.bom_parent_id = bom.bom_id) > 0 ,TRUE,FALSE) AS hasChildren
+		FROM bc_bom_info bom
+		LEFT OUTER JOIN cm_mtrl_mgt mtrlMgt ON bom.bom_target_id = mtrlMgt.mtrl_id
+		LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlMgt.mtrl_id = mtrlInfo.mtrl_id
+		LEFT OUTER JOIN bc_item_info item ON item.item_id = bom.item_id
+		
+		WHERE 1=1 AND bom_parent_id = IFNULL(#{bomId},#{itemId})
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="bomTarget != null and bomTarget != '' ">
+			AND bom_target = #{bomTarget}
+		</if>
+		GROUP BY bomId
+	</select>
+		
+	<insert id="insertBom" parameterType="jin.mes.form.basMgt.bom.bomMgt.BomMgtDto">
+		<selectKey keyProperty="bomId" resultType="String" order="BEFORE">
+			SELECT CREATE_PK('BOM') as bomId
+		</selectKey>
+		INSERT INTO bc_bom_info
+		(
+			bom_id,
+			bom_nm,
+			bom_target,
+			bom_target_id,
+			bom_target_nm,
+			bom_target_cnt,
+			bom_std01,
+			bom_std02,
+			bom_std03,
+			bom_std04,
+			bom_std05,
+			bom_std_str01,
+			bom_std_str02,
+			bom_std_str03,
+			bom_std_str04,
+			bom_std_str05,
+			description,
+			bom_seq,
+			bom_parent_id,
+			created_at,
+			creator_id,
+			updated_at,
+			updator_id,
+			item_id
+		)
+		VALUES
+		(
+			#{bomId},
+			#{bomNm},
+			#{bomTarget},
+			#{bomTargetId},
+			#{bomTargetNm},
+			#{bomTargetCnt},
+			#{bomStd01},
+			#{bomStd02},
+			#{bomStd03},
+			#{bomStd04},
+			#{bomStd05},
+			#{bomStdStr01},
+			#{bomStdStr02},
+			#{bomStdStr03},
+			#{bomStdStr04},
+			#{bomStdStr05},
+			#{description},
+			0,
+			#{bomParentId},
+			now(),
+			#{creatorId},
+			now(),
+			#{updatorId},
+			#{itemId}
+		)
+	</insert>
+	
+	<update id="updateBom"
+		parameterType="jin.mes.form.basMgt.bom.bomMgt.BomMgtDto">
+		UPDATE bc_bom_info
+		SET
+			bom_target_id = #{bomTargetId},
+			bom_target_nm = #{bomTargetNm},
+			bom_target_cnt = #{bomTargetCnt},
+			description = #{description},
+			updated_at = now(),
+			updator_id = #{updatorId}
+			
+			<if test="bomStd01 != null">
+				,bom_nm = #{bomNm}
+			</if>
+			<if test="bomStd01 != null">
+				,bom_std01 = #{bomStd01}
+			</if>
+			<if test="bomStd02 != null">
+				,bom_std02 = #{bomStd02}
+			</if>
+			<if test="bomStd03 != null">
+				,bom_std03 = #{bomStd03}
+			</if>
+			<if test="bomStd04 != null">
+				,bom_std04 = #{bomStd04}
+			</if>
+			<if test="bomStd05 != null">
+				,bom_std05 = #{bomStd05}
+			</if>
+			<if test="bomStdStr01 != null">
+				,bom_std_str01 = #{bomStdStr01}
+			</if>
+			<if test="bomStdStr02 != null">
+				,bom_std_str02 = #{bomStdStr02}
+			</if>
+			<if test="bomStdStr03 != null">
+				,bom_std_str03 = #{bomStdStr03}
+			</if>
+			<if test="bomStdStr04 != null">
+				,bom_std_str04 = #{bomStdStr04}
+			</if>
+			<if test="bomStdStr05 != null">
+				,bom_std_str05 = #{bomStdStr05}
+			</if>
+			
+			
+		WHERE bom_id = #{bomId}
+	</update>
+	
+	<delete id="deleteBom"
+		parameterType="jin.mes.form.basMgt.bom.bomMgt.BomMgtDto">
+		DELETE FROM bc_bom_info
+		WHERE bom_id IN (
+				WITH RECURSIVE bomRecursive AS 
+					(
+					SELECT bom_id
+					FROM bc_bom_info AS bomInfo
+					WHERE bom_id = #{bomId}
+					UNION ALL
+					SELECT
+						bomInfo.bom_id
+					FROM bc_bom_info AS bomInfo
+					INNER JOIN bomRecursive bomRec
+					ON bomInfo.bom_parent_id = bomRec.bom_id
+					) SELECT * FROM bomRecursive
+				)
+	</delete>
+	
+	
+	<select id="selectBomRoot"
+		parameterType="jin.mes.form.basMgt.bom.bomMgt.BomMgtDto"
+		resultType="String">
+		SELECT item_id 
+		FROM bc_bom_info
+		WHERE bom_id = #{bomId}
+	</select>
+		
+	<!-- <select id="selectBomRoot"
+		parameterType="jin.mes.form.basMgt.bom.bomMgt.BomMgtDto"
+		resultType="jin.mes.form.basMgt.bom.bomMgt.BomMgtDto">
+		SELECT 
+			'prcs_bom01' AS bomTarget,
+			item_id AS bomTargetId,
+			item_nm AS bomTargetNm,
+			1 AS bomTargetCnt,
+			"Root" AS DESCRIPTION,
+			1 AS bomSeq,
+			item_id AS bomParentId,
+			item_id AS itemId
+		FROM bc_item_info
+		WHERE item_id = #{itemId}
+	</select> -->
+</mapper>

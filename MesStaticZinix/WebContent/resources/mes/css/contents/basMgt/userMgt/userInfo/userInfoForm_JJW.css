@@ -1,0 +1,22 @@
+
+/*팝업 통일성 관련*/
+
+.userInfoForm-final-btn-area {
+	margin-top: 0;
+}
+
+/*체크박스 영역 관련*/
+
+.userInfoForm .group-checkbox {
+	overflow: auto;
+	height: 150px;
+	background-color: #ffffff;
+	padding-top: 5px;
+	border: 1px solid #C7D5F4;
+}
+
+/*20.08.04 왼쪽 셀 가운데 정렬 JJW*/
+
+.userInfoForm.k-grid td:first-child {
+	text-align: center;
+}

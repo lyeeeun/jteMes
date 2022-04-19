@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="login">
+	<!-- 2019-11-14 jkkim 개발시작-->
+	<select id="selectMemberLogin" parameterType="hashmap" resultType="hashmap">
+	<![CDATA[
+	SELECT memb.ur_code,memb.pw,memb.ur_name,
+		part.gr_code AS part_code, part.gr_name AS part_name, 
+		dept.gr_code AS dept_code, dept.gr_name AS dept_name, 
+		lv.gr_code AS lv_code, lv.gr_name AS lv_name 
+	FROM jte_memb_info memb
+		LEFT OUTER JOIN jte_group_info part ON memb.part_code = part.gr_code AND part.is_use = 'Y'
+		LEFT OUTER JOIN jte_group_info dept ON memb.dept_code = dept.gr_code AND dept.is_use = 'Y'
+		LEFT OUTER JOIN jte_group_info lv ON memb.lv_code = lv.gr_code AND lv.is_use = 'Y'
+	WHERE memb.is_use = 'Y' AND memb.id  = #{username}
+	]]>
+	</select>
+	<!-- 2019-11-14 jkkim 개발종료-->
+	
+	
+	
+	<select id="selectMembLogin" parameterType="hashmap"
+		resultType="hashmap">
+		<!--  SELECT  CASE WHEN PKG_CRYPTO.FN_CM_HASH(#{userpw}) = A.WEB_PW THEN 'Y' ELSE 'N' END AS YN-->
+		<![CDATA[
+		SELECT	A.WEB_PW
+			       ,A.CTR_CD
+			       ,(SELECT CTR_NM
+			           FROM TB_CTRINF
+			          WHERE CTR_CD  = A.CTR_CD) AS CTR_NM
+			       ,A.MEMB_NM AS NM
+			       ,'N' AS MASTER
+			       ,A.MEMB_NO
+			       ,A.DONG
+			       ,A.HO
+  			  FROM TB_MEMBINF A
+ 			 WHERE UPPER(A.WEB_ID) = #{username}
+		]]>
+	</select>
+<!--   AND A.WD_YN  = 'N' -->
+	<select id="selectAdminLogin" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT  CASE WHEN #{userpw} = A.ADMIN_PW THEN 'Y' ELSE 'N' END AS YN
+			       ,A.CTR_CD
+			       ,(SELECT CTR_NM
+			           FROM TB_CTRINF
+			          WHERE CTR_CD  = A.CTR_CD) AS CTR_NM
+			       ,A.ADMIN_NM AS NM
+			       ,A.MASTER
+			       ,'' AS MEMB_NO
+			       ,A.BP_CD
+			       ,'' AS DONG
+			       ,'' AS HO
+   			  FROM TB_ADMININF A
+  			 WHERE UPPER(A.ADMIN_ID) = #{username}
+  			   AND A.WD_YN = 'N'
+		]]>
+	</select>
+
+	<select id="membInfo" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT A.CTR_CD
+		,(SELECT CTR_NM
+		FROM TB_CTRINF
+		WHERE CTR_CD = A.CTR_CD) AS CTR_NM
+		,A.MEMB_NM AS NM
+		,'N' AS MASTER
+		,A.MEMB_NO
+		,A.DONG
+		,A.HO
+		FROM TB_MEMBINF A
+		WHERE A.CTR_CD = #{CTR_CD}
+		AND A.MEMB_NO = #{MEMB_NO}
+		AND A.WD_YN = 'N'
+	</select>
+</mapper>

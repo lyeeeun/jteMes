@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "jin.mes.form.basMgt.codMgt.pageSet.PageSetMapper">
+	<sql id="pageSet_base">
+			grid_no, 
+			grid_db, 
+			grid_id, 
+			grid_class, 
+			grid_style, 
+			grid_title, 
+			grid_url_base, 
+			grid_url_read, 
+			grid_url_create, 
+			grid_url_update, 
+			grid_url_destroy,
+			grid_pop_id,  
+			grid_pop_width, 
+			grid_pop_height, 
+			grid_pop_class, 
+			grid_pop_col, 
+			grid_pop_title, 
+			grid_function, 
+			grid_div, 
+			up_grid_id,
+			menu_id
+		FROM cw_page_grid
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="gridNo != null">
+			AND grid_no = #{gridNo}
+		</if>
+		<if test="upGridId != null">
+			AND up_grid_id = #{upGridId}
+		</if>
+		<if test="menuId != null">
+			AND menu_id = #{menuId}
+		</if>
+	</sql>
+	
+	<select id="selectPageSetList" parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto"
+		resultType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto" >
+		SELECT
+		<include refid="pageSet_base"/>	
+	</select>
+
+
+<!-- 		<selectKey keyProperty="bomId" resultType="String" order="BEFORE"> -->
+<!-- 			SELECT CREATE_PK('BOM') as bomId -->
+<!-- 		</selectKey> -->
+
+	<insert id="insertPageSetSave" parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto">
+		INSERT INTO cw_page_grid
+		(
+			grid_db, 
+			grid_id, 
+			grid_class, 
+			grid_style, 
+			grid_title, 
+			grid_url_base, 
+			grid_url_read, 
+			grid_url_create, 
+			grid_url_update, 
+			grid_url_destroy, 
+			grid_pop_id, 
+			grid_pop_width, 
+			grid_pop_height, 
+			grid_pop_class, 
+			grid_pop_col, 
+			grid_pop_title, 
+			grid_function, 
+			grid_div, 
+			up_grid_id,
+			menu_id
+		)
+		VALUES
+		(
+			#{gridDb},
+			#{gridId},
+			#{gridClass},
+			#{gridStyle},
+			#{gridTitle},
+			#{gridUrlBase},
+			#{gridUrlRead},
+			#{gridUrlCreate},
+			#{gridUrlUpdate},
+			#{gridUrlDestroy},
+			#{gridPopId},
+			#{gridPopWidth},
+			#{gridPopHeight},
+			#{gridPopClass},
+			#{gridPopCol},
+			#{gridPopTitle},
+			#{gridFunction},
+			#{gridDiv},
+			#{upGridId},
+			#{menuId}
+		)
+	</insert>
+	
+	<update id="updatePageSetSave" parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto">
+		UPDATE cw_page_grid
+			SET grid_no = #{gridNo}
+			<if test="gridDb != null">
+				,grid_db = #{gridDb}
+			</if>
+			<if test="gridId != null">
+				,grid_id = #{gridId}
+			</if>
+			<if test="gridClass != null">
+				,grid_class = #{gridClass}
+			</if>
+			<if test="gridStyle != null">
+				,grid_style = #{gridStyle}
+			</if>
+			<if test="gridTitle != null">
+				,grid_title = #{gridTitle}
+			</if>
+			<if test="gridUrlBase != null">
+				,grid_url_base = #{gridUrlBase}
+			</if>
+			<if test="gridUrlRead != null">
+				,grid_url_read = #{gridUrlRead}
+			</if>
+			<if test="gridUrlCreate != null">
+				,grid_url_create = #{gridUrlCreate}
+			</if>
+			<if test="gridUrlUpdate != null">
+				,grid_url_update = #{gridUrlUpdate}
+			</if>
+			<if test="gridUrlDestroy != null">
+				,grid_url_destroy = #{gridUrlDestroy}
+			</if>
+			<if test="gridPopId != null">
+				,grid_pop_id = #{gridPopId}
+			</if>
+			<if test="gridPopWidth != null">
+				,grid_pop_width = #{gridPopWidth}
+			</if>
+			<if test="gridPopHeight != null">
+				,grid_pop_height = #{gridPopHeight}
+			</if>
+			<if test="gridPopClass != null">
+				,grid_pop_class = #{gridPopClass}
+			</if>
+			<if test="gridPopCol != null">
+				,grid_pop_col = #{gridPopCol}
+			</if>
+			<if test="gridPopTitle != null">
+				,grid_pop_title = #{gridPopTitle}
+			</if>
+			<if test="gridFunction != null">
+				,grid_function = #{gridFunction}
+			</if>
+			<if test="gridDiv != null">
+				,grid_div = #{gridDiv}
+			</if>
+			<if test="upGridId != null">
+				,up_grid_id = #{upGridId}
+			</if>
+			<if test="menuId != null">
+				,menu_id = #{menuId}
+			</if>
+		WHERE grid_no = #{gridNo}
+	</update>
+	
+	<delete id="deletePageSet"
+		parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto">
+		DELETE FROM cw_page_grid
+		WHERE grid_no = #{gridNo}
+	</delete>
+	<sql id="pageField_base">
+			field_no, 
+			field_db, 
+			field_id, 
+			field_name,
+			field_type, 
+			field_pop, 
+			field_grid, 
+			field_search, 
+			field_validation, 
+			field_excel, 
+			grid_no
+		FROM cw_page_field
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="gridNo != null">
+			AND grid_no = #{gridNo}
+		</if>
+		<if test="fieldNo != null and fieldNo != ''">
+			AND field_no = #{fieldNo}
+		</if>
+	</sql>
+	
+	<select id="selectPageFieldList" parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto"
+		resultType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto" >
+		SELECT
+		<include refid="pageField_base"/>	
+	</select>
+	
+		<insert id="insertPageField" parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto">
+		INSERT INTO cw_page_field
+		(
+			field_db, 
+			field_id,
+			field_name,
+			field_type, 
+			field_pop, 
+			field_grid, 
+			field_search, 
+			field_validation, 
+			field_excel, 
+			grid_no
+		)
+		VALUES
+		(
+			#{fieldDb},
+			#{fieldId},
+			#{fieldName},
+			#{fieldType},
+			#{fieldPop},
+			#{fieldGrid},
+			#{fieldSearch},
+			#{fieldValidation},
+			#{fieldExcel},
+			#{gridNo}
+		)
+	</insert>
+	
+	<update id="updatePageField" parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto">
+		UPDATE cw_page_field
+			SET field_no = #{fieldNo}
+			<if test="fieldDb != null">
+				,field_db = #{fieldDb}
+			</if>
+			<if test="fieldId != null">
+				,field_id = #{fieldId}
+			</if>
+			<if test="fieldName != null">
+				,field_name = #{fieldName}
+			</if>
+			<if test="fieldType != null">
+				,field_type = #{fieldType}
+			</if>
+			<if test="fieldPop != null">
+				,field_pop = #{fieldPop}
+			</if>
+			<if test="fieldGrid != null">
+				,field_grid = #{fieldGrid}
+			</if>
+			<if test="fieldSearch != null">
+				,field_search = #{fieldSearch}
+			</if>
+			<if test="fieldValidation != null">
+				,field_validation = #{fieldValidation}
+			</if>
+			<if test="fieldExcel != null">
+				,field_excel = #{fieldExcel}
+			</if>
+		WHERE field_no = #{fieldNo} AND grid_no = #{gridNo}
+		
+	</update>
+	
+	<delete id="deletePageField"
+		parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto">
+		DELETE FROM cw_page_field
+		WHERE field_no = #{fieldNo}
+	</delete>
+	
+<!-- 	<sql id="pageField_base"> -->
+<!-- 			field_no,  -->
+<!-- 			field_db,  -->
+<!-- 			field_id,  -->
+<!-- 			field_name, -->
+<!-- 			field_type,  -->
+<!-- 			field_pop_yn,  -->
+<!-- 			field_pop_num,  -->
+<!-- 			field_pop_hidden,  -->
+<!-- 			field_pop_col,  -->
+<!-- 			field_pop_readonly,  -->
+<!-- 			field_pop_custom,  -->
+<!-- 			filed_grid_attributes,  -->
+<!-- 			field_grid_yn,  -->
+<!-- 			field_grid_num,  -->
+<!-- 			field_grid_format,  -->
+<!-- 			field_grid_width,  -->
+<!-- 			field_grid_custom,  -->
+<!-- 			field_search_yn,  -->
+<!-- 			field_search_num,  -->
+<!-- 			field_search_name,  -->
+<!-- 			field_validation_yn,  -->
+<!-- 			field_validation_msg,  -->
+<!-- 			field_validation_check,  -->
+<!-- 			field_excel_import,  -->
+<!-- 			field_excel_export,  -->
+<!-- 			field_function,  -->
+<!-- 			grid_no -->
+<!-- 		FROM cw_page_field -->
+<!-- 		WHERE 1=1 -->
+<!-- 		<if test="searchText != null and searchText != '' "> -->
+<!-- 			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%') -->
+<!-- 		</if> -->
+<!-- 		<if test="gridNo != null"> -->
+<!-- 			AND grid_no = #{gridNo} -->
+<!-- 		</if> -->
+<!-- 		<if test="fieldNo != null and fieldNo != ''"> -->
+<!-- 			AND field_no = #{fieldNo} -->
+<!-- 		</if> -->
+<!-- 	</sql> -->
+	
+<!-- 	<select id="selectPageFieldList" parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto" -->
+<!-- 		resultType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto" > -->
+<!-- 		SELECT -->
+<!-- 		<include refid="pageField_base"/>	 -->
+<!-- 	</select> -->
+	
+<!-- 		<insert id="insertPageField" parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto"> -->
+<!-- 		INSERT INTO cw_page_field -->
+<!-- 		( -->
+<!-- 			field_db,  -->
+<!-- 			field_id, -->
+<!-- 			field_name, -->
+<!-- 			field_type,  -->
+<!-- 			field_pop_yn,  -->
+<!-- 			field_pop_num,  -->
+<!-- 			field_pop_hidden,  -->
+<!-- 			field_pop_col,  -->
+<!-- 			field_pop_readonly,  -->
+<!-- 			field_pop_custom,  -->
+<!-- 			filed_grid_attributes,  -->
+<!-- 			field_grid_yn,  -->
+<!-- 			field_grid_num,  -->
+<!-- 			field_grid_format,  -->
+<!-- 			field_grid_width,  -->
+<!-- 			field_grid_custom,  -->
+<!-- 			field_search_yn,  -->
+<!-- 			field_search_num,  -->
+<!-- 			field_search_name,  -->
+<!-- 			field_validation_yn,  -->
+<!-- 			field_validation_msg,  -->
+<!-- 			field_validation_check,  -->
+<!-- 			field_excel_import,  -->
+<!-- 			field_excel_export,  -->
+<!-- 			field_function,  -->
+<!-- 			grid_no -->
+<!-- 		) -->
+<!-- 		VALUES -->
+<!-- 		( -->
+<!-- 			#{fieldDb}, -->
+<!-- 			#{fieldId}, -->
+<!-- 			#{fieldName}, -->
+<!-- 			#{fieldType}, -->
+<!-- 			#{fieldPopYn}, -->
+<!-- 			#{fieldPopNum}, -->
+<!-- 			#{fieldPopHidden}, -->
+<!-- 			#{fieldPopCol}, -->
+<!-- 			#{fieldPopReadonly}, -->
+<!-- 			#{fieldPopCustom}, -->
+<!-- 			#{filedGridAttributes}, -->
+<!-- 			#{fieldGridYn}, -->
+<!-- 			#{fieldGridNum}, -->
+<!-- 			#{fieldGridFormat}, -->
+<!-- 			#{fieldGridWidth}, -->
+<!-- 			#{fieldGridCustom}, -->
+<!-- 			#{fieldSearchYn}, -->
+<!-- 			#{fieldSearchNum}, -->
+<!-- 			#{fieldSearchName}, -->
+<!-- 			#{fieldValidationYn}, -->
+<!-- 			#{fieldValidationMsg}, -->
+<!-- 			#{fieldValidationCheck}, -->
+<!-- 			#{fieldExcelImport}, -->
+<!-- 			#{fieldExcelExport}, -->
+<!-- 			#{fieldFunction}, -->
+<!-- 			#{gridNo} -->
+<!-- 		) -->
+<!-- 	</insert> -->
+	
+<!-- 	<update id="updatePageField" parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto"> -->
+<!-- 		UPDATE cw_page_field -->
+<!-- 			SET field_no = #{fieldNo} -->
+<!-- 			<if test="fieldDb != null"> -->
+<!-- 				,field_db = #{fieldDb} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldId != null"> -->
+<!-- 				,field_id = #{fieldId} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldName != null"> -->
+<!-- 				,field_name = #{fieldName} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldType != null"> -->
+<!-- 				,field_type = #{fieldType} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldPopYn != null"> -->
+<!-- 				,field_pop_yn = #{fieldPopYn} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldPopNum != null"> -->
+<!-- 				,field_pop_num = #{fieldPopNum} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldPopHidden != null"> -->
+<!-- 				,field_pop_hidden = #{fieldPopHidden} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldPopCol != null"> -->
+<!-- 				,field_pop_col = #{fieldPopCol} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldPopReadonly != null"> -->
+<!-- 				,field_pop_readonly = #{fieldPopReadonly} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldPopCustom != null"> -->
+<!-- 				,field_pop_custom = #{fieldPopCustom} -->
+<!-- 			</if> -->
+<!-- 			<if test="filedGridAttributes != null"> -->
+<!-- 				,filed_grid_attributes = #{filedGridAttributes} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldGridYn != null"> -->
+<!-- 				,field_grid_yn = #{fieldGridYn} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldGridNum != null"> -->
+<!-- 				,field_grid_num = #{fieldGridNum} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldGridFormat != null"> -->
+<!-- 				,field_grid_format = #{fieldGridFormat} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldGridWidth != null"> -->
+<!-- 				,field_grid_width = #{fieldGridWidth} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldGridCustom != null"> -->
+<!-- 				,field_grid_custom = #{fieldGridCustom} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldSearchYn != null"> -->
+<!-- 				,field_search_yn = #{fieldSearchYn} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldSearchNum != null"> -->
+<!-- 				,field_search_num = #{fieldSearchNum} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldSearchName != null"> -->
+<!-- 				,field_search_name = #{fieldSearchName} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldValidationYn != null"> -->
+<!-- 				,field_validation_yn = #{fieldValidationYn} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldValidationMsg != null"> -->
+<!-- 				,field_validation_msg = #{fieldValidationMsg} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldValidationCheck != null"> -->
+<!-- 				,field_validation_check = #{fieldValidationCheck} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldExcelImport != null"> -->
+<!-- 				,field_excel_import = #{fieldExcelImport} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldExcelExport != null"> -->
+<!-- 				,field_excel_export = #{fieldExcelExport} -->
+<!-- 			</if> -->
+<!-- 			<if test="fieldFunction != null"> -->
+<!-- 				,field_function = #{fieldFunction} -->
+<!-- 			</if> -->
+<!-- 		WHERE field_no = #{fieldNo} AND grid_no = #{gridNo} -->
+		
+<!-- 	</update> -->
+	
+<!-- 	<delete id="deletePageField" -->
+<!-- 		parameterType="jin.mes.form.basMgt.codMgt.pageSet.PageSetDto"> -->
+<!-- 		DELETE FROM cw_page_field -->
+<!-- 		WHERE field_no = #{fieldNo} -->
+<!-- 	</delete> -->
+</mapper>

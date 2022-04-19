@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.mfgMgt.mfgplanMgt.mrcalMgt.NewMrcalMgtMapper">
+<sql id="mtrlUseCal_base">
+		lot.lot_id									AS lotId,
+		lot.lot_nm									AS lotNm,
+		lot.lot_qty                             	AS lotQty,
+		item.item_id                            	AS itemId,
+		item.item_nm                            	AS itemNm,
+		bom.bom_target_cnt                      	AS bomTargetCnt,
+		mtrlInfo.mtrl_id                        	AS mtrlId,
+		mtrlInfo.mtrl_nm                        	AS mtrlNm,
+		mtrlInfo.description						AS mtrlDiv,
+		mtrlUse.mtrl_mgt_id							AS mtrlMgtId,
+		workInfo.prod_work_id                   	AS prodWorkId,
+		asgn.prod_asm_date                      	AS prodAsmDate,
+		workInfo.prod_work_user                 	AS prodWorkUser,
+		userInfo.user_nm                        	AS prodWorkUserNm,
+		workInfo.eqmt_mgt_id                    	AS eqmtMgtId,
+		eqmt.eqmt_mgt_nm                        	AS eqmtMgtNm,
+		workInfo.prod_work_qty                  	AS prodWorkQty,
+		workInfo.prod_work_qty * bom.bom_target_cnt	AS mtrlNeedQty,
+		mtrl_use_input                          	AS mtrlUseInput,
+		mtrl_use_cnt                            	AS mtrlUseCnt,
+		mtrlMgt.mtrl_mgt_cnt						AS mtrlMgtCnt
+	FROM prs_lot_info lot
+	LEFT OUTER JOIN bc_item_info item ON lot.item_id = item.item_id
+	LEFT OUTER JOIN bc_bom_info bom ON bom.item_id = item.item_id AND bom.bom_target = 'prcs_bom02'
+	LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlInfo.mtrl_id = bom.bom_target_id
+	LEFT OUTER JOIN prs_work_info workInfo ON workInfo.lot_id = lot.lot_id
+	LEFT OUTER JOIN prs_product_assignment asgn ON asgn.prod_asm_id = workInfo.prod_asm_id
+	LEFT OUTER JOIN prs_mtrl_useinfo mtrlUse ON mtrlUse.prod_work_id = workInfo.prod_work_id
+	LEFT OUTER JOIN cm_mtrl_mgt mtrlMgt ON mtrlMgt.mtrl_mgt_id = mtrlUse.mtrl_mgt_id
+	LEFT OUTER JOIN mb_user_info userInfo ON userInfo.user_id = workInfo.prod_work_user
+	LEFT OUTER JOIN bc_equipment_mgt eqmt ON eqmt.eqmt_mgt_id = workInfo.eqmt_mgt_id
+	WHERE lot.order_id = #{orderId} AND mtrl_use_input IS NOT NULL
+	<if test="searchText != null and searchText != '' ">
+		AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+	</if>
+</sql>
+
+<!-- 자재소요량 select -->
+	<select id="selectMtrlUseCalList"
+		parameterType="jin.mes.cform.mfgMgt.mfgplanMgt.mrcalMgt.NewMrcalMgtDto"
+		resultType="jin.mes.cform.mfgMgt.mfgplanMgt.mrcalMgt.NewMrcalMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER() AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="mtrlUseCal_base" />
+			)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- 자재소요량 카운트 -->
+	<select id="selectMtrlUseCalCount"
+	parameterType="jin.mes.cform.mfgMgt.mfgplanMgt.mrcalMgt.NewMrcalMgtDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="mtrlUseCal_base" />
+			)c_table
+	</select>
+
+</mapper>

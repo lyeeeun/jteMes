@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.ship.shipMgt.ShipMgtMapper">
+	<!-- 출하 계획 정보 -->
+	<sql id="ship_base">
+			shipPlan.ship_plan_id		AS shipPlanId,
+			shipPlan.ship_plan_qty		AS shipPlanQty,
+			shipPlan.ship_plan_date		AS shipPlanDate,
+			shipPlan.ship_plan_state	AS shipPlanState,
+			shipPlan.ship_plan_desc		AS shipPlanDesc,
+			shipPlan.lot_id				AS lotId,
+			shipPlan.creator_id			AS creatorId, 
+			shipPlan.created_at			AS createdAt, 
+			shipPlan.updator_id			AS updatorId, 
+			shipPlan.updated_at			AS updatedAt,
+			lot.lot_state				AS lotState,
+			orderInfo.order_id			AS orderId,
+			orderInfo.comp_id			AS compId,
+			comp.comp_nm				AS compNm,
+			itemInfo.item_id			AS itemId,
+			itemInfo.item_nm			AS itemNm,
+			userInfo.user_id			AS userId,
+			userInfo.user_nm			AS userNm,
+			(lotRlesQty.rlesWorkQty-IFNULL(lotShipQty.shipEndQty,0))		AS rlesStockQty,
+			shipMgt.ship_id				AS shipId,
+			shipMgt.ship_qty			AS shipQty,
+			shipMgt.ship_complete_date	AS shipCompleteDate,
+			shipMgt.ship_desc			AS shipDesc,
+			shipMgt.ship_transport		AS shipTransport,
+			shipMgt.ship_worker			AS shipWorker,
+			shipMgt.ship_inspect		AS shipInspect
+		FROM prs_ship_plan shipPlan
+		LEFT OUTER JOIN prs_ship_mgt shipMgt ON  shipPlan.ship_plan_id = shipMgt.ship_plan_id
+		LEFT OUTER JOIN prs_lot_info lot ON shipPlan.lot_id = lot.lot_id
+		LEFT OUTER JOIN bc_item_info itemInfo ON lot.item_id = itemInfo.item_id
+		LEFT OUTER JOIN mb_user_info userInfo ON shipMgt.ship_worker = userInfo.user_id
+		LEFT OUTER JOIN prs_order_info orderInfo ON lot.order_id = orderInfo.order_id
+		LEFT OUTER JOIN bc_company_info comp ON orderInfo.comp_id = comp.comp_id
+		LEFT OUTER JOIN (
+							SELECT	lot.lot_id						AS lotId,
+									SUM(rlesMgt.rles_mgt_qty)		AS rlesWorkQty
+							FROM prs_lot_info lot
+			
+							LEFT OUTER JOIN prs_rles_plan rlesPlan ON lot.lot_id = rlesPlan.lot_id
+							LEFT OUTER JOIN prs_rles_mgt rlesMgt ON rlesPlan.rles_plan_id = rlesMgt.rles_plan_id
+							WHERE rlesPlan.rles_plan_state = 'rlesSta03'
+							GROUP BY lot.lot_id
+						)lotRlesQty ON lot.lot_id = lotRlesQty.lotId
+		LEFT OUTER JOIN (
+							SELECT	lot.lot_id			AS lotId,
+							SUM(shipMgt.ship_qty)		AS shipEndQty
+							FROM prs_lot_info lot
+							
+							LEFT OUTER JOIN prs_ship_plan shipPlan ON lot.lot_id = shipPlan.lot_id
+							LEFT OUTER JOIN prs_ship_mgt shipMgt ON shipPlan.ship_plan_id = shipMgt.ship_plan_id
+							WHERE shipPlan.ship_plan_state = 'shipSta03'
+							GROUP BY lot.lot_id
+						)lotShipQty ON lot.lot_id = lotShipQty.lotId
+		WHERE 1=1
+		<if test="shipPlanId != null">
+			AND shipPlan.ship_plan_id = #{shipPlanId}
+		</if>
+		<if test="shipPlanState != null">
+			AND shipPlan.ship_plan_state != #{shipPlanState}
+		</if>
+		<if test="lotId != null">
+			AND shipPlan.lot_id = #{lotId}
+		</if>
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+		
+	<!-- 출하 계획 조회(Paging) -->
+	<select id="selectShipPlanList"
+		parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto"
+		resultType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY shipPlan.updated_at desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="ship_base" />
+				)s_table
+		WHERE RNUM <![CDATA[ >= ]]> #{firstIndex}
+	</select>
+	
+	<!-- 출하 계획 조회(Count) -->
+	<select id="selectShipPlanCount"
+		parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="ship_base" />
+				)c_table
+	</select>
+	
+	<!-- 출하 정보 등록 -->
+	<insert id="insertShipInfo" parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		<selectKey keyProperty="shipId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('SHIP') AS shipId
+		</selectKey>
+		INSERT INTO prs_ship_mgt(
+				ship_id,
+				lot_id,
+				ship_qty,
+				ship_complete_date,
+				ship_desc,
+				ship_worker,
+				ship_transport,
+				ship_plan_id,
+				ship_inspect,
+				creator_id,
+				created_at,
+				updator_id,
+				updated_at
+		)VALUES(
+				#{shipId},
+				#{lotId},
+				#{shipQty},
+				#{shipCompleteDate},
+				#{shipDesc},
+				#{shipWorker},
+				#{shipTransport},
+				#{shipPlanId},
+				#{shipInspect},
+				#{creatorId}, 
+				NOW(), 
+				#{updatorId}, 
+				NOW() 
+		)
+	</insert>
+
+	<update id="updateShipInfo" parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		UPDATE prs_ship_mgt
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="shipQty != null and shipQty != '' " >	
+				,ship_qty = #{shipQty}
+			</if>	
+			<if test="shipDesc != null and shipDesc != '' ">	
+				,ship_desc = #{shipDesc}
+			</if>
+			<if test="shipCompleteDate != null and shipCompleteDate != '' ">
+				,ship_complete_date = #{shipCompleteDate}
+			</if>
+			<if test="shipInspect != null and shipInspect != '' ">
+				,ship_inspect = #{shipInspect}
+			</if>
+		WHERE 1=1
+			<if test="shipId != null">
+				AND ship_id = #{shipId}
+			</if>
+			<if test="lotId != null">
+				AND lot_id = #{lotId}
+			</if>
+		
+	</update>
+	
+	<delete id="deleteShipInfo" parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		DELETE FROM prs_ship_mgt
+		WHERE ship_id = #{shipId}
+	</delete>
+
+
+
+	<!-- Lot 상태 변경 -->
+	<update id="updateLotState" parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		UPDATE prs_lot_info
+		SET lot_state = #{lotState}
+		WHERE lot_id = #{lotId}
+	</update>
+	
+	<!-- 검사 상태 변경 -->
+	<update id="updateShipInspect" parameterType="jin.mes.form.ship.shipMgt.ShipMgtDto">
+		UPDATE prs_ship_mgt
+		SET updator_id = #{updatorId},	
+			updated_at = NOW() ,
+			ship_inspect = #{shipInspect}
+		WHERE ship_id = #{shipId}
+	</update>
+
+	
+</mapper>

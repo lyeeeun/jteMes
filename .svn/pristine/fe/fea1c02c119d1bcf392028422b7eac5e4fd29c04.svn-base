@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/rms_layout_menu}" lang="ko">
+<head>
+<meta charset="UTF-8">
+<link href="/js/rms/graph/kendoui/kendo.default.min.css" rel="stylesheet">
+<link href="/js/rms/graph/kendoui/kendo.common.min.css" rel="stylesheet">
+<link href="/js/rms/graph/kendoui/kendo.rtl.min.css" rel="stylesheet">
+<link href="/js/rms/graph/kendoui/kendo.default.mobile.min.css" rel="stylesheet">
+
+
+<title></title>
+</head>
+<body>
+	<div id="container">
+		<div class="content" layout:fragment="content">
+			<!-- 검색 -->
+			<!-- 본문 영역 -->
+			<div class="content_layer">
+			<table style="width:100%; border-collapse:collapse">
+			<tr>
+				<td style="width:95%"><div id="chart"></div></td><td style="background-color:white;"><div style="margin-top:-25px;">t</div></td>
+			</tr>
+			<tr>
+				<td style="width:95%"><div id="chart2"></div></td><td style="background-color:white;"><div style="margin-top:-20px;">t</div></td>
+			</tr>
+			</table>
+			<div id="info">
+				<table>
+					<tr>
+						<td id="headerT" style="font-weight:bold;"></td>
+					</tr>
+					<tr>
+						<td id="startTime"></td>
+					</tr>
+					<tr>
+						<td id="endTime"></td>
+					</tr>
+					<tr>
+						<td id="elapsedTime"></td>
+					</tr>
+					<tr>
+						<td id="graphDisplayTime"></td>
+					</tr>
+				</table>
+			</div>
+			</div>
+		</div>
+	</div>
+</body>
+<th:block layout:fragment="script">
+	<script src="/js/rms/graph/kendo.all.min.js"></script>
+	<script src="/js/rms/graph/graph.js"></script>
+</th:block>
+
+</html>
+
+

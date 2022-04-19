@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.ship.shipPlanMgt.ZinixShipPlanMgtMapper">
+	<!-- 생산계획(품목) 조회 쿼리 -->
+	<sql id = "shipPlan_base">
+		itemMgtId,
+		itemNm,
+		itemStock,
+		shipPlanYear, 
+		shipPlanMonth
+		<foreach collection="calPrmt" item="dayUnit">
+			, MAX(IF(shipPlanDay = #{dayUnit}, shipPlanQty, 0))		AS planQty${dayUnit}
+			, MAX(IF(shipPlanDay = #{dayUnit}, pickPlanQty, 0))		AS pickPlanQty${dayUnit}
+		</foreach>
+		,SUM(shipPlanQty) AS shipTotalQty
+		,SUM(pickPlanQty) AS pickTotalQty
+		FROM(
+			SELECT
+				itemCal.itemMgtId				AS itemMgtId,
+				itemCal.itemId					AS itemId,
+				item.item_nm					AS itemNm,
+				itemCal.itemStock				AS itemStock,
+				itemCal.shipPlanWeek,
+				itemCal.shipPlanYear,
+				itemCal.shipPlanMonth,
+				itemCal.shipPlanDay				AS shipPlanDay,
+				plan.ship_Plan_Id				AS shipPlanId, 
+				plan.ship_plan_type				AS shipPlanType,
+				IFNULL(plan.ship_plan_qty,0)	AS shipPlanQty,
+				IFNULL(plan.pick_plan_qty,0)	AS pickPlanQty
+			FROM(
+				SELECT 
+				itemMgt.item_mgt_id				AS itemMgtId,
+				itemMgt.item_id					AS itemId,
+				itemMgt.item_stock				AS itemStock,
+				cal.cal_week 				AS shipPlanWeek,
+				cal.cal_year 				AS shipPlanYear,
+				cal.cal_month	 			AS shipPlanMonth,
+				cal.cal_day 				AS shipPlanDay
+				FROM bc_calendar_info cal 
+				CROSS JOIN cm_item_mgt itemMgt
+				WHERE cal.cal_solar BETWEEN CONCAT(#{calYear},'-',#{calMonth},'-01') AND LAST_DAY(CONCAT(#{calYear},'-',#{calMonth},'-01'))
+				GROUP BY itemMgt.item_mgt_id,cal.cal_week,cal.cal_year,cal.cal_month,cal.cal_day 
+			)itemCal
+			LEFT OUTER JOIN prs_ship_plan plan ON plan.ship_plan_year = itemCal.shipPlanYear AND plan.ship_plan_month = itemCal.shipPlanMonth AND plan.ship_plan_day = itemCal.shipPlanDay AND plan.item_mgt_id = itemCal.itemMgtId
+			LEFT JOIN bc_item_info item ON  item.item_id = itemCal.itemId
+			WHERE 1=1
+			<if test="searchText != null and searchText != '' ">
+				AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+			</if>
+			GROUP BY itemCal.itemMgtId, itemCal.shipPlanWeek, itemCal.shipPlanYear, itemCal.shipPlanMonth, itemCal.shipPlanDay 
+		)pivot
+		GROUP BY itemMgtId, itemNm, shipPlanYear , shipPlanMonth
+	</sql>
+	
+	<!-- 생산계획(품목)정보 조회 -->
+	<select id="selectShipPlanList"
+		parameterType="jin.mes.cform.ship.shipPlanMgt.ZinixShipPlanMgtDto"
+		resultType="jin.mes.cform.ship.shipPlanMgt.ZinixShipPlanMgtDto">
+		SELECT * FROM (
+			SELECT 
+			<choose>
+				<when test='sort != null and sort != "" '>
+					ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+				</when>
+				<otherwise>
+					ROW_NUMBER() OVER(ORDER BY itemId DESC) AS RNUM,
+				</otherwise>
+			</choose>
+			<include refid="shipPlan_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+	
+	<!-- 생산계획(품목) 카운트 -->
+	<select id="selectShipPlanCount"
+	parameterType="jin.mes.cform.ship.shipPlanMgt.ZinixShipPlanMgtDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="shipPlan_base" />
+				)c_table
+	</select>
+	
+	<!-- 생산계획(품목)상세정보 조회 -->
+	<select id="selectShipPlanDetail"
+		parameterType="jin.mes.cform.ship.shipPlanMgt.ZinixShipPlanMgtDto"
+		resultType="jin.mes.cform.ship.shipPlanMgt.ZinixShipPlanMgtDto">
+		SELECT 
+			itemMgt.item_mgt_id								AS itemMgtId,
+			plan.ship_plan_id								AS shipPlanId, 
+			plan.ship_plan_type								AS shipPlanType, 
+			IFNULL(plan.ship_plan_year,#{shipPlanYear})		AS shipPlanYear, 
+			IFNULL(plan.ship_plan_month,#{shipPlanMonth})	AS shipPlanMonth, 
+			IFNULL(plan.ship_plan_day,#{shipPlanDay})		AS shipPlanDay, 
+			IFNULL(plan.ship_plan_qty,0)					AS shipPlanQty,
+			IFNULL(plan.pick_plan_qty,0)					AS pickPlanQty,
+			plan.ship_plan_desc								AS shipPlanDesc, 
+			plan.created_at									AS createdAt, 
+			plan.creator_id									AS creatorId, .
+			plan.updated_at									AS updatedAt, 
+			plan.updator_id									AS updatorId,
+			IF (IFNULL(plan.ship_plan_id,'') = '', 'C','U')	AS ACTION
+		FROM cm_item_mgt itemMgt
+		LEFT OUTER JOIN prs_ship_plan plan ON plan.item_mgt_id = itemMgt.item_mgt_id	
+		<if test="shipPlanType != null and shipPlanType != '' ">
+			AND plan.ship_plan_type = #{shipPlanType}
+		</if>
+		<if test="shipPlanYear != null and shipPlanYear != '' ">
+			AND plan.ship_plan_year = #{shipPlanYear}
+		</if>
+		<if test="shipPlanMonth != null and shipPlanMonth != '' ">
+			AND plan.ship_plan_month = #{shipPlanMonth}
+		</if>
+		<if test="shipPlanDay != null and shipPlanDay != '' ">
+			AND plan.ship_plan_day = #{shipPlanDay}
+		</if>
+		WHERE 1=1
+		<if test="itemMgtId != null and itemMgtId != '' ">
+			AND itemMgt.item_mgt_id	 = #{itemMgtId}
+		</if>
+	</select>
+	
+	<!-- 생산계획 등록 -->
+	<insert id="insertShipPlan" parameterType="jin.mes.cform.ship.shipPlanMgt.ZinixShipPlanMgtDto">
+		<selectKey keyProperty="shipPlanId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('SHIPPLN') AS shipPlanId
+		</selectKey>
+		INSERT 
+			INTO prs_ship_plan(
+				ship_plan_id, 
+				ship_plan_type, 
+				ship_plan_year, 
+				ship_plan_month, 
+				ship_plan_day, 
+				ship_plan_qty,
+				pick_plan_qty, 
+				ship_plan_desc, 
+				created_at, 
+				creator_id, 
+				updated_at, 
+				updator_id, 
+				item_mgt_id
+			)
+			VALUES(
+				#{shipPlanId},
+				#{shipPlanType},
+				#{shipPlanYear}, 
+				#{shipPlanMonth}, 
+				#{shipPlanDay},
+				#{shipPlanQty},
+				#{pickPlanQty}, 
+				#{shipPlanDesc}, 
+				now(), 
+				#{creatorId}, 
+				now(), 
+				#{updatorId}, 
+				#{itemMgtId}
+			)
+	</insert>
+	
+	<!-- 생산계획 수정 -->
+	<update id="updateShipPlan" parameterType="jin.mes.cform.ship.shipPlanMgt.ZinixShipPlanMgtDto">
+		UPDATE prs_ship_plan 
+			SET ship_plan_qty = #{shipPlanQty},
+				pick_plan_qty = #{pickPlanQty}, 
+				ship_plan_desc = #{shipPlanDesc}, 
+				updator_id = #{updatorId}, 
+				updated_at = now()
+			WHERE ship_plan_id = #{shipPlanId}
+	</update>
+	
+	<!-- 생산계획 삭제 -->
+	<delete id="deleteShipPlan">
+		DELETE FROM prs_ship_plan
+		WHERE ship_plan_id = #{shipPlanId} 
+	</delete>
+	
+		<!-- 출하 계획 정보 -->
+	<sql id="shipComp_base">
+			compInfo.comp_id AS compId,
+			compInfo.comp_nm AS compNm,
+			compAddr.comp_addr_number AS compNumber,
+			compAddr.comp_addr_id AS compAddrId,
+			compAddr.comp_addr_detail AS compAddrDetail
+		FROM prs_lot_info lotInfo
+		INNER JOIN prs_order_info orderInfo
+		ON orderInfo.order_id = lotInfo.order_id
+		INNER JOIN bc_company_info compInfo
+		ON orderInfo.comp_id = compInfo.comp_id
+		RIGHT JOIN bc_company_addr compAddr
+		ON orderInfo.comp_id = compAddr.comp_id
+		WHERE lotInfo.lot_id = #{lotId}
+		<if test="searchText != null and searchText != '' ">
+			AND #{searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+		<!-- 출하 업체 조회 -->
+	<select id="selectShipCompList"
+		parameterType="jin.mes.cform.ship.shipPlanMgt.ZinixShipPlanMgtDto"
+		resultType="jin.mes.cform.ship.shipPlanMgt.ZinixShipPlanMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY comp_addr_detail asc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="shipComp_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 출하 업체 Count -->
+	<select id="selectShipCompCount"
+		parameterType="jin.mes.cform.ship.shipPlanMgt.ZinixShipPlanMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="shipComp_base" />
+				)c_table
+	</select>
+</mapper>

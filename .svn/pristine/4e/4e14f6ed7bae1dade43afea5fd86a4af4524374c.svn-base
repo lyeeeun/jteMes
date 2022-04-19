@@ -1,0 +1,155 @@
+@CHARSET "UTF-8";
+
+.facilToolMgtForm {
+	max-width: 100%;
+}
+
+.facilToolMgtForm .left-content-box {
+	width:18%;
+}
+
+.facilToolMgtForm .right-content-box {
+	height: 100%;
+	width:82%;
+/* 	float: right */
+}
+
+.facilToolMgtForm #jteMasterTree {
+	
+	height:100%;
+	padding: 15px 30px;
+	font-size: 16px;
+	box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, 0.2); 
+	background:#ffffff;
+}
+
+.facilToolMgtForm .center-content-box {
+	padding: 0;
+} 
+
+.facilToolMgtForm .right-content-box span {
+	
+}
+
+.facilToolMgtForm .center-content-box span {
+	margin-right: 30px;
+	color: #3367D6;
+	padding-left: 5px;
+}
+
+
+
+
+
+
+
+#jtePopForm_master {
+	margin-top: 5px;
+}
+
+.menuInfoForm .col-left-title {
+	width: 20%;
+}
+
+.menuInfoForm .col-right-content {
+	width: 70%;
+}
+
+.menuInfoForm .group-checkbox {
+	overflow: auto;
+	height: 150px;
+	background-color: #ffffff;
+	padding-top: 5px;
+	border: 1px solid #C7D5F4;
+}
+
+.menuInfoForm .center-input .btn-input {
+	width: 100%;
+}
+
+.menuInfoForm .jtePopForm_master th {
+   text-align: left;
+}
+
+.menuInfoForm .left-input {
+   width: 90%;
+   float: left;
+}
+
+.menuInfoForm .right-input {
+   width: 90%;
+   float: right;
+}
+
+.menuInfoForm .center-input {
+	width: 100%;
+}
+
+.menuInfoForm .normal-input {
+	width: 100%;
+}
+
+.menuInfoForm .col-left-title {
+   width: 18%;
+}
+
+.menuInfoForm .col-left-content {
+   width: 32%;
+}
+
+.menuInfoForm .col-right-title {
+   width: 18%;
+}
+
+.menuInfoForm .col-right-content {
+   width: 32%;
+}
+
+.menuInfoForm .jte-msgBox {
+	width: 90%;
+	float: right;
+}
+
+.jteToolPosForm_grid{
+	height:270px;
+}
+
+/*mediaquery*/
+@media screen and (max-width: 1380px){
+	
+	.facilToolMgtForm .left-content-box {
+		width:25%;
+	}
+
+	.facilToolMgtForm .right-content-box {
+		height: 100%;
+		width:75%;
+	/* 	float: right */
+	}
+	
+	
+	.facilToolMgtForm #jteSubGrid {
+		height: 485px;
+		/* height: 100%; */
+		max-width: 970px;
+		/* padding: 0;
+		margin: 0;
+		margin-bottom: 31px; */
+	}
+	
+ 	.center-content-box span {
+		margin-right: 30px;
+		color: #3367D6;
+		padding-left: 10px;
+	}
+	
+	.facilToolMgtForm .left-content-box {
+		max-width:320px;
+	}
+
+	.facilToolMgtForm #jteMasterTree {
+		/* height: 485px; */
+		/* height: 100%; */
+	}
+
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">JinTenchEng</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="/util/jquery-easyui/themes/material-teal/easyui.css">
+<link rel="stylesheet" type="text/css" href="/util/jquery-easyui/themes/icon.css">
+
+<link rel="stylesheet" type="text/css" href="/css/common/fontawesome/menuicon.css" />
+
+<link rel="stylesheet" href="/css/layouts/tab_layout.css">
+<link rel="stylesheet" href="/css/fragments/left.css">
+<link rel="stylesheet" href="/css/fragments/header.css">
+
+</head>
+<body>
+	<!-- 좌측영역 -->
+	<div th:insert="fragments/left :: left" class="left">This left content is going to be replaced.</div>
+	
+	<!-- 헤더 영역 -->
+	<div th:insert="fragments/header_rms :: header" class="header">header</div>
+	
+	<div id="content" class="easyui-tabs" style="width:100%; height:100%;">
+		<div title="Home"></div>
+	</div>
+</body>
+<!-- 공통 스크립트 시작 -->
+<script type="text/javascript" src="/util/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="/util/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/util/jquery-easyui/jquery.easyui.min.js"></script>
+
+<script type="text/javascript" src="/common/jintFormat.js"></script>
+<script type="text/javascript" src="/common/common.js"></script>
+<!-- 공통 스크립트 종료 -->
+
+<script type="text/javascript" src="/js/fragments/tab_left.js"></script>
+<script type="text/javascript" src="/js/fragments/header.js"></script>
+
+</html>

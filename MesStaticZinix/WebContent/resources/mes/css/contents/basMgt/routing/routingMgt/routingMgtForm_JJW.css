@@ -1,0 +1,123 @@
+
+/** 메인 화면 형식 관련**/
+
+.routingMgtForm-jteSingleGrid {
+/* 	height:100%; */
+	float:left;
+}
+
+.routingMgtForm-jteSubGrid {
+	height:100%;
+	float:right;
+}
+
+#routingTree {
+	width: 100%;
+}
+
+.routingMgtForm svg:not(:root) {
+	overflow: auto;
+}
+
+.k-autocomplete .k-input, .k-dropdown-wrap .k-input, .k-multiselect-wrap .k-input, .k-numeric-wrap .k-input, .k-picker-wrap .k-input, .k-selectbox .k-input, .k-textbox>input {
+	text-indent: 0;
+}
+
+/** 메인 화면의 신규 생성 버튼**/
+
+.routingMgtForm .routingAddBtn {
+	display:none;
+	margin: 10px;
+	margin-top: 20px;
+	left: 10px; /* 200911 JJW */
+}
+
+/**20.12.15 YUMI 메인 그리드의 보기 버튼 가운데 정렬**/
+.routingMgtForm-jteSingleGrid.k-grid td:first-child {
+	text-align: center;
+}
+
+/**20.12.15 YUMI 라우팅 등록 팝업 그리드의 보기 버튼 가운데 정렬**/
+#jtePopForm_form.routingMgtForm .k-grid th:first-child,
+#jtePopForm_form.routingMgtForm .k-grid td:first-child {
+	text-align: center;
+}
+
+/** 20.12.15 YUMI 라우팅 등록 팝업 > 상단과 하단 내용 사이 여백 추가 **/
+.routingMgtForm #jtePopForm_master {
+	margin-bottom: 10px;
+}
+
+/** 20.12.15 YUMI 라우팅 등록/수정 팝업 > BOM TREE 팝업 메인 화면의 신규 생성 버튼**/
+
+.k-widget.k-window #popArea ul.k-treeview-lines li div.k-top span.k-in button{
+	padding: 3px 8px;
+	margin-left: 8px;
+}
+
+
+
+
+
+/**20.12.16 시점에서는 확인이 불가능(데이터 없음)하여, 우선 주석처리함**/
+
+/* .routingMgtForm .jtePopForm_master .addFile {			200807 select file 버튼 여백 제거
+   vertical-align : top;
+}
+
+.routingMgtForm .jtePopForm_master .k-dropzone {		200807 select file 버튼 여백 제거
+   padding : 0;
+   padding-bottom : 8px;
+}
+.routingMgtForm .connectBom {
+	width: 90%;
+	float: right;
+	height: 80px;
+	boader-radius: 5px;
+	font-size: 20px;
+	font-weight: 800;
+}
+
+공구 추가 팝업
+
+.toolInfoPopup_form .toolInfo-div {
+	height: 250px;
+	margin: 10px;
+	border: 1px solid #D5E0F5;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+.toolInfo.toolInfo-title .toolInfo-table-name {
+	width: 22%;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.toolInfo toolInfo-title sstr:last-child {
+	padding-right: 4px;
+}
+
+.toolInfo.toolInfo-content {
+	padding-left: 5px;
+	width: 101%;
+}
+
+.toolInfo.toolInfo-content .toolId {
+	width: 90%;
+	float: center;
+}
+.toolInfo.toolInfo-content .toolRpm {
+	width: 90%;
+	float: center;
+}
+.toolInfo.toolInfo-content .toolLocation {
+	width: 90%;
+	float: center;
+}
+.toolInfo.toolInfo-content .toolCount {
+	width: 90%;
+	float: center;
+} */
+
+

@@ -1,0 +1,33 @@
+<!DOCTYPE>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/rms_layout}" lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/css/rms/TrendView/aux_equipment.css" />
+<title>Insert title here</title>
+</head>
+<body>
+	<div id="container">
+		<!-- 본문내용 -->
+		<div class="content" layout:fragment="content">
+			<div id="angularArea" ng-controller="QueryController">
+				<div class="main_search">
+					<div id="eng_Search" class="main_search_datetime">
+						<input jintFormat="CHECK" id="engSearch_CHECK" class="easyui-checkbox" label="직접입력 : "/> 
+						<input jintFormat="DATE" id="engSearch_DATE" type="text" class="easyui-datebox jint_date" style="width: 120px;"/> 
+						<input jintFormat="HOUR" id="engSearch_HOUR" class="easyui-combobox" style="width: 60px;"/> 
+						<input jintFormat="MIN" id="engSearch_MIN" class="easyui-combobox" style="width: 60px;"/> 
+						<input jintFormat="SEC" id="engSearch_SEC" class="easyui-combobox" style="width: 60px;"/>
+						<input type="button" id="engSearch_BTN" ng-click="submit('eng_Search')" value="조회">
+					</div>
+				</div>
+				<div class="content_layer">
+				구현예정(aux_equip)
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<th:block layout:fragment="script">
+	<script src="/js/rms/TrendView/aux_equipment.js"></script>
+</th:block>
+</html>

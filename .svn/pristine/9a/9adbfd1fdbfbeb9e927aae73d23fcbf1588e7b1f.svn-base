@@ -1,0 +1,31 @@
+/*20.12.16 셀 가운데 정렬 JJW*/
+.inputQualMgtForm.k-grid th:first-child, .inputQualMgtForm.k-grid td:first-child {
+	text-align: center;
+}
+
+.inputQualMgtForm.k-grid td:nth-child(2) {
+	text-align: center;
+}
+
+/**20.12.22 YUMI 발주 목록 팝업 체크박스 중앙 정렬**/
+#jtePopForm #jtePopForm_grid.k-grid th:first-child,
+#jtePopForm #jtePopForm_grid.k-grid td:first-child {
+	text-align: center;	
+}
+
+/**20.12.22 YUMI 발주 목록 팝업 입고 검사 버튼 중앙 정렬**/
+#jtePopForm #jtePopForm_grid.k-grid td:nth-child(2) {
+	text-align: center;
+}
+
+/**20.12.22 YUMI 불량정보 팝업 체크박스 중앙 정렬**/
+#jteMtrlOrdChkPop #jteMtrlOrdChkPop_grid.k-grid th:first-child,
+#jteMtrlOrdChkPop #jteMtrlOrdChkPop_grid.k-grid td:first-child {
+	text-align: center;	
+}
+
+/*20.12.22 YUMI 불량품 관리 팝업 final-btn-area 위쪽 여백 조정*/
+.inputQualMgtForm.final-btn-area {
+	margin-top: 0;
+}
+

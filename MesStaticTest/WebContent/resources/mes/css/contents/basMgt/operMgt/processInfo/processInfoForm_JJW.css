@@ -1,0 +1,94 @@
+
+/** 설비 정보 추가 팝업 - 전체적인 형식 관련 **/
+
+.processInfoForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /*** listbox inline 표시 위해_gwpark ***/
+    display: inline-flex; 
+}
+
+.equipment_info_left {
+    width: 40%;
+    float: left;
+    font-size: 20px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    margin-left: 42px;
+    font-weight: bold;
+}
+
+.equipment_info_right {
+    width: 40%;
+    float: right;
+    font-size: 20px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    margin-right: 45px;
+    font-weight: bold;
+}
+
+.processInfoForm .k-widget .k-listbox {
+	width: 40%;
+	padding-left: 10px;
+}
+
+.processInfoForm .k-widget .k-listbox .k-listbox-toolbar-right {
+	width: 45%;
+}
+
+.processInfoForm .k-listbox.k-listbox-toolbar-right .k-listbox-toolbar {
+	margin-left: 9px;
+	margin-right: 5px;	
+}
+
+.k-autocomplete .k-input, .k-dropdown-wrap .k-input, .k-multiselect-wrap .k-input, .k-numeric-wrap .k-input, .k-picker-wrap .k-input, .k-selectbox .k-input, .k-textbox>input {
+	text-indent: 0;
+}
+
+#equipment_info {
+	text-align: center;
+}
+
+.processInfoForm .equipmentList {
+   width: 45%;
+}
+
+.processInfoForm .selectedEquipment {
+   width: 38%;
+}
+
+
+/** 설비 정보 추가 팝업 검색 영역 **/
+
+.k-widget .k-header {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+#searchEqmt {
+	width: 35%;
+	margin-right: 11px;
+}
+
+#searchSelectedEqmt {
+	width: 35%;
+	margin-left: 18px;
+}
+
+.left-icon {
+	margin-right: 10px;
+}
+
+.right-icon {
+	margin-left: 10px;
+}
+
+
+/** 설비 정보 추가 버튼 **/
+
+.processInfoForm .btn_equipment_info {
+   width: 100%;
+   margin-left: 0;   
+}
+

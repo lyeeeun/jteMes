@@ -1,0 +1,186 @@
+@CHARSET "UTF-8";
+
+/**200407 CSS 파일 생성_LYM**/
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+#jtePopEqmtMtnc #jtePopEqmtMtnc_grid .k-header.k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#jtePopEqmtMtnc #jtePopEqmtMtnc_grid .k-grid-content.k-auto-scrollable td {
+	padding: .4em .6em;
+}
+
+.facilCorMgtForm{
+	margin-top: 0.8em;
+}
+
+.facilCorMgtForm .jte-msgBox {
+	width: 100%;
+}
+
+.facilCorMgtForm .search-btn {
+	width: 100%;
+}
+
+.facilCorMgtForm .center-input {
+	width: 100%;
+}
+
+.facilCorMgtForm .center-input.btn-input {
+	width: 100%;
+}
+
+.facilCorMgtForm .col-left-title {
+	width: 14%;
+}
+
+.facilCorMgtForm .col-left-content-1 {
+	width: 24%;
+}
+
+.facilCorMgtForm .col-left-content-2 {
+	width: 10%;
+}
+
+.facilCorMgtForm .col-right-title {
+	width: 18%;
+}
+
+.facilCorMgtForm .col-right-content-1 {
+	width: 20%;
+}
+
+.facilCorMgtForm .col-right-content-2 {
+	width: 12%;
+}
+
+.k-widget.k-window div.k-window-content.k-content{
+	overflow: unset;   /* 팝업창의 스크롤 없앰 */
+} 
+
+.facilCorMgtForm .fa-info-circle:before {
+	color:#081332;
+}
+
+.facilCorMgtForm .grid-content {
+	width: 100%;
+}
+.facilCorMgtForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+.facilCorMgtForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 0px;
+}
+
+.facilCorMgtForm .jtePopForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.facilCorMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.facilCorMgtForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+
+.popfr-facilCorMgtForm .left-caret:before {
+	padding-left: 15px;
+}
+
+.facilCorMgtForm .left-input {
+	width: 100%;
+}
+
+.facilCorMgtForm .right-input {
+	width: 100%;
+	float: right;
+}
+
+.facilCorMgtForm .left-input.btn-input{
+	width: 100%;
+}
+
+.facilCorMgtForm .right-input.btn-input{
+	width: 100%;
+}
+
+#popArea .k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#popArea td {
+	padding: .4em .6em;
+}
+
+#popArea.k-widget.k-treeview.k-window-content.k-content{
+	background : #22364e;
+	color : white;
+}
+
+
+
+/****************설비현황 그리드 우측 정비이력 버튼 클릭 > 추가 클릭 시의 팝업******************/
+
+.facilCorMgtForm .jtePopEqmtAdd_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.facilCorMgtForm .popsc-col-left-title {
+	width: 18%;
+}
+
+.facilCorMgtForm .popsc-col-left-content-1 {
+	width: 18%;
+}
+
+.facilCorMgtForm .popsc-col-left-content-2 {
+	width: 12%;
+}
+
+.facilCorMgtForm .popsc-col-right-title {
+	width: 22%;
+}
+
+.facilCorMgtForm .popsc-col-right-content-1 {
+	width: 18%;
+}
+
+.facilCorMgtForm .popsc-col-right-content-2 {
+	width: 12%;
+}
+
+.facilCorMgtForm .popsc-jtePopForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.facilCorMgtForm .jtePopEqmtAdd_master th {
+	text-align: left;	
+}
+
+.facilCorMgtForm .jtePopEqmtAdd_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.popsc-facilCorMgtForm .left-caret:before {
+	padding-left: 19px;
+}

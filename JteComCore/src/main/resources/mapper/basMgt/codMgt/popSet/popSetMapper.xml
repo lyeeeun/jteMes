@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "jin.mes.form.basMgt.codMgt.popSet.PopSetMapper">
+	<sql id="popSet_base">
+			'K'					AS action,
+			pop_id				AS popId, 
+			pop_nm              AS popNm, 
+			pop_type            AS popType, 
+			pop_width           AS popWidth, 
+			pop_height          AS popHeight, 
+			pop_url             AS popUrl, 
+			pop_template        AS popTemplate, 
+			pop_format          AS popFormat,
+			pop_num             AS popNum,
+			pop_use             AS popUse,  
+			pop_search_use      AS popSearchUse, 
+			pop_search_value    AS popSearchValue, 
+			pop_dynamic_use     AS popDynamicUse, 
+			pop_dynamic_value   AS popDynamicValue, 
+			up_pop_id           AS upPopId,
+			created_at          AS createdAt,
+			creator_id          AS creatorId,
+			updated_at          AS updatedAt,
+			updator_id          AS updatorId
+		FROM cw_pop_info
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="popId != null">
+			AND pop_id = #{popId}
+		</if>
+		<if test="upPopId != null">
+			AND up_pop_id = #{upPopId}
+		</if>
+	</sql>
+	
+	<select id="selectPopSetList" parameterType="jin.mes.form.basMgt.codMgt.popSet.PopSetDto"
+		resultType="jin.mes.form.basMgt.codMgt.popSet.PopSetDto" >
+		SELECT
+		<choose>
+			<when test="sort != null and sort != '' ">
+				ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+			</when>
+			<otherwise>
+				ROW_NUMBER() OVER(ORDER BY pop_num asc) AS RNUM,
+			</otherwise>
+		</choose>
+		<include refid="popSet_base" />
+		<if test="take != 0 and take != null ">
+			LIMIT #{limitIndex}, #{rows}
+		</if>	
+	</select>
+
+	<insert id="insertPopSetSave" parameterType="jin.mes.form.basMgt.codMgt.popSet.PopSetDto">
+		INSERT INTO cw_pop_info
+		(
+			pop_id, 
+			pop_nm, 
+			pop_type, 
+			pop_width, 
+			pop_height, 
+			pop_url, 
+			pop_template, 
+			pop_format,
+			pop_num,
+			pop_use, 
+			pop_search_use, 
+			pop_search_value, 
+			pop_dynamic_use, 
+			pop_dynamic_value, 
+			up_pop_id,
+			created_at,
+			creator_id,
+			updated_at,
+			updator_id
+		)
+		VALUES
+		(
+			#{popId}, 
+			#{popNm}, 
+			#{popType}, 
+			#{popWidth}, 
+			#{popHeight}, 
+			#{popUrl}, 
+			#{popTemplate}, 
+			#{popFormat},
+			#{popNum},
+			#{popUse},  
+			#{popSearchUse}, 
+			#{popSearchValue}, 
+			#{popDynamicUse}, 
+			#{popDynamicValue}, 
+			#{upPopId},
+			NOW(),
+			#{creatorId},
+			NOW(),
+			#{updatorId}
+		)
+	</insert>
+	
+	<update id="updatePopSetSave" parameterType="jin.mes.form.basMgt.codMgt.popSet.PopSetDto">
+		UPDATE cw_pop_info
+			SET updated_at = NOW(), updator_id = #{updatorId}
+			<if test="popNm != null">
+				,pop_nm = #{popNm}
+			</if>
+			<if test="popType != null">
+				,pop_type = #{popType}
+			</if>
+			<if test="popWidth != null">
+				,pop_width = #{popWidth}
+			</if>
+			<if test="popHeight != null">
+				,pop_height = #{popHeight}
+			</if>
+			<if test="popUrl != null">
+				,pop_url = #{popUrl}
+			</if>
+			<if test="popTemplate != null">
+				,pop_template = #{popTemplate}
+			</if>
+			<if test="popFormat != null">
+				,pop_format = #{popFormat}
+			</if>
+			<if test="popNum != null">
+				,pop_num = #{popNum}
+			</if>
+			<if test="popUse != null">
+				,pop_use = #{popUse}
+			</if>
+			<if test="popSearchUse != null">
+				,pop_search_use = #{popSearchUse}
+			</if>
+			<if test="popSearchValue != null">
+				,pop_search_value = #{popSearchValue}
+			</if>
+			<if test="popDynamicUse != null">
+				,pop_dynamic_use = #{popDynamicUse}
+			</if>
+			<if test="popDynamicValue != null">
+				,pop_dynamic_value = #{popDynamicValue}
+			</if>
+		WHERE pop_id = #{popId} AND up_pop_id = #{upPopId}
+	</update>
+	
+	
+	<delete id="deletePopSet"
+		parameterType="jin.mes.form.basMgt.codMgt.popSet.PopSetDto">
+		DELETE FROM cw_pop_info
+		WHERE pop_id = #{popId} AND up_pop_id = #{upPopId}
+	</delete>
+	
+</mapper>

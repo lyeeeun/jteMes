@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!-- 레이아웃 공통소스 -->
+<script src="/static/js/common/jquery-3.4.1.min.js"></script>
+<script src="/static/js/common/kendo.all.min.js"></script>
+
+<script src="/resources/mes/js/common.js"></script>
+<script src="/resources/mes/js/dataLoad.js"></script>
+<script src="/resources/mes/js/fragments/header.js"></script>
+<script src="/resources/mes/js/fragments/left.js"></script>
+
+<link rel="stylesheet" href="/static/css/common/kendo.common.min.css" />
+<link rel="stylesheet" href="/static/css/common/kendo.default.min.css" />
+<link rel="stylesheet" href="/static/css/common/kendo.default.mobile.min.css" />
+
+<link rel="stylesheet" href="/resources/mes/css/fragments/header.css"/>
+<link rel="stylesheet" href="/resources/mes/css/fragments/left.css"/>
+
+</head>
+<body>
+	<div th:insert="tlf/fragments/tabHeader :: header" class="header"></div>
+	<div th:insert="tlf/fragments/tabLeft :: left" class="left"></div>
+	
+	<div layout:fragment="content">
+	</div>
+</body>
+</html>

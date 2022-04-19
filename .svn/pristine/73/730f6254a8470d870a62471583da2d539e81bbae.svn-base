@@ -1,0 +1,62 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Example - example-realtime-chart-jquery</title>
+
+	<link rel="stylesheet" type="text/css" href="/jquery-easyui/themes/metro/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/util/jquery-easyui/themes/icon.css">
+	<style type="text/css">
+		#ff labEL {
+			DISPLAY: BLOCK;
+			WIDth: 100px;
+		}
+	</style>
+
+
+	<script type="text/javascript" src="/jquery-easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="/util/jquery-easyui/jquery.easyui.min.js"></script>
+
+	<script type="text/javascript" src="/util/jui/core.min.js" ></script>
+	<script type="text/javascript" src="/util/jui/chart.min.js" ></script>
+
+
+	<script src="/angularjs/angular.min.js"></script>
+
+
+	<script src="/js/sample/angular/chart/realtime.js"></script>
+
+	<script >
+	
+	let builder, time, txData = []; // 전역선언
+	
+// 		$(document).ready(function(){
+// 		jui.ready(function() {
+		jui.ready([ "chart.builder", "util.time" ], function(chartBuilder, utilTime) {
+			builder = chartBuilder;
+			time = utilTime;
+			initialize();
+		});
+	
+	</script>
+
+</head>
+
+<body ng-app="dragModule">
+
+	<p><a href="http://jui.io/?p=chart">Jui Chart 데모 확인하기</a></p>
+	<p><a href="https://angular.kr/docs">Angular 한글메뉴얼 확인하기</a></p>
+	<p><a href="https://www.thymeleaf.org/doc/tutorials/2.1/usingthymeleaf.html">Thymeleaf 2.x 문서보기</a></p>
+
+	<div>
+		<span th:text="${key}">여기에 서버에서 전송되는 메시지 중 key로 들어가있는 value가 표시된다</span>
+		<br/>
+<!-- 		<span main-draggable id="realtime_chart"></span> -->
+		<div main-draggable id="realtime_chart"></div>
+		<br/>
+	</div>
+
+</body>
+
+</html>

@@ -1,0 +1,387 @@
+
+.final-btn-area {
+	margin-top: 0px;
+	text-align: center;
+}
+
+.k-autocomplete .k-input, .k-dropdown-wrap .k-input, .k-multiselect-wrap .k-input, .k-numeric-wrap .k-input, .k-picker-wrap .k-input, .k-selectbox .k-input, .k-textbox>input {
+	text-indent: 0;
+}
+.routingMgtForm .col-left-title{
+   width:22%;
+}
+
+.routingMgtForm .col-left-content{
+   width:30%;
+}
+
+.routingMgtForm .col-center-content{
+   width:18%;
+}
+
+.routingMgtForm .col-right-content{
+   width:30%;
+}
+
+
+.grid-content {
+   width:100%;
+}
+
+.routingMgtForm .jtePopForm_master{
+   width:100%;
+}
+
+.routingMgtForm .jtePopForm_master th {
+   text-align: left;
+}
+
+.jteBomGrid{
+     width: 100%;
+     table-layout: fixed;
+}
+
+.routingMgtForm .normal-input .btn-input{
+	width: 100%;
+}
+
+.routingMgtForm .right-input {
+   width:100%;
+}
+
+.routingMgtForm .left-input {
+   width:100%;
+}
+
+.routingMgtForm .normal-input{
+	width: 100%;
+}
+
+.routingMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+/* .routingMgtForm .left-content-box {
+	vertical-align: top;
+	width: 30%;
+} */
+
+/*04.09 JJW 내부 스타일 옮김*/
+.processInfoForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /*** listbox inline 표시 위해_gwpark ***/
+    display: inline-flex; 
+}
+
+.processInfoForm #jtePopForm_form {
+	text-align: left;
+}
+
+/* .processInfoForm .jtePopForm_master {
+	margin-left: 45px;
+	margin-top: 10px;
+} */
+
+/* .processInfoForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+} */
+
+.equipment_info_left {
+    width: 40%;
+    float: left;
+    font-size: 20px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    margin-left: 42px;
+    font-weight: bold;
+}
+
+.equipment_info_right {
+    width: 40%;
+    float: right;
+    font-size: 20px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    margin-right: 45px;
+    font-weight: bold;
+}
+
+.processInfoForm .k-widget .k-listbox {
+	width: 40%;
+	padding-left: 10px;
+}
+
+.processInfoForm .k-widget .k-listbox .k-listbox-toolbar-right {
+	width: 45%;
+}
+
+.processInfoForm .k-listbox-toolbar {
+/* 	margin-left: 7px; */
+	margin-right: 5px;
+}
+
+.processInfoForm .k-listbox.k-listbox-toolbar-right .k-listbox-toolbar {
+	margin-left: 9px;
+}
+
+.k-autocomplete .k-input, .k-dropdown-wrap .k-input, .k-multiselect-wrap .k-input, .k-numeric-wrap .k-input, .k-picker-wrap .k-input, .k-selectbox .k-input, .k-textbox>input {
+	text-indent: 0;
+}
+
+.processInfoForm .equipmentList {
+   width: 45%;
+}
+
+.processInfoForm .selectedEquipment {
+   width: 38%;
+}
+
+/* div.k-window-content{
+   overflow: unset; 팝업창의 스크롤 없앰
+} */
+
+.grid-content {
+   width: 100%;
+}
+
+.processInfoForm .jtePopForm_master th {
+   text-align: left;   
+}
+
+.processInfoForm .left-input {
+   width: 90%;
+}
+
+.processInfoForm .right-input {
+   width: 90%;
+   float: right;
+}
+
+#equipment_info {
+	text-align: center;
+}
+
+
+/* 추가 팝업 검색 영역 */
+
+.k-widget .k-header {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.searchEqmt {
+	width: 35%;
+	margin-right: 11px;
+}
+
+.searchSelectedEqmt {
+	width: 35%;
+	margin-left: 18px;
+}
+
+.left-icon {
+	margin-right: 10px;
+}
+
+.right-icon {
+	margin-left: 10px;
+}
+
+/* 200430 */
+.btn_equipment_info {
+   width: 100%
+}
+
+.processInfoForm .center-input {
+   width: 100%;
+}
+
+.processInfoForm .col-left-title {
+   width: 25%;
+}
+
+.processInfoForm .col-left-content {
+   width: 27%;
+}
+
+.processInfoForm .col-right-title {
+   width: 21%;
+}
+
+.processInfoForm .col-right-content {
+   width: 27%;
+}
+
+
+/* 20.04.30 라우팅 조회/수정 팝업 */
+
+.routingMgtForm .btn_tool_info {
+	width: 100%;
+}
+
+.routingMgtForm .connectBom {
+	width: 90%;
+	float: right;
+	height: 80px;
+	boader-radius: 5px;
+	font-size: 20px;
+	font-weight: 800;
+}
+
+.routingMgtForm #bomTree {
+	padding: 20px;
+}
+
+
+/* 공구 추가 팝업 */
+.toolInfo.toolInfo-title {
+	width: 100%;
+}
+
+.toolInfo.toolInfo-title tr {
+/* 	font-size: 16px; */
+}
+
+.toolInfoPopup_form .toolInfo-div {
+	height: 250px;
+	margin: 10px;
+	border: 1px solid #D5E0F5;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+.toolInfoPopup_form .final-btn-area {
+	margin-top: 0;
+	vertical-align: bottom;
+}
+
+.toolInfo-title tr {
+	width: 100%;
+}
+
+.toolInfo.toolInfo-title .col-toolInfo-check {
+	width: 6%;
+}
+
+.toolInfo.toolInfo-title .col-toolInfo1 {
+	width: 27%;
+	float: left;
+}
+
+.toolInfo.toolInfo-title .col-toolInfo2 {
+	width: 22%;
+	float: left;
+	
+}
+
+.toolInfo.toolInfo-title .col-toolInfo3 {
+	width: 23%;
+	float: left;
+}
+
+.toolInfo.toolInfo-title .col-toolInfo4 {
+	width: 22%;
+	float: left;
+}
+
+.toolInfo.toolInfo-title .toolInfo-table-name {
+	width: 22%;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.toolInfo toolInfo-title sstr:last-child {
+	padding-right: 4px;
+}
+
+.toolInfo.toolInfo-content {
+	padding-left: 5px;
+	width: 101%;
+}
+
+.toolInfo.toolInfo-content .toolId {
+	width: 90%;
+	float: center;
+}
+.toolInfo.toolInfo-content .toolRpm {
+	width: 90%;
+	float: center;
+}
+.toolInfo.toolInfo-content .toolLocation {
+	width: 90%;
+	float: center;
+}
+.toolInfo.toolInfo-content .toolCount {
+	width: 90%;
+	float: center;
+}
+
+.plus-minus-btn-area {
+	padding: 10px;
+/* 	text-align: center; */
+}
+
+.plus-minus-btn {
+	width: 50px;
+	font-size: 26px;
+	font-weight: bold;
+	padding: 4px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-right: 10px;
+}
+
+.routingMgtForm #jtePopForm_master {
+	padding-top: 10px;
+}
+
+.routingMgtForm .tb-col-left-content{  /* 200413 그리드 고정 + 스크롤_LYM */
+	vertical-align: top;
+	width: 31%;
+	overflow: auto;
+}
+
+.routingMgtForm .tb-col-right-content{
+   width:69%;
+}
+
+.routingMgtForm #jteSingleGrid {
+	height: 770px;
+}
+
+.routingMgtForm .routingAddBtn {
+	display:none;
+	margin: 10px;
+	bottom: 250px;
+	left: 10px; /* 20200525 JJW */
+}
+
+.routingMgtForm .right-content-box {
+   border:solid #B9CBF1;
+}
+
+/*mediaquery*/
+@media screen and (max-width: 1380px){
+	.routingMgtForm div#routingTree.k-widget.k-diagram {
+		height: 420px;
+	}
+	
+	.right-content-box {
+		height: 350px;
+	}
+	
+	.routingMgtForm .routingAddBtn {
+		display:none;
+		margin: 10px;
+		bottom: 110px; /* 20200525 JJW */
+		left: 10px;
+	}
+	
+	.routingMgtForm #jteSingleGrid {
+		height: 480px;
+	}
+}

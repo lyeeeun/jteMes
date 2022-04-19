@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/popup_layout}" lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+<link rel="stylesheet" href="/css/rms/MaintenanceManagement/maintenancePop.css" />
+<title>Insert title here</title>
+</head>
+<body>
+	<div layout:fragment="content">
+		<div class="popTitle">Order Info</div>
+		<table id="orderList">
+			<colgroup>
+				<col style="width: 30%">
+				<col style="width: 70%">
+			</colgroup>
+			<tbody th:each="orderItem : ${searchResult}">
+				<tr>
+					<th style='text-align:left'>PMS Code</th>
+					<td style='text-align:left' th:text="${orderItem.PmsTechOrderPk.pmsCd01}+'&nbsp;&nbsp;'+${orderItem.PmsTechOrderPk.pmsCd02}
+					+'&nbsp;&nbsp;'+${orderItem.PmsTechOrderPk.pmsCd03}+'&nbsp;&nbsp;'+${orderItem.PmsTechOrderPk.pmsCd04}+'&nbsp;&nbsp;'+${orderItem.PmsTechOrderPk.pmsCd05}"></td>
+				</tr>
+				<tr>
+					<th style='text-align:left'>PMS Description</th>
+					<td style='text-align:left' th:text="${orderItem.descTech}"></td>
+				</tr>
+				<tr>
+					<th style='text-align:left'>PMS Sub Desc</th>
+					<td style='text-align:left' th:text="${orderItem.descOrder}"></td>
+				</tr>
+				<tr>
+					<th style='text-align:left'>Notice</th>
+					<td style='text-align:left' th:text="${orderItem.descEtc}"></td>
+				</tr>
+				<tr>
+					<th style='text-align:left'>Overhaul Interval</th>
+					<td style='text-align:left' th:text="${orderItem.gapRunHour}"></td>
+				</tr>
+				<input type="hidden" id="hidAdditionInfo" th:value="${orderItem.needPlateInfoJson}">
+			</tbody>
+		</table>
+		
+		
+		<div id="searchDiv" style="display:none;">
+			<div class="popTitle">
+				<form id="partsSearchForm" action="/appendPartsPop" method="GET">
+				<span>Parts Search</span>
+				<input name="searchGubun" id="worksCombo" class="easyui-combobox" style="width: 120px;" />
+				<input name="searchText" type="text" class="easyui-textbox" id="worksText"/>
+				<a id="partsSearchBtn" class="easyui-linkbutton" onclick="searchBtn();" data-options="iconCls:'icon-search'">Search</a>
+			</form>
+			</div>
+			
+		</div>
+		
+		<div id="partsListDiv" style="display:none;"></div>
+		
+		<div class="popTitle">Parts Info</div>
+		<table id = "pms_parts_table" style="display:none;">
+			<colgroup>
+				<col style="width: 20%">
+				<col style="width: 30%">
+				<col style="width: 20%">
+				<col style="width: 30%">
+			</colgroup>
+			<thead>
+				<tr>
+				<th><span style="border-bottom:3px solid red;">Q`ty</span></th>
+					<td>
+						<input id="cntQty" class="easyui-numberbox"/>
+					</td>
+					<th><span style="border-bottom:3px solid red;">Unit</span></th>
+					<td>
+						<input type="text" class="easyui-combobox" id="comboUnit" style="width: 120px;"/>
+					</td>
+				</tr>
+			</thead>
+			<tbody id="pms_parts_body">
+			</tbody>
+		</table>
+			
+		<div class="btn_layer">
+			<a href="#" id="appendParts" class="easyui-linkbutton" onclick="appendBtn();" data-options="iconCls:'icon-save'" style="display:none;">Append</a>
+			<a href="#" id="modifyParts" class="easyui-linkbutton" onclick="modifyBtn();" style="display:none;">Modify</a>
+			<a href="#" id="deleteParts" class="easyui-linkbutton" onclick="deleteBtn();" data-options="iconCls:'icon-remove'" style="display:none;">Remove</a>
+			<a id="closeParts" class="easyui-linkbutton" onclick="closeBtn();">Close</a>
+		</div>
+		<input type="hidden" id ="hidPlateNo">
+	</div>
+</body>
+<th:block layout:fragment="script">
+	<script src="/js/rms/MaintenanceManagement/appendPartsPop.js"></script>
+
+</th:block>
+</html>

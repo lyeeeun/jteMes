@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.mapper.qualMgt.badTotalMgt.BadTotalMgtMapper">
+	
+	<!--불량 코드 리스트 불러오기(select Box)  -->
+	<select id="selectBadTotalSelectBoxList"
+	parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto"
+		resultType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto">
+		SELECT
+			cd_id 	AS	badCode
+		FROM cw_comn_code
+		WHERE up_cd_id = #{badCode} AND cd_reserve01 = 'badTotal'
+		-- WHERE up_cd_id = 'quality' AND cd_reserve01 = 'badTotal'
+	</select>
+	
+	<sql id="badTotal_base">
+			badCode,
+			badQty,
+			totalQty,
+			badQty/(totalQty-badQty) AS totalBadRate
+		FROM(
+			SELECT
+				MAX(bc.cd_id)		AS badCode, 	
+				SUM(bad.bad_qty)	AS badQty,
+				(SELECT 
+					SUM(bad_qty) AS totalQty 
+				FROM prs_bad_product
+				WHERE 1=1
+				<if test="searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != '' ">
+					AND chk_date between #{searchStartDate} AND DATE_ADD(#{searchEndDate},INTERVAL 1 DAY)
+				</if>
+				) AS totalQty
+			FROM cw_comn_code bc 
+			LEFT OUTER JOIN prs_bad_product bad ON bc.cd_id = bad.bad_code
+			WHERE up_cd_id = #{badCode}
+			<if test="searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != '' ">
+				AND chk_date between #{searchStartDate} AND DATE_ADD(#{searchEndDate},INTERVAL 1 DAY)
+			</if>
+			GROUP BY cd_id
+		)bad_table
+	</sql>
+	
+	<!-- 불량 코드별 집계 select -->
+	<select id="selectBadTotalList"
+		parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto"
+		resultType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test='sort != null and sort != "" '>
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY badQty DESC) AS RNUM,
+					</otherwise>
+				</choose>
+				g_table.*
+				FROM(
+					SELECT
+					<include refid="badTotal_base" />
+			)g_table
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+	
+	<!-- 불량 코드별 집계 select(Count) -->
+	<select id="selectBadTotalCount"
+	parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="badTotal_base"></include>
+		)c_table
+	</select>
+	
+	<sql id="badTotalDetail_base">
+			bad.bad_id					AS badId, 			-- 불량아이디
+			bad.bad_code				AS badCode,			-- 불량코드(기초코드)
+			bad.bad_qty					AS badQty,			-- 불량수량
+			bad.chk_user				AS chkUser,			-- 불량등록자 아이디
+			badUser.user_nm				AS chkUserNm,		-- 불량등록자 이름
+			bad.chk_date				AS chkDate,			-- 불략확인일
+			bad.bad_target				AS badTarget,		-- 불량업무구분(기초코드)
+			bad.bad_target_code			AS badTargetCode,	-- 불량업무코드(대상ID매핑)
+			bad.bad_desc				AS badDesc			-- 불량설명
+		FROM prs_bad_product bad
+		LEFT OUTER JOIN mb_user_info badUser on bad.chk_user = badUser.user_id 
+		WHERE bad.bad_code = #{badCode}
+		<if test="searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != '' ">
+			AND chk_date between #{searchStartDate} AND DATE_ADD(#{searchEndDate},INTERVAL 1 DAY)
+		</if>
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>		
+	</sql>
+	
+	<!-- 불량 코드별  select -->
+	<select id="selectBadTotalDetailList"
+		parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto"
+		resultType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY chkDate desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="badTotalDetail_base"></include>
+			)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+	
+	<!-- 불량 코드별  select(Count) -->
+	<select id="selectBadTotalDetailCount"
+	parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="badTotalDetail_base"></include>
+		)c_table
+	</select>
+	
+</mapper>

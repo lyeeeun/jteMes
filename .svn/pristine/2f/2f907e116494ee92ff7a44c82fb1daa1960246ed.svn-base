@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="search" class="main_search">
+	<table class="search_table">
+		<colgroup>
+			<col style="width: 100%;" />
+		</colgroup>
+		<tr>
+			<td>
+				<span class="search_title1" th:text="${Title}"></span>
+			</td>
+		</tr>
+	</table>
+</div>
+</html>

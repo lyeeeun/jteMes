@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="COM_supplier">
+	<select id="supplierList" parameterType="hashmap"
+		resultType="hashmap">
+		    SELECT 
+		    		SUPPLIERID,		
+		    		SUPPLIERNAME,	
+		    		SUPPLIERDESC,	
+		    		BIZ_GBN,		
+		    		BIZ_KND,		
+		    		CUSTOMER_STAT,	
+		    		EST_YMD,		
+		    		REG_YMD,		
+		    		REP_NM,			
+		    		BIZ_REG_NO,		
+		    		ADDR,			
+		    		FAX_NO,			
+		    		CHR_NM,			
+		    		CHR_TEL_NO,		
+		    		DEL_GBN,		
+		    		SUPPLIERIUSE	
+			FROM TB_SUPPLIER
+			WHERE  DEL_GBN = 'N' 
+			<if test='SUPPLIERNAME != null and SUPPLIERNAME != ""'>
+			AND SUPPLIERNAME LIKE CONCAT("%" #{SUPPLIERNAME} "%")
+		</if>
+		<if test='SUPPLIERIUSE != null and SUPPLIERIUSE != ""'>
+			AND SUPPLIERIUSE =#{SUPPLIERIUSE}
+		</if>
+		    ORDER BY SUPPLIERID		
+		
+	</select>
+
+	<!-- SUPPLIERIUSE 사용여부 중복제거 후 조회(콤보박스 이용) -->
+	<select id="supplierIUseList" parameterType="hashmap"
+		resultType="hashmap">
+		    SELECT DISTINCT SUPPLIERIUSE
+			  FROM TB_SUPPLIER
+	</select>	
+	<!-- 공급사 추가 -->
+	<select id="insertSupplierList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		INSERT 
+			INTO TB_SUPPLIER(
+ 		    		SUPPLIERID,		
+		    		SUPPLIERNAME,	
+		    		SUPPLIERDESC,	
+		    		BIZ_GBN,		
+		    		BIZ_KND,		
+		    		CUSTOMER_STAT,	
+		    		EST_YMD,		
+		    		REG_YMD,		
+		    		REP_NM,			
+		    		BIZ_REG_NO,		
+		    		ADDR,			
+		    		FAX_NO,			
+		    		CHR_NM,			
+		    		CHR_TEL_NO,		
+		    		DEL_GBN,		
+		    		SUPPLIERIUSE,	
+					REG_USER_ID,	
+					REG_PGM_ID,		
+					REG_DT,			
+					UPD_USER_ID,	
+					UPD_PGM_ID,		
+					UPD_DT			
+					)
+			VALUES(
+				    (SELECT SUB_TABLE.SUPPLIERID + 1 AS SUPPLIERID FROM tb_supplier AS SUB_TABLE ORDER BY SUPPLIERID DESC LIMIT 1) -- FN_CM_SEQ('SUPPLIERID', NULL, NULL)
+				   ,#{SUPPLIERNAME}
+				   ,#{SUPPLIERDESC}
+				   ,#{BIZ_GBN}
+				   ,#{BIZ_KND}
+				   ,#{CUSTOMER_STAT}
+				   ,#{EST_YMD}
+				   ,#{REG_YMD}
+				   ,#{REP_NM}
+				   ,#{BIZ_REG_NO}
+				   ,#{ADDR}
+				   ,#{FAX_NO}
+				   ,#{CHR_NM}
+				   ,#{CHR_TEL_NO}
+				   ,'N'
+				   ,'Y'
+				   ,#{REG_USER_ID}
+				   ,#{REG_PGM_ID}
+				   ,now()
+				   ,#{UPD_USER_ID}
+				   ,#{UPD_PGM_ID}
+				   ,now()
+				   )
+	</select>
+	
+	<!-- 공급사 수정 -->
+	<select id="updateSupplierList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		UPDATE TB_SUPPLIER
+		SET 
+			SUPPLIERNAME = #{SUPPLIERNAME}
+			,SUPPLIERDESC = #{SUPPLIERDESC}
+			,BIZ_GBN = #{BIZ_GBN}
+			,BIZ_KND = #{BIZ_KND}
+			,CUSTOMER_STAT = #{CUSTOMER_STAT}
+			,EST_YMD = #{EST_YMD}
+			,REG_YMD = #{REG_YMD}
+			,REP_NM = #{REP_NM}
+			,BIZ_REG_NO = #{BIZ_REG_NO}
+			,ADDR = #{ADDR}
+			,FAX_NO = #{FAX_NO}
+			,CHR_NM = #{CHR_NM}
+			,CHR_TEL_NO = #{CHR_TEL_NO}
+			,SUPPLIERIUSE = #{SUPPLIERIUSE}
+		WHERE SUPPLIERID = #{SUPPLIERID}
+	</select>
+	<!-- 공급사 삭제 -->
+	<select id="deleteSupplierList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		UPDATE TB_SUPPLIER
+		SET	DEL_GBN = 'Y'
+		WHERE SUPPLIERID = #{SUPPLIERID}
+	</select>
+</mapper>

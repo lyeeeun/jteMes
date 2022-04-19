@@ -1,0 +1,11 @@
+/*20.08.05 왼쪽 셀 가운데 정렬 JJW*/
+.baseCodeMgtForm.k-grid th:first-child, .baseCodeMgtForm.k-grid td:first-child {
+	text-align: center;
+}
+
+/*20.12.03 팝업 final-btn-area 위쪽 여백 조정 YUMI*/
+
+.baseCodeMgtForm-final-btn-area {
+	margin-top: 5px;
+}
+

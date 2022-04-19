@@ -1,0 +1,455 @@
+@CHARSET "UTF-8";
+html{
+ 	overflow: hidden;
+}
+body{
+	width:100%;
+	margin:0px;
+	padding:0px;
+}
+
+::-webkit-scrollbar{width: 20px;}
+::-webkit-scrollbar-track {background-color:#ebf1fc;}
+/* 스크롤 색상 변경 jkkim 2020-05-20 */
+::-webkit-scrollbar-thumb { background-color:#b0c9ff; border-radius: 3px;}
+::-webkit-scrollbar-thumb:hover {background: #8eb0ed;}
+::-webkit-scrollbar-button:start:decrement,::-webkit-scrollbar-button:end:increment {
+width:0px;height:0px;background:#192534;}
+
+/* 20.08.07 JJW kendoUI 업그레이드 이후 생기는 페이지 아래 드롭 다운 메뉴 관련 오류 임시 조치 */
+.k-pager-numbers-wrap > .k-dropdown {
+	display: none;
+}
+
+ul.k-pager-numbers {
+	padding-left: 0px;
+}
+
+/*****************************************************/
+
+ul{
+	margin: 0px;
+	list-style: none;
+}
+
+/*03.12 JJW*/
+.menuName{
+	width: 95%;
+	font-size: 22px;
+	font-weight: bold;
+	margin-bottom: 5px;
+	border-left: 5px solid #3367D6;
+	padding-left: 10px;
+}
+.k-grid{
+	font-family: 'Nanum Gothic', 'serif';
+	font-size: 14px; /* 04.28 14에서 수정  */
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	/* min-height: 250px; */ /*그리드 여백 때문에 수정 20.08.19 JJW */
+}
+
+.fa-times {
+	/* margin-right: 4px; */
+	margin-top: 0px;
+}
+
+.ui-icon-home {
+	margin-top: 2px;
+	margin-bottom: 1px;
+	width: 15px;
+	cursor: pointer;
+	text-align: center;
+}
+
+.ui-tabs .ui-tabs-nav .ui-tabs-anchor {
+	float: left;
+	padding: .2em 0.5em 0 0.5em;  /*** tab css 변경 _20200225_JJW ***/
+	font-weight: bold; /*** tab css 변경 _20191211_PGW ***/
+	text-decoration: none;
+}
+
+txt .ui-tabs .ui-tabs-nav li {
+	padding-bottom: 5px;
+}
+
+.link home {
+	border: none;
+}
+
+.left-area#panelbar.k-group.k-treeview-lines{
+	margin-top: 8px;
+}
+
+.left-area#panelbar.k-drawer-item.k-state-selected {
+	color: #000;
+	background-color: #FFFFFF
+}
+
+.left-area#panelbar.k-drawer-item.k-state-selected:hover, #panelbar.k-drawer-item.k-state-selected.k-state-hover
+	{
+	color: #000;
+	background-color: #FFFFFF; 
+}
+
+
+/* 04.01 JJW 팝업 박스 수정*/
+
+#Popup_commonpopupcomPopup {
+	background-color: #ffffff;
+	border: none;
+	padding-top: 2em;
+	font-size: 1.3em;
+	box-shadow: none;
+}
+
+#_comn_popup_btn_ok {
+	padding-right: 20px;
+	padding-left: 20px;
+	align-content: center;
+	width: 50px;
+	font-size: 1.3em;
+	margin-left: 5px;
+	margin-right: 15px;
+	float: right;
+}
+#_comn_popup_btn_cls{
+	padding-right: 20px;
+	padding-left: 20px;
+	align-content: center;
+	width: 50px;
+	font-size: 1.3em;
+	margin-left: 15px;
+	margin-right: 5px;
+	float: right;
+}
+.k-window-titlebar.k-header {
+	font-size: 1.3em;
+	font-weight: bold;
+	background-color: #1760c5;
+	color: #ffffff;
+}
+
+#jteConfigForm {
+	text-align: left;
+	margin-top: 16px;
+	margin-left: 16px; /**사용자 정보수정 팝업 상단, 좌측 여백 추가_200803 youmi**/
+}
+
+.fa-times {
+	padding-top: 0.25em;
+	/* padding-right: 0.6em; */
+}
+
+#jteConfigForm_master {
+	margin-top: 10px;
+}
+
+#jteConfigForm_master td {
+   text-align: left;
+   padding-left: 4%;
+}
+
+#jteConfigForm_master td.Config-password-inputBox {
+   text-align: left;
+   padding-left: 0;
+}
+
+#jteConfigForm_master td.Config-lang-inputBox {
+   text-align: left;
+   padding-left: 0;
+} /*20.08.04 JJW 정보수정창 수정*/
+
+/* 04.22 헤더쪽*/
+
+.k-toolbar-resizable {
+	background-color: #ffffff;
+	boader-bottom: solid #000000 2px;
+}
+
+/* 20.04.23 정보 수정 창 수정  */
+.jteConfigFomr_pwZone {
+	display: none; /* <- 디폴트 값  */
+	/* 	display: block; */ 
+	/* visibility: visible; */
+}
+
+.jteConfigFomr_pwZone td {
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+.k-drawer-wrapper {
+	overflow-y: hidden;
+}
+
+/* 20.04.24 정보수정창 내부 스타일 옮김 */
+
+.tabMain_jteConfigForm .config-label {
+	margin-left: 20px;
+}
+
+.tabMain_jteConfigForm .k-checkbox-label:before {
+	border-color: #c5c5c5;
+    background: #fff;
+    border-radius: 3px;
+    border: 1px solid #067BEB;
+    height: 17px;
+    /* padding-top: 3px; */
+    width: 20px;
+    padding-bottom: 3px;
+}
+
+.tabMain_jteConfigForm .k-checkbox:checked+.k-checkbox-label:before {
+	color: #067BEB;
+}
+
+.Config-col-left {
+	width:35%;
+}
+
+.Config-col-right {
+	width:60%;
+}
+
+.jteConfigForm-title {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 12px;
+	text-align: left;
+}
+
+.Config-lang-input {
+	width: 50%;
+}
+
+.Config-password-input {
+	width: 88%;   /**사용자 정보수정 팝업  패스워드 입력칸 길이 80 -> 88 수정_200803 youmi**/
+}
+
+.Config-password-title {
+	padding-left: 5px;
+}
+
+/* 04.28 팝업 전체 설정  */
+#_disable_jteMsgForm_master {
+	width:100%;
+}
+
+#_disable_jteMsgForm_master .msg-col-left-title {
+	width: 35%;
+}
+
+#_disable_jteMsgForm_master .msg-col-right-title {
+	width:65%;
+}
+
+
+#jtePopForm_master {
+	font-size: 14px;
+}
+
+#jtePopForm_master {
+	width: 100%;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 0;
+}
+
+#jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+#jteMsgForm_master {
+	/* font-size: 16px; */
+	width: 100%;
+	padding-left: 10px;  /*20.11.11 YUMI 다국어 팝업 좌우 여백 조정 20->10px*/
+	padding-right: 10px;
+	padding-top: 5px;  /*20.11.11 YUMI 다국어 팝업 상단 여백 조정 10->5px*/
+	padding-bottom: 2px;
+}
+
+#jteMsgForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+#jtePopToolAdd_form {
+	/* font-size: 16px; */
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+
+#jtePopToolAdd_form td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+#jtePopAddForm_master {
+	/* font-size: 16px; */
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 0;
+	padding-bottom: 2px;
+}
+
+#jtePopAddForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+#jtePopForm_master-2 {
+	/* font-size: 16px; */
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 0;
+	padding-bottom: 2px;
+}
+
+#jtePopForm_master-2 td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.center-input {
+	width: 100%;
+}
+
+.msg-input {
+	width: 100%;
+}
+
+div.k-window-content{
+   overflow: auto;
+}
+
+input:read-only {
+	background-color: #ebeff5;
+	border : 1px #b6c2d1 solid;
+}
+input.k-textbox:hover:read-only {
+	background-color: rgba(255, 66, 123, 0.3);
+	border : 1px #ff427b solid;
+}
+
+
+
+input.k-textbox:hover:read-only {
+	background-color: rgba(255, 66, 123, 0.3);
+	border : 1px #ff427b solid;
+}
+
+#Popup_commonpopupcomPopup .fc-red.clboth {
+   padding-left: 1.5em;
+}
+
+#Popup_commonpopupcomPopup .fc-red.clboth {
+   padding-left: 1.5em;
+}
+
+
+.k-widget.k-window .k-widget.k-treeview.k-window-content {
+	padding-left: 20px;
+}
+
+/* 20.10.14 JJW 라디오 버튼 공통 css*/
+
+.grid-radio-title.fas.fa-caret-right:before {
+	color: #3367d6;
+	margin-left: 5px;
+}
+
+.grid-radio-title.fas {
+	width: 10px;
+	height: 10px;
+}
+
+.radio-btn {
+    margin-left: 20px;
+}
+
+.radio-span {
+    margin-left: 2px;
+}
+
+.k-radio:checked {
+	border-color: #078aeb;
+	color: #078aeb;
+	background-color: #ffffff
+}
+
+.k-grid td{
+	white-space: nowrap;
+}
+.ui-tabs .ui-tabs-panel{
+	padding :10px 0.4em;
+}
+#subContentsTabMain{
+	padding:0px;
+}
+.jteConfigFomr_pwZone{
+/* 	display:none; */
+}
+.pop_title{
+	font-weight:600; 
+	font-size:20px; 
+	padding:5px;
+	
+}
+.pop_detail_btn{
+	pointer:cursor;
+}
+.pop_detail_info{
+	display:none;
+}
+.k-tooltip{
+	background-color: #F8F8F8 !important;
+	font-size:14px;
+	font-weight:500;
+}
+ 
+.k-invalid-msg
+{
+	display: none !important;
+}
+
+.k-invalid
+{
+	border: 1px solid red;
+}
+
+span.k-invalid{
+	border: 1px solid red !important;
+}
+
+input.k-invalid
+{
+	border: 1px solid red;
+}
+.k-textbox.k-invalid{
+	border-color:red !important;
+}
+.k-datepicker .k-picker-wrap.k-invalid{
+	border: 1px solid red !important;
+}
+.k-datepicker .k-picker-wrap.k-invalid > input{
+	border:none !important;
+}
+
+.k-numeric-wrap .k-state-default .k-invalid> input{
+	border:none !important;
+}
+/* 툴팁 마진없앰 */
+span.k-tooltip {
+	margin-left: 2px !important;
+}
+
+.k-pager-numbers .k-state-selected {
+	color: #fff;
+	background-color: rgba(55, 139, 255, 0.47);
+}

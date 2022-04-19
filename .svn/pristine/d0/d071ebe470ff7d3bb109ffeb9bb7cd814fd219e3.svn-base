@@ -1,0 +1,151 @@
+
+.mfgplanForm .fa-info-circle:before {
+	color:#3367D6;
+}
+
+
+.final-btn-area {
+	text-align: center;
+	
+}
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+
+.mfgplanForm .col-left-title {
+	width: 34%;
+}
+
+.mfgplanForm .col-right-content {
+	width: 66%;
+}
+.mfgplanForm .grid-content {
+	width: 100%;
+}
+
+.mfgplanForm #jtePopForm_master th {
+	text-align: left;	
+}
+
+.mfgplanForm #jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.mfgplanForm #jteProdAsgnPop_master th {
+	text-align: left;	
+}
+
+.mfgplanForm #jteProdAsgnPop_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.mfgplanForm #jteProdAsgnPop_master {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.mfgplanForm #jteProdProdWorkPop_master th {
+	text-align: left;	
+}
+
+.mfgplanForm #jteProdProdWorkPop_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.mfgplanForm #jteProdProdWorkPop_master {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+/*************************************************/
+
+.mfgplanForm .popsc-col-left-title {
+	width: 22%;
+}
+
+.mfgplanForm .popsc-col-left-content {
+	width: 28%;
+}
+
+.mfgplanForm .popsc-col-right-title {
+	width: 22%;
+}
+
+.mfgplanForm .popsc-col-right-content {
+	width: 28%;
+}
+
+
+
+
+.mfgplanForm .poptr-col-left-title {
+	width: 22%;
+}
+
+.mfgplanForm .poptr-col-left-content-1 {
+	width: 18%;
+}
+
+.mfgplanForm .poptr-col-left-content-2 {
+	width: 10%;
+}
+
+.mfgplanForm .poptr-col-right-title {
+	width: 22%;
+}
+
+.mfgplanForm .poptr-col-right-content-1 {
+	width: 18%;
+}
+
+.mfgplanForm .poptr-col-right-content-2 {
+	width: 10%;
+}
+
+/************************************************/
+
+.mfgplanForm .left-input {
+	width: 100%;
+}
+
+.mfgplanForm .right-input {
+	width: 100%;
+}
+
+.mfgplanForm .center-input {
+	width: 100%;
+}
+
+.mfgplanForm .search-btn {
+	width: 95%;
+	float: right;
+}
+
+.mfgplanForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.mfgplanForm .right-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.mfgplanForm .left-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.mfgplanForm .k-datetimepicker .k-select .k-link {
+	display: flex;
+}
+.mfgplanForm .k-datetimepicker .k-select .k-link-date {
+	border-right: 1px solid #ffffff;
+}

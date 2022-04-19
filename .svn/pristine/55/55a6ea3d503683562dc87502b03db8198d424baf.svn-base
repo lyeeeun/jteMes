@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Hello WebView for Handlebars</title>
+</head>
+<body>
+	
+	<h2>Hello! {{name}}</h2>
+	<h2>Hello! {{{name}}}</h2>
+	<div>Handlebars version</div>
+	
+	<br>
+	<p>테스트 이미지입니다.</p>
+	<br>
+	<img src="/image/storyhubblespirograph.jpg">
+	<br><br>
+	<div>
+		<p>사용자자가 입력한 파라메터 전체</p>
+		{{param}}<br>
+		<p>사용자자가 입력한 파라메터</p>
+		{{#each param}}
+			Key is "{{@key}}" : Value is "{{this}}", If array then use index [{{@index}}] <br>
+		{{/each}}
+	</div>
+</body>
+</html>

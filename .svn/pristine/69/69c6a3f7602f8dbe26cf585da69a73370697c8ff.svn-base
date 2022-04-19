@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "OR_progress">
+<!--  FN_CM_GETCOMNM(O.CTR_CD , 'PRODTYPE', P.PRODTYPE) AS PRODTYPE       
+					        FN_CM_GETCOMNM(O.CTR_CD , 'PRODSPEC', P.PRODSPEC) AS PRODSPEC       
+					       FN_CM_GETCOMNM(O.CTR_CD , 'PRODUNITCD', P.PRODUNIT_CD ) AS UNIT_NM  
+					       FN_CM_GETCOMNM(O.CTR_CD , 'PROGRESS', O.ORDERSTATE_CD ) AS ORDERSTATE_CD   -->
+<select id="orderList" parameterType="hashmap"
+		resultType="hashmap">
+			<![CDATA[
+		            SELECT  CTR_CD
+					       ,O.ORDER_NO
+					       ,DATE_FORMAT(O.ORDER_DATE,'%Y%m%d') AS ORDER_DATE
+					       ,DATE_FORMAT(O.DELIVERY_DATE,'%Y%m%d') AS DELIVERY_DATE
+					       ,O.CUSTOMERID
+					       ,O.DESTINATION
+					       ,O.PRODUNIT_CD
+					       ,C.CUSTOMERNAME 
+					       ,P.PRODNAME
+					       ,P.PRODMTRL
+					       ,P.PRODTYPE      
+					       ,P.PRODSPEC     
+					       ,P.PRODUNIT_CD AS UNIT_NM  
+					       ,O.ORDERSTATE_CD   
+						   ,O.PRODID 
+					       ,O.QTY               
+					       ,O.SHOPFLOOR_TOT_QTY 
+					       ,O.OUT_TOT_QTY      
+					       ,O.PROD_IN_TOT_QTY  
+					       ,O.PROD_OUT_TOT_QTY 
+					       ,O.PROD_IN_TOT_QTY - O.PROD_OUT_TOT_QTY AS NOW_STOCK 
+					       ,O.RTN_IN_QTY       
+					       ,O.DEFECT_TOT_QTY   
+					       ,O.REMARK            
+					       ,O.DEL_GBN                     
+					FROM TB_MESORDER O
+				INNER JOIN TB_CUSTOMER C ON O.CUSTOMERID=C.CUSTOMERID
+				INNER JOIN TB_PRODUCT P ON O.PRODID=P.PRODID
+			   WHERE 1 = 1
+		]]>
+		
+		<!--  삭제 구분에 N 즉 삭제된 데이터가 아닌경우 -->
+			<if test='DEL_GBN != "N"'>
+				AND O.DEL_GBN ='N'
+			</if>
+			<if test='CUSTOMERNAME != null and CUSTOMERNAME != ""'>
+				AND CUSTOMERNAME LIKE CONCAT("%"#{CUSTOMERNAME}"%")
+			</if>
+			<if test='PRODNAME != null and PRODNAME != ""'>
+				AND PRODNAME LIKE CONCAT("%"#{PRODNAME}"%")  
+			</if>
+			
+			<if test='STR_DT != null and STR_DT != ""'>
+				AND STR_TO_DATE(ORDER_DATE,'%Y-%m-%d') BETWEEN STR_TO_DATE(#{STR_DT},'%Y-%m-%d')
+				AND STR_TO_DATE(#{END_DT}, '%Y-%m-%d')
+			</if>
+			<if test='ORDER_NO != null and ORDER_NO != ""'>
+				AND O.ORDER_NO = #{ORDER_NO}
+			</if>
+<!-- 			<if test='O.SHOPFLOOR_TOT_QTY == 0 and O.SHOPFLOOR_TOT_QTY == null and O.SHOPFLOOR_TOT_QTY == ""' > -->
+<!-- 				AND O.ORDERSTATE_CD = 'A' -->
+<!-- 			</if> -->
+			
+		<![CDATA[
+			 ORDER BY ORDER_NO
+		]]>
+		
+		</select> 
+	
+		
+		 <select id="selectMenuId" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT ORDER_NO 
+  		      FROM TB_MESORDER
+               AND ORDER_NO = (SELECT MAX(ORDER_NO) AS ORDER_NO 
+              					FROM TB_MESORDER
+              				 
+              				  )
+             
+		]]>
+	</select> 
+	<select id="selectpreSave" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			/*SY_pgmMgmt 프로그램관리 _ 데이터 저장전 중복체크 */ 
+			SELECT COUNT(*) AS CNT			-- 갯수
+			FROM TB_MESORDER			-- [TB_프로그램목록]
+			WHERE ORDER_NO = #{ORDER_NO}
+		]]>
+	</select>
+	
+	<select id="progressList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT 	 COM_CD,
+			     COM_NM 
+		FROM     TB_COMCDINF 
+		WHERE    GRP_CD = 'PROGRESS'
+	</select>
+</mapper>
+		

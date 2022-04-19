@@ -1,0 +1,483 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
+<!-- 마스터 그리드 영역 -->
+<div id="grid-content" class="infergodsMgtForm"> <!-- style="width:100%;" -->
+	<div class="infergodsMgtForm search-btn-area" style="display: none; width:100%; background:#f0f5ff; padding:15px 0 15px 0; margin:10px 0 5px 0;">
+		<input class="radio-btn" type="radio" name="target" value="mtrl" checked><span class="radio-span">자재</span>
+	</div>
+	<div id="jteSingleGrid"></div>
+</div>
+
+<div style="display:none;">
+	<div id="historyPop">
+		<div id="history_grid"></div>
+	</div>
+</div>
+
+<!-- 이윤민 주임 작업 CSS -->
+<!-- <link href='/resources/mes/css/contents/qualMgt/infergodsMgt/infergodsMgtForm_lym.css' rel="stylesheet"> -->
+
+<!-- 전주원 주임 작업 CSS -->
+<link href='/resources/mes/css/contents/qualMgt/infergodsMgt/infergodsMgtForm_JJW.css' rel="stylesheet">
+
+<!-- 내부 스타일 외부로 이동_200506 JJW  -->
+
+<script>
+
+var lfo_common = {};//Form 내부에서 사용될 Object 
+
+var lfo_popGrd = {};//팝업 그리드에서 사용
+
+//진입 이벤트(공통코드에서 실행)
+this.lfn_init = function(){
+	//그리드 생성
+	lfn_jteSgGrd_setGrd("mtrl");
+	lfn_radioBtn_event();
+};
+
+this.lfn_radioBtn_event = function(){
+	$("input:radio[name=target]").click(function(e){
+		$('#jteSingleGrid').empty();
+		lfn_jteSgGrd_setGrd($(this).val());
+	}); 
+}
+
+
+this.lfn_jteSgGrd_setGrd = function(gubun){
+	lfo_common = {};//Form 내부에서 사용될 Object 
+	/* 
+		1. gridObject.layoutId = gridId
+		2. gridObject.popId = popId
+		3. gridObject.ctrlUrl = 조회 url
+		4. gridObject.crud  = {
+			read:{url:"",auth:"", prmt:{}}, 
+			create:{url:"",auth:"",openFunc:function, callback:function}, 
+			update:{url:"",auth:"",openFunc:function, callback:function}, 
+			delete:{url:"",auth:"", callback:function}}
+		5. gridObject.model = fieldType
+		6. gridObject.columns = foeldColumns
+		7. gridObject.selectBox = SelectBox 매핑 값 
+	*/
+	
+	//1.
+	lfo_common.layoutId = "jteSingleGrid";
+	
+	//2.
+	/* lfo_common.popId = "jtePopForm"; */
+	lfo_common.popId = "historyPop";
+	
+	//3.
+	lfo_common.ctrlUrl = "/cform/qualMgt/infergodsMgt"
+	
+	lfo_common.crud  = {
+			read:{url:"/getBadRate", auth:"", prmt:{selectTarget: gubun}},
+	};
+
+	if(gubun == "mtrl") {
+		lfo_common.model = {
+			id: "mtrlMgtId",
+			fields: {
+				mtrlMgtId : { type: "string" },	
+				mtrlNm : { type: "string" },
+				mtrlDiv : { type: "string" },
+				totalQty : { type: "int" },
+				totalBadQty : { type: "int" },
+				totalBadRate : { type: "float" }
+			}
+		};
+		
+		lfo_common.columns = [
+			{field: "mtrlMgtId", title : gfn_getMsg("col_mtrlIndivCd"), width: "180px"},													//자재개별코드
+			{field: "mtrlNm", title : gfn_getMsg("col_mtrlNm"), width: "160px"},															//자재명
+			{field: "totalQty", title : gfn_getMsg("col_orderQty"), width: "160px"},														//주문수량
+			{field: "totalBadQty", title : gfn_getMsg("col_badProdQuan"), width: "160px"},													//불량량
+			{field: "totalBadRate", template:"#= totalBadRate.toFixed(2) # %", title : gfn_getMsg("col_badRate"), width: "160px"},			//불량률
+			{field: "historyPop", title:gfn_getMsg("col_option"), width: "180px",															//옵션
+				template : function(rows) {
+					return '<button class="k-button k-primary" type="button" onclick="lfn_historyPop_open(\'mtrl\', this)"><spring:message code = "col_historyConfirm"/></button>';
+				}
+			}
+		];
+		
+		lfo_common.selectBox = [
+			{ text: gfn_getMsg("col_mtrlNm"), value: "mtrlQty.mtrl_nm" },			//자재명
+			{ text: gfn_getMsg("col_mtrlCd"), value: "mtrlQty.mtrl_mgt_id" }			//자재코드
+		];
+	}
+	//공통 그리드 세팅 호출 
+	lfo_common.grid = gfn_grid_set(lfo_common);
+}
+
+
+//더블클릭 콜백(팝업)
+this.lfn_jtePop_open = function(mode, selectedItem){
+	var options = {
+		modal:true, 
+		width: "705px", 
+		height: "350px", // 20.05.06 JJW 팝업 높이 수정 500-> 350px LYM 500-> 315px
+		id:lfo_common.popId, 
+		//title:gfn_getMsg("pop_addPop"),
+		resizable : true,
+		animation:{open :{effects:"expand:vertical fadeIn"},
+		close :{effects:"expand:vertical fadeIn", reverse: true}},
+		actions:[/*"Minimize", "Maximize", */"Close"]
+	};
+	if(mode =="NEW"){
+		options.title = gfn_getMsg("pop_badItemRegist");			//불량품정보 등록
+	}else if(mode=="EDT"){
+		options.title = gfn_getMsg("pop_badItemSrh");				//불량품정보 수정
+		
+	}
+	//팝업이 생성된 뒤 동작해야할 함수 입력
+	options.callback = function(){lfn_jtePop_set(mode, selectedItem);};
+	this.gfn_winOpen(options);
+}
+
+//팝업내용 세팅
+this.lfn_jtePop_set = function(mode,selectedItem) {
+	lfo_common.gridSelected = "";
+	
+	if(mode=='NEW'){
+		gfn_popform_set(lfo_common, mode, selectedItem);
+	}else if(mode == 'EDT'){
+		gfn_popform_set(lfo_common, mode, lfo_common.grid.dataItem($(selectedItem).closest('tr')));
+	}
+}
+
+//Form내용 입력/저장
+this.lfn_popSave = function(mode){
+	//입력폼 serialize 
+	var savePrmt = $("#"+lfo_common.popId+"_form").serializeObject();
+	
+	//저장된 다국어가 있다면 추가
+	var msgId = $("#"+lfo_common.popId+"_form").find(".jte-msgBox").attr("defId");
+	var msgList = $("#msg_"+ msgId).val();
+	if(!gfn_isNull(msgList)){
+		savePrmt.msgList = JSON.parse(msgList);
+	}
+	if(mode == 'update') {
+		savePrmt.action = 'U';
+	}
+	$.ajax({
+		async:false,
+		url : lfo_common.ctrlUrl + lfo_common.crud[mode].url,
+		type: "POST",
+		data: JSON.stringify(savePrmt),
+		traditional :true,
+		contentType : 'application/json',
+		dataType : 'json',
+		success: function(data){
+			gfn_closePop('jtePopForm');
+			
+			gfn_msgBox({msg :  gfn_getMsg("pop_successConfirm", "성공적으로 저장되었습니다.")});			//성공
+			
+			lfo_common.grid.dataSource.read();
+		},error: function(ex){
+			gfn_loading(false);
+			gfn_errBox({msg : gfn_getMsg("pop_errorFailed","오류가 발생했습니다. \n 관리자에게 문의해주세요.")});			//오류가 발생했습니다.
+		}
+	});
+}
+
+//삭제 콜백
+this.lfn_jteGrid_delete = function(){
+	var delPrmt = [];
+
+	var flag = true;
+	$("#"+ lfo_common.layoutId +" .k-checkbox").each(function(index,item){
+		if($(this).attr("aria-checked") == "true"){
+			delPrmt.push(lfo_common.grid.dataItem($(this).closest('tr')));
+			if(lfo_common.grid.dataItem($(this).closest('tr')).badTargetCode != "ADMIN") {
+				kendo.confirm("관리자가 입력한 항목만 삭제가 가능합니다.");
+				flag = false;
+				return flag;
+			}
+		}
+	});
+	
+	if(!flag) {
+		return flag
+	}
+	
+	$.ajax({
+		async:false,
+		url : lfo_common.ctrlUrl + lfo_common.crud.destroy.url,
+		type: "POST",
+		data: JSON.stringify(delPrmt),
+		traditional :true,
+		contentType : 'application/json',
+		dataType : 'json',
+		success: function(data){
+			lfo_common.grid.dataSource.read();
+			gfn_msgBox({msg:gfn_getMsg("pop_deleteSuccess")});			//성공적으로 삭제되었습니다.
+		},error: function(ex){
+			gfn_loading(false);
+			gfn_errBox({msg : gfn_getMsg("pop_errorFailed","오류가 발생했습니다. \n 관리자에게 문의해주세요.")});			//오류가 발생했습니다.
+		}
+	});
+}
+
+
+//사용유무
+this.lfn_jteSgGrd_changeIsUse = function(rows){
+	
+	var dataItem = lfo_common.grid.dataItem($(rows).closest("tr"));
+	var prmt = {toolId : dataItem.toolId, action : "USE", use : dataItem.use};
+	$.ajax({
+		async:false,
+		url : lfo_common.ctrlUrl + lfo_common.crud.update.url,
+		type: "POST",
+		data: JSON.stringify(prmt),
+		contentType : 'application/json',
+		dataType : 'json',
+		success: function(data){
+			if(data != ""){
+				lfo_common.grid.dataSource.read();
+			}else{
+				gfn_warnBox({msg : gfn_getMsg("pop_failedConfirm", "실패하였습니다. \n 값이 제대로 입력되었는지 확인 후 다시 시도해주세요.")});			//실패
+			}
+		},error: function(ex){
+			gfn_loading(false);
+			gfn_errBox({msg : gfn_getMsg("pop_errorFailed","오류가 발생했습니다. \n 관리자에게 문의해주세요.")});			//오류가 발생했습니다.
+		}
+	});
+}
+
+
+
+//팝업내부 그리드 
+this.lfn_jtePopGrd_setGrd = function(){
+	lfo_popGrd = {};
+	/* 
+	1. gridObject.layoutId = gridId
+	2. gridObject.popId = popId
+	3. gridObject.ctrlUrl = 조회 url
+	4. gridObject.crud  = {
+		read:{url:"",auth:"", prmt:{}}, 
+		create:{url:"",auth:"",openFunc:function, callback:function}, 
+		update:{url:"",auth:"",openFunc:function, callback:function}, 
+		delete:{url:"",auth:"", callback:function}}
+	5. gridObject.model = fieldType
+	6. gridObject.columns = foeldColumns
+	7. gridObject.selectBox = SelectBox 매핑 값 
+*/
+	
+	//1.
+	lfo_popGrd.layoutId = "jtePopForm_grid";
+	
+	//2.
+	//lfo_popGrd.popId = "";
+	
+	//3.
+	lfo_popGrd.ctrlUrl = "/cform/basMgt/operMgt/toolMgt"
+	
+	//4.
+	lfo_popGrd.crud  = {
+		read:{url:"/getMtrlRtlCompList", auth:"", prmt:{toolId:lfo_common.gridSelected}}, 
+		create:{url:"/setMtrlRtlCompSave", auth:"", openFunc:lfn_jtePopGrd_popOpen, callback:lfn_jtePopGrd_save},
+		update:{url:"", auth:"", openFunc:"", callback:""},
+		destroy:{url:"/setMtrlRtlCompDelete", auth:"", callback:lfn_jtePopGrd_delete}
+	};
+	
+	//5.
+	lfo_popGrd.model = {
+		id: "compId",
+		fields: {
+			compId: { type: "string" },
+			toolId: { type: "string" },
+			compNm: { type: "string" },
+			compManagr: { type: "string" },
+			compNumber: { type: "string" },
+			compType: { type: "string" },
+			compAddr: { type: "string" },
+			createdAt: { type: "date" },
+			updatedAt: { type: "date" },
+			creatorId: { type: "string" },
+			updatorId: { type: "string" },
+			isUse: { type: "bool" }
+		}
+	};
+	
+	//6.
+	lfo_popGrd.columns = [
+		{selectable : true, width:"50px"},
+		{field: "compId", title:gfn_getMsg("col_compCd"), width: 120},				//업체코드
+		{field: "compNm", title:gfn_getMsg("col_compNm"), width: 150},				//업체명
+	];
+	
+	//7.
+	lfo_popGrd.selectBox = [
+		{ text: gfn_getMsg("col_compCd"), value: "comp.comp_id" },					//업체코드
+		{ text: gfn_getMsg("col_compNm"), value: "comp.comp_nm" },					//업체명
+	];
+	
+	//공통 그리드 세팅 호출 
+	lfo_popGrd.grid = gfn_grid_set(lfo_popGrd);
+}
+
+
+//더블클릭 콜백(팝업)
+this.lfn_jtePopGrd_popOpen = function(selectedItem){
+
+	//여기부터 공통팝업 띄우기
+	gfn_openCustomPop('supplier',lfn_jtePopGrd_save);
+}
+
+//Form내용 입력/저장
+this.lfn_jtePopGrd_save = function(savePrmt){
+	
+	savePrmt.toolId = lfo_common.gridSelected;
+	
+	$.ajax({
+		async:false,
+		url : lfo_popGrd.ctrlUrl + lfo_popGrd.crud.create.url,
+		type: "POST",
+		data: JSON.stringify(savePrmt),
+		traditional :true,
+		contentType : 'application/json',
+		dataType : 'json',
+		success: function(data){
+			if(data != ""){
+				//마스터 그리드 리로드
+				lfo_common.grid.dataSource.read();
+				//이전 팝업화면 리로드
+				lfn_jtePop_set('EDT',lfo_common.gridSelected);
+				
+				gfn_msgBox({msg :  gfn_getMsg("pop_successConfirm", "성공적으로 저장되었습니다.")});			//성공
+			}else{
+				gfn_warnBox({msg : gfn_getMsg("pop_failedConfirm", "실패하였습니다. \n 값이 제대로 입력되었는지 확인 후 다시 시도해주세요.")});				//실패
+			}
+		},error: function(ex){
+			gfn_loading(false);
+			gfn_errBox({msg : gfn_getMsg("pop_errorFailed","오류가 발생했습니다. \n 관리자에게 문의해주세요.")});			//오류가 발생했습니다.
+		}
+	});
+}
+
+//삭제 콜백
+this.lfn_jtePopGrd_delete = function(){
+	var delPrmt = [];
+	$("#"+ lfo_popGrd.layoutId +" .k-checkbox").each(function(index,item){
+		if($(this).attr("aria-checked") == "true"){
+			delPrmt.push(lfo_popGrd.grid.dataItem($(this).closest('tr')));
+		}
+	});
+	$.ajax({
+		async:false,
+		url : lfo_popGrd.ctrlUrl + lfo_popGrd.crud.destroy.url,
+		type: "POST",
+		data: JSON.stringify(delPrmt),
+		traditional :true,
+		contentType : 'application/json',
+		dataType : 'json',
+		success: function(data){
+			lfo_popGrd.grid.dataSource.read();
+			gfn_msgBox({msg :  gfn_getMsg("pop_deleteSuccess", "성공적으로 삭제되었습니다.")});			//성공적으로 삭제되었습니다.
+		},error: function(ex){
+			gfn_loading(false);
+			gfn_errBox({msg : gfn_getMsg("pop_errorFailed","오류가 발생했습니다. \n 관리자에게 문의해주세요.")});			//오류가 발생했습니다.
+		}
+	});
+}
+
+this.lfn_lotInfo = function() {
+	var callback = function(selectedItem){
+		$('#lotId').val(selectedItem.lotId);
+		$('#lotSeq').val(selectedItem.lotSeq);
+		$('#lotState').val(selectedItem.lotState);
+		$('#itemId').val(selectedItem.itemId);
+		$('#itemNm').val(selectedItem.itemNm);
+	}
+	
+	gfn_openCustomPop('lotInfo', callback);
+}
+
+this.lfn_historyPop_open = function(selectTarget, param) {
+	
+	var selectedItem; 
+	if(selectTarget == "mtrl") {
+		selectedItem = lfo_common.grid.dataItem($(param).closest('tr')).mtrlMgtId;
+	}
+	
+	var options = {
+		modal:true, 
+		width: "1350px", 
+		height: "470px", 
+		id:lfo_common.popId, 
+		title:gfn_getMsg("pop_badHisSrh"),			//불량 이력 조회
+		resizable:true,
+		animation:{open :{effects:"expand:vertical fadeIn"},
+		close :{effects:"expand:vertical fadeIn", reverse: true}},
+		actions:[/*"Minimize", "Maximize", */"Close"]
+	};
+	
+	options.callback = function(){
+		lfn_historyPop_gridSet(selectTarget, selectedItem);
+		$('#history_grid').parent().css('height', '100%');
+	};
+	this.gfn_winOpen(options);
+	
+}
+
+this.lfn_historyPop_gridSet = function(selectTarget, selectedItem){
+	//1.
+	lfo_popGrd.layoutId = "history_grid";
+	
+	//2.
+	lfo_popGrd.popId = "historyPop";
+	
+	//3.
+	lfo_popGrd.ctrlUrl = "/cform/qualMgt/infergodsMgt";
+	
+	//4.
+	if(selectTarget == "mtrl") {
+		lfo_popGrd.crud  = {
+			read:{url:"/getMtrlBadList", auth:"", prmt:{mtrlMgtId: selectedItem}, search:false}, 
+		};
+	}
+	
+	if(selectTarget == "mtrl") {
+		lfo_popGrd.model = {
+			id: "mtrlMgtId",
+			fields: {
+				chkDate : { type: "date" },
+				badTarget : { type: "string" },
+				badTargetCode : { type: "string" },
+				badTargetNm : { type: "string" },
+				badDesc : { type: "string" },
+				mtrlId : { type: "string" },
+				mtrlNm : { type: "string" },
+				mtrlMgtId : { type: "string" },
+				badPgUser : { type: "string" },
+				badPgUserNm : { type: "string" },
+				badPgDate : { type: "date" },
+				badPgCd : { type: "string" },
+				badPgNm : { type: "string" },
+				mtrlDiv : { type: "string" }
+			}
+		};
+		
+		lfo_popGrd.columns = [
+			{field: "badTarget", template:"# var item = gfn_isNull(gfn_getCode(badTarget))== true ? '기초코드 없음' : gfn_getMsg('bc_'+ gfn_getCode(badTarget).cdId , gfn_getCode(badTarget).cdNm) # #= item #", 
+				title : gfn_getMsg("col_badCd"), width: "160px;"},															//불량코드
+			{field: "badCode", template:"# var item = gfn_isNull(gfn_getCode(badCode))== true ? '기초코드 없음' : gfn_getMsg('bc_'+ gfn_getCode(badCode).cdId , gfn_getCode(badCode).cdNm) # #= item #", 
+				title : gfn_getMsg("col_badInfo"), width: "220px;"},														//불량정보
+			{field: "mtrlNm", title : gfn_getMsg("col_mtrlNm"), width: "120px"},											//자재명
+			{field: "badQty",format: "{0:n0}", attributes : { style : "text-align : right;"}, title : gfn_getMsg("col_badProdQuan"), width: "110px"},						//불량량
+			{field: "badDesc", title : "처리결과", width: "450px"},
+			{field: "badPgDate", format: "{0: yyyy-MM-dd}", title : gfn_getMsg("col_workDate"), width: "120px"},			//작업일
+			{field: "badPgUserNm", title : gfn_getMsg("col_worker"), width: "130px"},										//작업자
+			{field: "badId", title : gfn_getMsg("col_badId"), width: "170px"},												//불량아이디
+			{field: "mtrlMgtId", title : gfn_getMsg("col_mtrlIndivCd"), width: "180px"},									//자재개별코드
+			{field: "badTargetCode", title : gfn_getMsg("col_targetCd"), width: "180px"},									//업무코드
+			{field: "chkUserNm", format: "{0:n0}", attributes : { style : "text-align : right;"}, title : gfn_getMsg("col_inspector"), width: "130px"},					//검사자
+			{field: "chkDate", format: "{0: yyyy-MM-dd}", title : gfn_getMsg("col_inspectDate"), width: "120px"},			//검사일
+			{field: "badPgNm", title : gfn_getMsg("col_progNm"), width: "180px"},											//프로그램명
+			{field: "badPgCd", title : gfn_getMsg("col_progCd"), width: "180px"}											//프로그램코드
+		];
+	}
+	//공통 그리드 세팅 호출
+	lfo_popGrd.grid = gfn_grid_set(lfo_popGrd);
+}
+</script>

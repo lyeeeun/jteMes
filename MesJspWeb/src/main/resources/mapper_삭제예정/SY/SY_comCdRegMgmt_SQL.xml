@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SY_comCdRegMgmt">
+	<select id="selectCtrlList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT /* selectCtrlList / 센터명, 센터코드, 단지코드 조회 _박이삭*/
+			DISTINCT 
+			  CTR_NM	AS	CTR_NM	
+			, CTMP_CD	AS COMP_CD  
+			, CTR_CD	AS	CTR_CD	
+			 FROM TB_CTRINF
+		]]>
+	</select>
+
+	<select id="selectComGrpList" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+		  SELECT	-- SY_comCdRegMgmt 공통 그룹코드 조회 _ PIS
+		     (SELECT CTR_NM FROM TB_CTRINF) AS CRT_NM 
+		     , A.GRP_CD        AS GRP_CD         
+		     , A.GRP_CD        AS ORG_GRP_CD    
+		     , A.GRP_NM        AS GRP_NM       
+		     , A.USE_YN        AS USE_YN        
+		     , A.REG_DT        AS REG_DT        
+		     , A.REG_USER_ID   AS REG_USER_ID     
+		     , A.REG_PGM_ID    AS REG_PGM_ID     
+		     --  , A.UPD_DT        AS UPD_DT	Field 미 존재로 인해 제외     
+		     --  , A.UPD_USER_ID   AS UPD_USER_ID   Field 미 존재로 인해 제외
+		     --  , A.UPD_PGM_ID    AS UPD_PGM_ID   Field 미 존재로 인해 제외
+		  FROM TB_COMCDGRP A       
+		 WHERE 1=1
+		]]>
+		<!--  센터 코드 필요 없음으로 주석_gwpark  -->
+		<!-- <if test='CTR_CD !=null and CTR_CD!="%"'>
+			AND A.CTR_CD = #{CTR_CD}
+		</if> -->
+		<if test='GRP_CD != null and GRP_CD != ""'>
+			AND A.GRP_CD LIKE CONCAT("%"UPPER(#{GRP_CD})"%") 
+		</if>
+		<if test='GRP_NM != null and GRP_NM != ""'>
+			AND A.GRP_NM LIKE CONCAT("%"#{GRP_NM}"%")
+		</if>
+		<if test='USE_YN != null and USE_YN != ""'>
+			AND A.USE_YN = #{USE_YN}
+		</if>
+		
+		
+	</select>
+
+	<select id="selectComCdList" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT		-- SY_comCdRegMgmt 공통 코드 조회 _ PIS
+			       CTR_CD       AS CTR_CD          
+			     , GRP_CD       AS GRP_CD          
+			     , COM_CD       AS COM_CD         
+			     , COM_CD       AS ORG_COM_CD    
+			     , COM_NM       AS COM_NM        
+			     , DUMY1_NM     AS DUMY1_NM        
+			     , DUMY1_VALUE  AS DUMY1_VALUE       
+			     , DUMY2_NM     AS DUMY2_NM        
+			     , DUMY2_VALUE  AS DUMY2_VALUE       
+			     -- , DUMY3_NM     AS DUMY3_NM  해당 Field 없음         
+			     -- , DUMY3_VALUE  AS DUMY3_VALUE      해당 Field 없음
+			     , USE_YN       AS USE_YN        
+			     , REMARK       AS REMARK          
+			     , REG_DT       AS REG_DT         
+			     , REG_USER_ID  AS REG_USER_ID     
+			     , REG_PGM_ID   AS REG_PGM_ID   
+			     --  , UPD_DT       AS UPD_DT       	 해당 Field 없음  
+			     --  , UPD_USER_ID  AS UPD_USER_ID    해당 Field 없음   
+			     --  , UPD_PGM_ID   AS UPD_PGM_ID        해당 Field 없음
+			  FROM TB_COMCDINF             
+			 WHERE CTR_CD  = #{CTR_CD}
+			   AND GRP_CD  = #{GRP_CD}
+			   AND USE_YN LIKE IFNULL(#{USE_YN},'%')
+			ORDER BY CTR_CD, GRP_CD, COM_CD
+			
+		]]>
+	</select>
+
+	<select id="insertComGrpList" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+			-- ComCdRegMgmt 데이터 삽입 _ PIS
+			INSERT INTO TB_COMCDGRP (
+			      CTR_CD         
+			    , GRP_CD         
+			    , GRP_NM        
+			    , USE_YN       
+			    , SND_YN       
+			    , REG_DT      
+			    , REG_USER_ID   
+			    , REG_PGM_ID    
+			) VALUES (
+			      #{CTR_CD}          
+			    , UPPER(#{GRP_CD})          
+			    , #{GRP_NM}          
+			    , DECODE(#{USE_YN}, 'Y', 'Y', 'N')
+			    , 'N'
+			    , SYSDATE          
+			    , #{REG_USER_ID}     
+			    , #{REG_PGM_ID}      
+			)
+		]]>
+	</select>
+
+	<select id="updateComGrpList" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+			-- comCdRegMgmt 데이터 수정_ PIS
+			UPDATE TB_COMCDGRP		
+			   SET GRP_CD      = UPPER(#{GRP_CD})	
+			     , GRP_NM      = #{GRP_NM}
+			     , USE_YN      = DECODE(#{USE_YN}, 'Y', 'Y', 'N')	
+			     , UPD_DT      = SYSDATE		
+			     , UPD_USER_ID = #{UPD_USER_ID}	
+			     , UPD_PGM_ID  = #{UPD_PGM_ID}	
+			     , SND_YN      = 'N'		
+			 WHERE CTR_CD      = #{CTR_CD}       
+			   AND GRP_CD      = #{ORG_GRP_CD}
+		]]>
+	</select>
+
+	<select id="deleteComGrpList" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+			DELETE     
+			  FROM TB_COMCDGRP              
+			 WHERE CTR_CD      = #{CTR_CD}      
+			   AND GRP_CD      = #{ORG_GRP_CD}
+		]]>
+
+	</select>
+
+	<select id="deleteComGrpCdList" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+			DELETE     
+			  FROM TB_COMCDINF              
+			 WHERE CTR_CD      = #{CTR_CD}     
+			   AND GRP_CD      = #{ORG_GRP_CD} 
+		]]>
+	</select>
+
+	<select id="insertComCdList" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+			--  comCdRegMgmt 공통 코드 데이터 삽입 _ PIS
+			INSERT INTO TB_COMCDINF (  
+			      CTR_CD          
+			    , GRP_CD           
+			    , COM_CD             
+			    , COM_NM           
+			    , DUMY1_NM            
+			    , DUMY1_VALUE          
+			    , DUMY2_NM           
+			    , DUMY2_VALUE       
+			    , USE_YN            
+			    , REMARK              
+			    , REG_DT              
+			    , REG_USER_ID         
+			    , REG_PGM_ID        
+			    , SND_YN             
+			) VALUES (
+			      #{CTR_CD}              
+			    , UPPER(#{GRP_CD})              
+			    , UPPER(#{COM_CD})              
+			    , #{COM_NM}              
+			    , #{DUMY1_NM}            
+			    , #{DUMY1_VALUE}         
+			    , #{DUMY2_NM}            
+			    , #{DUMY2_VALUE}         
+			    , DECODE(#{USE_YN}, 'Y', 'Y', 'N')  
+			    , #{REMARK}              
+			    , SYSDATE              
+			    , #{REG_USER_ID}         
+			    , #{REG_PGM_ID}          
+			    , 'N'
+			)
+		]]>
+	</select>
+
+	<select id="updateComCdList" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+			--	comCdRegMgmt  공통코드 데이터 수정 _ PIS
+			UPDATE TB_COMCDINF               
+			   SET COM_CD       = UPPER(#{COM_CD})     
+			     , COM_NM       = #{COM_NM}        
+			     , DUMY1_NM     = #{DUMY1_NM}       
+			     , DUMY1_VALUE  = #{DUMY1_VALUE}   
+			     , DUMY2_NM     = #{DUMY2_NM}      
+			     , DUMY2_VALUE  = #{DUMY2_VALUE}   
+			     , DUMY3_NM     = #{DUMY3_NM}       
+			     , DUMY3_VALUE  = #{DUMY3_VALUE}   
+			     , USE_YN       = DECODE(#{USE_YN}, 'Y', 'Y', 'N')     
+			     , REMARK       = #{REMARK}       
+			     , UPD_DT       = SYSDATE          
+			     , UPD_USER_ID  = #{UPD_USER_ID}   
+			     , UPD_PGM_ID   = #{UPD_PGM_ID}     
+			     , SND_YN       = 'N'             
+			 WHERE CTR_CD       = #{CTR_CD}          
+			   AND GRP_CD       = #{GRP_CD}          
+			   AND COM_CD       = #{ORG_COM_CD}
+		]]>
+	</select>
+
+	<select id="deleteComCdList" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+			-- comCdRegMgmt  공통코드 데이터 삭제_ PIS
+			DELETE     
+			  FROM TB_COMCDINF                
+			 WHERE CTR_CD      = #{CTR_CD}      
+			   AND GRP_CD      = #{GRP_CD}      
+			   AND COM_CD      = #{ORG_COM_CD}   
+		]]>
+	</select>
+
+	<select id="selectGrppreSave" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+		    /*SY_ComCdRegMgmt 공통코드등록관리 _ 그룹코드 저장전 중복체크 _ 박이삭*/ 
+			SELECT COUNT(*) AS CNT		
+			FROM TB_COMCDGRP				
+			WHERE CTR_CD = #{CTR_CD}
+  			AND GRP_CD = #{GRP_CD}
+		]]>
+	</select>
+
+	<select id="selectCompreSave" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+		    /*SY_ComCdRegMgmt 공통코드등록관리 _ 공통코드 저장전 중복체크 _ 박이삭*/ 
+			SELECT COUNT(*) AS CNT		
+			FROM TB_COMCDINF				
+			WHERE CTR_CD = #{CTR_CD}
+  			AND GRP_CD = #{GRP_CD}
+  			AND COM_CD = #{COM_CD}
+		]]>
+	</select>
+</mapper>

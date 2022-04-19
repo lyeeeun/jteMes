@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.perform.prodStaMgt.unworkStaMgt.UnworkStaMgtMapper">
+
+	<!-- 설비 관리정보 -->
+	<sql id="unwork_base">
+			workInfo.prod_work_id																	AS prodWorkId,		-- 작업정보 아이디
+			workInfo.prod_work_user																	AS prodWorkUser, 	-- 작업자 아이디
+			urInfo.user_nm																			AS prodWorkUserNm, 	-- 작업자 명
+			assgn.prod_asm_date																		AS prodAsmDate, 	-- 작업지시일
+			lotInfo.lot_qty																			AS lotQty, 			-- LoT 총 수량
+			IFNULL(workInfo.prod_work_qty,0)														AS prodWorkQty,		-- 작업량
+			IFNULL(workInfo.prod_work_good,0)														AS prodWorkGood,	-- 양품량
+			IFNULL(workInfo.prod_work_bad,0)														AS prodWorkBad,		-- 불량량
+			IFNULL((workInfo.prod_work_qty)-(workInfo.prod_work_good + workInfo.prod_work_bad),0)	AS unWorkQty, 		-- 미작업량
+			workInfo.prod_work_status																AS prodWorkStatus, 	-- 작업상태
+			workInfo.prod_asm_id																	AS prodAsmId, 		-- 작업지시 코드
+			workInfo.lot_id																			AS lotId, 			-- LoT 코드
+			lotInfo.item_id																			AS itemId, 			-- 제품 코드
+			itemInfo.item_nm																		AS itemNm 			-- 제품 명
+			
+		FROM prs_work_info workInfo
+		JOIN mb_user_info urInfo ON urInfo.user_id = workInfo.prod_work_user
+		LEFT JOIN prs_product_assignment assgn ON assgn.prod_asm_id = workInfo.prod_asm_id
+		LEFT JOIN prs_lot_info lotInfo ON lotInfo.lot_id = workInfo.lot_id
+		LEFT JOIN bc_item_info itemInfo ON itemInfo.item_id = lotInfo.item_id
+		LEFT JOIN qm_item_mgt qmItem ON qmItem.item_qty_target_code = workInfo.prod_work_id
+		WHERE 1=1
+		AND DATE_FORMAT(prod_asm_date,'%Y-%m-%d') = DATE_FORMAT(#{prodAsmDate},'%Y-%m-%d')
+		AND workInfo.prod_work_status != 'work_end'
+	</sql>
+	
+	<!-- 설비 관리정보(Page) select -->
+	<select id="selectUnWorkStaList"
+		parameterType="jin.mes.form.perform.prodStaMgt.unworkStaMgt.UnworkStaMgtDto"
+		resultType="jin.mes.form.perform.prodStaMgt.unworkStaMgt.UnworkStaMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY prodWorkId desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="unwork_base" />
+			)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- 설비 관리정보 Count -->
+	<select id="selectUnWorkStaCount"
+		parameterType="jin.mes.form.perform.prodStaMgt.unworkStaMgt.UnworkStaMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="unwork_base" />
+				)c_table
+	</select>
+</mapper>

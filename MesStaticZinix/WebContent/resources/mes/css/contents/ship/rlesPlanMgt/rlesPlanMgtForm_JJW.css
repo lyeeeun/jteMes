@@ -1,0 +1,101 @@
+
+/*********  **********/
+
+.rlesPlanMgtForm {
+	/* margin-top: 0.8em; */
+}
+
+.rlesPlanMgtForm .center-input {
+	width: 100%;
+}
+
+.rlesPlanMgtForm .center-input.btn-input{
+	width: 100%;
+}
+
+.rlesPlanMgtForm .left-input {
+	width: 100%;
+}
+
+.rlesPlanMgtForm .right-input {
+	width: 100%;
+}
+
+.rlesPlanMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.rlesPlanMgtForm .col-left-title {
+	width: 22%;
+}
+
+.rlesPlanMgtForm .col-left-content {
+	width: 28%;
+}
+
+.rlesPlanMgtForm .col-right-title {
+	width: 22%;
+}
+
+.rlesPlanMgtForm .col-right-content {
+	width: 28%;
+}
+
+.rlesPlanMgtForm .grid-content {
+	width: 100%;
+}
+
+.jte-search-aria .input.k-textbox {
+	margin-left: 0.4em;
+	margin-right: 0.4em;
+}
+
+.rlesPlanMgtForm .k-datetimepicker .k-select{
+	width: 4.2em;
+}
+
+.rlesPlanMgtForm .k-link.k-link-date {
+/* 	padding: 0px 10px; */
+	padding-bottom: 32px;
+	border-right: 1px solid #ffffff;
+}
+
+.rlesPlanMgtForm .k-link.k-link-time {
+/* 	padding: 0px 10px; */
+	padding-bottom: 32px;
+}
+
+/* .rlesMgtForm .k-datetimepicker .k-picker-wrap .k-input {
+	padding: 4px 0px;
+}
+
+.rlesMgtForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 0px;
+} */
+
+/* .rlesMgtForm .k-listbox.k-listbox-toolbar-right .k-listbox-toolbar {
+    margin-left: 8px;
+    margin-right: 4px; 200409 툴바 양옆으로 마진 부여_LYM
+}
+ */
+.rlesPlanMgtForm .rlesPlanMgtForm-btn {
+	width: 95%;
+	float: right;
+}
+
+.rlesPlanMgtForm .jtePopAddForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.rlesPlanMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+.rlesPlanMgtForm .jtePopAddForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+

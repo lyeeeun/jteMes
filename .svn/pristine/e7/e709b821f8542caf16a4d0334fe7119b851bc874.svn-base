@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.mapper.basMgt.devtol.userConn.UserConnMapper">
+	<!-- 사용자접속기록 -->
+	<sql id="userConn_base">
+			conn.conn_id		AS connId,
+			conn.user_id    	AS userId,
+			userInfo.user_nm    AS userNm,
+			conn.conn_stdt  	AS connStdt,
+			conn.conn_eddt  	AS connEddt,
+			conn.conn_ip    	AS connIp,
+			conn.conn_device    AS connDevice
+		FROM his_user_conn conn
+		LEFT OUTER JOIN mb_user_info userInfo on userInfo.user_id = conn.user_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != '' ">
+			AND conn.conn_stdt between #{searchStartDate} AND DATE_ADD(#{searchEndDate},INTERVAL 1 DAY)
+		</if>
+	</sql>
+	
+	
+	<!-- 사용자 접속기록 조회 (List) -->
+	<select id="selectUserConnList"
+		parameterType="jin.mes.form.basMgt.devtol.userConn.UserConnDto"
+		resultType="jin.mes.form.basMgt.devtol.userConn.UserConnDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY connStdt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="userConn_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 사용자 접속기록 조회 (count) -->
+	<select id="selectUserConnCount"
+	parameterType="jin.mes.form.basMgt.devtol.userConn.UserConnDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="userConn_base" />
+				)c_table
+	</select>
+	
+	<!-- 사용자 접속기록 수정 -->
+	<insert id="insertUserConn" parameterType="jin.mes.form.basMgt.devtol.userConn.UserConnDto">
+	<selectKey keyProperty="connId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('CONN') AS connId
+	</selectKey>
+		INSERT INTO his_user_conn(
+			conn_id,
+			user_id,
+			conn_stdt,
+			conn_eddt,
+			conn_ip,
+			conn_device
+		)VALUES(
+			#{connId},
+			#{userId},
+			NOW(),
+			#{connEddt},
+			#{connIp},
+			#{connDevice}
+		)
+	</insert>
+	
+	<!-- 사용자 접속기록 수정 -->
+	<update id="updateUserConn" parameterType="jin.mes.form.basMgt.devtol.userConn.UserConnDto">
+		UPDATE his_user_conn
+		SET conn_eddt = NOW()
+		WHERE conn_id  = #{connId}
+	</update>
+</mapper>

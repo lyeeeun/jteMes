@@ -1,0 +1,227 @@
+<!DOCTYPE>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/rms_layout}" lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/css/rms/AuxEquipmentStatus/aux_value.css" />
+<title>Insert title here</title>
+</head>
+<body>
+	<div id="container">
+		<!-- 본문내용 -->
+		<div class="content" layout:fragment="content">
+			<!-- 검색 -->
+			<div th:insert="fragments/search_repeat :: search" class="search"></div>
+			
+			<!-- 본문 영역 -->
+			<div class="content_layer">
+				<table class="engMot_Table">
+					<tr class="engMot_Row" style="vertical-align: top;">
+						<td class="engMot_Row_analog" rowspan="4" style="width: 310px;"><span style="font-size: 16px;">HFO SYSTEM</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_SYSTEM" style="width: 100%;">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">HFO UNLOADING PUMP A</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_UNLOADING_A" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">HFO UNLOADING PUMP B</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_UNLOADING_B" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">#1 HFO FURIFIER</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_FURI_1" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">#2 HFO FURIFIER</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_FURI_2" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">#1 HFO FURIFIER 3WAY VALVE</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_FURI_FEED_3WAY_1" style="width: 100%">
+								</table>
+							</div></td>
+					</tr>
+					<tr class="engMot_Row">
+						<td><span style="font-size: 16px;">HFO TRANSFER PUMP A</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_TRANSFER_A" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">HFO TRANSFER PUMP B</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_TRANSFER_B" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">#3 HFO FURIFIER</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_FURI_3" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">#4 HFO FURIFIER</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_FURI_4" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">#2 HFO FURIFIER 3WAY VALVE</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_FURI_FEED_3WAY_2" style="width: 100%">
+								</table>
+							</div></td>
+					</tr>
+					<tr class="engMot_Row">
+						<td><span style="font-size: 16px;">HFO SUPPLY PUMP A</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_SUPPLY_A" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">HFO SUPPLY PUMP B</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_SUPPLY_B" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">#1 HFO FURIFIER FEED PUMP</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_FURI_FEED_1" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">#2 HFO FURIFIER FEED PUMP</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_FURI_FEED_2" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">#3 HFO FURIFIER 3WAY VALVE</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_FURI_FEED_3WAY_3" style="width: 100%">
+								</table>
+							</div></td>
+					</tr>
+					<tr class="engMot_Row">
+						<td><span style="font-size: 16px;">HFO STORAGE TANK VALVE A</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_STORAGE_A" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">HFO STORAGE TANK VALVE B</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_STORAGE_B" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">#3 HFO FURIFIER FEED PUMP</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_FURI_FEED_3" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">#4 HFO FURIFIER FEED PUMP</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_FURI_FEED_4" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">#4 HFO FURIFIER 3WAY VALVE</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="HFO_FURI_FEED_3WAY_4" style="width: 100%">
+								</table>
+							</div></td>
+					</tr>
+				</table>
+				<table class="engMot_Table">
+					<tr class="engMot_Row" style="vertical-align: top;">
+						<td class="engMot_Row_analog" rowspan="2" style="width: 310px;"><span style="font-size: 16px;">LO SYSTEM</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="LO_SYSTEM" style="width: 100%;">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">LO UNLOADING PUMP A</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="LO_UNLOADING_A" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">LO UNLOADING PUMP B</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="LO_UNLOADING_B" style="width: 100%">
+								</table>
+							</div></td>
+						<td rowspan="2"><span style="font-size: 16px;">#1 LO MAINTENANCE PUMP</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="LO_MAIN_1" style="width: 100%">
+								</table>
+							</div></td>
+						<td rowspan="2"><span style="font-size: 16px;">#2 LO MAINTENANCE PUMP</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="LO_MAIN_2" style="width: 100%">
+								</table>
+							</div></td>
+						<td rowspan="2"><span style="font-size: 16px;">USED LO PUMP</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="LO_USED_LO" style="width: 100%">
+								</table>
+							</div></td>
+					</tr>
+					<tr class="engMot_Row">
+						<td><span style="font-size: 16px;">LO TRANSFER PUMP A</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="LO_TRANSFER_A" style="width: 100%">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">LO TRANSFER PUMP B</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="LO_TRANSFER_B" style="width: 100%">
+								</table>
+							</div></td>
+					</tr>
+				</table>
+				<table class="engMot_Table">
+					<tr class="engMot_Row" style="vertical-align: top;">
+						<td class="engMot_Row_analog" rowspan="2" style="width: 310px;"><span style="font-size: 16px;">DO SYSTEM</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="DO_SYSTEM" style="width: 100%;">
+								</table>
+							</div></td>
+						<td><span style="font-size: 16px;">DO PILOT PUMP A</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="DO_PILOT_A" style="width: 100%">
+								</table>
+							</div></td>
+						<td rowspan="3"><span style="font-size: 16px;">#1 DO SUPPLY PUMP</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="DO_SUPPLY_A" style="width: 100%">
+								</table>
+							</div></td>
+						<td rowspan="3"><span style="font-size: 16px;">#2 DO SUPPLY PUMP</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="DO_SUPPLY_B" style="width: 100%">
+								</table>
+							</div></td>
+						<td rowspan="3"><span style="font-size: 16px;">DO UNLOADING PUMP A</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="DO_UNLOADING_A" style="width: 100%">
+								</table>
+							</div></td>
+						<td rowspan="3"><span style="font-size: 16px;">DO UNLOADING PUMP B</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="DO_UNLOADING_B" style="width: 100%">
+								</table>
+							</div></td>
+					</tr>
+					<tr class="engMot_Row">
+						<td><span style="font-size: 16px;">DO PILOT PUMP B</span>
+							<div class="EM_GROUP">
+								<table class="EM_GROUP_T" id="DO_PILOT_B" style="width: 100%">
+								</table>
+							</div></td>
+					</tr> 
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+<th:block layout:fragment="script">
+	<script src="/js/rms/AuxEquipmentStatus/aux_value.js"></script>
+	<script type="text/javascript" src="/js/fragments/search_repeat.js"></script>
+</th:block>
+</html>

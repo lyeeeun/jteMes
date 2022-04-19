@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<TAG>
+		<EQUIP>Engine</EQUIP>
+		<DATE>2018.02.21</DATE>
+		<RUNNING_HOUR>6000</RUNNING_HOUR>
+		<WORK>Fuel Injection Valve</WORK>
+		<ENGINE_NO>No.2</ENGINE_NO>
+		<CYL_NO>A01</CYL_NO>
+	</TAG>
+	<TAG>
+		<EQUIP>Engine</EQUIP>
+		<DATE>2018.02.21</DATE>
+		<RUNNING_HOUR>6000</RUNNING_HOUR>
+		<WORK>Fuel Injection Valve</WORK>
+		<ENGINE_NO>No.2</ENGINE_NO>
+		<CYL_NO>A02</CYL_NO>
+	</TAG>
+	<TAG>
+		<EQUIP>Engine</EQUIP>
+		<DATE>2018.02.21</DATE>
+		<RUNNING_HOUR>6000</RUNNING_HOUR>
+		<WORK>Fuel Injection Valve</WORK>
+		<ENGINE_NO>No.2</ENGINE_NO>
+		<CYL_NO>A03</CYL_NO>
+	</TAG>
+	<TAG>
+		<EQUIP>Engine</EQUIP>
+		<DATE>2018.02.21</DATE>
+		<RUNNING_HOUR>6000</RUNNING_HOUR>
+		<WORK>Fuel Injection Valve</WORK>
+		<ENGINE_NO>No.2</ENGINE_NO>
+		<CYL_NO>B04</CYL_NO>
+	</TAG>
+</DOC>

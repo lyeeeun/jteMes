@@ -1,0 +1,166 @@
+/**200508 CSS 파일 생성_LYM**/
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.itemStockMgtForm {
+	margin-top: 0.8em;
+}
+
+/*********품목 재고 관리 그리드 더블클릭 혹은 추가 버튼 클릭 시의 팝업창**********/
+
+.itemStockMgtForm .center-input {
+	width: 100%;
+}
+
+.itemStockMgtForm .col-left-title {
+   width: 18%;
+}
+
+.itemStockMgtForm .col-left-content-1 {
+   width: 22%;
+}
+
+.itemStockMgtForm .col-left-content-2 {
+   width: 8%;
+}
+
+.itemStockMgtForm .col-right-title {
+   width: 22%;
+}
+
+.itemStockMgtForm .col-right-content {
+   width: 30%;
+}
+
+.itemStockMgtForm .grid-content {
+	width: 100%;
+}
+
+.jte-search-aria .input.k-textbox{
+	margin-left: 0.4em;
+	margin-right: 0.4em;
+}
+
+.itemStockMgtForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+.itemStockMgtForm .search-btn {
+	width: 100%;
+	text-align: center;
+	float: right
+}
+
+.itemStockMgtForm .left-caret:before {
+	padding-left: 26px;
+}
+
+.itemStockMgtForm .left-input {
+	width: 100%;
+}
+
+.itemStockMgtForm .left-input.btn-input{
+	width: 100%;
+}
+
+.itemStockMgtForm .right-input {
+	width: 100%;
+	float: right;
+}
+
+
+
+/*********** 품목 재고 관리 그리드 더블클릭 혹은 추가 버튼 클릭 시의 팝업창의 펼치기/접기 버튼 ***********/
+
+.itemStockMgtForm .pop_detail_btn_area {
+	text-align:center;
+	padding-top: 10px; /*버튼 영역에 먹이면 안먹여서 td에 클래스 새로 만들어서 준거임*/
+}
+
+.itemStockMgtForm .pop_detail_btn.pop_detail_hide {
+	cursor: pointer;
+	
+	padding-top: 8px;
+	padding-bottom: 8px;
+	padding-left: 36px;
+	padding-right: 36px;
+	border: rgba(0, 0, 0, 0.08);
+	border-radius: 5px;
+	background-color: #0c2441;
+	background-image: none, linear-gradient(to bottom, rgba(255, 255, 255, .25) 0, rgba(255, 255, 255, 0) 100%);
+	color: #ffffff;
+}
+
+.itemStockMgtForm .pop_detail_btn.pop_detail_show {
+	cursor: pointer;
+	
+	padding-top: 8px;
+	padding-bottom: 8px;
+	padding-left: 36px;
+	padding-right: 36px;
+	border: rgba(0, 0, 0, 0.08);
+	border-radius: 5px;
+	background-color: #2f455b;
+	background-image: none, linear-gradient(to bottom, rgba(255, 255, 255, .25) 0, rgba(255, 255, 255, 0) 100%);
+	color: #ffffff;
+}
+
+
+
+/*********** 품목 재고 관리 그리드 더블클릭 혹은 추가 버튼 클릭 → 팝업 하단 그리드 추가 버튼 클릭시 나오는 팝업  ***********/
+
+.itemStockMgtForm-popsc {
+	margin-top: 0.8em;
+}
+
+.itemStockMgtForm-popsc .center-input {
+   width: 100%;
+}
+
+.itemStockMgtForm-popsc .left-caret:before {
+	padding-left: 23px;
+}
+
+.itemStockMgtForm-popsc .left-input {
+	width: 100%;
+}
+
+.itemStockMgtForm-popsc .right-input {
+	width: 100%;
+	float: right;
+}
+
+.itemStockMgtForm-popsc .right-input.btn-input{
+	width: 100%;
+}
+
+.itemStockMgtForm-popsc .search-btn {
+   width: 100%;
+}
+
+.itemStockMgtForm-popsc .popsc-col-left-title {
+   width: 17%;
+}
+
+.itemStockMgtForm-popsc .popsc-col-left-content {
+   width: 32%;
+}
+
+.itemStockMgtForm-popsc .popsc-col-right-title {
+   width: 19%;
+}
+
+.itemStockMgtForm-popsc .popsc-col-right-content-1 {
+   width: 20%;
+}
+
+.itemStockMgtForm-popsc .popsc-col-right-content-2 {
+   width: 12%;
+}

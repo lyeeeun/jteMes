@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">JinTenchEng</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="/util/jquery-easyui/themes/material-teal/easyui.css">
+<link rel="stylesheet" type="text/css" href="/util/jquery-easyui/themes/icon.css">
+
+<link rel="stylesheet" type="text/css" href="/css/common/fontawesome/menuicon.css" />
+
+<link rel="stylesheet" href="/css/layouts/layout1.css">
+<link rel="stylesheet" href="/css/fragments/left.css">
+<link rel="stylesheet" href="/css/fragments/header.css">
+<link rel="stylesheet" href="/css/fragments/content.css">
+<link rel="stylesheet" href="/css/fragments/search.css">
+</head>
+<body>
+	<!-- 좌측영역 -->
+	<div th:insert="fragments/left :: left" class="left">This left content is going to be replaced.</div>
+	<div th:insert="fragments/header :: header" class="header">header</div>
+	<!-- 컨텐츠 영역 -->
+	<div class="base_ground">
+		<div class="content" layout:fragment="content"></div>
+	</div>
+	<input type="hidden" id="hidCurrentMenu" th:value="${Menu}">
+	<input type="hidden" id="hidCurrentTitle" th:value="${Title}">
+</body>
+<!-- 공통 스크립트 시작 -->
+<script type="text/javascript" src="/util/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="/util/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/util/jquery-easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/common/jintFormat.js"></script>
+<script type="text/javascript" src="/common/common.js"></script>
+<!-- 공통 스크립트 종료 -->
+
+<!-- 레이아웃 스크립트 시작 -->
+<script type="text/javascript" src="/js/fragments/content.js"></script>
+<script type="text/javascript" src="/js/fragments/left.js"></script>
+<script type="text/javascript" src="/js/fragments/header.js"></script>
+
+<!-- 레이아웃 스크립트 종료 -->
+
+<!-- 스크립트 영역(영역이 없기 때문에 ) -->
+<th:block layout:fragment="script"></th:block>
+</html>

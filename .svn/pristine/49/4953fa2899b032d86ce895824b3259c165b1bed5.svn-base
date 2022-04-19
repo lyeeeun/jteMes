@@ -1,0 +1,78 @@
+
+.infergodsMgtForm #jtePopAddForm_master {
+	width:100%;
+}
+
+.infergodsMgtForm .jtePopForm_master {
+	width: 100%;
+}
+
+.compMgtForm #jtePopForm_form {
+	text-align: left;
+}
+
+.infergodsMgtForm .select-btn-area input[type='radio'],
+.infergodsMgtForm .select-btn-area input[type='radio']:checked {/** 라디오 버튼 여백을 위해 추가_200810 youmi **/
+	margin-left: 10px;
+	margin-right: 5px;  
+}
+
+.k-grid-toolbar .jte-search-aria #history_grid_shSelTxt{ /** 팝업 검색창 좌우의 여백을 위해 추가_200810 youmi **/
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+
+.infergodsMgtForm .radio-btn {
+	margin-left: 10px;
+	margin-right: 5px;   /** 라디오 버튼 오른쪽 여백 추가_200810 youmi **/
+}
+
+.infergodsMgtForm .radio-btn:hover {
+	cursor:pointer;
+}
+
+.infergodsMgtForm .col-left-title {
+	width: 20%;
+}
+
+.infergodsMgtForm .col-left-content {
+	width: 30%;
+}
+
+.infergodsMgtForm .col-right-title {
+	width: 20%;
+}
+
+.infergodsMgtForm .col-right-content {
+	width: 30%;
+}
+
+.infergodsMgtForm .left-input {
+	width: 95%;
+	float: left;
+}
+
+.infergodsMgtForm .right-input {
+	width: 95%;
+	float: right;
+}
+
+.infergodsMgtForm .left-input .btn-input {
+	width: 100%;
+}
+
+.infergodsMgtForm .center-input {
+	width: 100%;
+}
+
+.infergodsMgtForm .search-btn {
+	width: 95%;
+	float: right;
+}
+
+/* 20.10.14 JJW */
+.infergodsMgtForm .k-radio {
+	margin-left: 10px;
+	margin-right: 5px;
+}

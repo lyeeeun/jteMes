@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.basMgt.codMgt.baseCodeMgt.BaseCodeMgtMapper">
+	
+	<sql id="code_base">
+			cd_id AS cdId,
+			cd_nm AS cdNm,
+			cd_val AS cdVal,
+			cd_reserve01 AS cdReserve01,
+			cd_reserve02 AS cdReserve02,
+			cd_reserve03 AS cdReserve03,
+			cd_reserve04 AS cdReserve04,
+			description,
+			creator_id AS creatorId,
+			updator_id AS updatorId, 
+			created_at AS createdAt,
+			updated_at AS updatedAt,
+			up_cd_id,
+			sort_num as sortNum,
+			use_yn as useYn
+		FROM cw_comn_code
+		WHERE up_cd_id = #{upCdId}
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<select id="readCode"
+		parameterType="jin.mes.form.basMgt.codMgt.baseCodeMgt.BaseCodeMgtDto"
+		resultType="jin.mes.form.basMgt.codMgt.baseCodeMgt.BaseCodeMgtDto">
+		SELECT 
+		<choose>
+			<when test="sort != null and sort != '' ">
+				ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+			</when>
+			<otherwise>
+				ROW_NUMBER() OVER(ORDER BY sortNum asc, updatedAt desc) AS RNUM,
+			</otherwise>
+		</choose>
+		<include refid="code_base"/>
+		<if test="take != 0 and take != null ">
+			LIMIT #{limitIndex}, #{rows}
+		</if>
+	</select>
+
+	<select id="codeCount"
+		parameterType="jin.mes.form.basMgt.codMgt.baseCodeMgt.BaseCodeMgtDto"
+		resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM(
+			SELECT
+			<include refid="code_base"/>
+		)c_table
+	</select>
+	
+	<update id="codeUpdate"
+		parameterType="jin.mes.form.basMgt.codMgt.baseCodeMgt.BaseCodeMgtDto">
+		UPDATE cw_comn_code
+		SET
+			CD_ID=#{cdId},
+			CD_NM=#{cdNm},
+			cd_val=#{cdVal},
+			cd_reserve01=#{cdReserve01},
+			cd_reserve02=#{cdReserve02},
+			cd_reserve03=#{cdReserve03},
+			cd_reserve04=#{cdReserve04},
+			description=#{description},
+			updator_id=#{updatorId},
+			updated_at = now(),
+			sort_num = IFNULL(#{sortNum},0),
+			use_yn = #{useYn}
+		WHERE cd_id = #{cdId}
+		AND up_cd_id = #{upCdId}
+	</update>
+	
+	<update id="codeAdd"
+		parameterType="jin.mes.form.basMgt.codMgt.baseCodeMgt.BaseCodeMgtDto">
+		INSERT INTO cw_comn_code(
+			cd_id,
+			created_at,
+			updated_at,
+			creator_id,
+			updator_id,
+			cd_nm,
+			cd_val,
+			cd_reserve01,
+			cd_reserve02,
+			cd_reserve03,
+			cd_reserve04,
+			description,
+			up_cd_id,
+			sort_num,
+			use_yn
+		)
+		VALUES(
+			#{cdId},
+			now(),
+			now(),
+			#{creatorId},
+			#{creatorId},
+			#{cdNm},
+			#{cdVal},
+			#{cdReserve01},
+			#{cdReserve02},
+			#{cdReserve03},
+			#{cdReserve04},
+			#{description},
+			#{upCdId},
+			IFNULL(#{sortNum},0),
+			#{useYn}
+		)
+	</update>
+	
+	<delete id="codeDelete" parameterType="string">
+		DELETE FROM cw_comn_code
+		WHERE cd_id = #{cdId} 
+	</delete>
+</mapper>

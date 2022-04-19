@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SY_authGrpRegMgmt">
+	<select id="selectCtrlList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT /* selectCtrlList / 센터명, 센터코드, 단지코드 조회 _박이삭*/
+			DISTINCT 
+			  CTR_NM	AS	CTR_NM	
+			, CTR_CD	AS	CTR_CD	
+			 FROM TB_CTRINF		
+			
+		]]>
+	</select>
+
+	<select id="selectAuthGrpList" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT		(SY_authGrpRegMgmt)
+			       CTR_CD         AS CTR_CD       
+			     , FN_CM_GETCTRNM(CTR_CD, COMP_CD) AS CTR_NM 
+			     , COMP_CD        AS COMP_CD        
+			     , AUTH_GRP_CD    AS AUTH_GRP_CD    
+			     , AUTH_GRP_CD    AS ORG_AUTH_GRP_CD 
+			     , AUTH_GRP_NM    AS AUTH_GRP_NM    
+			     , USE_YN         AS USE_YN          
+			     , SND_YN         AS SND_YN        
+			     , SND_DT         AS SND_DT          
+			     , SND_PGM_ID     AS SND_PGM_ID     
+			  FROM TB_AUTHGRPINF                   
+			 WHERE 1=1
+		]]>
+		
+	</select>
+
+	<select id="selectpreSave" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT		(SY_authGrpRegMgmt) 
+			COUNT(*) AS CNT			
+			FROM TB_AUTHGRPINF		
+			WHERE CTR_CD = #{CTR_CD}
+  			AND COMP_CD = #{COMP_CD}
+  			AND AUTH_GRP_CD = #{AUTH_GRP_CD}
+		]]>
+	</select>
+
+	<select id="insertAuthGrpList" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+			INSERT INTO TB_AUTHGRPINF (    (SY_authGrpRegMgmt)
+			      CTR_CD           
+			    , COMP_CD            
+			    , AUTH_GRP_CD       
+			    , AUTH_GRP_NM       
+			    , USE_YN             
+			    , REG_DT            
+			    , REG_USER_ID        
+			    , REG_PGM_ID       
+			    , SND_YN            
+			) VALUES (
+			      #{CTR_CD}            
+			    , #{COMP_CD}           
+			    , UPPER(#{AUTH_GRP_CD})       
+			    , #{AUTH_GRP_NM}       
+			    , DECODE(#{USE_YN}, 'Y', 'Y', 'N')
+			    , SYSDATE            
+			    , #{REG_USER_ID}       
+			    , #{REG_PGM_ID}        
+			    , 'N'                
+			)
+		]]>
+	</select>
+
+	<select id="updateAuthGrpList" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+			UPDATE TB_AUTHGRPINF	(SY_authGrpRegMgmt)
+			   SET
+			       AUTH_GRP_NM   = #{AUTH_GRP_NM}    
+			     , USE_YN        = DECODE(#{USE_YN}, 'Y', 'Y', 'N')  
+			     , UPD_DT        = SYSDATE          
+			     , UPD_USER_ID   = #{UPD_USER_ID}    
+			     , UPD_PGM_ID    = #{UPD_PGM_ID}     
+			     , SND_YN        = 'N'             
+			 WHERE
+			       CTR_CD        = #{CTR_CD}          
+			   AND COMP_CD       = #{COMP_CD}         
+			   AND AUTH_GRP_CD   = #{ORG_AUTH_GRP_CD} 
+		]]>
+	</select>
+
+	<select id="deleteAuthGrpList" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+			DELETE    (SY_authGrpRegMgmt)
+			  FROM TB_AUTHGRPINF                  
+			 WHERE CTR_CD       = #{CTR_CD}         
+			   AND COMP_CD      = #{COMP_CD}       
+			   AND AUTH_GRP_CD  = #{ORG_AUTH_GRP_CD} 
+		]]>
+	</select>
+</mapper>

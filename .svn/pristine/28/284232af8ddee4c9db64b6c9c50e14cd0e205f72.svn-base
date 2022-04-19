@@ -1,0 +1,54 @@
+.engMot_Table{
+	width:100%;
+}
+
+.engMot_Row{
+	vertical-align:top;
+}
+.engMot_Row > td{
+	width:25%;
+	height:100%;
+	padding-top:10px;
+}
+
+.engMot_Row >td > div{
+	height:100%;
+	margin-right:5px;
+}
+.EM_GROUP{
+	border: 2px solid #BDBDBD;
+}
+
+.EM_GROUP table{
+	border-collapse:collapse;
+	font-size:12px;
+}
+.EM_B {
+	font-weight: bold;
+	margin: 3px 0 3px 0;
+	font-size:16px;
+	display:block;
+}
+
+.EM_GROUP table tr:nth-child(2n){
+	background:#ececee;
+}
+.ev_textarea{
+	width:70%;
+	padding-left:15px;
+}
+.ev_numberarea{
+	width:30%;
+}
+.ev_number{
+	width:100%; 
+	height:30px;
+}
+.number_left{
+	width:60%;
+	text-align:right;
+}
+.number_right{
+	width:40%;
+	text-align:left;
+}

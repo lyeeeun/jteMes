@@ -1,0 +1,152 @@
+/***** 200511JJW 오른쪽 그리드 - 추가버튼 팝업 *******/
+
+#jtePopToolUse {
+	height: 100%;
+}
+
+.mtrltoolMgtForm-jteSingleGrid {
+	width:44.5%;
+	height:100%;
+	float:left;
+}
+
+.mtrltoolMgtForm-jteSubGrid {
+	width: 54.5%;
+	height:100%;
+	float:right;
+}
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.mtrltoolMgtForm .fa-info-circle:before {
+	color:#3367D6;
+}
+
+.mtrltoolMgtForm .jtePopForm_master {
+	width: 100%;
+}
+
+.mtrltoolMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.mtrltoolMgtForm .col-left-title {
+	width: 24%;
+}
+
+.mtrltoolMgtForm .col-left-content {
+	width: 27%;
+}
+
+.mtrltoolMgtForm .col-right-title {
+	width: 22%;
+}
+
+.mtrltoolMgtForm .col-right-content {
+	width: 27%;
+}
+
+.mtrltoolMgtForm .normal-input{
+	width: 100%;
+}
+
+.mtrltoolMgtForm .center-input{
+	width: 100%;
+}
+
+.mtrltoolMgtForm .left-input {
+	width: 100%;
+}
+
+.mtrltoolMgtForm .right-input {
+	width: 100%;
+}
+
+.mtrltoolMgtForm .left-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.mtrltoolMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.mtrltoolMgtForm .search-btn {
+	width: 100%;
+}
+
+/***** 200511JJW 오른쪽 그리드 정비이력 버튼 클릭 시 나타나는 팝업  *******/
+
+.mtrltoolMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.mtrltoolMgtForm .popsc-col-left-title {
+	width: 22%;
+}
+
+.mtrltoolMgtForm .popsc-col-left-content-1 {
+	width: 17%;
+}
+
+.mtrltoolMgtForm .popsc-col-left-content-2 {
+	width: 9%;
+}
+
+.mtrltoolMgtForm .popsc-col-right-title {
+	width: 26%;
+}
+
+.mtrltoolMgtForm .popsc-col-right-content {
+	width: 26%;
+}
+
+
+.mtrltoolMgtForm .normal-input{
+	width: 100%;
+}
+
+.mtrltoolMgtForm .center-input{
+	width: 100%;
+}
+
+.mtrltoolMgtForm .left-input {
+	width: 100%;
+}
+
+.mtrltoolMgtForm .right-input {
+	width: 100%;
+}
+
+.mtrltoolMgtForm .left-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.mtrltoolMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.mtrltoolMgtForm .search-btn {
+	width: 100%;
+}
+
+#jtePopToolAdd_form {
+	/* font-size: 16px; */
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+#jtePopToolAdd_form td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.mapper.techMgt.mqsToolMgt.MqsToolMgtMapper">
+	
+	<sql id="routingInfo_base">
+			routingInfo.routing_id AS routingId,
+			routingInfo.routing_seq AS routingSeq,
+			IFNULL(routingInfo.routing_type," ") AS routingType,
+			routingInfo.man_hour AS manHour,
+			routingInfo.created_at AS createdAt,
+			routingInfo.updated_at AS updatedAt,
+			routingInfo.creator_id AS creatorId,
+			routingInfo.updator_id AS updatorId,
+			routingInfo.description,
+			routingInfo.item_id AS itemId,
+			itemInfo.item_nm AS itemNm,
+			routingInfo.cycle_time AS cycleTime,
+			routingInfo.setup_time AS setupTime,
+			routingInfo.inspect_time AS inspectTime,
+			ncpgmInfo.ncpgm_no	AS ncpgmNo
+		FROM bc_routing_info routingInfo
+		INNER JOIN bc_item_info itemInfo ON routingInfo.item_id = itemInfo.item_id
+		LEFT JOIN bc_ncprogram_info ncpgmInfo ON routingInfo.routing_id = ncpgmInfo.routing_id AND ncpgmInfo.is_use = TRUE
+		WHERE routingInfo.item_id = #{itemId}
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<sql id="mqsToolInfo_base">
+				rtlToolInfo.routing_id		AS routingId,
+				rtlToolInfo.tool_no			AS toolNo,
+				rtlToolInfo.tool_id			AS toolId,
+				toolInfo.tool_nm			AS toolNm,
+				toolInfo.tool_dc			AS toolDc,
+				rtlToolInfo.holder_id		AS holderId,
+				holderInfo.tool_dc			AS holderDc,
+				holderInfo.tool_nm			AS holderNm,
+				rtlToolInfo.insert_qty		AS insertQty,
+				rtlToolInfo.insert_dc		AS insertDc,
+				rtlToolInfo.corner_qty		AS cornerQty,
+				rtlToolInfo.tool_tlength_u	AS toolTLengthU,
+				rtlToolInfo.tool_tlength_l	AS toolTLengthL,
+				rtlToolInfo.tool_wlength_u	AS toolWlengthU,
+				rtlToolInfo.tool_wlength_l	AS toolWlengthL,
+				rtlToolInfo.tool_dia		AS toolDia,
+				rtlToolInfo.tool_change		AS toolChange,
+				rtlToolInfo.offset_h		AS offsetH,
+				rtlToolInfo.offset_d		AS offsetD,
+				rtlToolInfo.special_dc		AS specialDc,
+				rtlToolInfo.special_pic		AS specialPic
+			FROM bc_rtl_routing_tool rtlToolInfo
+			INNER JOIN bc_tool_info toolInfo ON rtlToolInfo.tool_id = toolInfo.tool_id
+			INNER JOIN bc_tool_info holderInfo ON rtlToolInfo.holder_id = holderInfo.tool_id
+			WHERE rtlToolInfo.routing_id = #{routingId}
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<select id="selectMqsRoutingInfo"
+		parameterType="jin.mes.form.techMgt.mqsToolMgt.MqsToolMgtDto"
+		resultType="jin.mes.form.techMgt.mqsToolMgt.MqsToolMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY routing_seq desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="routingInfo_base"></include>
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<!-- 수주정보 select -->
+	<select id="selectMqsRoutingInfoCount"
+		parameterType="jin.mes.form.techMgt.mqsToolMgt.MqsToolMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="routingInfo_base"></include>
+		)c_table
+	</select>
+	
+	<select id="selectMqsToolInfo"
+		parameterType="jin.mes.form.techMgt.mqsToolMgt.MqsToolMgtDto"
+		resultType="jin.mes.form.techMgt.mqsToolMgt.MqsToolMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY tool_no asc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="mqsToolInfo_base"></include>
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<!-- 수주정보 select -->
+	<select id="selectMqsToolInfoCount"
+		parameterType="jin.mes.form.techMgt.mqsToolMgt.MqsToolMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="mqsToolInfo_base"></include>
+		)c_table
+	</select>
+	
+	<insert id="insertMqsToolInfo" parameterType="jin.mes.form.techMgt.mqsToolMgt.MqsToolMgtDto">
+		INSERT INTO bc_rtl_routing_tool(
+			routing_id,
+			tool_no,
+			tool_id,
+			holder_id,
+			insert_dc,
+			insert_qty,
+			corner_qty,
+			tool_tlength_u,
+			tool_tlength_l,
+			tool_wlength_u,
+			tool_wlength_l,
+			tool_dia,
+			tool_change,
+			offset_h,
+			offset_d,
+			special_dc,
+			special_pic
+		)VALUES(
+			#{routingId},
+			#{toolNo},
+			#{toolId},
+			#{holderId},
+			#{insertDc},
+			#{insertQty},
+			#{cornerQty},
+			#{toolTLengthU},
+			#{toolTLengthL},
+			#{toolWlengthU},
+			#{toolWlengthL},
+			#{toolDia},
+			#{toolChange},
+			#{offsetH},
+			#{offsetD},
+			#{specialDc},
+			#{specialPic}
+		)
+	</insert>
+	
+	<update id="updateMqsToolInfo" parameterType="jin.mes.form.techMgt.mqsToolMgt.MqsToolMgtDto">
+		UPDATE bc_rtl_routing_tool
+		SET tool_no = tool_no
+			<if test="toolId != null and toolId != '' ">
+				,tool_id = #{toolId}
+			</if>
+			<if test="holderId != null and holderId != '' ">	
+				,holder_id = #{holderId}
+			</if>	
+			<if test="insertDc != null and insertDc != '' ">
+				,insert_dc = #{insertDc}
+			</if>
+			<if test="insertQty != null and insertQty != '' ">
+				,insert_qty = #{insertQty}
+			</if>
+			<if test="cornerQty != null and cornerQty != '' ">
+				,corner_qty = #{cornerQty}
+			</if>
+			<if test="toolTLengthU != null and toolTLengthU != '' ">
+				,tool_tlength_u = #{toolTLengthU}
+			</if>
+			<if test="toolTLengthL != null and toolTLengthL != '' ">
+				,tool_tlength_l = #{toolTLengthL}
+			</if>
+			<if test="toolWlengthU != null and toolWlengthU != '' ">
+				,tool_wlength_u = #{toolWlengthU}
+			</if>
+			<if test="toolWlengthL != null and toolWlengthL != '' ">
+				,tool_wlength_l = #{toolWlengthL}
+			</if>
+			<if test="toolDia != null and toolDia != '' ">
+				,tool_dia = #{toolDia}
+			</if>
+			<if test="toolChange != null and toolChange != '' ">
+				,tool_change = #{toolChange}
+			</if>
+			<if test="offsetH != null and offsetH != '' ">
+				,offset_h = #{offsetH}
+			</if>
+			<if test="offsetD != null and offsetD != '' ">
+				,offset_d = #{offsetD}
+			</if>
+			<if test="specialDc != null and specialDc != '' ">
+				,special_dc = #{specialDc}
+			</if>
+			<if test="specialPic != null and specialPic != '' ">
+				,special_pic = #{specialPic}
+			</if>
+		WHERE routing_id = #{routingId}
+		AND tool_no = #{toolNo}
+	</update>
+	
+	<select id="selectDupleKeyCheck"
+		parameterType="jin.mes.form.techMgt.mqsToolMgt.MqsToolMgtDto"
+		resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM bc_rtl_routing_tool
+		WHERE routing_id = #{routingId}
+		AND tool_no = #{toolNo}
+	</select>
+	
+</mapper>

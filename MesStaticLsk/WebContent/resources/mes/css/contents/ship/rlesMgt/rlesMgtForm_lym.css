@@ -1,0 +1,235 @@
+/*********200507_출고 관리 css 생성_LYM**********/
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+/*********출고 관리 그리드의 포장 작업 버튼 클릭 시의 팝업창**********/
+
+#packageInfo_grid .k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#packageInfo_grid td {
+	padding: .4em .6em;	
+}
+
+.k-grid-toolbar .jte-search-aria #packageInfo_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+/*********출고 관리 그리드의 포장 작업 버튼 클릭 → 추가 버튼 클릭 시의 팝업창**********/
+
+.rlesMgtForm {
+	margin-top: 0.8em;
+}
+
+.rlesMgtForm .center-input {
+	width: 100%;
+}
+
+.rlesMgtForm .center-input.btn-input{
+	width: 100%;
+}
+
+.rlesMgtForm .col-left-title {
+	width: 17%;
+}
+
+.rlesMgtForm .col-left-content {
+	width: 30%;
+}
+
+.rlesMgtForm .col-right-title {
+	width: 23%;
+}
+
+.rlesMgtForm .col-right-content {
+	width: 30%;
+}
+
+.rlesMgtForm .grid-content {
+	width: 100%;
+}
+
+.jte-search-aria .input.k-textbox {
+	margin-left: 0.4em;
+	margin-right: 0.4em;
+}
+
+.rlesMgtForm .k-link.k-link-date {
+	padding: 0px 10px;
+	padding-bottom: 32px;
+	border-right: 1px solid #ffffff;
+}
+
+.rlesMgtForm .k-link.k-link-time {
+	padding: 0px 10px;
+	padding-bottom: 32px;
+}
+
+.rlesMgtForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+.rlesMgtForm .k-datetimepicker .k-picker-wrap .k-input {
+	padding: 4px 0px;
+}
+
+.rlesMgtForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 0px;
+}
+
+.rlesMgtForm .k-listbox.k-listbox-toolbar-right .k-listbox-toolbar {
+    margin-left: 8px;
+    margin-right: 4px; /* 200409 툴바 양옆으로 마진 부여_LYM */
+}
+
+.rlesMgtForm .rlesMgtForm-btn {
+	width: 100%;
+	text-align: center;
+}
+
+.rlesMgtForm .jtePopAddForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.rlesMgtForm .jtePopForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.rlesMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.rlesMgtForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.rlesMgtForm .left-caret:before {
+	padding-left: 40px;
+}
+
+.rlesMgtForm .left-input {
+	width: 100%;
+}
+
+.rlesMgtForm .jtePopAddForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.rlesMgtForm .right-input {
+	width: 100%;
+	float: right;
+}
+
+
+/*********출고 관리 그리드의 포장 작업 버튼 클릭 → 추가 버튼 클릭 → 불량 정보 등록 클릭 시의 팝업창**********/
+
+
+.rlesMgtForm {
+	margin-top: 0.8em;	
+}
+
+.toolInfoPopup_form{
+	width: 93%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.k-widget.k-numerictextbox.badQty { /*200507_불량 수 길이_LYM*/
+	width: 95%;
+}
+
+.rlesMgtForm .tool-checkbox-td {
+	width: 10%;
+	text-align: center;
+}
+
+.rlesMgtForm .toolInfo-title{
+	width: 100%;
+	font-weight: bolder;
+	margin-top: 8px;
+/* 	padding-left: 50px; */
+}
+
+.rlesMgtForm .toolInfo-content {
+	width: 100%
+}
+
+.rlesMgtForm .toolInfo tr {
+	text-align: left;	
+}
+
+.rlesMgtForm .toolInfo th {
+	text-align: left;	
+}
+
+.rlesMgtForm .toolInfo td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+	
+}
+
+.rlesMgtForm .toolInfo-title td {
+	text-align: center;
+}
+
+.rlesMgtForm .toolInfo-content td {
+	width: 100%;
+}
+
+.rlesMgtForm .toolInfo.toolInfo-title .col-toolInfo-check {
+	width: 8%;
+}
+
+.rlesMgtForm .toolInfo.toolInfo-title .col-toolInfo1 {
+	width: 53%;
+}
+
+.rlesMgtForm .toolInfo.toolInfo-title .col-toolInfo2 {
+	width: 39%;
+}
+
+.rlesMgtForm .toolInfo-div {
+   overflow-y: scroll;
+   height: 377px;
+   background-color: #ffffff;
+   padding-left: 15px;
+   padding-right: 15px;
+   border: 1px solid #99a5b5;
+   color: #192534;
+}
+
+.rlesMgtForm .plus-minus-btn {
+	width: 20px;
+	padding: 1px 30px;
+	font-size: 19px;
+	margin-right: 8px;
+	
+}
+
+.plus-minus-btn-area {
+	margin-top: 15px;
+}
+
+.rlesMgtForm .col-toolInfo {
+	text-align: center;
+	width: 24%;
+}
+
+.rlesMgtForm-toolInfo-content .k-widget.k-dropdown.badCode {
+	width: 96%;
+}

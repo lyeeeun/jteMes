@@ -1,0 +1,209 @@
+
+.productWorkAdminForm .fa-info-circle:before {
+	color:#3367D6;
+}
+
+
+.final-btn-area {
+	text-align: center;
+	
+}
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+
+.productWorkAdminForm .col-left-title {
+	width: 34%;
+}
+
+.productWorkAdminForm .col-right-content {
+	width: 66%;
+}
+.productWorkAdminForm .grid-content {
+	width: 100%;
+}
+
+.productWorkAdminForm #jtePopForm_master th {
+	text-align: left;	
+}
+
+.productWorkAdminForm #jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.productWorkAdminForm #jteProdAsgnPop_master th {
+	text-align: left;	
+}
+
+.productWorkAdminForm #jteProdAsgnPop_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.productWorkAdminForm #jteProdAsgnPop_master {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.productWorkAdminForm #jteProdProdWorkPop_master th {
+	text-align: left;	
+}
+
+.productWorkAdminForm #jteProdProdWorkPop_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.productWorkAdminForm #jteProdProdWorkPop_master {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.productWorkAdminForm .mtrlUseSavePop_table th {
+	text-align: left;	
+}
+
+.productWorkAdminForm .mtrlUseSavePop_table td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.productWorkAdminForm .mtrlUseSavePop_table {
+	padding-left: 10px;
+	padding-right: 10px;
+	width: 100%;
+}
+
+.productWorkAdminForm .mtrlUseBadSavePop_table th {
+	text-align: left;	
+}
+
+.productWorkAdminForm .mtrlUseBadSavePop_table td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.productWorkAdminForm .mtrlUseBadSavePop_table {
+	padding-left: 10px;
+	padding-right: 10px;
+	width: 100%;
+}
+
+.productWorkAdminForm .itemBadSavePop_table th {
+	text-align: left;	
+}
+
+.productWorkAdminForm .itemBadSavePop_table td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.productWorkAdminForm .itemBadSavePop_table {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+/*************************************************/
+
+.productWorkAdminForm .pop-col-left-title {
+	width: 22%;
+}
+
+.productWorkAdminForm .pop-col-left-content {
+	width: 28%;
+}
+
+.productWorkAdminForm .pop-col-right-title {
+	width: 22%;
+}
+
+.productWorkAdminForm .pop-col-right-content {
+	width: 28%;
+}
+
+
+.productWorkAdminForm .popsc-col-left-title {
+	width: 20%;
+}
+
+.productWorkAdminForm .popsc-col-left-content {
+	width: 56%;
+}
+
+.productWorkAdminForm .popsc-col-right-content {
+	width: 24%;
+}
+
+
+
+.productWorkAdminForm .poptr-col-left-title {
+	width: 20%;
+}
+
+.productWorkAdminForm .poptr-col-left-content {
+	width: 30%;
+}
+
+.productWorkAdminForm .poptr-col-right-title {
+	width: 20%;
+}
+
+.productWorkAdminForm .poptr-col-right-content {
+	width: 30%;
+}
+
+/************************************************/
+
+.productWorkAdminForm .left-input {
+	width: 100%;
+}
+
+.productWorkAdminForm .right-input {
+	width: 100%;
+}
+
+.productWorkAdminForm .center-input {
+	width: 100%;
+}
+
+.productWorkAdminForm .search-btn {
+	width: 95%;
+	float: right;
+}
+
+.productWorkAdminForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.productWorkAdminForm .right-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.productWorkAdminForm .left-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.productWorkAdminForm .k-datetimepicker .k-select .k-link {
+	display: flex;
+}
+.productWorkAdminForm .k-datetimepicker .k-select .k-link-date {
+	border-right: 1px solid #ffffff;
+}
+
+.productWorkAdminForm #jtePopForm_tab {
+	padding-left: 20px;
+    padding-right: 20px;
+}
+
+.productWorkAdminForm #jtePopForm_tab td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}

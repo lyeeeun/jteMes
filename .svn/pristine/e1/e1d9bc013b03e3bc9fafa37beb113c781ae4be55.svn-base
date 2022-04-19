@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.prcesMgt.gantChtMgt.NewGantChtMgtMapper">
+
+	<select id="selectGanttChart"
+		parameterType="jin.mes.cform.prcesMgt.gantChtMgt.NewGantChtMgtDto"
+		resultType="jin.mes.cform.prcesMgt.gantChtMgt.NewGantChtMgtDto">
+			SELECT 
+				lotInfo.lot_id AS title,
+				IFNULL(MIN(workInfo.prod_work_start), NOW()) AS START,
+				IFNULL(MAX(workInfo.prod_work_end), NOW()) AS END,
+				lotInfo.lot_seq AS orderId,
+				lotInfo.lot_id AS id,
+				FALSE	AS parentId,
+				TRUE	AS summary,
+				TRUE	AS expanded,
+				IF(IFNULL(IFNULL(qmItem.lotAchieve,0)/lotQty.lotQty,0)>1, 1, IFNULL(IFNULL(qmItem.lotAchieve,0)/lotQty.lotQty,0)) AS percentComplete
+			FROM prs_lot_info lotInfo
+			LEFT JOIN prs_work_info workInfo
+			ON lotInfo.lot_id = workInfo.lot_id
+			LEFT JOIN (
+				SELECT item_mgt_id, SUM(item_qty_total) lotAchieve
+				FROM qm_item_mgt
+				WHERE 1=1
+				AND item_qty_target != 'prod_tagt02'
+				GROUP BY item_mgt_id
+			) qmItem
+			ON lotInfo.lot_id = qmItem.item_mgt_id
+			LEFT JOIN (
+				SELECT lot_id, SUM(IFNULL(lot_qty,0)) lotQty
+				FROM prs_lot_info
+				WHERE 1=1
+				GROUP BY lot_id
+			) lotQty
+			ON lotInfo.lot_id = lotQty.lot_id
+			WHERE lotInfo.lot_state != 'ord_sta02'
+			GROUP BY lotInfo.lot_id
+			
+			UNION
+			
+			SELECT 
+				CONCAT(userInfo.user_nm, "/", eqmtMgt.eqmt_mgt_nm) AS title,
+				IFNULL(workInfo.prod_work_start, NOW()) AS START,
+				IFNULL(workInfo.prod_work_end, NOW()) AS END,
+				ROW_NUMBER() OVER(ORDER BY workInfo.prod_work_id) AS orderId,
+				workInfo.prod_work_id AS id,
+				workInfo.lot_id AS parentId,
+				FALSE AS summary,
+				TRUE AS expanded,
+				IF(IFNULL(IFNULL(workInfo.prod_work_good,0)/IFNULL(workInfo.prod_work_qty,0),0)>1, 1, IFNULL(IFNULL(workInfo.prod_work_good,0)/IFNULL(workInfo.prod_work_qty,0),0)) AS percentComplete
+			FROM prs_work_info workInfo
+			INNER JOIN mb_user_info userInfo
+			ON workInfo.prod_work_user = userInfo.user_id
+			INNER JOIN bc_equipment_mgt eqmtMgt
+			ON workInfo.eqmt_mgt_id = eqmtMgt.eqmt_mgt_id
+	</select>
+	
+</mapper>

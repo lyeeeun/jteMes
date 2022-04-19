@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.mapper.common.scheduler.SchedulerMgtMapper">
+	
+	<!-- 나의 알람 리스트 -->
+	<select id="selectGageInfo" 
+		parameterType="jin.mes.form.facilMgt.facilCorMgt.FacilCorMgtDto"
+		resultType="jin.mes.form.facilMgt.facilCorMgt.FacilCorMgtDto">
+		SELECT 
+			eqmtMgt.eqmt_mgt_id		AS eqmtMgtId,
+			eqmtMgt.eqmt_mgt_gbn		AS eqmtMgtGbn,
+			eqmtMgt.eqmt_mgt_mtnc		AS eqmtMgtMtnc,
+			eqmtMgt.eqmt_mgt_nm             AS eqmtMgtNm,
+			eqmtMgt.eqmt_mgt_purchase       AS eqmtMgtPurchase,
+			eqmtMgt.eqmt_mgt_verif          AS eqmtMgtVerif,
+			eqmtMgt.eqmt_mgt_desc           AS eqmtMgtDesc
+		FROM bc_equipment_mgt eqmtMgt
+		<!-- WHERE eqmt_mgt_verif < DATE_ADD(NOW(), INTERVAL +#{pInterval} DAY) -->
+		WHERE 1=1
+		<![CDATA[AND eqmt_mgt_verif < DATE_ADD(NOW(), INTERVAL +#{pInterval} DAY)]]>
+		AND eqmt_mgt_gbn = #{eqmtMgtGbn}
+	</select>
+	
+	<select id="selectEqmtManager"
+		parameterType="jin.mes.form.basMgt.userMgt.userAuth.UserAuthDto"
+		resultType="jin.mes.form.basMgt.userMgt.userAuth.UserAuthDto">
+		SELECT userRole.user_id, roleAuth.role_id, roleAuth.auth_id FROM mb_rtl_user_role userRole
+		INNER JOIN mb_rtl_role_auth  roleAuth ON userRole.role_id = roleAuth.role_id
+		WHERE auth_id = #{authId}
+	</select>
+	<!-- 알람등록 -->
+	<insert id="insertAlarmMgt" parameterType="jin.mes.common.alarm.AlarmMgtDto">
+		<selectKey keyProperty="alarmId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('ALARM') AS alarmId
+		</selectKey>			
+		INSERT INTO sys_alarm_info(
+			alarm_id,
+			alarm_target,
+			alarm_code,
+			alarm_title,
+			alarm_content,
+			alarm_url,
+			alarm_sender,
+			alarm_send_date,
+			alarm_receiver,
+			alarm_receive_date,
+			alarm_status,
+			alarm_device,
+			creator_id,
+			created_at
+		)VALUES(
+			#{alarmId},
+			#{alarmTarget},
+			#{alarmCode},
+			#{alarmTitle},
+			#{alarmContent},
+			#{alarmUrl},
+			#{alarmSender},
+			#{alarmSendDate},
+			#{alarmReceiver},
+			null,
+			'NEW',
+			null,
+			#{creatorId},
+			NOW()
+		)
+	</insert>
+	
+	<!-- 알람 수정 -->
+	<update id="updateAlarmMgt" parameterType="jin.mes.common.alarm.AlarmMgtDto">
+		UPDATE sys_alarm_info
+		SET alarm_id = alarm_id
+			<if test="alarmReceiveDate != null and alarmReceiveDate != ''">	
+				,alarm_receive_date = #{alarmReceiveDate}
+			</if>
+			<if test="alarmStatus != null and alarmStatus != ''">	
+				,alarm_status = #{alarmStatus}
+			</if>
+			<if test="alarmDevice != null and alarmDevice != ''">	
+				,alarm_device = #{alarmDevice}
+			</if>
+		WHERE alarm_id  = #{alarmId}
+	</update>
+	
+	<!-- 알람 읽음 표시 -->
+	<update id="updateAlarmRead" parameterType="jin.mes.common.alarm.AlarmMgtDto">
+		UPDATE sys_alarm_info
+		SET alarm_id = alarm_id
+			,alarm_receive_date = NOW()
+			,alarm_status = #{alarmStatus}
+			,alarm_device = #{alarmDevice}
+		WHERE alarm_id  = #{alarmId}
+	</update>
+	
+	<!-- 알람삭제 -->
+	<delete id="deleteAlarmMgt" parameterType="jin.mes.common.alarm.AlarmMgtDto">
+		DELETE FROM sys_alarm_info
+		WHERE alarm_id  = #{alarmId}
+	</delete>
+</mapper>

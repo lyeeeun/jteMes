@@ -1,0 +1,24 @@
+
+.performEquipmentForm {
+	width:100%;
+}
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.performEquipmentForm .search-btn-area {
+	background-color: #eaeef2;
+	margin-bottom: 5px;
+}
+
+.performEquipmentForm .search-btn-area #placeNm{
+	margin: 15px 5px 15px 20px;
+}
+
+.performEquipmentForm.performEquipmentForm-gird {
+	width:100%;
+	margin-top: 5px;
+}
+

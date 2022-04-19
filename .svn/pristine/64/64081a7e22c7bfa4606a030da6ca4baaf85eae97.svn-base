@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="jin.mes.cform.qualMgt.qualPec.inputQualMgt.NewInputQualMgtMapper">
+
+	<!-- 입고검사   Main Grid -->
+	<sql id="inputQual_base">
+		qcstk.co_cd 			AS coCd,
+		qcstk.qc_dt 			AS qcDate,
+		qcstk.qc_nb 			AS qcNum,
+		strade.tr_nm 			AS trNm,
+		(SELECT IFNULL(kor_nm,'') FROM SEMP INNER JOIN LPLNNERCD ON SEMP.emp_cd = LPLNNERCD.EMP_CD WHERE LPLNNERCD.PLN_CD = stkreq.reqemp_cd) AS empCd,
+		CASE WHEN emp.kor_nm = '윤수내' THEN '김가영' ELSE  emp.kor_nm END AS korNm,
+		(SELECT  MAX(spjt.pjt_nm) FROM lqc_stk_d INNER JOIN spjt ON lqc_stk_d.co_cd = spjt.co_cd AND lqc_stk_d.pjt_cd = spjt.pjt_cd WHERE lqc_stk_d.qc_nb = qcstk.QC_NB) AS pjtNm,
+		stkreq.REMARK_DC 		AS remarkDesc, 
+		CASE WHEN (SELECT  MIN(IFNULL(qcpass_fg,0)) FROM lqc_stk_d qcstkd WHERE qcstkd.qc_nb = qcstk.QC_NB AND qcstkd.CO_CD = qcstk.CO_CD) = 'inspecComplete' THEN '검사완료' ELSE '검사대기' END AS qcpassFg,
+		qcstk.INSERT_ID			AS insertId,
+		qcstk.INSERT_DT			AS insertDt,
+		qcstk.MODIFY_ID			AS modifyId,
+		qcstk.MODIFY_DT			AS modifyDt
+	FROM lqc_stk qcstk
+	INNER JOIN LSTK_REQ stkreq ON qcstk.qc_nb = stkreq.QC_NB AND qcstk.CO_CD = stkreq.CO_CD
+	INNER JOIN semp emp ON stkreq.emp_cd = emp.emp_cd AND stkreq.CO_CD = emp.co_cd
+	INNER JOIN STRADE strade ON qcstk.tr_cd = strade.tr_cd AND qcstk.CO_CD = strade.co_cd
+	WHERE qcstk.CO_CD = '1000'
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="qcNum != null and qcNum != '' ">
+			AND qcstk.QC_NB = #{qcNum}
+		</if>
+	</sql>
+	
+	<!-- 입고검사   Main Grid(Page) select -->
+	<select id="selectInputQualList"
+		parameterType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.NewInputQualMgtDto"
+		resultType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.NewInputQualMgtDto">
+		SELECT * FROM (
+		SELECT
+		<choose>
+			<when test="sort != null and sort != '' ">
+				ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+			</when>
+			<otherwise>
+				ROW_NUMBER() OVER(ORDER BY qcstk.QC_NB desc) AS RNUM,
+			</otherwise>
+		</choose>
+		<include refid="inputQual_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>
+	</select>
+
+	<!-- 입고검사   Main Grid Count -->
+	<select id="selectInputQualCount"
+		parameterType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.NewInputQualMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM (
+		SELECT
+		<include refid="inputQual_base" />
+		)c_table
+	</select>
+
+	<!-- 입고검사   Main Grid 정보수정 -->
+	<update id="updateInputQual"
+		parameterType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.NewInputQualMgtDto">
+		UPDATE LQC_STK
+		SET MODIFY_DT = #{modifyDt},
+		MODIFY_DT = NOW()
+
+		<if test="qcDate != null">
+			,QC_DT = #{qcDate}
+		</if>
+		<if test="trNm != null">
+			,TR_NM = #{trNm}
+		</if>
+		<if test="empCd != null">
+			,EMP_CD = #{empCd}
+		</if>
+		<if test="korNm != null">
+			,KOR_NM = #{korNm}
+		</if>
+		<if test="pjtNm != null">
+			,PJT_NM = #{pjtNm}
+		</if>
+		<if test="remarkDesc != null">
+			,REMARK_DC = #{remarkDesc}
+		</if>
+		<if test="qcpassFg != null">
+			,QCPASS_FG = #{qcpassFg}
+		</if>
+		WHERE QC_NB = #{qcNum}
+	</update>
+
+	<!-- 입고검사   Main Grid 삭제 -->
+	<delete id="deleteInputQual"
+		parameterType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.NewInputQualMgtDto">
+		DELETE FROM LQC_STK
+		WHERE QC_NB = #{qcNum}
+	</delete>
+	
+	
+	
+	<!-- 입고검사  Sub Grid -->
+	<sql id="inputQualDetail_base">
+		qcstkd.CO_CD			 AS coCd,
+		qcstkd.QC_NB 			AS qcNum,
+		qcstkd.QC_sq 			AS qcSeq,
+		qcty.QCTY_NM 			AS qctyNm,
+		qcstkd.item_cd 			AS itemCd,
+		item.item_nm 			AS itemNm,
+		item.item_DC 			AS itemDc,
+		qcstkd.QC_qt 			AS qcQty,
+		qcstkd.QCSTK_QT 		AS qcstkQty,
+		qcstkd.QCBAD_QT 		AS qcbadQty,
+		CASE IFNULL(qcstkd.QCPASS_FG,'') WHEN 'inspecWaiting' THEN '검사대기' WHEN 'inspecComplete' THEN '검사완료' ELSE 'inspecPending' END AS qcpassFg,
+		qcstk.EMP_CD 			AS empCd,
+		qcstk.tr_cd 			AS trCd,
+		qcstk.wh_cd 			AS whCd,
+		qcstkd.po_nb 			AS poNum,
+		qcstkd.po_sq 			AS poSeq,
+		qcstkd.req_nb 			AS reqNum,
+		qcstkd.req_sq 			AS reqSeq,
+		qcstkd.ibl_nb 			AS iblNum,
+		qcstkd.ibl_sq 			AS iblSeq,
+		qcstk.qc_dt 			AS qcDate,
+		qcstkd.insp_nm 			AS inspNm,
+		qcstkd.insp_dt 			AS inspDt, 
+		qcstkd.INSERT_ID		AS insertId,
+		qcstkd.INSERT_DT		AS insertDt,
+		qcstkd.MODIFY_ID		AS modifyId,
+		qcstkd.MODIFY_DT		AS modifyDt
+	FROM LQC_STK_D qcstkd
+	LEFT JOIN LQC_STK qcstk ON qcstkd.co_cd = qcstk.co_cd AND qcstkd.QC_NB = qcstk.QC_NB 
+	LEFT JOIN SITEM item ON item.co_cd = qcstkd.co_cd AND item.item_cd = qcstkd.item_cd 
+	LEFT JOIN SQC_TY qcty ON qcty.co_cd = qcstkd.co_cd AND qcty.QCTY_FG = qcstkd.QCTY_FG AND qcty.QCTY_CD = qcstkd.QCTY_CD 
+	WHERE qcstkd.CO_CD = '1000'
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="qcNum != null and qcNum != '' ">
+			AND qcstk.QC_NB = #{qcNum}
+		</if>
+		<if test="itemCd != null and itemCd != '' ">
+			AND qcstkd.item_cd = #{itemCd}
+		</if>
+	</sql>
+	
+	<!-- 입고검사  Sub Grid(Page) select -->
+	<select id="selectInputQualDetailList"
+		parameterType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.NewInputQualMgtDto"
+		resultType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.NewInputQualMgtDto">
+		SELECT * FROM (
+		SELECT
+		<choose>
+			<when test="sort != null and sort != '' ">
+				ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+			</when>
+			<otherwise>
+				ROW_NUMBER() OVER(ORDER BY insertDt desc) AS RNUM,
+			</otherwise>
+		</choose>
+		<include refid="inputQualDetail_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>
+	</select>
+
+	<!-- 입고검사   Sub Grid Count -->
+	<select id="selectInputQualDetailCount"
+		parameterType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.NewInputQualMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM (
+		SELECT
+		<include refid="inputQualDetail_base" />
+		)c_table
+	</select>
+
+	
+	
+	<!-- 공구 정비이력 -->
+	<sql id="inputQualAdd_base">
+		qctrl.CO_CD				AS coCd,
+		qctrl.Control_No		AS controlNo,
+		qcstkd.QC_NB			AS qcNum,
+		qcstkd.QC_SQ			AS qcSeq,
+		qcstkd.QC_QT			AS qcQty,
+		qcstkd.QCSTK_QT			AS qcstkQty,
+		qcstkd.QCBAD_QT			AS qcbadQty,
+		qcstkd.ITEM_CD			AS itemCd,
+		qctrl.Heat_No			AS heatNo,
+		qctrl.MFG_DT			AS mfgDate,
+		qctrl.EXP_DT			AS expDate,
+		qctrl.Maker_Org			AS makerOrg,
+		qctrl.Bad_Desc			AS badDesc,
+		qctrl.Remark_Desc 		AS ctrlDesc,
+		qctrl.creator_id		AS creatorId,
+		qctrl.created_at		AS createdAt,
+		qctrl.updator_id		AS updatorId,
+		qctrl.updated_at		AS updatedAt
+	FROM LQC_STK_CONTROL qctrl
+	JOIN LQC_STK_D qcstkd ON qcstkd.CO_CD = qctrl.CO_CD AND qcstkd.QC_NB = qctrl.QC_NB AND qcstkd.QC_QT = qctrl.QC_QT
+	WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="qcNum != null and qcNum != '' ">
+			AND qcstkd.QC_NB = #{qcNum}
+		</if>
+		<if test="itemCd != null and itemCd != '' ">
+			AND qcstkd.item_cd = #{itemCd}
+		</if>
+		<if test="controlNo != null and controlNo != '' ">
+			AND qctrl.Control_No = #{controlNo}
+		</if>
+	</sql>
+
+	<!-- 공구 정비이력(Page) select -->
+	<select id="selectInputQualAddList"
+		parameterType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.NewInputQualMgtDto"
+		resultType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.NewInputQualMgtDto">
+		SELECT * FROM (
+		SELECT
+		<choose>
+			<when test="sort != null and sort != '' ">
+				ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+			</when>
+			<otherwise>
+				ROW_NUMBER() OVER(ORDER BY qcNum desc) AS RNUM,
+			</otherwise>
+		</choose>
+		<include refid="inputQualAdd_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>
+	</select>
+
+	<!-- 공구 정비이력Count -->
+	<select id="selectInputQualAddCount"
+		parameterType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.NewInputQualMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM (
+		SELECT
+		<include refid="inputQualAdd_base" />
+		)c_table
+	</select>
+	
+	<!-- 공구 정비이력 입력 -->
+	<insert id="insertInputQualAdd"
+		parameterType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.NewInputQualMgtDto">
+		<selectKey keyProperty="controlNo" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('Q') AS controlNo
+		</selectKey>
+		INSERT INTO LQC_STK_CONTROL (
+			CO_CD,
+			Control_No,
+			QC_NB,
+			QC_SQ,
+			QC_QT,
+			QCSTK_QT,
+			QCBAD_QT,
+			MfG_DT,
+			EXP_DT,
+			Heat_No,
+			Maker_Org,
+			Bad_Desc,
+			Remark_Desc,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at
+		)VALUES(
+			1000,
+			#{controlNo},
+			#{qcNum},
+			#{qcSeq},
+			#{qcQty},
+			#{qcstkQty},
+			#{qcbadQty},
+			#{mfgDate},
+			#{expDate},
+			#{heatNo},
+			#{makerOrg},
+			#{badDesc},
+			#{ctrlDesc},
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			NOW()
+		)
+	</insert>
+
+	<!-- 공구 정비이력 수정 -->
+	<update id="updateInputQualAdd"
+		parameterType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.NewInputQualMgtDto">
+		UPDATE LQC_STK_CONTROL
+		SET updator_id = #{updatorId},
+		updated_at = NOW()
+		<if test="qty != null">
+			,QC_QT = #{qty}
+		</if>
+		<if test="stkQty != null">
+			,QCSTK_QT = #{stkQty}
+		</if>
+		<if test="badQty != null">
+			,QCBAD_QT = #{badQty}
+		</if>
+		<if test="mfgDate != null">
+			,MfG_DT = #{mfgDate}
+		</if>
+		<if test="expDate != null">
+			,EXP_DT = #{expDate}
+		</if>
+		<if test="heatNo != null">
+			,Heat_No = #{heatNo}
+		</if>
+		<if test="makerOrg != null">
+			,Maker_Org = #{makerOrg}
+		</if>
+		<if test="badDesc != null">
+			,Bad_Desc = #{badDesc}
+		</if>
+		<if test="ctrlDesc != null">
+			,Remark_Desc = #{ctrlDesc}
+		</if>
+		WHERE Control_No = #{controlNo}
+	</update>
+	<!-- 공구 정비이력 삭제 -->
+	<delete id="deleteInputQualAdd"
+		parameterType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.NewInputQualMgtDto">
+		DELETE FROM LQC_STK_CONTROL
+		WHERE Control_No = #{controlNo}
+	</delete>
+	
+</mapper>

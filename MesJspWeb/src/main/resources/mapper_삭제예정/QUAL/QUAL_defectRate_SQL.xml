@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QUAL_defectRate">
+<!--  	          , FN_CM_GETCOMNM(O.CTR_CD , 'PRODTYPE', P.PRODTYPE) AS PRODTYPE        
+			      , FN_CM_GETCOMNM(O.CTR_CD , 'PRODSPEC', P.PRODSPEC) AS PRODSPEC        
+				  , FN_CM_GETCOMNM(O.CTR_CD , 'PRODUNITCD',P.PRODUNIT_CD )  AS UNIT_NM  
+				  , FN_CM_GETCOMNM(O.CTR_CD , 'DEFECT', O.DEFECT_CAUSE_CD )  AS DEFECT_CAUSE_CD   -->
+	<select id="orderList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+	      SELECT   O.ORDER_NO 
+	        	  ,O.WO_OUT_NO
+	        	  ,DATE_FORMAT(O.WO_OUT_DATE,'%Y%m%d') AS WO_OUT_DATE
+	        	  ,O.CUSTOMERID
+	        	  ,C.CUSTOMERNAME
+	        	  ,O.PRODID
+	        	  ,P.PRODNAME
+				  ,P.PRODMTRL
+	        	  ,P.PRODTYPE       
+			      ,P.PRODSPEC    
+				  ,P.PRODUNIT_CD AS UNIT_NM   
+				  ,O.SHOPFLOOR_OUT_QTY
+	        	  ,O.DEFECT_QTY
+	        	  ,SHOPFLOOR_OUT_QTY + DEFECT_QTY AS PASS_QTY
+	        	  ,O.DEFECT_QTY                                
+			      ,ROUND ((DEFECT_QTY/ (SHOPFLOOR_OUT_QTY + DEFECT_QTY) )*100,2) AS FRACTION_DEFECTIVE  
+			      ,O.DEFECT_CAUSE_CD
+			      ,O.QM_REMARK 
+			      ,O.DEL_GBN                                           				
+			 FROM TB_MESWORKORDEROUT O
+			INNER JOIN TB_CUSTOMER C ON O.CUSTOMERID=C.CUSTOMERID
+			INNER JOIN TB_PRODUCT P ON O.PRODID = P.PRODID
+			WHERE 1=1
+			  AND O.DEFECT_QTY > 0
+		]]>
+		<!--  삭제 구분에 N 즉 삭제된 데이터가 아닌경우 -->
+		<if test='DEL_GBN != "N"'>
+			AND O.DEL_GBN ='N'
+		</if>
+		<!-- 검색 날짜가 null이 아닐경우 -->
+		<if test='STR_DT != null and STR_DT != ""'>
+			AND WO_OUT_DATE BETWEEN DATE_FORMAT(#{STR_DT},'%Y%m%d') 
+			AND DATE_FORMAT(#{END_DT},'%Y%m%d')
+		</if>
+		<!--고객사가 null이 아닌 경우 고객사에 따른 검색이 가능하게함  -->
+		<if test='PRODNAME != null and PRODNAME != ""'>
+			AND PRODNAME LIKE CONCAT("%"#{PRODNAME}"%") 
+		</if>
+		<if test='DEFECT_CAUSE_CD != null and DEFECT_CAUSE_CD != ""'>
+			AND DEFECT_CAUSE_CD = #{DEFECT_CAUSE_CD}
+		</if>
+        	ORDER BY WO_OUT_NO
+	</select>
+
+	<!-- 불량원인 리스트 -->
+	<select id="selectProductDefectList" resultType="hashmap">
+		SELECT 	 COM_CD,
+			     COM_NM 
+		FROM     TB_COMCDINF 
+		WHERE    GRP_CD = 'DEFECT' 
+
+	</select>
+
+</mapper>

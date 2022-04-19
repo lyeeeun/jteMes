@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.basMgt.operMgt.itemMgt.ItemMgtMapper">
+
+	<sql id="item_base">
+			item_id as itemId,
+			item_nm as itemNm,
+			item_type as itemType,
+			item_price as itemPrice,
+			item_mtrl_cost as itemMtrlCost,
+			item_person_cost as itemPersonCost,
+			item_std01 as itemStd01,
+			item_std02 as itemStd02,
+			item_std03 as itemStd03,
+			item_std04 as itemStd04,
+			item_std05 as itemStd05,
+			item_std_str01 as itemStdStr01,
+			item_std_str02 as itemStdStr02,
+			item_std_str03 as itemStdStr03,
+			item_std_str04 as itemStdStr04,
+			item_std_str05 as itemStdStr05,
+			item_std_str06 as itemStdStr06,
+			item_unit as itemUnit,
+			item_mtrl as itemMtrl,
+			item_total_stock as itemTotalStock,
+			item_day_target as itemDayTarget,
+			description,
+			is_use as isUse,
+			created_at as createdAt,
+			creator_id as creatorId,
+			updated_at as updatedAt,
+			updator_id as updatorId,
+			item_deduction as itemDeduction
+		FROM bc_item_info
+		WHERE 1=1
+			<if test="itemId != null and itemId !='' ">
+				AND item_id = #{itemId}
+			</if>
+			<if test="itemType != null and itemType != '' ">
+				AND item_type = #{itemType}
+			</if>
+			<if test="isUse != null and isUse != '' ">
+				AND is_use = #{isUse}
+			</if>
+			<choose>
+				<when test="searchGubun == 'itemId'">
+					AND item_id LIKE CONCAT('%',#{searchText},'%')
+				</when>
+				<when test="searchGubun == 'itemNm'">
+					AND item_nm LIKE CONCAT('%',#{searchText},'%')
+				</when>
+			</choose>
+	</sql>
+ 	<select id="selectItemList"
+		parameterType="jin.mes.form.basMgt.operMgt.itemMgt.ItemMgtDto"
+		resultType="jin.mes.form.basMgt.operMgt.itemMgt.ItemMgtDto">
+		SELECT *
+		FROM (
+			SELECT
+			<choose>
+				<when test="sort != null and sort != '' ">
+					ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+				</when>
+				<otherwise>
+					ROW_NUMBER() OVER(ORDER BY updatedAt DESC) AS RNUM,
+				</otherwise>
+			</choose> 
+				<include refid="item_base"/>
+			)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ <= ]]> #{lastIndex} AND RNUM <![CDATA[ >= ]]> #{firstIndex}
+			</if>
+	</select>
+ 	
+	<select id="rowCount"
+		parameterType="jin.mes.form.basMgt.operMgt.itemMgt.ItemMgtDto"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM(
+			SELECT
+			<include refid="item_base"/>
+		)c_table
+	</select>
+	
+	<select id="selectRtlCompList"
+		parameterType="jin.mes.form.basMgt.operMgt.itemMgt.ItemMgtDto"
+		resultType="jin.mes.form.basMgt.operMgt.itemMgt.ItemMgtDto">
+		SELECT * 
+		FROM bc_rtl_item_comp a
+		LEFT JOIN bc_company_info b
+		ON a.comp_id = b.comp_id
+		WHERE item_id = #{itemId}
+	</select>
+	
+	<select id="selectRtlCompCount"
+		parameterType="jin.mes.form.basMgt.operMgt.itemMgt.ItemMgtDto"
+		resultType="int">
+		SELECT COUNT(*) 
+		FROM bc_rtl_item_comp a
+		LEFT JOIN bc_company_info b
+		ON a.comp_id = b.comp_id
+		WHERE item_id = #{itemId}
+	</select>
+	
+	<insert id="insertItem" parameterType="jin.mes.form.basMgt.operMgt.itemMgt.ItemMgtDto">
+		<selectKey keyProperty="itemId" resultType="String" order="BEFORE">
+			SELECT CREATE_PK('ITEM') as itemId
+		</selectKey>
+		INSERT INTO bc_item_info
+		(
+			item_id,
+			item_nm,
+			item_price,
+			item_mtrl_cost,
+			item_person_cost,
+			item_type,
+			item_std01,
+			item_std02,
+			item_std03,
+			item_std04,
+			item_std05,
+			item_std_str01,
+			item_std_str02,
+			item_std_str03,
+			item_std_str04,
+			item_std_str05,
+			item_std_str06,
+			item_unit,
+			item_mtrl,
+			item_total_stock,
+			item_day_target,
+			description,
+			is_use,
+			created_at,
+			creator_id,
+			updated_at,
+			updator_id,
+			item_deduction
+		)
+		VALUES
+		(
+			#{itemId},
+			#{itemNm},
+			#{itemPrice},
+			#{itemMtrlCost},
+			#{itemPersonCost},
+			#{itemType},
+			#{itemStd01},
+			#{itemStd02},
+			#{itemStd03},
+			#{itemStd04},
+			#{itemStd05},
+			#{itemStdStr01},
+			#{itemStdStr02},
+			#{itemStdStr03},
+			#{itemStdStr04},
+			#{itemStdStr05},
+			#{itemStdStr06},
+			#{itemUnit},
+			#{itemMtrl},
+			#{itemTotalStock},
+			#{itemDayTarget},
+			#{description},
+			TRUE,
+			now(),
+			#{creatorId},
+			now(),
+			#{updatorId},
+			#{itemDeduction}
+		)
+	</insert>
+	
+	<update id="updateItem"
+		parameterType="jin.mes.form.basMgt.operMgt.itemMgt.ItemMgtDto">
+		UPDATE bc_item_info
+		SET item_id = item_id
+			<if test="itemNm != null">
+				,item_nm = #{itemNm}
+			</if>
+			<if test="itemPrice != null">
+				,item_price = #{itemPrice}
+			</if>
+			<if test="itemMtrlCost != null">
+				,item_mtrl_cost = #{itemMtrlCost}
+			</if>
+			<if test="itemPersonCost != null">
+				,item_person_cost = #{itemPersonCost}
+			</if>
+			<if test="itemType != null">
+				,item_type = #{itemType}
+			</if>
+			<if test="itemUnit != null">
+				,item_unit = #{itemUnit}
+			</if>
+			<if test="itemMtrl != null">
+				,item_mtrl = #{itemMtrl}
+			</if>
+			<if test="itemTotalStock != null">
+				,item_total_stock = #{itemTotalStock}
+			</if>
+			<if test="itemDayTarget != null">
+				,item_day_target = #{itemDayTarget}
+			</if>
+			<if test="description != null">
+				,description = #{description}
+			</if>
+			,updated_at = now()
+			<if test="updatorId != null">
+				,updator_id = #{updatorId}
+			</if>
+			<if test="itemDeduction != null">
+				,item_deduction = #{itemDeduction}
+			</if>
+			<if test="itemTotalStock != null">
+				,item_total_stock = #{itemTotalStock}
+			</if>
+			<if test="itemDayTarget != null">
+				,item_day_target = #{itemDayTarget}
+			</if>
+			<if test="itemStd01 != null">
+				,item_std01 = #{itemStd01}
+			</if>
+			<if test="itemStd02 != null">
+				,item_std02 = #{itemStd02}
+			</if>
+			<if test="itemStd03 != null">
+				,item_std03 = #{itemStd03}
+			</if>
+			<if test="itemStd04 != null">
+				,item_std04 = #{itemStd04}
+			</if>
+			<if test="itemStd05 != null">
+				,item_std05 = #{itemStd05}
+			</if>
+			<if test="itemStdStr01 != null">
+				,item_std_str01 = #{itemStdStr01}
+			</if>
+			<if test="itemStdStr02 != null">
+				,item_std_str02 = #{itemStdStr02}
+			</if>
+			<if test="itemStdStr03 != null">
+				,item_std_str03 = #{itemStdStr03}
+			</if>
+			<if test="itemStdStr04 != null">
+				,item_std_str04 = #{itemStdStr04}
+			</if>
+			<if test="itemStdStr05 != null">
+				,item_std_str05 = #{itemStdStr05}
+			</if>
+			<if test="itemStdStr06 != null">
+				,item_std_str06 = #{itemStdStr06}
+			</if>
+		WHERE item_id = #{itemId}
+	</update>
+	
+	<update id="updateItemDeduction"
+		parameterType="jin.mes.form.basMgt.operMgt.itemMgt.ItemMgtDto">
+		UPDATE bc_item_info
+		SET
+			item_deduction = #{itemDeduction}
+		WHERE item_id = #{itemId}
+	</update>
+	
+	<insert id="insertRtlComp" parameterType="jin.mes.form.basMgt.operMgt.itemMgt.ItemCompMgtDto">
+		INSERT INTO bc_rtl_item_comp
+		(
+			item_id,
+			comp_id
+		)
+		VALUES
+		(
+			#{itemId},
+			#{compId}
+		)
+	</insert>
+	
+	<delete id="deleteRtlComp" parameterType="jin.mes.form.basMgt.operMgt.itemMgt.ItemCompMgtDto">
+		DELETE FROM bc_rtl_item_comp
+		WHERE 1=1
+		AND item_id = #{itemId}
+		AND comp_id = #{compId} 
+	</delete>
+	
+	<update id="updateIsUse"
+		parameterType="jin.mes.form.basMgt.operMgt.itemMgt.ItemMgtDto">
+		UPDATE bc_item_info
+		SET is_use = #{isUse}
+		WHERE item_id = #{itemId}
+	</update>
+	
+	<insert id="insertKpi" parameterType="jin.mes.form.basMgt.operMgt.itemMgt.ItemMgtDto">
+		INSERT INTO rpt_kpi_info
+		(
+			item_id,
+			kpi_target,
+			kpi_date,
+			kpi_value
+		)
+		VALUES
+		(
+			#{itemId},
+			#{kpiTarget},
+			#{kpiDate},
+			#{kpiValue}
+		)
+	</insert>
+	
+	<select id="selectKpi"
+	parameterType="jin.mes.form.basMgt.operMgt.itemMgt.ItemMgtDto"
+	resultType="jin.mes.form.basMgt.operMgt.itemMgt.ItemMgtDto">
+		SELECT * 
+		FROM rpt_kpi_info
+		WHERE kpi_target NOT LIKE '%kpi%'
+	</select>
+	
+		<!-- 수주정보 select(order-child) -->
+	<select id="selectIteminfo"
+	parameterType="jin.mes.form.basMgt.operMgt.itemMgt.ItemMgtDto"
+	resultType="jin.mes.form.basMgt.operMgt.itemMgt.ItemMgtDto">
+				SELECT
+				<include refid="item_base" />
+	</select>
+		<!-- 설비 구매 업체-->
+	<sql id="tool_rtl_comp">
+	rtl.item_id AS itemId,
+	comp.comp_id AS compId,
+	comp.comp_nm AS compNm,
+	comp.comp_initials AS compInitials,
+	comp.comp_managr AS compManagr,
+	comp.comp_number AS compNumber,
+	comp.comp_type AS compType,
+	comp.comp_addr AS compAddr,
+	comp.created_at		AS createdAt,
+	comp.updated_at		AS updatedAt,
+	comp.creator_id		AS creatorId,
+	comp.updator_id		AS updatorId,
+	comp.description	AS DESCRIPTION,
+	comp.is_use AS isUse,
+	comp.comp_std01		AS compStd01,
+	comp.comp_std02		AS compStd02,
+	comp.comp_std03		AS compStd03,
+	comp.comp_std04		AS compStd04,
+	comp.comp_std05		AS compStd05,
+	comp.comp_std_str01		AS compStdStr01,
+	comp.comp_std_str02		AS compStdStr02,
+	comp.comp_std_str03		AS compStdStr03,
+	comp.comp_std_str04		AS compStdStr04,
+	comp.comp_std_str05		AS compStdStr05
+FROM bc_rtl_item_comp rtl
+LEFT JOIN bc_company_info comp ON rtl.comp_id = comp.comp_id
+WHERE item_id = #{itemId} AND comp.is_use = true
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+
+	<select id="selectItemCompChild"
+	parameterType="jin.mes.form.basMgt.operMgt.itemMgt.ItemCompMgtDto"
+	resultType="jin.mes.form.basMgt.operMgt.itemMgt.ItemCompMgtDto">
+			SELECT 
+			'K'	AS action,
+			<include refid="tool_rtl_comp" />
+		
+	</select>
+	
+	
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.facilMgt.prevMgt.PrevMgtMapper">
+
+	<!-- 예지정비 데이터 SELECT -->
+	<select id="selectPdmData"
+		parameterType="jin.mes.form.facilMgt.prevMgt.PrevMgtDto"
+		resultType="jin.mes.form.facilMgt.prevMgt.PrevMgtDto">
+		SELECT *
+		FROM (
+			SELECT *
+			FROM pdm_analog_data
+			WHERE date <![CDATA[ <= ]]> #{searchTime}
+			ORDER BY DATE DESC
+			LIMIT #{dataLimit}
+		) sub
+		ORDER BY DATE ASC
+	</select>
+
+</mapper>

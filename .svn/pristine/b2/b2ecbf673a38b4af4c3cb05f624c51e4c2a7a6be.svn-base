@@ -1,0 +1,12 @@
+package jin.mes.form.tool.toolMainRecord;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.co.itcall.jte.common.mvc.BaseController;
+
+@Controller
+@RequestMapping("/form/tool/toolMainRecord")
+public class ToolMainRecordController extends BaseController {
+
+}

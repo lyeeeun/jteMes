@@ -1,0 +1,64 @@
+/* searchBox 영역 */
+.main_search{  
+	width:100%;
+	padding: 5px 0 5px 0;
+	white-space:nowrap;
+}
+.search_title1{
+	
+}
+.search_table{
+	width:100%;
+}
+.search_table td{
+	padding-left:5px;
+	border-right: 2px solid #BDBDBD;
+}
+.search_table td:last-child{
+	border-right: none;
+}
+.search_staticTime{
+	text-align:right;
+}
+.search_title1{
+	color:blue;
+	font-weight:bold;
+}
+.search_title2{
+	color:#6d7272;
+	font-weight:bold;
+}
+.fa-play{
+	color:#6d7272;
+	font-size: 25px;
+	vertical-align:middle;
+	margin-left:10px;
+	cursor:pointer;
+}
+.fa-pause{
+	color:#6d7272; 
+	font-size: 25px;
+	vertical-align:middle;
+	margin-left:10px;
+	cursor:pointer;
+}
+#search_loading{
+	display:none;
+	vertical-align:middle; 
+	margin-left:15px;
+}
+#engSearch_BTN{
+	font-weight:bold;
+	width:60px; 
+	background:#3399cc; 
+	height:28px; 
+	line-height:28px; 
+	font-size:16px; 
+	color:white; 
+	border:none; 
+	border-radius:3px; 
+	vertical-align:middle;
+}
+.l-btn{
+	border:1px solid #bdbdbd;
+}

@@ -1,0 +1,22 @@
+
+
+server.port=8090
+
+# \uc138\uc158\ub2f9 \ub85c\uadf8\uc778 \uc720\uc9c0 \uc2dc\uac04(\ucd08\ub2e8\uc704)
+session.timeout=10800
+
+# \ud55c \uc138\uc158 \ub2f9 \uc911\ubcf5 \ub85c\uadf8\uc778 \uac1c\uc218 
+session.duplicated.max.count=10
+
+
+#org.mariadb.jdbc.Driver
+#jdbc:mariadb://jte.gonetis.com:13306/JTEMESHANA
+#jte
+#jte1234!
+
+spring.datasource.driver-name=ENC(K2Ba8UN2uBsN2pruDWZKa8sJwhYVN13NptzPbHLVdXWrJPpgYY+QGOxzyMZj3rp/)
+spring.datasource.url=ENC(rEafut/8dbhdLD17YT5E32ic5t7JqeAkmnk5pe6kSqgkeGe4BI3bc9LAmKTydj+D9/HPY9Kc/iXjW6vTC1HNQz/ovAQPtHVp)
+spring.datasource.username=ENC(lt2GcFEOZarih20ZURlzuFFDPnCpba0YdxrNzst6obc=)
+spring.datasource.password=ENC(tOxrk8FnjV6Gqs1iFHcV4oYqIQnPBxT6AZT5ue4PnG1+sZAwOyQk3g==)
+
+

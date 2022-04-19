@@ -1,0 +1,271 @@
+/***** 200511JJW 그리드 - 추가버튼 팝업/더블클릭 팝업 *******/
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.k-grid-toolbar .jte-search-aria #_tabBack_jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+
+.mtrlOdcursitMgtForm .jtePopForm_master {
+	width: 100%;
+}
+
+.mtrlOdcursitMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.mtrlOdcursitMgtForm .fa-info-circle:before {
+	color:#3367D6;
+}
+
+.mtrlOdcursitMgtForm .col-left-title {
+	width: 24%;
+}
+
+.mtrlOdcursitMgtForm .col-left-content {
+	width: 29%;
+}
+
+.mtrlOdcursitMgtForm .col-right-title {
+	width: 18%;
+}
+
+.mtrlOdcursitMgtForm .col-right-content {
+	width: 29%;
+}
+
+.mtrlOdcursitMgtForm .normal-input{
+	width: 100%;
+}
+
+.mtrlOdcursitMgtForm .center-input.btn-input { /**200819 youmi 추가**/
+	width: 98%;
+	float: left;
+}
+
+.mtrlOdcursitMgtForm .center-input{
+	width: 100%;
+}
+
+.mtrlOdcursitMgtForm .left-input {
+	width: 100%;
+}
+
+.mtrlOdcursitMgtForm .right-input {
+	width: 100%;
+}
+
+.mtrlOdcursitMgtForm .left-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.mtrlOdcursitMgtForm .right-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.mtrlOdcursitMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.mtrlOdcursitMgtForm .search-btn {
+	width: 100%;
+}
+
+/***** 200511JJW 발주주문서 하단 그리드 오른쪽에 있는 내역보기 버튼 클릭시 나타나는 수령확인 팝업   *******/
+
+.mtrlOdcursitMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.mtrlOdcursitMgtForm .popsc-col-left-title {
+	width: 20%;
+}
+
+.mtrlOdcursitMgtForm .popsc-col-left-content-1 {
+	width: 18%;
+}
+
+.mtrlOdcursitMgtForm .popsc-col-left-content-2 {
+	width: 10%;
+}
+
+.mtrlOdcursitMgtForm .popsc-col-right-title {
+	width: 24%;
+}
+
+.mtrlOdcursitMgtForm .popsc-col-right-content {
+	width: 28%;
+}
+
+
+.mtrlOdcursitMgtForm .normal-input{
+	width: 100%;
+}
+
+.mtrlOdcursitMgtForm .center-input{
+	width: 100%;
+}
+
+.mtrlOdcursitMgtForm .left-input {
+	width: 100%;
+}
+
+.mtrlOdcursitMgtForm .right-input {
+	width: 100%;
+}
+
+.mtrlOdcursitMgtForm .left-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.mtrlOdcursitMgtForm .right-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.mtrlOdplanMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.mtrlOdcursitMgtForm .search-btn {
+	width: 100%;
+}
+
+/****** 수령확인 팝업 그리드 추가 버튼 클릭 팝업 (불량품 관리 팝업) ******/
+
+.mtrlOdcursitMgtForm .poptr-col-left-title {
+	width: 20%;
+}
+
+.mtrlOdcursitMgtForm .poptr-col-left-content-1 {
+	width: 20%;
+}
+
+.mtrlOdcursitMgtForm .poptr-col-left-content-2 {
+	width: 11%;
+}
+
+.mtrlOdcursitMgtForm .poptr-col-right-title {
+	width: 18%;
+}
+
+.mtrlOdcursitMgtForm .poptr-col-right-content {
+	width: 31%;
+}
+
+
+.mtrlOdcursitMgtForm .normal-input{
+	width: 100%;
+}
+
+.mtrlOdcursitMgtForm .center-input{
+	width: 100%;
+}
+
+.mtrlOdcursitMgtForm .left-input {
+	width: 100%;
+}
+
+.mtrlOdcursitMgtForm .right-input {
+	width: 100%;
+}
+
+.mtrlOdcursitMgtForm .left-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.mtrlOdcursitMgtForm .right-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.mtrlOdplanMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.mtrlOdcursitMgtForm .search-btn {
+	width: 100%;
+}
+
+/*************** 팝업 전체 여백, 정렬 설정 ****************/
+
+/* #jtePopToolAdd_form {
+	font-size: 16px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+#jtePopToolAdd_form td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+} */
+
+#jteMtrlOrdChkPop_master {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 0;
+	padding-bottom: 2px;
+}
+
+#jteMtrlOrdChkPop_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.mtrlOdcursitMgtForm #jteMtrlOrdChkPop_master th {
+	text-align: left;	
+}
+
+#jteMtrlOrdChkPop_master-2 {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 0;
+	padding-bottom: 2px;
+}
+
+#jteMtrlOrdChkPop_master-2 td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.mtrlOdcursitMgtForm #jteMtrlOrdChkPop_master-2 th {
+	text-align: left;	
+}
+
+#jteMtrlBadChkPop_master {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 0;
+	padding-bottom: 2px;
+}
+
+#jteMtrlBadChkPop_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.mtrlOdcursitMgtForm #jteMtrlBadChkPop_master th {
+	text-align: left;	
+}
+
+/*20.08.06 왼쪽 셀 가운데 정렬 JJW*/
+.mtrlOdcursitMgtForm.k-grid th:first-child, .mtrlOdcursitMgtForm.k-grid td:first-child {
+	text-align: center;
+}

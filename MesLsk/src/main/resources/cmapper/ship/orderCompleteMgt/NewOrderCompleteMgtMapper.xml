@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.ship.orderCompleteMgt.NewOrderCompleteMgtMapper">
+	<sql id="orderComplete_base">
+			orderInfo.order_id AS orderId,
+			lotInfo.lot_id AS lotId,
+			itemInfo.item_id AS itemId,
+			itemInfo.item_nm AS itemNm,
+			lotInfo.lotQty AS lotQty,
+			shipTotal.shipTotalQty AS shipTotalQty,
+			lotInfo.lot_state AS lotState
+		FROM prs_order_info orderInfo
+		LEFT JOIN 
+		(
+			SELECT lot_id, order_id, item_id, SUM(lot_qty) AS lotQty, lot_state
+			FROM prs_lot_info lotInfo
+			GROUP BY lot_id
+		) lotInfo
+		ON orderInfo.order_id = lotInfo.order_id
+		LEFT JOIN bc_item_info itemInfo
+		ON lotInfo.item_id = itemInfo.item_id
+		LEFT JOIN
+		(
+			SELECT lot_id, IFNULL(SUM(ship_qty),0) AS shipTotalQty
+			FROM prs_ship_mgt
+			WHERE 1=1 
+			AND ship_state = 'ship_dvry03'
+			GROUP BY lot_id
+		) shipTotal
+		ON lotInfo.lot_id = shipTotal.lot_id
+		WHERE orderInfo.order_id = #{orderId}
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<!-- 수주 정보 조회 -->
+	<select id="selectOrderList"
+		parameterType="jin.mes.cform.ship.orderCompleteMgt.NewOrderCompleteMgtDto"
+		resultType="jin.mes.cform.ship.orderCompleteMgt.NewOrderCompleteMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY lotInfo.lot_id desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="orderComplete_base" />
+				)s_table
+		WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 수주 정보 Count -->
+	<select id="selectOrderCount"
+		parameterType="jin.mes.cform.ship.orderCompleteMgt.NewOrderCompleteMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="orderComplete_base" />
+				)c_table
+	</select>
+	
+	<update id="lotStateUpdate" 
+	parameterType="jin.mes.cform.ship.orderCompleteMgt.NewOrderCompleteMgtDto">
+		UPDATE prs_order_info
+		SET lot_state = #{lotState}
+		WHERE 1=1 
+		AND lot_id = #{lotId}
+	</update>
+	
+	<update id="orderStateUpdate" 
+	parameterType="jin.mes.cform.ship.shipMgt.NewShipMgtDto">
+		UPDATE prs_order_info
+		SET order_state = #{orderState}
+		WHERE 1=1 
+		AND order_id = #{orderId}
+	</update>
+	
+	<select id="selectNotCompleteLot"
+		parameterType="jin.mes.cform.ship.shipMgt.NewShipMgtDto"
+		resultType="jin.mes.cform.ship.shipMgt.NewShipMgtDto">
+		SELECT 
+			lot_id AS lotId, 
+			order_id AS orderId, 
+			lot_state AS lotState
+		FROM prs_lot_info lotInfo
+		WHERE 1=1
+		AND lot_state != "ord_sta02"
+		AND order_id = #{orderId}
+		GROUP BY lot_id
+	</select>
+	
+	<select id="selectProcShiftTable"
+	parameterType="jin.mes.cform.ship.orderCompleteMgt.NewOrderCompleteMgtDto"
+		resultType="jin.mes.cform.ship.orderCompleteMgt.NewOrderCompleteMgtDto">
+		SELECT 
+			prsPkg.lot_id AS lotId,
+			itemInfo.item_nm AS itemNm,
+			itemInfo.item_mtrl AS itemMtrl,
+			REPLACE(hisPkg.bundle_unit, 'ship_bundle', '') AS bundleUnit,
+			hisPkg.bundle_qty AS bundleQty,
+			DATE_FORMAT(prsPkg.pkg_work_end, '%Y-%m-%d')  AS pkgWorkEnd
+		FROM his_pkg_bundle hisPkg
+		INNER JOIN prs_package_work prsPkg
+		ON hisPkg.pkg_work_id = prsPkg.pkg_work_id
+		LEFT JOIN (
+			SELECT *
+			FROM prs_lot_info
+			GROUP BY lot_id
+		) lotInfo
+		ON prsPkg.lot_id = lotInfo.lot_id
+		LEFT JOIN bc_item_info itemInfo
+		ON lotInfo.item_id = itemInfo.item_id
+		WHERE prsPkg.lot_id = #{lotId}
+	</select>
+	
+	<select id="selectReturnSurplusMtrl"
+	parameterType="jin.mes.cform.ship.orderCompleteMgt.NewOrderCompleteMgtDto"
+		resultType="jin.mes.cform.ship.orderCompleteMgt.NewOrderCompleteMgtDto">
+		SELECT
+			mtrlMgt.lot_id AS lotId,
+			itemInfo.item_nm AS itemNm,
+			mtrlInfo.mtrl_nm AS mtrlNm,
+			itemInfo.item_mtrl AS itemMtrl,
+			mtrlInfo.mtrl_HCD AS mtrlHCD,
+			IFNULL(lotQty,0) AS lotQty,
+			IFNULL(shipQty,0) AS shipQty,
+			IFNULL(lotQty,0)-IFNULL(shipQty,0) AS remainQty,
+			mtrlQty.mtrl_qty_total as receiveMtrlQty,
+			mtrlMgt.mtrl_mgt_scrap AS mtrlMgtScrap
+		FROM cm_mtrl_mgt mtrlMgt
+		LEFT JOIN (
+			SELECT *, SUM(lot_qty) AS lotQty
+			FROM prs_lot_info
+			GROUP BY lot_id
+		) lotInfo
+		ON mtrlMgt.lot_id = lotInfo.lot_id
+		LEFT JOIN bc_material_info mtrlInfo
+		ON mtrlMgt.mtrl_id = mtrlInfo.mtrl_id
+		LEFT JOIN bc_item_info itemInfo
+		ON lotInfo.item_id = itemInfo.item_id
+		LEFT JOIN (
+			SELECT lot_id, SUM(ship_qty) AS shipQty 
+			FROM prs_ship_mgt
+			WHERE ship_state = 'ship_dvry03'
+			GROUP BY lot_id
+		) shipMgt
+		ON mtrlMgt.lot_id = shipMgt.lot_id
+		LEFT JOIN (
+			select mtrl_mgt_id, mtrl_qty_total
+			FROM qm_mtrl_mgt
+			where mtrl_qty_target = 'mtrl_tagt05'
+		) mtrlQty
+ 		on mtrlMgt.mtrl_mgt_id = mtrlQty.mtrl_mgt_id
+		WHERE mtrlMgt.lot_id = #{lotId}
+	</select>
+</mapper>

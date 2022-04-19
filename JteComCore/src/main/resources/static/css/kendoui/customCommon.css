@@ -1,0 +1,150 @@
+@charset "UTF-8";
+
+/****************************** JJW 20.11.09 ******************************/
+/* time, date 인풋 박스 여백 수정 */
+.k-datetimepicker .k-select .k-link {
+    display: inline-block;
+    /* width: 50% */
+}
+
+/* time, date 사이 구분선 추가 */
+span.k-link.k-link-date {
+	border-right: 1px solid #ffffff;
+}
+
+/* 그리드 검색 박스 영역 크기 재설정 */
+input.k-textbox {
+	line-height: 27px;/* 1.65em; */
+	text-indent: .571em
+}
+
+/* JJW -켄도테마 검색 영역 박스 크기 재설정 */
+.k-textbox {
+	height: 34px; /* calc(1.4285714286em + 10px) */
+}
+
+/****************************** YUMI 20.11.09 ******************************/
+
+/* YUMI left 메뉴 여백 수정 */
+.k-treeview .k-item {
+    display: block;
+    border-width: 0;
+    margin: 0;
+    padding: 5px 0 5px 12px;
+}
+
+/* YUMI 팝업 타이틀 font-weight 수정 */
+.k-window-title {
+    font-size: 1.2em;
+    line-height: 1.25;
+    font-weight: bold;
+    display: block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    cursor: default;
+}
+
+/****************************** JJW 20.11.10 ******************************/
+
+/* JJW 20.11.10 팝업 타이틀 아이콘 수정 */
+.k-window-titlebar .k-window-action {
+	padding: 2px;
+/*     width: 20px; */
+/*     height: 20px; */
+	border-width: 0;
+	border-style: solid;
+	border-color: transparent;
+	color: inherit;
+	box-sizing: content-box;
+	opacity: 1;
+}
+
+/* JJW 20.11.10 팝업 타이틀 수정 */
+.k-window-title {
+	font-weight: 700;
+}
+
+/* JJW 20.11.10 그리드 더보기 메뉴 - 칼럼 우측 화살표 아이콘 위치 조정 */
+.k-menu-group .k-item > .k-link > .k-menu-expand-arrow,
+.k-menu-scroll-wrapper .k-item > .k-link > .k-i-arrow-60-right,
+.k-menu-vertical .k-item > .k-link > .k-menu-expand-arrow,
+.k-popups-wrapper .k-item > .k-link > .k-i-arrow-60-right {
+    position: absolute;
+    top: 50%;
+/*     margin-top: -8px; */
+    right: .2rem;
+}
+
+/****************************** JJW 20.11.11 ******************************/
+
+/* JJW 20.11.11 그리드 너비 줄어듦에 따라 생기는 드롭 다운 페이져 숨김 */
+.k-pager-sm .k-pager-numbers-wrap select.k-dropdown {
+    width: 100%;
+    display: -ms-flexbox;
+/*     display: flex; */
+    box-sizing: border-box;
+}
+
+/* JJW 20.11.11 조회버튼 크기 늘어남 비활성화 */
+/* .k-grid tbody button.k-button {
+    min-width: 78px;
+} */
+
+/****************************** JJW 20.11.12 ******************************/
+
+/* JJW 20.11.12 수주관리 커스텀 검색 박스 안에 보더 삭제 */
+.k-input[type=text],
+.k-input[type=number],
+.k-picker-wrap .k-input,
+.k-textarea,
+.k-textarea > .k-input .k-multiselect .k-input,
+.k-textarea > textarea,
+.k-textbox,
+.k-textbox > .k-input,
+.k-textbox > input {
+    font-size: 100%;
+    font-family: inherit;
+    border-style: solid;
+/*     border-width: 1px; */
+    -webkit-appearance: none;
+}
+
+/****************************** JJW 20.12.01 ******************************/
+
+/* JJW 20.11.12 팝업 하단 그리드 검색 영역 왼쪽 정렬  */
+.k-grid .k-header .k-grid-search {
+    width: 15.7em;
+    float: left;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+/******************************  2020-12-10 jkkim 스크롤 이미지 디자인  ******************************/
+div.k-scrollview ul.k-scrollview-wrap > li {
+	text-align: center;
+	display: table;
+	box-sizing: border-box;
+}
+
+ul.k-scrollview-wrap > li > .img-wrapper {
+	padding: 1em;
+	display: table-cell;
+	vertical-align: middle;
+	}
+
+ul.k-scrollview-wrap > li > .img-wrapper > div {
+	width: 30%;
+	min-width: 150px;
+	box-sizing: border-box;
+	display: inline-block;
+	vertical-align: top;
+	margin-bottom: 1em;
+}
+
+ul.k-scrollview-wrap > li > .img-wrapper > div > div {
+	margin: auto;
+	margin-bottom: 0.5em;
+}
+.k-scrollview > .k-scrollview-elements > .k-scrollview-next, .k-scrollview > .k-scrollview-elements > .k-scrollview-prev{
+	color : black;
+}

@@ -1,0 +1,10 @@
+/**
+ * EasyUI for Angular 1.2.5
+ * 
+ * Copyright (c) 2009-2019 www.jeasyui.com. All rights reserved.
+ *
+ * Licensed under the freeware license: https://www.jeasyui.com/license_freeware2.php
+ * To use it on other terms please contact us: info@jeasyui.com
+ *
+ */
+import*as i0 from"@angular/core";import*as i1 from"@angular/common";import*as i2 from"./draggable-proxy.component";var styles_DraggableProxyComponent=[],RenderType_DraggableProxyComponent=i0.ɵcrt({encapsulation:2,styles:styles_DraggableProxyComponent,data:{}});export{RenderType_DraggableProxyComponent};export function View_DraggableProxyComponent_0(_l){return i0.ɵvid(0,[i0.ɵqud(402653184,1,{proxyRef:0}),(_l()(),i0.ɵeld(1,0,[[1,0],["proxy",1]],null,3,"div",[["style","position:absolute;"]],[[2,"draggable-reverting",null],[4,"left","px"],[4,"top","px"],[4,"width","px"],[4,"height","px"],[4,"display",null]],[[null,"transitionend"]],function(_v,en,$event){var ad=!0,_co=_v.component;return"transitionend"===en&&(ad=!1!==_co.onTransitionEnd($event)&&ad),ad},null,null)),i0.ɵdid(2,278528,null,0,i1.NgClass,[i0.IterableDiffers,i0.KeyValueDiffers,i0.ElementRef,i0.Renderer2],{ngClass:[0,"ngClass"]},null),i0.ɵdid(3,278528,null,0,i1.NgStyle,[i0.KeyValueDiffers,i0.ElementRef,i0.Renderer2],{ngStyle:[0,"ngStyle"]},null),i0.ɵncd(null,0)],function(_ck,_v){var _co=_v.component;_ck(_v,2,0,_co.proxyCls),_ck(_v,3,0,_co.proxyStyle)},function(_ck,_v){var _co=_v.component;_ck(_v,1,0,_co.reverting,_co.left,_co.top,_co.width,_co.height,_co.closed?"none":"block")})};export function View_DraggableProxyComponent_Host_0(_l){return i0.ɵvid(0,[(_l()(),i0.ɵeld(0,0,null,null,1,"eui-draggable-proxy",[],null,null,null,View_DraggableProxyComponent_0,RenderType_DraggableProxyComponent)),i0.ɵdid(1,245760,null,0,i2.DraggableProxyComponent,[i0.ElementRef],null,null)],function(_ck,_v){_ck(_v,1,0)},null)};var DraggableProxyComponentNgFactory=i0.ɵccf("eui-draggable-proxy",i2.DraggableProxyComponent,View_DraggableProxyComponent_Host_0,{left:"left",top:"top",width:"width",height:"height",proxyCls:"proxyCls",proxyStyle:"proxyStyle",reverting:"reverting",closed:"closed"},{},["*"]);export{DraggableProxyComponentNgFactory};

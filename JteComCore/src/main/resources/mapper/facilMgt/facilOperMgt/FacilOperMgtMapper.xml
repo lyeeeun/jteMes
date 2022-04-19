@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.facilMgt.facilOperMgt.FacilOperMgtMapper">
+
+	<!-- 설비 관리정보 -->
+	<sql id="eqmtOper_base">
+			eqmtWork.eqmt_mgt_id		AS eqmtMgtId,
+			eqmtWork.eqmt_work_start	AS eqmtWorkStart,
+			eqmtWork.eqmt_work_end		AS eqmtWorkEnd,
+			eqmtMgt.eqmt_mgt_nm			AS eqmtMgtNm,
+			eqmtMgt.eqmt_mgt_desc		AS eqmtMgtDesc,
+			eqmtMgt.creator_id			AS creatorId,
+			eqmtMgt.created_at			AS createdAt,
+			eqmtMgt.updator_id			AS updatorId,
+			eqmtMgt.updated_at			AS updatedAt
+		FROM his_equipment_work eqmtWork
+		LEFT OUTER JOIN bc_equipment_mgt eqmtMgt ON eqmtMgt.eqmt_mgt_id = eqmtWork.eqmt_mgt_id
+		WHERE 1=1
+		AND eqmtWork.eqmt_mgt_id = #{eqmtMgtId}
+	</sql>
+	
+	<!-- 설비 관리정보(Page) select -->
+	<select id="selectEqmtOperList"
+		parameterType="jin.mes.form.facilMgt.facilOperMgt.FacilOperMgtDto"
+		resultType="jin.mes.form.facilMgt.facilOperMgt.FacilOperMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="eqmtOper_base" />
+			)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- 설비 관리정보 Count -->
+	<select id="selectEqmtOperCount"
+		parameterType="jin.mes.form.facilMgt.facilOperMgt.FacilOperMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="eqmtOper_base" />
+				)c_table
+	</select>
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "OR_total">
+			       <!-- FN_CM_GETCOMNM(O.CTR_CD , 'PRODTYPE', P.PRODTYPE) AS PRODTYPE   
+				    FN_CM_GETCOMNM(O.CTR_CD , 'PRODSPEC', P.PRODSPEC) AS PRODSPEC 
+				    FN_CM_GETCOMNM(O.CTR_CD , 'PRODUNITCD', P.PRODUNIT_CD ) AS UNIT_NM --> 
+<select id="orderList" parameterType="hashmap"
+		resultType="hashmap">
+		
+			   
+			<![CDATA[
+		    SELECT  CTR_CD
+			       ,DATE_FORMAT(O.ORDER_DATE,'%Y%m%d') AS ORDER_DATE
+			       ,DATE_FORMAT(O.DELIVERY_DATE,'%Y%m%d') AS DELIVERY_DATE
+			       ,O.CUSTOMERID
+			       ,O.PRODUNIT_CD
+			       ,C.CUSTOMERNAME 
+			       ,O.PRODID
+			       ,P.PRODNAME
+			       ,P.PRODMTRL
+			       ,P.PRODTYPE 
+				   ,P.PRODSPEC
+				   ,P.PRODUNIT_CD AS UNIT_NM 
+				   ,O.QTY
+			       ,O.PROD_OUT_TOT_QTY
+			       ,O.DEL_GBN                   
+			  FROM TB_MESORDER O
+			INNER JOIN TB_CUSTOMER C ON O.CUSTOMERID=C.CUSTOMERID
+			INNER JOIN TB_PRODUCT P ON O.PRODID=P.PRODID
+			 WHERE 1 = 1
+		]]> 
+			<!--  삭제 구분에 N 즉 삭제된 데이터가 아닌경우 -->
+			<if test='DEL_GBN != "N"'>
+				AND O.DEL_GBN ='N'
+			</if>
+			<if test='CUSTOMERNAME != null and CUSTOMERNAME != ""'>
+				AND CUSTOMERNAME LIKE CONCAT("%"#{CUSTOMERNAME}"%") 
+			</if>
+			<if test='PRODNAME != null and PRODNAME != ""'>
+				AND PRODNAME LIKE CONCAT("%"#{PRODNAME}"%") 
+				 
+			</if>
+			<if test='STR_DT != null and STR_DT != ""'>
+				AND STR_TO_DATE(ORDER_DATE,'%Y-%m-%d') BETWEEN STR_TO_DATE(#{STR_DT},'%Y-%m-%d')
+				AND STR_TO_DATE(#{END_DT},'%Y-%m-%d')
+			</if>
+		<![CDATA[
+			 ORDER BY ORDER_NO
+		]]>
+		
+		</select> 
+		
+			<!-- 고객사 드롭박스 콤보에 들어가기 위해 필요 -->
+	<select id="selectCustomerList" parameterType="hashmap"
+		resultType="hashmap">
+
+		SELECT CUSTOMERID,
+		CUSTOMERNAME 
+
+		FROM TB_CUSTOMER 
+		ORDER BY CUSTOMERID
+
+	</select>
+	
+			<!-- 제품명 드롭박스 콤보에 들어가기 위해 필요 -->
+	<select id="selectProdidList" parameterType="hashmap"
+		resultType="hashmap">
+
+		SELECT PRODID,
+		PRODNAME 
+		
+
+		FROM TB_PRODUCT 
+		ORDER BY PRODID
+
+	</select>
+	
+		
+</mapper>
+		

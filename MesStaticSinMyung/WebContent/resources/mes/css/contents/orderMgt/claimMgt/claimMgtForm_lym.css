@@ -1,0 +1,336 @@
+@CHARSET "UTF-8";
+
+/**200407 CSS 파일 생성_LYM**/
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.claimMgtForm{
+	margin-top: 0.8em;
+}
+
+.claimMgtForm .center-input {
+	width: 100%;
+}
+
+.claimMgtForm .col-left-title {
+	width: 14%;
+}
+
+.claimMgtForm .col-left-content {
+	width: 35%;
+}
+
+.claimMgtForm .col-right-title {
+	width: 16%;
+}
+
+.claimMgtForm .col-right-content {
+	width: 35%;
+}
+
+.claimMgtForm div.k-window-content{
+	overflow: unset; /*팝업창의 스크롤 없앰*/
+}
+
+.claimMgtForm .grid-content {
+	width: 100%;
+}
+.claimMgtForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+.claimMgtForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 0px;
+}
+
+.claimMgtForm .k-datepicker .k-picker-wrap .k-input{
+	padding: 4px 0px;
+}
+
+.claimMgtForm .jtePopForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.claimMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.claimMgtForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.claimMgtForm .left-input {
+	width: 100%;
+}
+
+.claimMgtForm .right-input {
+	width: 100%;
+}
+
+.claimMgtForm .left-caret{
+	padding-left: 26px;
+}
+
+#jtePopForm_grid td {
+	padding: .4em .6em;	
+}
+
+/*********클레임 관리 그리드 더블클릭 시의 팝업창**********/
+
+.claimMgtForm-popsc .center-input {
+	width: 100%;
+}
+
+.claimMgtForm-popsc .popsc-col-left-title {
+	width: 15%;
+}
+
+.claimMgtForm-popsc .popsc-col-left-content {
+	width: 30%;
+}
+
+.claimMgtForm-popsc .popsc-col-right-title {
+	width: 25%;
+}
+
+.claimMgtForm-popsc .popsc-col-right-content {
+	width: 30%;
+}
+
+.claimMgtForm-popsc div.k-window-content{
+	overflow: unset; /*팝업창의 스크롤 없앰*/
+}
+
+.claimMgtForm-popsc .grid-content {
+	width: 100%;
+}
+.claimMgtForm-popsc .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+.claimMgtForm-popsc .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 0px;
+}
+
+.claimMgtForm-popsc .jtePopAddForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.claimMgtForm-popsc .jtePopAddForm_master th {
+	text-align: left;	
+}
+
+.claimMgtForm-popsc .jtePopAddForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.claimMgtForm-popsc .jtePopAddForm_master td.pop_title{
+	padding-top: 0em;
+	padding-bottom: 0em;
+}
+
+.claimMgtForm-popsc .left-input {
+	width: 100%;
+}
+
+.claimMgtForm-popsc .right-input {
+	width: 100%;
+}
+
+.claimMgtForm-popsc .left-caret{
+	padding-left: 26px;
+}
+
+#jtePopForm_grid td {
+	padding: .4em .6em;	
+}
+
+/*********클레임 관리 그리드 더블클릭 → 팝업창 하단 그리드 좌측의 클레임 정보 입력 버튼 클릭 시의 팝업창**********/
+
+.claimMgtForm .popsc-btn {
+	width: 100%;
+}
+
+.claimMgtForm .jtePopAddForm_master_sc {
+	margin-top: 10px;
+}
+
+
+/*********클레임 관리 그리드 더블클릭 → 팝업창 하단 그리드 좌측의 재수주 버튼 클릭 시의 팝업창**********/
+
+.claimMgtForm .search-btn {
+	width: 100%;
+}
+
+.claimMgtForm-poptr .jteClaimReorderForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.claimMgtForm-poptr .jteClaimReorderForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.claimMgtForm-poptr .jteClaimReorderForm_master td.pop_title{
+	padding-top: 0em;
+	padding-bottom: 0em;
+}
+
+.claimMgtForm .poptr-center-input {
+	width: 100%;
+}
+
+.claimMgtForm .poptr-col-left-title {
+	width: 15%;
+}
+
+.claimMgtForm .poptr-col-left-content-1 {
+	width: 20%;
+}
+
+.claimMgtForm .poptr-col-left-content-2 {
+	width: 10%;
+}
+
+.claimMgtForm .poptr-col-right-title {
+	width: 25%;
+}
+
+.claimMgtForm .poptr-col-right-content-1 {
+	width: 20%;
+}
+
+.claimMgtForm .poptr-col-right-content-2 {
+	width: 10%;
+}
+
+.claimMgtForm .right-input.btn-input{
+	width: 100%;
+}
+
+#popArea .k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#popArea td {
+	padding: .4em .6em;
+}
+
+
+/********* 클레임 관리 그리드 더블클릭 → 팝업창 하단 그리드 좌측의 클레임 정보 입력 버튼 클릭 → 불량 정보 등록 버튼 클릭 시의 팝업창**********/
+
+
+.routingMgtForm{
+	margin-top: 0.8em;	
+}
+
+.toolInfoPopup_form{
+	width: 93%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.tool-checkbox-td {
+	width: 10%;
+	text-align: center;
+}
+
+.routingMgtForm .toolInfo-title{
+	width: 100%;
+	font-weight: bolder;
+	margin-top: 8px;
+	padding-left: 50px;
+}
+
+.routingMgtForm .toolInfo-content {
+	width: 100%
+}
+
+.routingMgtForm .toolInfo tr {
+	text-align: left;	
+}
+
+.routingMgtForm .toolInfo th {
+	text-align: left;	
+}
+
+.routingMgtForm .toolInfo td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+	
+}
+
+.routingMgtForm .toolInfo-title td {
+	text-align: center;
+}
+
+.routingMgtForm .toolInfo-content td {
+	width: 100%;
+}
+
+.routingMgtForm .col-toolInfo-check {
+	width: 4%;
+}
+
+.routingMgtForm .col-toolInfo {
+	width: 24%;
+}
+
+.routingMgtForm .toolInfo-div {
+   overflow-y: scroll;
+   height: 377px;
+   background-color: #ffffff;
+   padding-left: 15px;
+   padding-right: 15px;
+   border: 1px solid #99a5b5;
+   color: #192534;
+}
+
+.routingMgtForm .plus-minus-btn {
+	width: 20px;
+	padding: 1px 30px;
+	font-size: 19px;
+	margin-right: 8px;
+	
+}
+
+.plus-minus-btn-area {
+	margin-top: 15px;
+}
+
+.claimMgtForm .col-toolInfo {
+	text-align: center;
+}
+
+.claimMgtForm-toolInfo-content .k-widget.k-dropdown.badCode {
+	width: 96%;
+}
+
+.k-animation-container .k-list-container .k-list-scroller ul li {
+	padding-top: 0.4em;
+	padding-bottom: 0.4em;
+}

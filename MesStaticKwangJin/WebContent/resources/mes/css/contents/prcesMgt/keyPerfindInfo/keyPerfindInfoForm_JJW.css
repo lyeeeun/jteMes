@@ -1,0 +1,65 @@
+
+.keyPerfindInfoForm {
+	width:100%;
+}
+
+.keyPerfindInfoForm.search-btn-area {
+	background-color: #f2f6fc;
+	padding: 15px 10px;
+	margin-bottom: 5px;
+}
+
+.keyPerfindInfoForm.keyPerfindInfoForm-gird {
+	width:100%;
+	margin-top: 5px;
+}
+
+#grid-content {
+	height: 80%;
+}
+
+/***** 200519 JJW 라인차트 *******/
+
+.keyPerfindInfoForm .keyPerfindInfoForm-gird {
+	width: 100%;
+}
+
+.keyPerfindInfoForm .col-left {
+	width:99%;
+}
+
+/* .keyPerfindInfoForm .col-right {
+	width:34.5%;
+} */
+
+.keyPerfindInfoForm .keyPerfindInfoForm-gird tr {
+	height:50%;
+}
+
+.kpi-left-top-chart {
+	border: 3px solid #B9CBF1;
+	border-radius: 8px;
+/* 	padding: 10px; */
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+.kpi-right-chart {
+	/* border: 2px solid #92B5FC; */
+}
+
+.kpi-left-bottom-chart {
+	border: 3px solid #B9CBF1;
+	border-radius: 8px;
+/* 	padding: 10px; */
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+.td-chart-area {
+	border: 3px solid #B9CBF1;
+	border-radius: 8px;
+	padding: 20px;
+/* 	padding-top: 10px;
+	padding-bottom: 10px; */
+}

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="jin.mes.mapper.qualMgt.qualPec.prcesQualMgt.PrcesQualMgtMapper">
+	<sql id="prcesQual_base">
+			bad.bad_id AS badId,
+			bad.bad_code AS badCode,
+			bad.bad_qty AS badQty,
+			bad.chk_user AS chkUser,
+			userInfo.user_nm AS chkUserNm,
+			bad.chk_date AS chkDate,
+			bad.bad_target AS badTarget,
+			bad.bad_target_code AS badTargetCode,
+			bad.bad_desc AS badDesc
+		FROM prs_bad_product bad
+		JOIN mb_user_info userInfo ON userInfo.user_id = bad.chk_user
+		WHERE bad_target IN('qual_spec03', 'qual_spec02')
+		<if test="searchText != null and searchText != '' ">
+		AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<!-- 주문목록 조회 리스트 -->
+	<select id="selectPrcesQualList"
+		parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto"
+		resultType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto">
+			SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY chkDate desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="prcesQual_base" />
+				)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- 주문목록 조회(Count) -->
+	<select id="selectPrcesQualCount"
+	parameterType="jin.mes.form.qualMgt.infergodsMgt.InfergodsMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="prcesQual_base" />
+			)c_table
+	</select>
+	
+	<!-- 입고검사   Main Grid -->
+	<select id="selectPrcesQualInfo"
+		parameterType="jin.mes.form.mfgMgt.wrkinTeamMgt.WrkinTeamMgtDto"
+		resultType="jin.mes.form.mfgMgt.wrkinTeamMgt.WrkinTeamMgtDto">
+		SELECT
+			lot.order_id			AS orderId,			-- 수주ID
+			orderInfo.order_nm		AS orderNm,			-- 수주명
+			orderInfo.order_state	AS orderState,
+			lot.lot_id				AS lotId,			-- LotID
+			lot.lot_nm				AS lotNm,			-- Lot명*
+			lot.creator_id			AS creatorId,
+			lot.created_at			AS createdAt,
+			lot.updator_id			AS updatorId,
+			lot.updated_at			AS updatedAt,
+			item.item_id			AS itemId,			-- 아이템ID
+			item.item_nm			AS itemNm,			-- 아이템명*
+			item.item_total_stock 	AS itemTotalStock,	  		 -- 총재고량
+			item.item_unit 			AS itemUnit,		   -- 유닛
+			item.item_mtrl 			AS itemMtrl,		   -- 재질
+			asgn.prod_asm_id		AS prodAsmId,		-- 작업지시 ID
+			asgn.prod_asm_nm		AS prodAsmNm,		-- 작업지시명
+			asgn.prod_asm_date		AS prodAsmDate,		-- 작업지시일
+			asgn.prod_asm_qty		AS prodAsmQty,		-- 생산지시량
+			asgn.prod_asm_desc		AS prodAsmDesc,		-- 비고
+			asgn.prod_asm_user		AS prodAsmUser,		-- 작업지시 수신자 아이디(부서 담당자)
+			asgn.prod_asm_emj		AS prodAsmEmj,		-- 긴급여부
+			asgn.prod_asm_state		AS prodAsmState,	-- 작업상태
+			rut.routing_id			AS routingId,		-- 라우팅ID
+			rut.routing_seq			AS routingSeq,		-- 라우팅 순서
+			rut.routing_type		AS routingType,		-- 공정정보
+			wok.eqmt_mgt_id			AS eqmtMgtId,		-- 설비 ID*
+			IF(INSTR(GROUP_CONCAT(bom.bom_target),'prcs_bom02') <![CDATA[ <> ]]> 0,'SUCCESS','FAIL')	AS bomTarget,		-- bom구분(자재, 품목)
+			equip.eqmt_mgt_nm 		AS eqmtMgtNm,		-- 설비명
+			equip.place_id 			AS placeId,		-- 위치 ID
+			place.place_nm 			AS placeNm,		-- 위치명
+			wok.prod_work_id		AS prodWorkId,		-- 작업정보ID
+			wok.prod_work_user		AS prodWorkUser,	-- 작업자 아이디
+			w_usr.user_nm			AS prodWorkUserNm,	-- 작업자 명
+			wok.prod_work_qty		AS prodWorkQty,		-- 작업자 작업지시량
+			wok.prod_work_good		AS prodWorkGood,	-- 생산량
+			wok.prod_work_bad		AS prodWorkBad,		-- 불량량
+			wok.prod_work_start		AS prodWorkStart,	-- 시작시간
+			wok.prod_work_end		AS prodWorkEnd,		-- 종료시간
+			wok.prod_work_desc		AS prodWorkDesc	-- 작업지시 비고
+		FROM prs_lot_info lot -- 작업정보
+		LEFT OUTER JOIN prs_order_info orderInfo ON orderInfo.order_id = lot.order_id			-- 수주정보 
+		LEFT OUTER JOIN bc_item_info item ON item.item_id = lot.item_id						-- 품목정보
+		LEFT OUTER JOIN prs_product_assignment asgn ON lot.lot_id = asgn.lot_id 			-- 생산지시
+		LEFT OUTER JOIN bc_routing_info rut ON item.item_id = rut.item_id					-- 라우팅 정보
+		LEFT OUTER JOIN bc_rtl_bom_routing rtl ON rtl.routing_id = rut.routing_id			-- routing - bom 매핑테이블
+		LEFT OUTER JOIN bc_bom_info bom ON bom.bom_id = rtl.bom_id							-- bom 정보
+		LEFT OUTER JOIN prs_work_info wok ON wok.routing_id = rut.routing_id AND wok.prod_asm_id = asgn.prod_asm_id
+		LEFT OUTER JOIN bc_equipment_mgt equip ON wok.eqmt_mgt_id = equip.eqmt_mgt_id
+		LEFT OUTER JOIN bc_place_info place ON equip.place_id = place.place_id
+		LEFT OUTER JOIN mb_user_info w_usr ON w_usr.user_id = wok.prod_work_user 			-- 작업자 정보		
+		WHERE 1=1
+		AND orderInfo.order_state = 'ord_prcd01'
+		<if test="lotId != null and lotId != '' ">
+			AND lot.lot_id = #{lotId}
+		</if>
+		<if test="prodAsmId != null and prodAsmId != '' ">
+			AND asgn.prod_asm_id = #{prodAsmId}
+		</if>
+		<if test="prodAsmEmj != null and prodAsmEmj != '' ">	
+			AND asgn.prod_asm_emj = #{prodAsmEmj}
+		</if>
+		<if test="deptId != null and deptId != '' ">	
+			AND asgn.dept_id = #{deptId}
+		</if>
+		<if test="prodWorkId != null and prodWorkId != '' ">	
+			AND wok.prod_work_id = #{prodWorkId}
+		</if>
+		<if test="routingId != null and routingId != '' ">	
+			AND wok.routing_id = #{routingId}
+		</if>
+		<if test="prodWorkUser != null and prodWorkUser != '' ">	
+			AND wok.prod_work_user = #{prodWorkUser}
+		</if>
+		GROUP BY lot.lot_id, rut.routing_id
+	</select>
+	
+</mapper>

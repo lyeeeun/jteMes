@@ -1,0 +1,62 @@
+@charset "UTF-8";
+
+#popSubject{
+	font-size:25px;
+	font-weight:bold;
+}
+
+.popTitle{
+	font-weight:bold;
+	font-size:20px;
+	padding:10px;
+}
+
+#orderList{
+	border-top:1px solid Black !important;
+	border-collapse:collapse;
+}
+#orderList tr th{
+	background:#5997d3;
+	border: 1px solid #ccc;
+	color:white;
+}
+#orderList td{
+	border: 1px solid #ccc;
+	padding :5px;
+}
+
+#partsListDiv{
+	max-height:130px; 
+	overflow:auto;
+	border: 1px solid #ccc;
+	border-radius:6px;
+	background:#f2f2f2;
+	padding:5px;
+	margin:10px 10px 30px 10px;
+}
+
+.popListSelected{
+	background:#ebf5ff;
+	color:#007eff;
+	border:1px solid #c2e0ff;
+	border-radius:2px;
+}
+
+#pms_parts_table{
+	border-top:1px solid Black !important;
+	border-collapse:collapse;
+}
+
+#pms_parts_table tr th{
+	background:#5997d3;
+	border: 1px solid #ccc;
+	color:white;
+}
+#pms_parts_table td{
+	border: 1px solid #ccc;
+	padding :5px;
+}
+.btn_layer{
+	text-align:center;
+	margin:30px 0 30px 0;
+}

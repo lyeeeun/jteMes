@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.facilMgt.facilOperMgt.KwangjinFacilOperMgtMapper">
+
+	<!-- 설비 관리정보 -->
+	<sql id="eqmtOper_base">
+			eqmtWork.eqmt_mgt_id		AS eqmtMgtId,
+			eqmtWork.eqmt_work_start	AS eqmtWorkStart,
+			eqmtWork.eqmt_work_end		AS eqmtWorkEnd,
+			eqmtMgt.eqmt_mgt_nm			AS eqmtMgtNm,
+			eqmtMgt.eqmt_mgt_purchase	AS eqmtMgtPurchase,
+			eqmtMgt.eqmt_mgt_verif		AS eqmtMgtVerif,
+			eqmtMgt.eqmt_mgt_desc		AS eqmtMgtDesc,
+			eqmtMgt.creator_id			AS creatorId,
+			eqmtMgt.created_at			AS createdAt,
+			eqmtMgt.updator_id			AS updatorId,
+			eqmtMgt.updated_at			AS updatedAt
+		FROM his_equipment_work eqmtWork
+		LEFT OUTER JOIN bc_equipment_mgt eqmtMgt ON eqmtMgt.eqmt_mgt_id = eqmtWork.eqmt_mgt_id
+		WHERE 1=1
+		<if test="searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != '' ">
+			AND DATE_FORMAT(eqmtWork.eqmt_work_start,'%Y-%m-%d') between #{searchStartDate} AND #{searchEndDate}
+		</if>
+		<if test="eqmtMgtId != null and eqmtMgtId != '' ">
+			AND eqmtWork.eqmt_mgt_id = #{eqmtMgtId}
+		</if>
+		<if test="eqmtMgtNm != null and eqmtMgtNm != '' ">
+			AND eqmtMgt.eqmt_mgt_nm = #{eqmtMgtNm}
+		</if>
+	</sql>
+	
+	<!-- 설비 관리정보(Page) select -->
+	<select id="selectEqmtOperList"
+		parameterType="jin.mes.cform.facilMgt.facilOperMgt.KwangjinFacilOperMgtDto"
+		resultType="jin.mes.cform.facilMgt.facilOperMgt.KwangjinFacilOperMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY eqmtMgtId desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="eqmtOper_base" />
+			)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- 설비 관리정보 Count -->
+	<select id="selectEqmtOperCount"
+		parameterType="jin.mes.cform.facilMgt.facilOperMgt.KwangjinFacilOperMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="eqmtOper_base" />
+				)c_table
+	</select>
+	
+	<select id="selectEqmtWorkList"
+		parameterType="jin.mes.cform.facilMgt.facilOperMgt.KwangjinFacilOperMgtDto"
+		resultType="jin.mes.cform.facilMgt.facilOperMgt.KwangjinFacilOperMgtDto">
+		SELECT 
+			eqmtWork.eqmt_mgt_id	AS eqmtMgtId,
+			eqmtMgt.eqmt_mgt_nm		AS eqmtMgtNm
+		FROM his_equipment_work eqmtWork
+		LEFT OUTER JOIN bc_equipment_mgt eqmtMgt ON eqmtMgt.eqmt_mgt_id = eqmtWork.eqmt_mgt_id
+		WHERE 1=1
+		GROUP BY eqmt_mgt_nm
+	</select>
+</mapper>

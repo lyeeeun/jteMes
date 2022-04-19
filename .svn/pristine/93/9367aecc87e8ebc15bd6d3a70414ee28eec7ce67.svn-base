@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="jin.mes.mapper.qualMgt.qualPec.finalQualMgt.FinalQualMgtMapper">
+
+	<!-- 입고검사   Main Grid -->
+	<sql id="finalQual_base">
+			itemMgt.item_id AS itemId,
+			itemMgt.item_mgt_id AS itemMgtId,
+			itemMgt.item_mgt_type AS itemMgtType,
+			itemMgt.item_mfg_date AS itemMfgDate,
+			itemMgt.item_stock AS itemStock,
+			itemMgt.item_package_stock AS itemPackageStock,
+			itemMgt.description,
+			itemMgt.created_at AS createdAt,
+			itemMgt.creator_id AS creatorId,
+			itemMgt.updated_at AS updatedAt,
+			itemMgt.updator_id AS updatorId,
+			itemMgt.is_del as isDel,
+			itemInfo.item_nm AS itemNm,
+			itemInfo.item_type AS itemType,
+			itemInfo.item_price AS itemPrice,
+			itemInfo.item_person_cost AS itemPersonCost,
+			itemInfo.item_std01 AS itemStd01,
+			itemInfo.item_std02 AS itemStd02,
+			itemInfo.item_std03 AS itemStd03,
+			itemInfo.item_std04 AS itemStd04,
+			itemInfo.item_std05 AS itemStd05,
+			itemInfo.item_std_str01 as itemStdStr01,
+			itemInfo.item_std_str02 as itemStdStr02,
+			itemInfo.item_std_str03 as itemStdStr03,
+			itemInfo.item_std_str04 as itemStdStr04,
+			itemInfo.item_std_str05 as itemStdStr05,
+			itemInfo.item_unit AS itemUnit,
+			itemInfo.item_mtrl AS itemMtrl,
+			itemInfo.item_total_stock AS itemTotalStock,
+			itemInfo.item_day_target AS itemDayTarget,
+			itemInfo.item_deduction AS itemDeduction
+		FROM bc_item_info itemInfo
+		RIGHT JOIN cm_item_mgt itemMgt
+		ON itemInfo.item_id = itemMgt.item_id
+		WHERE itemInfo.is_use = TRUE
+		AND itemMgt.item_stock != 0
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="itemId != null">
+			AND itemMgt.item_id = #{itemId} 
+		</if>
+		<if test="itemMgtId != null">
+			AND itemMgt.item_mgt_id = #{itemMgtId}
+		</if>
+		<if test="isDel != null">
+			AND itemMgt.is_del = #{isDel}
+		</if>
+	</sql>
+	
+	<!-- 입고검사   Main Grid(Page) select -->
+	<select id="selectFinalQualList"
+		parameterType="jin.mes.form.qualMgt.qualPec.finalQualMgt.FinalQualMgtDto"
+		resultType="jin.mes.form.qualMgt.qualPec.finalQualMgt.FinalQualMgtDto">
+		SELECT * FROM (
+		SELECT
+		<choose>
+			<when test="sort != null and sort != '' ">
+				ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+			</when>
+			<otherwise>
+				ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+			</otherwise>
+		</choose>
+		<include refid="finalQual_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>
+	</select>
+
+	<!-- 입고검사   Main Grid Count -->
+	<select id="selectFinalQualCount"
+		parameterType="jin.mes.form.qualMgt.qualPec.finalQualMgt.FinalQualMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM (
+		SELECT
+		<include refid="finalQual_base" />
+		)c_table
+	</select>
+	
+</mapper>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MTRL_outShDel">
+<!-- 				   , FN_CM_GETCOMNM(mo.CTR_CD , 'MTRLTYPE' ,mtrl.MTRLTYPE) AS MTRLTYPE           
+				   , FN_CM_GETCOMNM(mo.CTR_CD , 'MTRLUNITCD',mtrl.MTRLUNIT_CD )  AS UNIT_NM -->
+	<select id="selectMtrlOutList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT  mo.MTRL_OUT_NO                                                   
+				   ,DATE_FORMAT(mo.MTRL_OUT_DATE,'%Y%m%d') AS MTRL_OUT_DATE                
+				   ,mi.MTRL_IN_NO                                                           
+				   ,mo.SUPPLIERID                                                           
+				   ,mo.MTRLID                                                               
+				   ,s.SUPPLIERNAME                                                          
+				   ,mtrl.MTRLNAME                                                            
+				   ,mtrl.MTRLSPEC                                                            
+				   ,mtrl.MTRLCMPT                                                             
+				   ,mo.MTRL_OUT_QTY                                                           
+				   ,wo.WOID                                                                  
+				   ,c.CUSTOMERID                                                             
+				   ,c.CUSTOMERNAME                                                            
+				   ,p.PRODID                                                                 
+				   ,p.PRODNAME                                                               
+				   ,wo.SHOPFLOOR_QTY                                                          
+				   ,mi.REMARK AS REMARK1                                                      
+				   ,mo.REMARK AS REMARK2                                                     
+				   ,mo.DEL_GBN                                                               
+				   ,mtrl.MTRLTYPE          
+				   ,mtrl.MTRLUNIT_CD AS UNIT_NM   
+				   , mi.DEL_GBN                
+			  FROM tb_mesmtrout mo  
+			 LEFT JOIN tb_mesmtrlin mi ON mi.CTR_CD = mo.CTR_CD AND mi.MTRL_IN_NO = mo.MTRL_IN_NO
+			 LEFT JOIN tb_mesworkorder wo ON mo.CTR_CD = wo.CTR_CD AND mo.WOID = wo.WOID
+			 LEFT JOIN tb_material mtrl ON mi.MTRLID = mtrl.MTRLID
+			 LEFT JOIN tb_supplier s ON mi.SUPPLIERID = s.SUPPLIERID
+			 LEFT JOIN TB_CUSTOMER C ON wo.CUSTOMERID=c.CUSTOMERID
+			 LEFT JOIN TB_PRODUCT P ON wo.PRODID=P.PRODID
+			 WHERE 1=1
+		]]>
+			<!--  삭제 구분에 N 즉 삭제된 데이터가 아닌경우 -->
+			<if test='DEL_GBN != "N"'>
+				AND mo.DEL_GBN ='N'
+			</if>
+			<if test='MTRLNAME != null and MTRLNAME != ""'>
+				AND MTRLNAME LIKE CONCAT("%" #{MTRLNAME} "%")
+			</if>
+			<if test='SUPPLIERNAME != null and SUPPLIERNAME != ""'>
+				AND SUPPLIERNAME LIKE CONCAT("%" #{SUPPLIERNAME} "%") 
+			</if>
+			<if test='CUSTOMERID != null and CUSTOMERID != ""'>
+				AND mo.CUSTOMERID = #{CUSTOMERID}
+			</if>
+			<if test='PRODID != null and PRODID != ""'>
+				AND mo.PRODID = #{PRODID}
+			</if>
+			<if test='STR_DT != null and STR_DT != ""'>
+				AND MTRL_OUT_DATE BETWEEN STR_TO_DATE(#{STR_DT}, '%Y%m%d')
+				AND STR_TO_DATE(#{END_DT}, '%Y%m%d')
+			</if>
+			<![CDATA[
+				 ORDER BY mo.MTRL_OUT_DATE  
+			]]>
+      
+	</select>
+
+	<select id="updateMtrlOutList1" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+		    UPDATE TB_MESMTROUT
+		       SET REMARK = #{REMARK2}
+		     WHERE MTRL_OUT_NO=#{MTRL_OUT_NO}
+		]]>
+	</select>
+	
+</mapper>

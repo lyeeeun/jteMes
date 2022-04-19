@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.mapper.techMgt.ncProgramMgt.NcProgramMgtMapper">
+			
+	<sql id="routingInfo_base">
+				itemId,
+				itemNm,
+				routingId,
+				routingType,
+				routingSeq,
+				cycleTime,
+				setupTime,
+				inspectTime
+			FROM (
+					SELECT
+						DISTINCT
+						lotInfo.item_id				AS itemId,
+						itemInfo.item_nm			AS itemNm,
+						routingInfo.routing_id		AS routingId,
+						routingInfo.routing_type	AS routingType,
+						routingInfo.routing_seq		AS routingSeq,
+						routingInfo.cycle_time		AS cycleTime,
+						routingInfo.setup_time		AS setupTime,
+						routingInfo.inspect_time	AS inspectTime
+					FROM prs_order_info orderInfo
+					INNER JOIN prs_lot_info lotInfo
+					ON orderInfo.order_id = lotInfo.order_id
+					INNER JOIN bc_routing_info routingInfo
+					ON lotInfo.item_id = routingInfo.item_id
+					INNER JOIN bc_item_info itemInfo
+					ON lotInfo.item_id = itemInfo.item_id
+					WHERE orderInfo.order_id = #{orderId}
+					<if test="searchText != null and searchText != '' ">
+						AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+					</if>
+				) as subTable
+	</sql>
+	
+	<sql id="ncPgmInfo_base">
+				ncPgmInfo.routing_id	AS routingId,
+				ncPgmInfo.ncpgm_id		AS ncpgmId,
+				ncPgmInfo.ncpgm_no		AS ncpgmNo,
+				ncPgmInfo.ncpgm_rev_no	AS ncpgmRevNo,
+				ncPgmInfo.eqmt_mgt_id	AS eqmtMgtId,
+				eqmtMgt.eqmt_mgt_nm		AS eqmtMgtNm,
+				ncPgmInfo.req_user		AS reqUser,
+				reqUser.user_nm			AS reqUserNm,
+				ncPgmInfo.manager		AS manager,
+				manager.user_nm			AS managerNm,
+				ncPgmInfo.approve_stat	AS approveStat,
+				ncPgmInfo.reject_remark	AS rejectRemark,
+				ncPgmInfo.is_use		AS isUse,
+				ncPgmInfo.created_at	AS createdAt,
+				ncPgmInfo.updated_at	AS updatedAt
+			FROM bc_ncProgram_info ncPgmInfo
+			LEFT JOIN bc_equipment_mgt eqmtMgt ON ncPgmInfo.eqmt_mgt_id = eqmtMgt.eqmt_mgt_id
+			LEFT JOIN mb_user_info reqUser ON ncPgmInfo.req_user = reqUser.user_id
+			LEFT JOIN mb_user_info manager ON ncPgmInfo.manager = manager.user_id
+			where routing_id = #{routingId}
+			<if test="searchText != null and searchText != '' ">
+				AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+			</if>
+	</sql>
+	
+	<select id="selectRoutingInfo"
+		parameterType="jin.mes.form.techMgt.ncProgramMgt.NcProgramMgtDto"
+		resultType="jin.mes.form.techMgt.ncProgramMgt.NcProgramMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY itemId asc, routingSeq asc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="routingInfo_base"></include>
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+		
+	<!-- 수주정보 select -->
+	<select id="selectRoutingInfoCount"
+		parameterType="jin.mes.form.techMgt.ncProgramMgt.NcProgramMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="routingInfo_base"></include>
+		)c_table
+	</select>
+	
+	<select id="selectNcPgmInfo"
+		parameterType="jin.mes.form.techMgt.ncProgramMgt.NcProgramMgtDto"
+		resultType="jin.mes.form.techMgt.ncProgramMgt.NcProgramMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY ncPgmInfo.updated_at desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="ncPgmInfo_base"></include>
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+		
+	<!-- 수주정보 select -->
+	<select id="selectNcPgmInfoCount"
+		parameterType="jin.mes.form.techMgt.ncProgramMgt.NcProgramMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="ncPgmInfo_base"></include>
+		)c_table
+	</select>
+	
+	
+	<insert id="insertNcPgmInfo" parameterType="jin.mes.form.techMgt.ncProgramMgt.NcProgramMgtDto">
+		<selectKey keyProperty="ncpgmId" resultType="String" order="BEFORE">
+				SELECT CREATE_PK('NCPGM') as ncpgmId
+		</selectKey>
+		INSERT INTO bc_ncprogram_info(
+			ncpgm_id,
+			ncpgm_no,
+			ncpgm_rev_no,
+			eqmt_mgt_id,
+			req_user,
+			manager,
+			approve_stat,
+			routing_id,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at,
+			is_use
+		)VALUES(
+			#{ncpgmId},
+			#{ncpgmNo},
+			#{ncpgmRevNo},
+			#{eqmtMgtId},
+			#{reqUser},
+			#{manager},
+			#{approveStat},
+			#{routingId},
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			NOW(),
+			FALSE
+		)
+	</insert>
+	
+	<update id="updateNcPgmInfo" parameterType="jin.mes.form.techMgt.ncProgramMgt.NcProgramMgtDto">
+		UPDATE bc_ncprogram_info
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="ncpgmNo != null and ncpgmNo != '' ">
+				,ncpgm_no = #{ncpgmNo}
+			</if>
+			<if test="ncpgmRevNo != null and ncpgmRevNo != '' ">
+				,ncpgm_rev_no = #{ncpgmRevNo}
+			</if>
+			<if test="eqmtMgtId != null and eqmtMgtId != '' ">
+				,eqmt_mgt_id = #{eqmtMgtId}
+			</if>
+			<if test="manager != null and manager != '' ">
+				,manager = #{manager}
+			</if>
+			<if test="approveStat != null and approveStat != '' ">
+				,approve_stat = #{approveStat}
+			</if>
+			<if test="rejectRemark != null and rejectRemark != '' ">
+				,reject_remark = #{rejectRemark}
+			</if>
+		WHERE ncpgm_id = #{ncpgmId}
+	</update>
+	
+	<update id="updateIsUse" parameterType="jin.mes.form.techMgt.ncProgramMgt.NcProgramMgtDto">
+		UPDATE bc_ncprogram_info 
+		SET is_use = IF (ncpgm_id = #{ncpgmId}, TRUE, FALSE) 
+		WHERE routing_id = #{routingId}
+	</update>
+	
+	<select id="selectDupleKeyCheck"
+		parameterType="jin.mes.form.techMgt.ncProgramMgt.NcProgramMgtDto"
+		resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM bc_ncprogram_info
+		WHERE routing_id = #{routingId}
+		AND ncpgm_no = #{ncpgmNo}
+		AND ncpgm_rev_no = #{ncpgmRevNo}
+	</select>
+	
+</mapper>

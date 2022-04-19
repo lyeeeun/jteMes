@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.perform.facilStaMgt.facilTotalEff.FacilTotalEffMapper">
+
+	<!-- 설비 관리정보 -->
+	<sql id="eqmtMgt_base">
+			eqmtWork.eqmt_mgt_id		AS eqmtMgtId,
+			eqmtWork.eqmt_work_start	AS eqmtWorkStart,
+			eqmtWork.eqmt_work_end		AS eqmtWorkEnd,
+			TIME_FORMAT(SEC_TO_TIME(SUM(TIMESTAMPDIFF(SECOND ,eqmt_work_start,eqmt_work_end))), '%H 시간 %i 분 %s 초')		AS runTime,
+			(SUM(((24*60*60)-(24*60*60 - TIMESTAMPDIFF(SECOND ,eqmt_work_start,eqmt_work_end)))/(24*60*60)))*100		AS eqmtPercent,
+			eqmtMgt.eqmt_mgt_nm			AS eqmtMgtNm,
+			eqmtMgt.eqmt_mgt_desc		AS eqmtMgtDesc,
+			eqmtMgt.creator_id			AS creatorId,
+			eqmtMgt.created_at			AS createdAt,
+			eqmtMgt.updator_id			AS updatorId,
+			eqmtMgt.updated_at			AS updatedAt
+		FROM his_equipment_work eqmtWork
+		LEFT OUTER JOIN bc_equipment_mgt eqmtMgt ON eqmtMgt.eqmt_mgt_id = eqmtWork.eqmt_mgt_id
+		WHERE 1=1 AND DATE_FORMAT(eqmt_work_start,'%Y-%m-%d') = DATE_FORMAT(#{eqmtWorkStart},'%Y-%m-%d')
+		GROUP BY eqmtMgtId
+	</sql>
+	
+	<!-- 설비 관리정보(Page) select -->
+	<select id="selectEqmtMgtList"
+		parameterType="jin.mes.form.perform.facilStaMgt.facilTotalEff.FacilTotalEffDto"
+		resultType="jin.mes.form.perform.facilStaMgt.facilTotalEff.FacilTotalEffDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="eqmtMgt_base" />
+			)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- 설비 관리정보 Count -->
+	<select id="selectEqmtMgtCount"
+		parameterType="jin.mes.form.perform.facilStaMgt.facilTotalEff.FacilTotalEffDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="eqmtMgt_base" />
+				)c_table
+	</select>
+</mapper>

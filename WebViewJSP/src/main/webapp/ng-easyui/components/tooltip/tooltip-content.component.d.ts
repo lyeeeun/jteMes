@@ -1,0 +1,42 @@
+import { ElementRef, ChangeDetectorRef } from '@angular/core';
+import { TooltipDirective } from './tooltip.directive';
+export declare const TOOLTIP_CONTENT_TEMPLATE = "\n\t<div *ngIf=\"!closed\" #tooltip tabindex=\"-1\" class=\"tooltip tooltip-{{position}}\"\n\t\t\t[ngClass]=\"tooltipCls\"\n\t\t\t[ngStyle]=\"tooltipStyle\"\n\t\t\t[style.left.px]=\"left\"\n\t\t\t[style.top.px]=\"top\"\n\t\t\t[style.zIndex]=\"zIndex\"\n\t\t\t(mouseenter)=\"onMouseEnter($event)\"\n\t\t\t(mouseleave)=\"onMouseLeave($event)\">\n\t\t<div class=\"tooltip-content\">\n\t\t\t<ng-content></ng-content>\n\t\t\t{{content}}\n\t\t</div>\n\t\t<div #arrowOuter class=\"tooltip-arrow-outer\"></div>\n\t\t<div #arrowInner class=\"tooltip-arrow\"></div>\n\t</div>\n";
+export declare class TooltipContentComponent {
+    hostRef: ElementRef;
+    cdRef: ChangeDetectorRef;
+    tooltipRef: ElementRef;
+    arrowOuterRef: ElementRef;
+    arrowInnerRef: ElementRef;
+    tooltipCls: string;
+    tooltipStyle: Object;
+    content: string;
+    position: string;
+    target: HTMLElement;
+    parent: TooltipDirective;
+    trackMouse: boolean;
+    trackMouseX: number;
+    trackMouseY: number;
+    deltaX: number;
+    deltaY: number;
+    valign: string;
+    left: number;
+    top: number;
+    zIndex: number;
+    closed: boolean;
+    targetWidth: number;
+    targetHeight: number;
+    tipWidth: number;
+    tipHeight: number;
+    constructor(hostRef: ElementRef, cdRef: ChangeDetectorRef);
+    ngOnDestroy(): void;
+    onMouseEnter(event: any): void;
+    onMouseLeave(event: any): void;
+    getPosition(pos?: string): {
+        left: number;
+        top: number;
+    };
+    reposition(): void;
+    show(): void;
+    hide(): void;
+    static zIndex: number;
+}

@@ -1,0 +1,76 @@
+#jtePopForm_master {
+	margin-top: 5px;
+}
+
+/* .userInfoForm .col-left-title {
+	width: 40%;
+}
+
+.userInfoForm .col-right-content {
+	width: 60%;
+} */
+
+.userInfoForm .group-checkbox {
+	overflow: auto;
+	height: 120px;
+	background-color: #ffffff;
+	padding-top: 5px;
+	border: 1px solid #C7D5F4;
+}
+
+.userInfoForm .center-input .btn-input {
+	width: 100%;
+}
+
+.userInfoForm .jtePopForm_master th {
+   text-align: left;   
+}
+
+.userInfoForm .left-input {
+   width: 100%;
+}
+
+.userInfoForm .right-input {
+   width: 100%;
+}
+
+.userInfoForm .center-input {
+	width: 100%;
+}
+
+.userInfoForm .normal-input {
+	width: 100%;
+}
+
+.userInfoForm .col-left-title {
+   width: 35%;
+}
+
+.userInfoForm .col-left-content {
+   width: 20%;
+}
+
+.userInfoForm .col-right-title {
+    width: 20%; 
+}
+
+.userInfoForm .col-right-content {
+   width: 25%;
+}
+
+.userInfoForm .lookup-btn {
+	width: 100%;
+}
+
+.final-btn-area {
+	margin-top: 0;
+}
+
+
+/*20.08.04 왼쪽 셀 가운데 정렬 JJW*/
+/* .userInfoForm.k-grid.k-grid-content th:first-child, .k-grid td:first-child {
+	text-align: center;
+} */
+.userInfoForm.k-grid td:first-child {
+	text-align: center;
+}

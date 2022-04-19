@@ -1,0 +1,15 @@
+/* jkkim 추가 2020-05-23 */
+
+#jtePopEqmtWork .eqmtOverall {
+	width:100%;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 20px;
+	padding-right: 20px;
+	margin: 10px 0 10px 0;
+	background: #E2ECFF;
+	border: 1px solid #92B5FC;
+	border-radius: 10px;
+}
+
+

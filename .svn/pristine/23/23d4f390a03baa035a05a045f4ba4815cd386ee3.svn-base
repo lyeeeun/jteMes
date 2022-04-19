@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PROD_planReg">
+   <!-- 조회 -->
+   <!--                   , FN_CM_GETCOMNM(PL.CTR_CD , 'PRODTYPE', PR.PRODTYPE) AS PRODTYPE 
+			      , FN_CM_GETCOMNM(PL.CTR_CD , 'PRODSPEC', PR.PRODSPEC) AS PRODSPEC 
+			      FN_CM_SEQ('WO_PLAN_YYYYMM',NULL,NULL) -->
+	<select id="selectPlanList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+	        SELECT PL.WO_PLAN_YYYYMM
+	              ,PL.PLAN_YEAR 			--   Table에 누락되어 신규 추가_gwpark
+                  ,PL.PRODID
+                  ,PR.PRODNAME
+                  ,PR.PRODMTRL
+                  ,PR.PRODTYPE 
+			      ,PR.PRODSPEC
+				  ,PL.JAN + PL.FEB
+                  +PL.MAR+PL.APR+PL.MAY
+                  +PL.JUN+PL.JULY+PL.AUG+PL.SEP
+                  +PL.OCT+PL.NOV+PL.DEC AS TOTAL
+                  ,PL.JAN AS JAN
+                  ,PL.FEB AS FEB
+                  ,PL.MAR AS MAR
+                  ,PL.APR AS APR
+                  ,PL.MAY AS MAY
+                  ,PL.JUN AS JUN
+                  ,PL.JULY AS JULY
+                  ,PL.AUG AS AUG
+                  ,PL.SEP AS SEP
+                  ,PL.OCT AS OCT
+                  ,PL.NOV AS NOV
+                  ,PL.DEC AS "DEC"
+                  FROM TB_MESPLAN PL
+                  INNER JOIN TB_PRODUCT PR ON PL.PRODID = PR.PRODID 
+		 WHERE 1=1
+		 AND PL.DEL_GBN='N'
+		]]>
+	
+	    <!-- 검색 날짜가 null이 아닐경우 -->
+	    <if test='PLAN_YEAR != null and PLAN_YEAR != ""'>
+			  AND PLAN_YEAR =#{PLAN_YEAR}
+		</if>
+        <!--제품명이 null이 아닌 경우 제품명에 따른 검색이 가능하게함  -->
+		<if test='PRODNAME != null and PRODNAME != ""'>
+			AND PRODNAME LIKE CONCAT("%"#{PRODNAME}"%")
+		</if>
+		
+		 ORDER BY PLAN_YEAR
+		
+	</select>
+
+
+
+	<!-- 제품 드롭박스 콤보에 들어가기 위해 필요 -->
+	<select id="selectProductList" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT  PRODID
+		       ,PRODNAME
+		       ,PRODSPEC
+		       ,PRODTYPE
+		       ,PRODMTRL
+		FROM TB_PRODUCT
+		<!--제품명이 null이 아닌 경우 제품명에 따른 검색이 가능하게함  -->
+		WHERE 1=1
+		
+		<if test='PRODID != null and PRODID != ""'>
+		AND PRODID =#{PRODID}
+		</if>
+		
+		ORDER BY PRODID
+	</select>
+
+
+
+	<!-- 삽입  -->
+	<select id="insertPlanList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+			INSERT INTO TB_MESPLAN(     WO_PLAN_YYYYMM
+			                            ,PLAN_YEAR
+                                        ,PRODID
+                                        ,JAN
+                                        ,FEB
+                                        ,MAR
+                                        ,APR
+                                        ,MAY
+                                        ,JUN
+                                        ,JULY
+                                        ,AUG
+                                        ,SEP
+                                        ,OCT
+                                        ,NOV
+                                        ,TB_MESPLAN.DEC
+                                        ,REG_USER_ID
+			                           ,REG_PGM_ID
+			                           ,REG_DT
+			                           ,UPD_USER_ID
+			                           ,UPD_PGM_ID
+			                           ,UPD_DT
+                                        ,DEL_GBN
+			                          )
+			                   VALUES(  #{WO_PLAN_YYYYMM}
+			                            ,#{PLAN_YEAR}
+                                        ,#{PRODID}
+                                        ,#{JAN}
+                                        ,#{FEB}
+                                        ,#{MAR}
+                                        ,#{APR}
+                                        ,#{MAY}
+                                        ,#{JUN}
+                                        ,#{JULY}
+                                        ,#{AUG}
+                                        ,#{SEP}
+                                        ,#{OCT}
+                                        ,#{NOV}
+                                        ,#{DEC}
+                                        ,#{REG_USER_ID}
+			                            ,#{REG_PGM_ID}
+			                            ,now()
+			                            ,#{UPD_USER_ID}
+			                            ,#{UPD_PGM_ID}
+			                            ,now()
+			                            ,'N'
+			                          )
+			                          
+			 
+		]]>
+	</select>
+	<!-- 수정 -->
+		<select id="updatePlanList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+		UPDATE TB_MESPLAN
+		SET   PRODID      = #{PRODID}
+		     ,PLAN_YEAR   = #{PLAN_YEAR}
+             ,JAN         = #{JAN}
+             ,FEB         = #{FEB}
+             ,MAR         = #{MAR}
+             ,APR         = #{APR}
+             ,MAY         = #{MAY}
+             ,JUN         = #{JUN}
+             ,JULY        = #{JULY}
+             ,AUG         = #{AUG}
+             ,SEP         = #{SEP}
+             ,OCT         = #{OCT}
+             ,NOV         = #{NOV}
+             ,DEC         = #{DEC}
+			 ,REG_USER_ID = #{REG_USER_ID}
+			 ,REG_PGM_ID  = #{REG_PGM_ID}
+			 ,REG_DT      = now()
+		
+		WHERE 	WO_PLAN_YYYYMM =#{WO_PLAN_YYYYMM}        
+		]]>
+	</select>
+<!-- 삭제 -->
+   <select id="deletePlanList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+		
+		UPDATE   TB_MESPLAN
+           SET   DEL_GBN='Y'                             
+           
+		WHERE 	WO_PLAN_YYYYMM =#{WO_PLAN_YYYYMM}   
+		
+		]]>
+	</select>
+
+
+</mapper>

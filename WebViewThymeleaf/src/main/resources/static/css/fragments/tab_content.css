@@ -1,0 +1,16 @@
+html, body{
+	height:100%;
+	margin:0px; 
+	padding:0px;
+}
+.content{
+	padding:0 15px 10px 15px;
+	box-shadow : 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+	background:#dbdddf;
+	/* margin:75px 15px 0px 235px;  */
+}
+
+.content_layer{
+	background:#f2f2f2;
+	padding:5px;
+}

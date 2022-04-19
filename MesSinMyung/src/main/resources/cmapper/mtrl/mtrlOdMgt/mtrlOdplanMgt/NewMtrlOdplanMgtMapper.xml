@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.mtrl.mtrlOdMgt.mtrlOdplanMgt.NewMtrlOdplanMgtMapper">
+
+	<!-- 발주계획 정보 -->
+	<sql id="mtrlOrder_base">
+			mtrlOrder.mtrl_order_id			AS mtrlOrderId,
+			mtrlOrder.mtrl_order_qty      	AS mtrlOrderQty,
+			mtrlOrder.mtrl_order_user     	AS mtrlOrderUser,
+			recipient.user_nm	     		AS mtrlOrderUserNm,
+			mtrlOrder.mtrl_order_date     	AS mtrlOrderDate,
+			mtrlOrder.mtrl_order_cost     	AS mtrlOrderCost,
+			mtrlOrder.mtrl_order_delivery 	AS mtrlOrderDelivery,
+			mtrlOrder.mtrl_order_state    	AS mtrlOrderState,
+			mtrlOrder.mtrl_order_desc     	AS mtrlOrderDesc,
+			mtrlOrder.created_at          	AS createdAt,
+			mtrlOrder.updated_at          	AS updatedAt,
+			mtrlOrder.creator_id          	AS creatorId,
+			creator.user_nm		          	AS creatorNm,
+			mtrlOrder.updator_id          	AS updatorId,
+			mtrlOrder.mtrl_id             	AS mtrlId,
+			mtrlInfo.mtrl_nm             	AS mtrlNm,
+			mtrlInfo.mtrl_cost             	AS mtrlCost,
+			mtrlInfo.description			AS mtrlDiv,
+			mtrlCnt.mtrl_mgt_id				AS mtrlMgtId,
+			mtrlOrder.comp_id             	AS compId,
+			compInfo.comp_nm             	AS compNm,
+			mtrlOrder.mtrl_of_id          	AS mtrlOfId
+		FROM prs_mtrl_order mtrlOrder
+		LEFT OUTER JOIN mb_user_info creator ON mtrlOrder.creator_id = creator.user_id
+		LEFT OUTER JOIN mb_user_info recipient ON mtrlOrder.mtrl_order_user = recipient.user_id
+		LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlOrder.mtrl_id = mtrlInfo.mtrl_id 
+		LEFT OUTER JOIN bc_company_info compInfo ON mtrlOrder.comp_id = compInfo.comp_id
+		LEFT OUTER JOIN prs_mtrl_orderform mtrlOrderForm ON mtrlOrder.mtrl_of_id = mtrlOrderForm.mtrl_of_id
+		LEFT OUTER JOIN qm_mtrl_mgt mtrlCnt ON mtrlCnt.mtrl_qty_target_code =  mtrlOrder.mtrl_order_id AND mtrl_qty_target = 'mtrl_tagt01'
+		LEFT OUTER JOIN cm_mtrl_mgt mtrlMgt ON mtrlMgt.mtrl_mgt_id = mtrlCnt.mtrl_mgt_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="mtrlOfId != null and mtrlOfId != '' ">
+			AND mtrlOrder.mtrl_of_id = #{mtrlOfId}
+		</if>
+		<if test="mtrlOrderState != null and mtrlOrderState != '' ">
+			AND mtrlOrder.mtrl_order_state = #{mtrlOrderState}
+		</if>
+	</sql>
+		
+	<!-- 발주계획(Page) select -->
+	<select id="selectMtrlOrderList"
+		parameterType="jin.mes.cform.mtrl.mtrlOdMgt.mtrlOdplanMgt.NewMtrlOdplanMgtDto"
+		resultType="jin.mes.cform.mtrl.mtrlOdMgt.mtrlOdplanMgt.NewMtrlOdplanMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="mtrlOrder_base" />
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+				</if>
+	</select>
+	
+	<!-- 발주계획 Count -->
+	<select id="selectMtrlOrderCount"
+		parameterType="jin.mes.cform.mtrl.mtrlOdMgt.mtrlOdplanMgt.NewMtrlOdplanMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="mtrlOrder_base" />
+				)c_table
+	</select>
+	
+	<!-- 발주계획 입력 -->
+	<insert id="insertMtrlOrder" parameterType="jin.mes.cform.mtrl.mtrlOdMgt.mtrlOdplanMgt.NewMtrlOdplanMgtDto">
+	<selectKey keyProperty="mtrlOrderId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('ODRMTL') as mtrlOrderId
+	</selectKey>
+		INSERT INTO prs_mtrl_order(
+			mtrl_order_id,
+			mtrl_order_qty,
+			mtrl_order_user,
+			mtrl_order_date,
+			mtrl_order_cost,
+			mtrl_order_delivery,
+			mtrl_order_state,
+			mtrl_order_desc,
+			created_at,
+			updated_at,
+			creator_id,
+			updator_id,
+			mtrl_id,
+			comp_id,
+			mtrl_of_id
+		)VALUES(
+			#{mtrlOrderId},
+			#{mtrlOrderQty},
+			#{mtrlOrderUser},
+			#{mtrlOrderDate},
+			#{mtrlOrderCost},
+			#{mtrlOrderDelivery},
+			#{mtrlOrderState},
+			#{mtrlOrderDesc},
+			NOW(),
+			NOW(),
+			#{creatorId},
+			#{updatorId},
+			#{mtrlId},
+			#{compId},
+			#{mtrlOfId}
+		)
+	</insert>
+	
+	<!-- 발주계획 수정 -->
+	<update id="updateMtrlOrder" parameterType="jin.mes.cform.mtrl.mtrlOdMgt.mtrlOdplanMgt.NewMtrlOdplanMgtDto">
+		UPDATE prs_mtrl_order
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="mtrlOrderQty != null">	
+				,mtrl_order_qty = #{mtrlOrderQty}
+			</if>
+			<if test="mtrlOrderCost != null">	
+				,mtrl_order_cost = #{mtrlOrderCost}
+			</if>
+			<if test="mtrlOrderDelivery != null">	
+				,mtrl_order_delivery = #{mtrlOrderDelivery}
+			</if>
+			<if test="mtrlOrderState != null">	
+				,mtrl_order_state = #{mtrlOrderState}
+			</if>
+			<if test="mtrlOrderUser != null">	
+				,mtrl_order_user = #{mtrlOrderUser}
+			</if>
+			<if test="mtrlOrderDate != null">	
+				,mtrl_order_date = #{mtrlOrderDate}
+			</if>
+			<if test="mtrlOrderDesc != null">	
+				,mtrl_order_desc = #{mtrlOrderDesc}
+			</if>
+			<if test="mtrlOfId != null">	
+				,mtrl_of_id = #{mtrlOfId}
+			</if>
+		WHERE mtrl_order_id  = #{mtrlOrderId}
+	</update>
+	
+	<!-- 발주계획 삭제 -->
+	<delete id="deleteMtrlOrder" parameterType="jin.mes.cform.mtrl.mtrlOdMgt.mtrlOdplanMgt.NewMtrlOdplanMgtDto">
+		DELETE FROM prs_mtrl_order
+		WHERE mtrl_order_id  = #{mtrlOrderId}
+	</delete>
+</mapper>

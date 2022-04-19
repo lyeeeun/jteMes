@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml"  lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+<title>Hello WebView for Thymeleaf</title>
+</head>
+<body>
+
+	<h2>Hello! <span th:text="${name}"></span></h2>
+	<h2>Hello! [(${name})]</h2>
+	<h2>Hello! [[${name}]]</h2>
+	<h2>Hello! <var th:utext="${name}"/></h2>
+	<h2>Hello! <var th:text="${name}"/></h2>
+	<div>Thymeleaf version</div>
+	
+	<br>
+	<p>테스트 이미지입니다.</p>
+	<br>
+	<img src="/image/storyhubblespirograph.jpg">
+	<br>
+	<div>
+		<p>사용자자가 입력한 파라메터 전체</p>
+		<div th:text="${param}"></div><br>
+		<p>사용자자가 입력한 파라메터</p>
+		<dl th:each="key : ${param.keySet()}">
+			<dt>key</dt>
+			<dd th:text="${key}">fgh</dd>
+			<dt>value</dt>
+			<dd th:text="${{param.get(key)}}"></dd>
+		</dl>
+		<br>
+		<p>한번더 출력합니다.</p>
+		<var th:each="key : ${param.keySet()}">
+			[] key : "[[${key}]]" === value : "[[${param.get(key)}]]"<br>
+			() key : "[(${key})]" === value : "[(${param.get(key)})]"<br>
+		</var>
+	</div>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SY_authGrpAuthReg">
+	<select id="selectCtrlList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT /* selectCtrlList / 센터명, 센터코드, 단지코드 조회 _박이삭*/
+			DISTINCT 
+			  CTR_NM	AS	CTR_NM	
+			, CTR_CD	AS	CTR_CD		
+			 FROM TB_CTRINF		
+			
+		]]>
+	</select>
+
+	<select id="selectAuthGrpList" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT    (SY_authGrpAuthReg)
+			       CTR_CD          AS CTR_CD         
+			     , AUTH_GRP_CD     AS AUTH_GRP_CD    
+			     , AUTH_GRP_NM     AS AUTH_GRP_NM   
+			     , USE_YN          AS USE_YN      
+			  FROM TB_AUTHGRPINF                
+			 WHERE USE_YN = 'Y'                     
+			   AND CTR_CD = #{CTR_CD}      
+		]]>
+	</select>
+
+	<select id="selectCategorizeList" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT 		(SY_authGrpAuthReg)
+			       DUMY1_VALUE		AS	DUMY1_VALUE		
+			     , COM_CD 			AS	COM_CD			
+			  FROM TB_COMCDINF							
+			 WHERE CTR_CD = #{CTR_CD}
+			   AND GRP_CD = 'MENU'
+		]]>
+	</select>
+
+	<select id="selectunRegAuthList" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT    (SY_authGrpAuthReg)
+			      *
+			  FROM (
+			        SELECT
+			               (SELECT COM_CD
+			                  FROM TB_COMCDINF
+			                 WHERE CTR_CD = #{CTR_CD}
+			                   AND GRP_CD = 'MENU'
+			                   AND COM_NM = SUBSTR(A.PGM_ID, 1, 2)) AS CFC                          
+			             , (SELECT DUMY1_VALUE
+			                  FROM TB_COMCDINF
+			                 WHERE CTR_CD = #{CTR_CD}
+			                   AND GRP_CD = 'MENU'
+			                   AND COM_NM = SUBSTR(A.PGM_ID, 1, 2))      AS CFC_NM        
+			             , A.PGM_ID                                 AS PGM_ID                          
+			             , A.PGM_NAME                               AS PGM_NAME                          
+			             , #{CTR_CD}                                AS CTR_CD                        
+			             , #{AUTH_GRP_CD}                           AS AUTH_GRP_CD                    
+			          FROM TB_PGMINF_NEW A                                                               
+			         WHERE PGM_ID NOT IN (SELECT PGM_ID                                              
+			                                FROM TB_AUTHINF                                         ]
+			                               WHERE CTR_CD = #{CTR_CD}                                       
+			                                 AND AUTH_GRP_CD = (SELECT AUTH_GRP_CD                       
+			                                                      FROM TB_AUTHGRPINF                    
+			                                                     WHERE USE_YN = 'Y'                       
+			                                                       AND CTR_CD = #{CTR_CD}                   
+			                                                       AND AUTH_GRP_CD = #{AUTH_GRP_CD}         
+			                                                   )
+			                             )
+			          AND A.PGM_ID LIKE NVL(#{PGM_ID}, '%') || '%'
+			          AND A.PGM_NAME LIKE NVL(#{PGM_NAME}, '%') || '%'
+			       )
+			 WHERE CFC LIKE NVL(#{CFC}, '%') || '%'
+		]]>
+	</select>
+
+	<select id="selectRegAuthList" parameterType="String"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT    (SY_authGrpAuthReg)
+			       *
+			  FROM (
+			        SELECT
+			               A.CTR_CD                                      AS CTR_CD       
+			             , (SELECT COM_CD
+			                  FROM TB_COMCDINF
+			                 WHERE CTR_CD = #{CTR_CD}
+			                   AND GRP_CD = 'MENU'
+			                   AND COM_NM = SUBSTR(A.PGM_ID, 1, 2))      AS CFC           
+			             , (SELECT DUMY1_VALUE
+			                  FROM TB_COMCDINF
+			                 WHERE CTR_CD = #{CTR_CD}
+			                   AND GRP_CD = 'MENU'
+			                   AND COM_NM = SUBSTR(A.PGM_ID, 1, 2))      AS CFC_NM         
+			             , A.AUTH_GRP_CD                                 AS AUTH_GRP_CD    
+			             , A.PGM_ID                                      AS PGM_ID         
+			             , B.PGM_NAME                                    AS PGM_NAME      
+			             , DECODE(A.SEARCH_AUTH, 'Y', 'true', 'false')   AS SEARCH_AUTH  
+			             , DECODE(A.PRINT_AUTH,  'Y', 'true', 'false')   AS PRINT_AUTH    
+			             , DECODE(A.INPUT_AUTH, 'Y', 'true', 'false')    AS INPUT_AUTH     
+			          FROM TB_AUTHINF A                                                   
+			             , TB_PGMINF_NEW  B                                                
+			         WHERE A.PGM_ID = B.PGM_ID                                             
+			           AND A.CTR_CD = #{CTR_CD}                                              
+			           AND A.AUTH_GRP_CD = (SELECT AUTH_GRP_CD                           
+			                                  FROM TB_AUTHGRPINF                         
+			                                 WHERE USE_YN = 'Y'                            
+			                                   AND CTR_CD = #{CTR_CD}  
+			                                   AND AUTH_GRP_CD = #{AUTH_GRP_CD})             
+			           AND A.PGM_ID LIKE NVL(#{PGM_ID}, '%') || '%'                          
+			           AND B.PGM_NAME LIKE NVL(#{PGM_NAME}, '%') || '%'                          
+			       )
+			 WHERE CFC LIKE NVL(#{CFC}, '%') || '%'  
+		]]>
+	</select>
+
+	<select id="insertAuthList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+			INSERT INTO TB_AUTHINF (    (SY_authGrpAuthReg)
+			      CTR_CD         
+			    , AUTH_GRP_CD       
+			    , PGM_ID            
+			    , SEARCH_AUTH     
+			    , PRINT_AUTH        
+			    , INPUT_AUTH      
+			    , REG_DT           
+			    , REG_USER_ID     
+			    , REG_PGM_ID       
+			    , SND_YN          
+			) VALUES (
+			      #{CTR_CD}            
+			    , #{AUTH_GRP_CD}       
+			    , #{PGM_ID}            
+			    , DECODE(#{SEARCH_AUTH},'true', 'Y', 'N') 
+			    , DECODE(#{PRINT_AUTH} ,'true', 'Y', 'N') 
+			    , DECODE(#{INPUT_AUTH},'true', 'Y', 'N')  
+			    , SYSDATE            
+			    , #{REG_USER_ID}     
+			    , #{REG_PGM_ID}      
+			    , 'N'                
+			)
+		]]>
+	</select>
+
+	<select id="updateAuthList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+			UPDATE     (SY_authGrpAuthReg)
+			       TB_AUTHINF                           
+			   SET
+			       SEARCH_AUTH  = DECODE(#{SEARCH_AUTH}, 'true', 'Y', 'N')  
+			     , PRINT_AUTH   = DECODE(#{PRINT_AUTH},  'true', 'Y', 'N')  
+			     , INPUT_AUTH   = DECODE(#{INPUT_AUTH}, 'true', 'Y', 'N')   
+			     , UPD_DT       = SYSDATE                 
+			     , UPD_USER_ID  = #{SES_USER_ID}          
+			     , UPD_PGM_ID   = #{SYS_PGM_ID}            
+			     , SND_YN       = 'N'                     
+			 WHERE
+			       CTR_CD       = #{CTR_CD}                
+			   AND AUTH_GRP_CD  = #{AUTH_GRP_CD}           
+			   AND PGM_ID       = #{PGM_ID}                
+		]]>
+	</select>
+
+	<select id="deleteAuthList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+			DELETE    (SY_authGrpAuthReg)
+			  FROM TB_AUTHINF                   
+			 WHERE CTR_CD       = #{CTR_CD}     
+			   AND AUTH_GRP_CD  = #{AUTH_GRP_CD}  
+			   AND PGM_ID       = #{PGM_ID}
+		]]>
+	</select>
+</mapper>

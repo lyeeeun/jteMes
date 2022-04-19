@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.qualMgt.qualPec.inputQualMgt.ZinixInputQualMgtMapper">
+
+	<!-- 발주주문서  정보 -->
+	<sql id="mtrlOrderInput_base">
+			mtrlOrderForm.mtrl_of_id	AS mtrlOfId,
+			mtrlOrderForm.mtrl_of_nm	AS mtrlOfNm,
+			mtrlOrderForm.mtrl_of_date	AS mtrlOfDate,
+			mtrlOrderForm.mtrl_of_cost	AS mtrlOfCost,
+			mtrlOrderForm.mtrl_of_state	AS mtrlOfState,
+			mtrlOrderForm.mtrl_of_desc	AS mtrlOfDesc,
+			mtrlOrderForm.created_at	AS createdAt,
+			mtrlOrderForm.updated_at	AS updatedAt,
+			mtrlOrderForm.creator_id	AS creatorId,
+			creator.user_nm				AS creatorNm,
+			mtrlOrderForm.updator_id	AS updatorId,
+			mtrlOrderForm.mtrl_of_claim	AS mtrlOfClaim,
+			mtrlOrderForm.mtrl_receipt	AS mtrlReceipt,
+			mtrlOrderForm.receipt_way	AS receiptWay,
+			mtrlOrderForm.receipt_status	AS receiptStatus,
+			mtrlOrderForm.receipt_user	AS receiptUser,
+			receipt.user_nm				AS receiptUserNm
+		FROM prs_mtrl_orderform mtrlOrderForm 
+		LEFT OUTER JOIN mb_user_info creator ON mtrlOrderForm.creator_id = creator.user_id
+		LEFT OUTER JOIN mb_user_info receipt ON mtrlOrderForm.receipt_user = receipt.user_id
+		WHERE 1=1
+		AND mtrlOrderForm.mtrl_of_state = 'mtrl_sta02'
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="mtrlOfId != null and mtrlOfId != '' ">
+			AND mtrlOrderForm.mtrl_of_id = #{mtrlOfId}
+		</if>
+		<if test="mtrlOfState != null and mtrlOfState != '' ">
+			AND mtrlOrderForm.mtrl_of_state = #{mtrlOfState}
+		</if>
+	</sql>
+		
+	<!-- 발주주문서(Page) select -->
+	<select id="selectMtrlOrderInputList"
+		parameterType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.ZinixInputQualMgtDto"
+		resultType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.ZinixInputQualMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="mtrlOrderInput_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 발주주문서 Count -->
+	<select id="selectMtrlOrderInputCount"
+		parameterType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.ZinixInputQualMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="mtrlOrderInput_base" />
+				)c_table
+	</select>
+
+	<!-- 발주계획 정보 -->
+	<sql id="mtrlOrderPlanInput_base">
+			mtrlOrder.mtrl_order_id			AS mtrlOrderId,
+			mtrlOrder.mtrl_order_qty      	AS mtrlOrderQty,
+			mtrlOrder.mtrl_order_user     	AS mtrlOrderUser,
+			recipient.user_nm	     		AS mtrlOrderUserNm,
+			mtrlOrder.mtrl_order_date     	AS mtrlOrderDate,
+			mtrlOrder.mtrl_order_cost     	AS mtrlOrderCost,
+			mtrlOrder.mtrl_order_delivery 	AS mtrlOrderDelivery,
+			mtrlOrder.mtrl_order_state    	AS mtrlOrderState,
+			mtrlOrder.mtrl_order_desc     	AS mtrlOrderDesc,
+			mtrlOrder.mtrl_charge_user 		AS mtrlChargeUser,
+			mtrlOrder.mtrl_qual_sta			AS mtrlQualSta,
+			userInfo.user_nm				AS mtrlChargeUserNm,
+			mtrlOrder.created_at          	AS createdAt,
+			mtrlOrder.updated_at          	AS updatedAt,
+			mtrlOrder.creator_id          	AS creatorId,
+			creator.user_nm		          	AS creatorNm,
+			mtrlOrder.updator_id          	AS updatorId,
+			mtrlOrder.mtrl_id             	AS mtrlId,
+			mtrlInfo.mtrl_nm             	AS mtrlNm,
+			-- mtrlInfo.mtrl_cost             	AS mtrlCost, 
+			rtlMtrlComp.mtrl_price		AS mtrlCost,
+			mtrlInfo.description			AS mtrlDiv,
+			mtrlCnt.mtrl_mgt_id				AS mtrlMgtId,
+			mtrlOrder.comp_id             	AS compId,
+			compInfo.comp_nm             	AS compNm,
+			mtrlOrder.mtrl_of_id          	AS mtrlOfId
+		FROM prs_mtrl_order mtrlOrder
+		INNER JOIN bc_rtl_mtrl_comp rtlMtrlComp on mtrlOrder.mtrl_id = rtlMtrlComp.mtrl_id and mtrlOrder.comp_id = rtlMtrlComp.comp_id
+		LEFT OUTER JOIN mb_user_info creator ON mtrlOrder.creator_id = creator.user_id
+		LEFT OUTER JOIN mb_user_info recipient ON mtrlOrder.mtrl_order_user = recipient.user_id
+		LEFT OUTER JOIN mb_user_info userInfo ON mtrlOrder.mtrl_charge_user = userInfo.user_id
+		LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlOrder.mtrl_id = mtrlInfo.mtrl_id 
+		LEFT OUTER JOIN bc_company_info compInfo ON mtrlOrder.comp_id = compInfo.comp_id
+		LEFT OUTER JOIN prs_mtrl_orderform mtrlOrderForm ON mtrlOrder.mtrl_of_id = mtrlOrderForm.mtrl_of_id
+		LEFT OUTER JOIN qm_mtrl_mgt mtrlCnt ON mtrlCnt.mtrl_qty_target_code =  mtrlOrder.mtrl_order_id AND mtrl_qty_target = 'mtrl_tagt01'
+		LEFT OUTER JOIN cm_mtrl_mgt mtrlMgt ON mtrlMgt.mtrl_mgt_id = mtrlCnt.mtrl_mgt_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="mtrlOfId != null and mtrlOfId != '' ">
+			AND mtrlOrder.mtrl_of_id = #{mtrlOfId}
+		</if>
+		<if test="mtrlOrderState != null and mtrlOrderState != '' ">
+			AND mtrlOrder.mtrl_order_state = #{mtrlOrderState}
+		</if>
+		<if test="mtrlOrderId != null and mtrlOrderId != '' ">
+			AND mtrlOrder.mtrl_order_id = #{mtrlOrderId}
+		</if>
+	</sql>
+		
+	<!-- 발주계획(Page) select -->
+	<select id="selectMtrlOrderPlanInputList"
+		parameterType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.ZinixInputQualMgtDto"
+		resultType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.ZinixInputQualMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="mtrlOrderPlanInput_base" />
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+				</if>
+	</select>
+	
+	<!-- 발주계획 Count -->
+	<select id="selectMtrlOrderPlanInputCount"
+		parameterType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.ZinixInputQualMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="mtrlOrderPlanInput_base" />
+				)c_table
+	</select>
+	
+	<!-- 검사완료 처리 -->
+	<update id="updateInputQualOmgt" parameterType="jin.mes.cform.qualMgt.qualPec.inputQualMgt.ZinixInputQualMgtDto">
+		UPDATE prs_mtrl_order
+		SET updator_id = #{updatorId},
+			updated_at = NOW(),
+			mtrl_qual_sta = 'inspecComplete',
+			mtrl_qual_date = NOW()
+		WHERE mtrl_order_id  = #{mtrlOrderId}
+	</update>
+</mapper>

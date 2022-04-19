@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.mfgMgt.mfgplanMgt.mrplanMgt.MrplanMgtMapper">
+
+	<!-- 신규 프로젝트 Lot별 주문 정보 -->
+	<sql id="lot_base">
+			lot.order_id	As orderId,
+			orderInfo.order_nm		AS orderNm,
+			lot.lot_id		As lotId,
+			lot.lot_nm		As lotNm,
+			lot.lot_qty		As lotQty,
+			lot.updated_at	As updatedAt,
+			item.item_id	As itemId,
+			item.item_nm	As itemNm
+		FROM prs_lot_info lot
+			LEFT OUTER JOIN bc_item_info item on lot.item_id = item.item_id
+			LEFT OUTER JOIN prs_order_info orderInfo ON lot.order_id = orderInfo.order_id
+		
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="orderId != null and orderId != '' ">
+			AND lot.order_id = #{orderId}
+		</if>	
+	</sql >
+	
+	<!-- 신규 프로젝트 필요 발주량 산출 -->
+	<sql id="bom_base">
+		lot.lot_id									AS lotId,
+		lot.lot_qty                             	AS lotQty,
+		lot.lot_nm									AS lotNm,
+		lot.lot_qty *bom.bom_target_cnt				AS mtrlNeed,
+		item.item_id                            	AS itemId,
+		item.item_nm                            	AS itemNm,
+		bom.bom_target_cnt                      	AS bomTargetCnt,
+		mtrlInfo.mtrl_id                        	AS mtrlId,
+		mtrlInfo.mtrl_nm                        	AS mtrlNm,
+		mtrlInfo.mtrl_cost							AS mtrlCost,
+		mtrlInfo.description						AS mtrlDiv,
+		SUM(IFNULL(mtrlMgt.mtrl_mgt_cnt,0))					AS mtrlMgtCnt,
+		mtrlMgt.mtrl_mgt_id							AS mtrlMgtId,
+		IFNULL(mtrlUse.mtrlUseNeed,0)							AS mtrlUseNeed,
+		IFNULL(mtrlOrderQty.mtrlOrderQty,0)					AS mtrlOrderQty,
+		(SUM(IFNULL(mtrlMgt.mtrl_mgt_cnt,0))+IFNULL(mtrlOrderQty.mtrlOrderQty,0))-IFNULL(mtrlUse.mtrlUseNeed,0)		AS mtrlCanUse,
+		(lot.lot_qty *bom.bom_target_cnt)- ((SUM(IFNULL(mtrlMgt.mtrl_mgt_cnt,0))+IFNULL(mtrlOrderQty.mtrlOrderQty,0))-IFNULL(mtrlUse.mtrlUseNeed,0)) AS mtrlOdCnt
+		
+		
+		FROM prs_lot_info lot
+			LEFT OUTER JOIN bc_item_info item ON lot.item_id = item.item_id
+			LEFT OUTER JOIN bc_bom_info bom ON bom.item_id = item.item_id AND bom.bom_target = 'prcs_bom02'
+			LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlInfo.mtrl_id = bom.bom_target_id
+			LEFT OUTER JOIN cm_mtrl_mgt mtrlMgt ON mtrlInfo.mtrl_id = mtrlMgt.mtrl_id
+			LEFT OUTER JOIN ( 
+					SELECT mtrlOrder.mtrl_id, SUM(mtrlOrder.mtrl_order_qty) AS mtrlOrderQty
+					FROM prs_mtrl_order mtrlOrder
+					LEFT OUTER JOIN prs_mtrl_orderform mtrlOrderForm ON mtrlOrderForm.mtrl_of_id = mtrlOrder.mtrl_of_id
+					WHERE mtrlOrder.mtrl_order_state = 'mtrl_order_prs'
+					GROUP BY mtrlOrder.mtrl_id ) mtrlOrderQty ON mtrlInfo.mtrl_id = mtrlOrderQty.mtrl_id
+			LEFT OUTER JOIN (
+				SELECT 		mtrlInfo.mtrl_id                        	AS mtrlId,
+						mtrlInfo.mtrl_nm                        	AS mtrlNm,
+						SUM(lot.lot_qty *bom.bom_target_cnt)		AS mtrlUseNeed
+
+				FROM prs_lot_info lot
+				LEFT OUTER JOIN bc_item_info item ON lot.item_id = item.item_id
+				LEFT OUTER JOIN bc_bom_info bom ON bom.item_id = item.item_id AND bom.bom_target = 'prcs_bom02'
+				LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlInfo.mtrl_id = bom.bom_target_id
+			
+				WHERE lot.lot_state = 'ord_sta01' AND lot.lot_id NOT IN (#{lotId}) AND lot.lot_id NOT IN (	SELECT lot_id
+												FROM prs_mtrl_useinfo mtrlUseInfo
+												LEFT OUTER JOIN prs_work_info workInfo ON mtrlUseInfo.prod_work_id = workInfo.prod_work_id )
+				GROUP BY mtrlInfo.mtrl_id
+				
+					) mtrlUse ON mtrlInfo.mtrl_id = mtrlUse.mtrlId
+
+			
+			WHERE lot.order_id = #{orderId} AND lot.lot_id = #{lotId}
+			
+			GROUP BY bom.bom_id,mtrlInfo.mtrl_id
+			
+	
+	</sql>
+
+	
+	<!-- lot별 주문정보 select -->
+	<select id="selectLotList"
+		parameterType = "jin.mes.form.mfgMgt.mfgplanMgt.mrplanMgt.MrplanMgtDto"
+		resultType= "jin.mes.form.mfgMgt.mfgplanMgt.mrplanMgt.MrplanMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="lot_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>	
+	</select>
+	<select id="selectLotCount"
+		parameterType = "jin.mes.form.mfgMgt.mfgplanMgt.mrplanMgt.MrplanMgtDto"
+		resultType= "java.lang.Integer">
+			SELECT count(*)
+			FROM (
+				SELECT 
+					<include refid="lot_base" />
+			)c_table
+	</select>
+	
+	<!-- 필요 발주량 산출 -->
+	<select id="selectMrpMtlList"
+			parameterType = "jin.mes.form.mfgMgt.mfgplanMgt.mrplanMgt.MrplanMgtDto"
+			resultType= "jin.mes.form.mfgMgt.mfgplanMgt.mrplanMgt.MrplanMgtDto">
+			SELECT <include refid="bom_base" />
+			
+	</select>
+	<select id="selectMrpMtlCount"
+		parameterType = "jin.mes.form.mfgMgt.mfgplanMgt.mrplanMgt.MrplanMgtDto"
+		resultType= "java.lang.Integer">
+			SELECT count(*)
+			FROM (
+				SELECT <include refid="bom_base" />
+				
+				)c_table
+	</select>
+		
+	<!-- lot 정보 조회 (All) -->
+	<select id="selectAllLotList"
+			resultType= "jin.mes.form.mfgMgt.mfgplanMgt.mrplanMgt.MrplanMgtDto">
+			SELECT
+			<include refid="lot_base" />
+	</select>
+	
+	
+</mapper>
+
+

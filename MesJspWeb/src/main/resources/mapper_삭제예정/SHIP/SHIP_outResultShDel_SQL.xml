@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SHIP_outResultShDel">
+<!-- 	                 , FN_CM_GETCOMNM(POD.CTR_CD , 'PRODTYPE', P.PRODTYPE) AS PRODTYPE        
+			         , FN_CM_GETCOMNM(POD.CTR_CD , 'PRODSPEC', P.PRODSPEC) AS PRODSPEC      
+					 , FN_CM_GETCOMNM(POD.CTR_CD , 'PRODUNITCD',P.PRODUNIT_CD )  AS UNIT_NM  -->
+	<!-- 제품출고상세 리스트 가져오기 -->
+	<select id="selectProdOutList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+	     SELECT        POD.PROD_OUT_NO                                                       
+	                 , DATE_FORMAT(POD.PROD_OUT_DATE,'%Y%m%d') AS PROD_OUT_DATE          
+	                 , POD.PROD_IN_NO                                                   	
+	                 , POD.ORDER_NO                                                    		
+	                 , POD.CUSTOMERID                                                  		
+	                 , POD.PRODID                                                      		
+	                 , C.CUSTOMERNAME                                                  		 
+	                 , P.PRODNAME                                                      		
+	                 , P.PRODMTRL													   		 
+	                 , P.PRODTYPE      
+			         , P.PRODSPEC      
+					 , P.PRODUNIT_CD AS UNIT_NM   									   
+	                 , POD.PROD_OUT_QTY                                                 	  
+	                 , POD.PROD_OUT_GBN                                               		
+	                 , POD.CAR_NO	             			                            	 
+	                 , POD.CAR_DRIV_NAME											   		  
+	                 , POD.CAR_DRIV_TEL                                                		  
+	                 , POD.REMARK                                                      	
+	                 , POD.DEL_GBN                                                     		
+			FROM TB_MESPRODOUTDELT POD
+			LEFT JOIN TB_CUSTOMER C ON POD.CUSTOMERID = C.CUSTOMERID
+			LEFT JOIN TB_PRODUCT P ON POD.PRODID = P.PRODID
+			WHERE 1 = 1
+		]]>
+		<!--  삭제 구분에 N 즉 삭제된 데이터가 아닌경우 -->
+		<if test='DEL_GBN != "N"'>
+			AND POD.DEL_GBN ='N'
+		</if>
+		<!-- 검색 날짜가 null이 아닐경우 -->
+		<if test='STR_DT != null and STR_DT != ""'>
+			AND PROD_OUT_DATE BETWEEN STR_TO_DATE(#{STR_DT},'%Y%m%d') 
+			AND STR_TO_DATE(#{END_DT},'%Y%m%d') 
+		</if>
+		<!--고객사가 null이 아닌 경우 고객사에 따른 검색이 가능하게함  -->
+		<if test='CUSTOMERNAME != null and CUSTOMERNAME != ""'>
+				AND CUSTOMERNAME LIKE CONCAT("%"#{CUSTOMERNAME}"%")
+		</if>
+        <!--제품명이 null이 아닌 경우 제품명에 따른 검색이 가능하게함  -->
+		<if test='PRODNAME != null and PRODNAME != ""'>
+			AND PRODNAME LIKE CONCAT("%"#{PRODNAME}"%")
+		</if>
+		    ORDER BY PROD_OUT_DATE
+	</select>
+	
+	<!-- 제품출고 특기사항 수정 -->
+	<select id="updateProdInList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+		<![CDATA[
+		    UPDATE TB_MESPRODOUTDELT
+		       SET REMARK = #{REMARK}
+		     WHERE PROD_OUT_NO=#{PROD_OUT_NO}
+		]]>
+	</select>
+</mapper>

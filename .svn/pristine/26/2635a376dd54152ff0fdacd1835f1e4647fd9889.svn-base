@@ -1,0 +1,259 @@
+
+@CHARSET "UTF-8";
+
+.grid-content {
+	width: 100%;
+}
+
+.rlehoMgtForm {
+	width: 100%;
+	margin: 0 auto;
+/* 	text-align: center; */
+	vertical-align: middle;
+}
+
+.rlehoMgtForm .left-contents {
+	width: 20%;
+	display: inline-block;
+	height: 100%;
+}
+
+.rlehoMgtForm .middle-contents {
+	width: 5%;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.rlehoMgtForm .right-contents {
+	width: 74%;
+	display: inline-block;
+}
+
+.middle-contents .fas.fa-caret-square-right.fa-3x{
+	color: #3367D6;
+	padding-right: 24px;
+	
+}
+
+.rlehoMgtForm #jteMasterTree {
+	font-size: 16px;
+	border: 2px solid #8aafff;
+	background:#ffffff;
+}
+
+/** 20.08.10 JJW 왼쪽 트리 구조 여백 따로 주기 위함**/
+.rlehoMgtForm.k-treeview .k-item {
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+#jtePopForm_master {
+	margin-top: 5px;
+}
+
+.menuInfoForm .col-left-title {
+	width: 20%;
+}
+
+.menuInfoForm .col-right-content {
+	width: 70%;
+}
+
+.menuInfoForm .group-checkbox {
+	overflow: auto;
+	height: 150px;
+	background-color: #ffffff;
+	padding-top: 5px;
+	border: 1px solid #C7D5F4;
+}
+
+.menuInfoForm .center-input .btn-input {
+	width: 100%;
+}
+
+.menuInfoForm .jtePopForm_master th {
+   text-align: left;
+}
+
+.menuInfoForm .left-input {
+   width: 90%;
+   float: left;
+}
+
+.menuInfoForm .right-input {
+   width: 90%;
+   float: right;
+}
+
+.menuInfoForm .center-input {
+	width: 100%;
+}
+
+.menuInfoForm .normal-input {
+	width: 100%;
+}
+
+.menuInfoForm .col-left-title {
+   width: 18%;
+}
+
+.menuInfoForm .col-left-content {
+   width: 32%;
+}
+
+.menuInfoForm .col-right-title {
+   width: 18%;
+}
+
+.menuInfoForm .col-right-content {
+   width: 32%;
+}
+
+.menuInfoForm .jte-msgBox {
+	width: 90%;
+	float: right;
+}
+
+/*********************************/
+
+
+.rlehoMgtForm #jtePopForm_master {
+	padding-top: 15px;
+}
+
+.compMgtForm .jtePopForm_master {
+	width: 100%;
+}
+
+.grid-content {
+   width: 100%;
+}
+
+/*04.09 JJW 내부 스타일 옮김*/
+.compMgtForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /*** listbox inline 표시 위해_gwpark ***/
+    display: inline-flex; 
+}
+
+.compMgtForm #jtePopForm_form {
+	text-align: left;
+	padding-left: 0;
+}
+
+.compMgtForm .jtePopForm_master {
+	width: 100%;
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+.compMgtForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+/* .k-widget .k-listbox {
+	width: 40%;
+	padding-left: 10px;
+}
+ */
+.k-widget .k-listbox .k-listbox-toolbar-right {
+	width: 45%;
+}
+
+.k-listbox-toolbar {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.final-btn-area {
+	margin-top: 0;
+	padding-top: 0;
+	text-align: center;
+	
+}
+
+
+div .k-widget .k-window {
+	height: 440px;
+	width: 650px;
+}
+
+.compMgtForm .btn_company_info {
+   width: 98%
+}
+
+.compMgtForm .center-input {
+   width: 98%;
+}
+
+.rlehoMgtForm .col-left-title {
+	width: 20%;
+}
+
+.rlehoMgtForm .col-left-content {
+	width: 30%;
+}
+
+.rlehoMgtForm .col-center-content {
+	width: 20%;
+}
+
+.rlehoMgtForm .col-right-content {
+	width: 30%;
+}
+
+.rlehoMgtForm .grid-content {
+	width: 100%;
+}
+
+.rlehoMgtForm .normal-input {
+	width: 100%;
+}
+
+.rlehoMgtForm .normal-input.btn-input{
+	width: 90%;
+	float: left;
+}
+
+.rlehoMgtForm .msgPop-btn {
+	width: 100%;
+	text-align: center;
+}
+
+.rlehoMgtForm .search-btn {
+	width: 100%;
+	text-align: center;
+}
+
+div.k-window-content{
+   overflow: unset; /*팝업창의 스크롤 없앰*/
+}
+
+.compMgtForm .jtePopForm_master th {
+   text-align: left;   
+}
+
+.compMgtForm .left-input {
+   width: 95%;
+}
+
+.compMgtForm .right-input {
+   width: 95%;
+}
+
+.compMgtForm .center-input {
+	width: 95%;
+}
+
+.compMgtForm .normal-input {
+	width: 95%;
+}
+
+
+/*20.08.05 왼쪽 셀 가운데 정렬 JJW*/
+.rlehoMgtForm.k-grid th:first-child, .rlehoMgtForm.k-grid td:first-child {
+	text-align: center;
+}

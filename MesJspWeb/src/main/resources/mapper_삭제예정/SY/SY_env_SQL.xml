@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="SY_env">
+	<select id="selectEnvList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT 
+			        PG_VAN_NM		            AS    PG_VAN_NM 
+			      , SMS_CD		            AS    SMS_CD 
+			      , DAY_AMT_CD		            AS    DAY_AMT_CD 
+			      , BASE_DAYS		            AS    BASE_DAYS 
+			      , PENFEE_RATE		            AS    PENFEE_RATE
+			      , REP_CNT		            AS    REP_CNT 
+			      , ROUND_CD		            AS    ROUND_CD 
+			      , PW_INIT		            AS    PW_INIT
+			      , CALC_STD		            AS    CALC_STD 
+			      , MID_RCT_YN		            AS    MID_RCT_YN 
+			      , ID_YN		            AS    ID_YN 
+			      , HOME_LINKAGE_YN		            AS    HOME_LINKAGE_YN 
+			      , GOLF_BASE_M		            AS    GOLF_BASE_M 
+			      , GOLF_ADD_M		            AS    GOLF_ADD_M 
+			      , L2_IP		            AS    L2_IP 
+			      , L2_PORT		            AS    L2_PORT 
+			      , GOLF_CONTROLL_YN		            AS    GOLF_CONTROLL_YN 
+			      , RD_BK_DD		            AS    RD_BK_DD 
+			      , SUBSTR(RD_BK_TIME,1,2)||':'||SUBSTR(RD_BK_TIME,3,2)		            AS     RD_BK_TIME     
+			      , ALLOC_RTN_DIV		            AS    ALLOC_RTN_DIV 
+			      , DAY_ALLOC_YN		            AS    DAY_ALLOC_YN 
+			      , ALLOC_PF		            AS    ALLOC_PF 
+			      , ALLOC_MAX		            AS    ALLOC_MAX 
+			      , SCR_GOLF_BRK_TIME		            AS    SCR_GOLF_BRK_TIME 
+			      , SCR_GOLF_LIMIT_TIME		            AS    SCR_GOLF_LIMIT_TIME 
+			      , LESN_AUTODT		            AS    LESN_AUTODT 
+			      , PT_CALC		            AS    PT_CALC 
+			      , REER_NEWAPP_YN		            AS    REER_NEWAPP_YN 
+			      , LESN_APP_WAY		            AS    LESN_APP_WAY 
+			      , LESN_PRE_ENTR_TIME		            AS    LESN_PRE_ENTR_TIME
+			      , NEXT_MONTH_LESN_REG		            AS    NEXT_MONTH_LESN_REG 
+			      , RT_DAY		            AS    RT_DAY 
+			      , RT_REP_CNT		            AS    RT_REP_CNT 
+			      , HANDKEY_YN		            AS    HANDKEY_YN 
+			      , OVERDUE_YN  				AS    OVERDUE_YN 
+			      , LOK_END_DT_STD              AS    LOK_END_DT_STD 
+			      , CU_AGREE_YN                 AS    CU_AGREE_YN 
+			      , CU_AGREE_CONTENT            AS    CU_AGREE_CONTENT 
+			      , VISIT_USE_TIME				AS    VISIT_USE_TIME  
+			      , GF_TIME_YN                  AS    GF_TIME_YN 
+			      , DAYTERM_YN					AS 	  DAYTERM_YN	
+			      , ROOM_APP_WAY                AS    ROOM_APP_WAY 
+			      , ROOM_DAY_BK_CNT             AS    ROOM_DAY_BK_CNT 
+			  FROM TB_ENVINF                           
+			 WHERE CTR_CD = #{CTR_CD} 
+			   AND COMP_CD = #{COMP_CD}
+		]]>
+	</select>
+	<select id="updateEnvList" parameterType="hashmap"
+		resultType="java.lang.Integer">
+	<![CDATA[
+		UPDATE TB_ENVINF
+		  SET  PG_VAN_NM	= #{PG_VAN_NM}    
+			 , SMS_CD	= #{SMS_CD}      
+			 , DAY_AMT_CD	= #{DAY_AMT_CD}  
+			 , BASE_DAYS	= #{BASE_DAYS}     
+			 , PENFEE_RATE	= #{PENFEE_RATE}  
+			 , REP_CNT	= #{REP_CNT}     
+			 , ROUND_CD	= #{ROUND_CD}    
+			 , PW_INIT	= #{PW_INIT}   
+			 , CALC_STD		= #{CALC_STD}     
+			 , MID_RCT_YN	= #{MID_RCT_YN}    
+			 , ID_YN	= #{ID_YN}    
+			 , HOME_LINKAGE_YN	= #{HOME_LINKAGE_YN}   
+		     , HANDKEY_YN		   = #{HANDKEY_YN}  
+			 , GOLF_BASE_M	= #{GOLF_BASE_M}  
+			 , GOLF_ADD_M	= #{GOLF_ADD_M}   
+			 , L2_IP	= #{L2_IP}     
+			 , L2_PORT	= #{L2_PORT}     
+			 , GOLF_CONTROLL_YN	= #{GOLF_CONTROLL_YN}	
+			 , RD_BK_DD		= #{RD_BK_DD}    
+			 , RD_BK_TIME = REPLACE(#{RD_BK_TIME},':','')   
+			 , ALLOC_RTN_DIV	= #{ALLOC_RTN_DIV} 
+			 , DAY_ALLOC_YN		= #{DAY_ALLOC_YN}      
+			 , ALLOC_PF		= #{ALLOC_PF}     
+			 , ALLOC_MAX	= #{ALLOC_MAX}      
+			 , SCR_GOLF_BRK_TIME	= #{SCR_GOLF_BRK_TIME}   
+			 , SCR_GOLF_LIMIT_TIME	= #{SCR_GOLF_LIMIT_TIME}    
+			 , LESN_AUTODT	= #{LESN_AUTODT}    
+			 , PT_CALC		= #{PT_CALC}     
+			 , REER_NEWAPP_YN	= #{REER_NEWAPP_YN}    
+			 , LESN_APP_WAY		= #{LESN_APP_WAY}      
+			 , LESN_PRE_ENTR_TIME	= #{LESN_PRE_ENTR_TIME}     
+			 , NEXT_MONTH_LESN_REG	= #{NEXT_MONTH_LESN_REG}  
+			 , RT_DAY	= #{RT_DAY}   
+			 , RT_REP_CNT = #{RT_REP_CNT}    
+			 , OVERDUE_YN = #{OVERDUE_YN}
+     		 , UPD_DT      = SYSDATE   
+	         , UPD_USER_ID = #{REG_USER_ID}    
+		     , UPD_PGM_ID  = #{REG_PGM_ID}     
+		     , LOK_END_DT_STD = #{LOK_END_DT_STD} 
+		     , CU_AGREE_YN = #{CU_AGREE_YN} 
+		     , CU_AGREE_CONTENT = #{CU_AGREE_CONTENT} 
+		     , VISIT_USE_TIME = #{VISIT_USE_TIME}	 
+		     , GF_TIME_YN = #{GF_TIME_YN} 
+		     , DAYTERM_YN = #{DAYTERM_YN}	
+		     , ROOM_APP_WAY = #{ROOM_APP_WAY} 
+		     , ROOM_DAY_BK_CNT = #{ROOM_DAY_BK_CNT} 
+		WHERE CTR_CD = #{CTR_CD} 
+		  AND COMP_CD = #{COMP_CD}
+		]]>
+	</select>
+</mapper>

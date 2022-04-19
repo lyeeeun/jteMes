@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.common.excelUtil.ExcelUtilMapper">
+	
+	<sql id="tableInfo">
+		TABLE_NAME AS tableId, 
+		COLUMN_NAME AS columnId, 
+		COLUMN_COMMENT, 
+		COLUMN_TYPE AS columnType, 
+		IF(IS_NULLABLE = "YES", TRUE, FALSE) AS nullAble,
+		COLUMN_DEFAULT, 
+		COLUMN_KEY
+	<if test='action != "C"'>
+		,excelUtil.table_id				AS tableId
+		,excelUtil.column_id			AS columnId
+		,excelUtil.column_nm			AS columnNm
+		,excelUtil.auto_key_yn			AS autoKeyYn
+		,excelUtil.auto_key				AS autoKey
+		,excelUtil.list_yn				AS listYn
+		,excelUtil.cd_id 				AS cdId
+		,excelUtil.rtl_table_yn			AS rtlTableYn
+		,excelUtil.rtl_table_id			AS rtlTableId
+		,excelUtil.rtl_table_pk			AS rtlTablePk
+		,excelUtil.rtl_table_pk_nm 		AS rtlTablePkNm
+		,excelUtil.rtl_system_yn 		AS rtlSystemYn
+		,excelUtil.rtl_system_svc 		AS rtlSystemSvc
+		,excelUtil.rtl_system_method 	AS rtlSystemMethod
+		,excelUtil.order
+		,excelUtil.check_yn		AS checkYn
+	</if>
+	FROM INFORMATION_SCHEMA.COLUMNS sColumn
+	<if test='action != "C"'>
+		INNER JOIN sys_excel_util excelUtil ON sColumn.TABLE_NAME = excelUtil.table_id AND sColumn.COLUMN_NAME = excelUtil.column_id
+	</if>
+	WHERE TABLE_SCHEMA = (SELECT DATABASE())
+	<if test='action == "C"'>
+		AND TABLE_NAME = #{tableId}
+		ORDER BY TABLE_SCHEMA, TABLE_NAME, ORDINAL_POSITION;
+	</if>
+	<if test='action == "U"'>
+		AND excelUtil.menu_id = #{menuId}
+		ORDER BY excelUtil.order;
+	</if>
+	
+	
+	</sql>
+	
+	<select id="selectTableInfo" 
+		parameterType="jin.mes.common.excelUtil.ExcelUtilDto"
+		resultType="jin.mes.common.excelUtil.ExcelUtilDto">
+		SELECT	
+			<include refid="tableInfo"/>
+	</select>
+	
+	<select id="selectIsSet" 
+		parameterType="jin.mes.common.excelUtil.ExcelUtilDto"
+		resultType="java.lang.Integer">
+		SELECT COUNT(*) 
+		FROM sys_excel_util
+		WHERE menu_id = #{menuId}
+	</select>
+	
+	<select id="selectCodeList" 
+		parameterType="String"
+		resultType="String">
+		SELECT 
+			cd_nm as cdNm 
+		FROM cw_comn_code
+		WHERE up_cd_id = #{cdId}
+	</select>
+	
+	
+	<select id="selectRtlTableCodeList" 
+		parameterType="jin.mes.common.excelUtil.ExcelUtilDto"
+		resultType="String">
+		SELECT 
+			${rtlTablePkNm} AS rtlTablePkNm
+		FROM ${rtlTableId}
+	</select>
+	
+	
+		
+		
+		
+	<insert id="insertExcelSetting" parameterType="jin.mes.common.excelUtil.ExcelUtilDto">
+		INSERT INTO sys_excel_util (
+			menu_id,
+			table_id,
+			column_id,
+			column_nm,
+			auto_key_yn,
+			auto_key,
+			list_yn,
+			cd_id,
+			rtl_table_yn,
+			rtl_table_id,
+			rtl_table_pk,
+			rtl_table_pk_nm,
+			rtl_system_yn,
+			rtl_system_svc,
+			rtl_system_method,
+			`order`,
+			check_yn
+		) VALUES (
+			#{menuId},
+			#{tableId},
+			#{columnId},
+			#{columnNm},
+			#{autoKeyYn},
+			#{autoKey},
+			#{listYn},
+			#{cdId},
+			#{rtlTableYn},
+			#{rtlTableId},
+			#{rtlTablePk},
+			#{rtlSystemYn},
+			#{rtlSystemSvc},
+			#{rtlSystemMethod},
+			#{rtlTablePkNm},
+			#{order},
+			#{checkYn}
+		)
+	</insert>
+	
+	<update id="updateExcelSetting" parameterType="jin.mes.common.excelUtil.ExcelUtilDto">
+		UPDATE sys_excel_util
+		SET menu_id = menu_id
+			<if test="columnNm != null and columnNm != ''">
+				,column_nm = #{columnNm}
+			</if>
+			<if test="autoKeyYn != null and autoKeyYn != ''">
+				,auto_key_yn = #{autoKeyYn}
+			</if>
+			<if test="autoKey != null and autoKey != ''">
+				,auto_key = #{autoKey}
+			</if>
+			<if test="listYn != null and listYn != ''">
+				,list_yn = #{listYn}
+			</if>
+			<if test="cdId != null and cdId != ''">
+				,cd_id = #{cdId}
+			</if>
+			<if test="rtlTableYn != null and rtlTableYn != ''">
+				,rtl_table_yn = #{rtlTableYn}
+				,rtl_table_id = #{rtlTableId}
+				,rtl_table_pk = #{rtlTablePk}
+				,rtl_table_pk_nm = #{rtlTablePkNm}
+			</if>
+			<if test="rtlSystemYn != null and rtlSystemYn != ''">
+				,rtl_system_yn = #{rtlSystemYn}
+				,rtl_system_svc = #{rtlSystemSvc}
+				,rtl_system_method = #{rtlSystemMethod}
+			</if>
+			<if test="order != null and order != ''">
+				,`order` = #{order}
+			</if>
+			<if test="checkYn != null and checkYn != ''">
+				,check_yn = #{checkYn}
+			</if>
+		WHERE menu_id = #{menuId}
+		AND column_id = #{columnId}
+	</update>
+	
+	<delete id="deleteExcelSetting" parameterType="jin.mes.common.excelUtil.ExcelUtilDto">
+		DELETE FROM sys_excel_util
+		WHERE menu_id  = #{menuId}
+	</delete>
+	
+	<insert id="insertExcelData" parameterType="jin.mes.common.excelUtil.ExcelUtilDto">
+		
+		INSERT INTO ${tableId}(
+			<foreach collection="columnList" item="item" separator="," >
+				${item.columnId}
+			</foreach>
+		)VALUES(
+			<foreach collection="valueList" item="item" separator="," >
+				<choose>
+					<when test="item.autoKeyYn == true">
+						(SELECT CREATE_PK(#{item.autoKey}))
+					</when>
+					<when test="item.stringValue != null and item.stringValue != ''">
+						<if test="item.listYn == true">
+							(SELECT cd_id FROM cw_comn_code WHERE cd_nm = #{item.stringValue} AND up_cd_id = #{item.cdId})
+						</if>
+						<if test="item.rtlTableYn == true">
+							(SELECT ${item.rtlTablePk} FROM ${item.rtlTableId} WHERE ${item.rtlTablePkNm} = #{item.stringValue} LIMIT 1)
+						</if>
+						<if test="item.listYn == false and item.rtlTableYn == false">
+							#{item.stringValue}
+						</if>
+					</when>
+					<when test="item.intValue != null and item.intValue != ''">
+						#{item.intValue}
+					</when>
+					<when test="item.floatValue != null and item.floatValue != ''">
+						#{item.floatValue}
+					</when>
+					<when test="item.checkYn == false and item.nullAble == true">
+						NULL
+					</when>
+					<when test="item.checkYn == false and item.nullAble == false">
+						DEFAULT
+					</when>
+				</choose>
+			</foreach>
+		)
+	</insert>
+	
+</mapper>

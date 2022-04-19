@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MTRL_outReg">
+<!-- 					, FN_CM_GETCOMNM(mi.CTR_CD , 'MTRLTYPE' ,mtrl.MTRLTYPE) AS MTRLTYPE        
+					, FN_CM_GETCOMNM(mi.CTR_CD , 'MTRLUNITCD',mtrl.MTRLUNIT_CD )  AS UNIT_NM    -->
+	<!-- 스칼라 서브 쿼리를 사용하여 자재입고,제조지시 테이블 select 해오기-->
+	<select id="selectOutList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT   mi.MTRL_IN_NO                                                           
+					, DATE_FORMAT(mi.MTRL_IN_DATE,'%Y%m%d') AS MTRL_IN_DATE                     
+					, mi.SUPPLIERID                                                          
+					, mi.MTRLID                                                                
+					, s.SUPPLIERNAME                                                       
+					, mtrl.MTRLNAME                                                         
+					, mi.MTRL_IN_QTY                                                      
+					, mi.MTRL_OUT_TOT_QTY                                                     
+					, mi.MTRL_IN_QTY - mi.MTRL_OUT_TOT_QTY AS NOW_OUT                         
+					, mtrl.MTRLSPEC                                                          
+					, mtrl.MTRLCMPT                                                          
+					, mtrl.MTRLTYPE        
+					, mtrl.MTRLUNIT_CD AS UNIT_NM   
+					, mi.DEL_GBN               
+					,(SELECT MAX(mo.WOID)
+					    FROM tb_mesmtrout mo
+					   WHERE mo.CTR_CD = 'ATOS_MES'
+					     AND mo.MTRL_IN_NO = mi.MTRL_IN_NO
+					     AND DEL_GBN = 'N' ) AS WOID                                 
+					
+			  FROM tb_mesmtrlin mi
+			 INNER JOIN tb_material mtrl ON mi.MTRLID = mtrl.MTRLID
+			 INNER JOIN tb_supplier s ON mi.SUPPLIERID = s.SUPPLIERID
+			 WHERE 1=1 	
+			   AND mi.MTRL_IN_QTY - mi.MTRL_OUT_TOT_QTY > 0 
+			]]>
+			<!--  삭제 구분에 N 즉 삭제된 데이터가 아닌경우 -->
+			<if test='DEL_GBN != "N"'>
+				AND mi.DEL_GBN ='N'
+			</if>
+			<if test='MTRLNAME != null and MTRLNAME != ""'>
+				AND MTRLNAME LIKE CONCAT("%" #{MTRLNAME} "%")
+			</if>
+			<if test='SUPPLIERNAME != null and SUPPLIERNAME != ""'>
+				AND SUPPLIERNAME LIKE CONCAT("%" #{SUPPLIERNAME} "%")
+			</if>
+			<if test='STR_DT != null and STR_DT != ""'>
+				AND MTRL_IN_DATE BETWEEN #{STR_DT} AND #{END_DT}
+			</if>
+			<![CDATA[
+				 ORDER BY mi.MTRL_IN_DATE  
+			]]>
+      
+	</select>
+	
+	<!-- 제조지시 리스트 -->
+	<select id="selectWorkOrderList"  parameterType="hashmap"
+		resultType="hashmap"> 
+		<![CDATA[
+			   SELECT wo.WOID,                     
+				      wo.CUSTOMERID,          
+				      wo.PRODID,               
+				      c.CUSTOMERNAME,         
+				      p.PRODNAME,            
+				      wo.SHOPFLOOR_QTY,       
+				      wo.REMARK,             
+				      mo.woid as mowoid      
+				 FROM TB_MESWORKORDER wo
+				INNER JOIN TB_CUSTOMER C 
+				   ON wo.CUSTOMERID = c.CUSTOMERID
+			    INNER JOIN TB_PRODUCT P 
+			       ON wo.PRODID = P.PRODID
+				 LEFT JOIN (SELECT ctr_cd, woid 
+				              FROM TB_MESMTROUT 
+				             WHERE del_gbn = 'N' 
+				          GROUP BY ctr_cd, woid) mo
+				   ON wo.ctr_cd = mo.ctr_cd
+				  AND wo.WOID = mo.WOID
+				WHERE wo.ctr_cd = #{CTR_CD}
+		]]>
+	</select>
+
+	<!-- 자재출고 등록 -->
+	<select id="insertMtrlOutList" parameterType="hashmap"
+	   resultType="java.lang.Integer">
+	   	<![CDATA[
+		INSERT 
+			INTO TB_MESMTROUT(
+					CTR_CD              
+					,MTRL_OUT_NO             
+					,MTRL_OUT_DATE			  
+  					,MTRL_IN_NO               
+  					,MTRL_OUT_GBN            
+  					,MTRL_OUT_QTY             
+  					,WOID                    
+  					,SUPPLIERID              
+  					,MTRLID                   
+					,DEL_GBN                
+					,REG_USER_ID           
+					,REG_PGM_ID              
+					,REG_DT                  
+					,UPD_USER_ID              
+					,UPD_PGM_ID              
+					,UPD_DT                  
+					,REMARK                   
+					)
+			VALUES(
+			        #{CTR_CD}
+				   ,FN_CM_SEQ('MTRL_OUT_NO', NULL, NULL)
+				   ,sysdate
+				   ,#{MTRL_IN_NO}
+				   ,#{MTRL_OUT_GBN}
+				   ,#{MTRL_OUT_QTY}
+				   ,#{WOID}
+				   ,#{SUPPLIERID}
+				   ,#{MTRLID}
+				   ,'N'
+				   ,#{REG_USER_ID}
+				   ,#{REG_PGM_ID}
+				   ,sysdate
+				   ,#{UPD_USER_ID}
+				   ,#{UPD_DT}
+				   ,sysdate
+				   ,#{REMARK}
+				   )
+			]]>	   
+	</select >
+</mapper>

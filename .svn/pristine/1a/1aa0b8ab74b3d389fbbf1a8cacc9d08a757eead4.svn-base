@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="jin.mes.form.operMgt.altBoard.AltBoardMapper">
+
+	<sql id="whereForSelectOnAltBoard">
+		<![CDATA[
+			WHERE BD.BD_DEL_YN = 'N'
+				AND BD.BD_UP_SEQ = 0 -- 최상위 게시글만 조회.
+				-- AND SUB.BD_UP_SEQ <> 0 -- 댓글용은 최상위 게시글이 아닌경우.
+		]]>
+		<!-- BD_DIV_CD = 'ALT'    공지게시판 -->
+		<!-- BD_DIV_CD = 'RSH'    만족도조사 -->
+		<!-- BD_DIV_CD = 'POP'    알림팝업창(로그인시표시-그만표시자 제외 테이블의 HST로 관리) -->
+		<if test='isOperAuth==false'><![CDATA[ -- 일반사용자는 유효기간 내의 글만 읽는다. 관리자는 모두 읽는다. 2019.05.17 자체변경.
+				AND BD.EFCT_ST_DT <= SYSDATE
+				AND BD.EFCT_FNS_DT + 1 > SYSDATE -- 실재 공지 종료일은 00:00:00.000으로 저장되므로 다음날보다 작은 것으로 검색해야 한다.
+		]]></if>
+		<choose>
+			<when test='bdUseYn != null'>AND BD.BD_USE_YN = #{bdUseYn}</when>
+			<when test='isOperAuth==false'>AND BD.BD_USE_YN = 'Y'</when>
+			<otherwise></otherwise>
+		</choose>
+		<choose>
+			<when test='bdDivCd != null and !bdDivCd.equals("")'>AND BD.BD_DIV_CD = #{bdDivCd}</when>
+			<otherwise>AND BD.BD_DIV_CD LIKE ('___') <!-- [공지/팝업/자료/서식지]게시판 'ALT','POP','WRN', 'SPF' --></otherwise>
+		</choose>
+		<if test='searchValue != null and !searchValue.equals("") and searchType != null and searchType.equals("N")'>AND to_char(BD.BD_SEQ) = #{searchValue}</if>
+		<if test='searchValue != null and !searchValue.equals("") and searchType != null and searchType.equals("T")'>AND LOWER(BD.BD_TITLE)    LIKE '%'||LOWER(#{searchValue})||'%'</if>
+		<if test='searchValue != null and !searchValue.equals("") and searchType != null and searchType.equals("O")'>AND LOWER(BD.BD_OWNER_NM) LIKE '%'||LOWER(#{searchValue})||'%'</if>
+		<if test='searchValue != null and !searchValue.equals("") and searchType != null and searchType.equals("B")'>AND LOWER(BD.BD_BODY)     LIKE '%'||LOWER(#{searchValue})||'%'</if>
+		<if test='firstCretTrtrId != null and !firstCretTrtrId.equals("")'>AND BD.FIRST_CRET_TRTR_ID = #{firstCretTrtrId}</if>
+		<if test='bdOwnerNm != null and !bdOwnerNm.equals("")'>AND LOWER(BD.BD_OWNER_NM) LIKE '%'||LOWER(#{bdOwnerNm})||'%'</if>
+		<if test='bdEditorNm != null and !bdEditorNm.equals("")'>AND LOWER(BD.BD_EDITOR_NM) LIKE '%'||LOWER(#{bdEditorNm})||'%'</if>
+		<if test='bdTitle != null and !bdTitle.equals("")'>AND LOWER(BD.BD_TITLE) LIKE '%'||LOWER(#{bdTitle})||'%'</if>
+		<if test='bdBody != null and !bdBody.equals("")'>AND LOWER(BD.BD_BODY) LIKE '%'||LOWER(#{bdBody})||'%'</if>
+		<if test='searchStartDate != null and searchEndDate != null and !searchStartDate.equals("") and !searchEndDate.equals("")'>AND to_char( BD.CRET_DT,'YYYYMMDD') between REPLACE(#{searchStartDate},'-','') and REPLACE(#{searchEndDate},'-','')</if>
+		<choose>
+			<when test='searchUserId != null and !searchUserId.equals("") and searchAuthId != null and !searchAuthId.equals("")'>
+				AND (    BD.FIRST_CRET_TRTR_ID = #{searchUserId} -- 자신의 글을 조회한다.
+					OR ( BD.BD_TGT_AUTH_IDS IS NOT NULL AND BD.BD_TGT_AUTH_IDS LIKE '%'||#{searchAuthId}||'%')
+					OR ( BD.BD_TGT_IDS IS NOT NULL AND BD.BD_TGT_IDS LIKE '%'||#{searchUserId}||'%')
+					OR ( BD.BD_TGT_AUTH_IDS IS NULL AND BD.BD_TGT_IDS IS NULL)
+				)
+			</when>
+			<when test='searchUserId != null and !searchUserId.equals("")'>
+				AND (    BD.FIRST_CRET_TRTR_ID = #{searchUserId} -- 자신의 글을 조회한다.
+					OR ( BD.BD_TGT_IDS IS NOT NULL AND BD.BD_TGT_IDS LIKE '%'||#{searchUserId}||'%')
+					OR ( BD.BD_TGT_AUTH_IDS IS NULL AND BD.BD_TGT_IDS IS NULL)
+				)
+			</when>
+			<when test='searchAuthId != null and !searchAuthId.equals("")'>
+				AND (    BD.BD_TGT_AUTH_IDS IS NOT NULL AND BD.BD_TGT_AUTH_IDS LIKE '%'||#{searchAuthId}||'%'
+					OR ( BD.BD_TGT_AUTH_IDS IS NULL AND BD.BD_TGT_IDS IS NULL)
+				)
+			</when>
+			<otherwise>
+				AND (    BD.BD_TGT_AUTH_IDS IS NULL AND BD.BD_TGT_IDS IS NULL
+				)
+			</otherwise>
+		</choose>
+	</sql>
+
+	<select id="selectBoardList" parameterType="jin.mes.form.operMgt.altBoard.AltBoardDto" resultType="jin.mes.form.operMgt.altBoard.AltBoardDto">
+	<![CDATA[
+		SELECT * FROM (
+			SELECT ROWNUM AS RNUM, *
+			FROM(
+
+				SELECT
+					DECODE(BD.BD_DIV_CD, 'WRN', 'A', 'B') AS FRT_SORT
+					,BD_SEQ              AS bdSeq
+	]]><if test="isOperAuth!=false">, 1 AS isOperAuth</if><![CDATA[
+					,BD_DEL_YN          AS bdDelYn
+					,BD_USE_YN          AS bdUseYn
+					,FIRST_CRET_TRTR_ID AS firstCretTrtrId
+					,LAST_CHG_TRTR_ID   AS lastChgTrtrId
+					,CRET_DT            AS cretDt -- to_char(CRET_DT, 'YYYY-MM-DD hh:mm:ss') AS cretDt
+					,CHG_DT             AS chgDt
+					,EFCT_ST_DT         AS efctStDt
+					,EFCT_FNS_DT        AS efctFnsDt
+					,BD_OWNER_NM        AS bdOwnerNm
+					,BD_EDITOR_NM       AS bdEditorNm
+					,BD_BF_SEQ          AS bdBfSeq
+					,BD_UP_SEQ          AS bdUpSeq
+					,BD_STTUS_CD        AS bdSttusCd
+					,BD_TITLE           AS bdTitle
+					,BD_BODY            AS bdBody
+					,BD_DIV_CD          AS bdDivCd
+					,BD_FILES_CNT       AS bdFilesCnt
+					,BD_FILES_NM        AS bdFilesNm
+					,BD_FILES_PATH      AS bdFilesPath
+					,BD_URLS_CNT        AS bdUrlsCnt
+					,BD_URLS_NM         AS bdUrlsNm
+					,BD_URLS_ADDR       AS bdUrlsAddr
+					,BD_TGT_AUTH_IDS    AS bdTgtAuthIds
+					,BD_TGT_IDS         AS bdTgtIds
+
+				FROM BIZOWN.CW_ALT_BOARD BD
+	]]>			<include refid="whereForSelectOnAltBoard"/>
+				order by FRT_SORT, BD_SEQ DESC
+			)
+		)
+		<where>
+			<choose>
+			<when test='@org.springframework.util.StringUtils@isEmpty(rownum)'>
+				RNUM <![CDATA[ <= ]]> #{lastIndex} AND RNUM <![CDATA[ >= ]]> #{firstIndex}
+			</when>
+			<otherwise>
+				RNUM <![CDATA[ <= ]]> #{rownum}
+			</otherwise>
+			</choose>
+		</where>
+	</select>
+	
+	<select id="selectBoardListCount" parameterType="jin.mes.form.operMgt.altBoard.AltBoardDto" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM BIZOWN.CW_ALT_BOARD BD
+		<include refid="whereForSelectOnAltBoard"/>
+	</select>
+	
+	<select id="selectBoard" parameterType="long" resultType="jin.mes.form.operMgt.altBoard.AltBoardDto">
+	<![CDATA[
+		SELECT
+			BD_SEQ              AS bdSeq
+			,BD_DEL_YN          AS bdDelYn
+			,BD_USE_YN          AS bdUseYn
+			,FIRST_CRET_TRTR_ID AS firstCretTrtrId
+			,LAST_CHG_TRTR_ID   AS lastChgTrtrId
+			,CRET_DT            AS cretDt -- to_char(CRET_DT, 'YYYY-MM-DD hh:mm:ss') AS cretDt
+			,CHG_DT             AS chgDt
+			,EFCT_ST_DT         AS efctStDt
+			,EFCT_FNS_DT        AS efctFnsDt
+			,BD_OWNER_NM        AS bdOwnerNm
+			,BD_EDITOR_NM       AS bdEditorNm
+			,BD_BF_SEQ          AS bdBfSeq
+			,BD_UP_SEQ          AS bdUpSeq
+			,BD_STTUS_CD        AS bdSttusCd
+			,BD_TITLE           AS bdTitle
+			,BD_BODY            AS bdBody
+			,BD_DIV_CD          AS bdDivCd
+			,BD_FILES_CNT       AS bdFilesCnt
+			,BD_FILES_NM        AS bdFilesNm
+			,BD_FILES_PATH      AS bdFilesPath
+			,BD_URLS_CNT        AS bdUrlsCnt
+			,BD_URLS_NM         AS bdUrlsNm
+			,BD_URLS_ADDR       AS bdUrlsAddr
+			,BD_TGT_AUTH_IDS    AS bdTgtAuthIds
+			,BD_TGT_IDS         AS bdTgtIds
+		FROM BIZOWN.CW_ALT_BOARD A
+		WHERE A.BD_SEQ = #{bdSeq}
+	]]>
+	</select>
+	
+	<insert id="insertBoard" parameterType="jin.mes.form.operMgt.altBoard.AltBoardDto">
+		INSERT INTO BIZOWN.CW_ALT_BOARD(
+			BD_SEQ
+			,FIRST_CRET_TRTR_ID
+			,CRET_DT
+			<if test='bdUseYn != null and !bdUseYn.equals("")'>,BD_USE_YN</if>
+			<if test="efctStDt != null">,EFCT_ST_DT</if>
+			<if test="efctFnsDt != null">,EFCT_FNS_DT</if>
+			,BD_OWNER_NM
+			<if test="bdBfSeq > 0">,BD_BF_SEQ</if>
+			<if test="bdUpSeq > 0">,BD_UP_SEQ</if>
+			<if test='bdSttusCd != null and !bdSttusCd.equals("")'>,BD_STTUS_CD</if>
+			,BD_TITLE
+			,BD_BODY
+			<if test='bdDivCd != null and !bdDivCd.equals("")'>,BD_DIV_CD</if>
+			<if test="bdFilesCnt > 0">,BD_FILES_CNT</if>
+			,BD_FILES_NM
+			,BD_FILES_PATH
+			<if test="bdUrlsCnt > 0">,BD_URLS_CNT</if>
+			,BD_URLS_NM
+			,BD_TGT_AUTH_IDS
+			,BD_TGT_IDS
+		) VALUES (
+			BIZOWN.CW_ALT_BOARD_BD_SEQ.NEXTVAL
+			,#{firstCretTrtrId}
+			,SYSDATE
+			<if test='bdUseYn != null and !bdUseYn.equals("")'>,#{bdUseYn}</if>
+			<if test="efctStDt != null">,#{efctStDt}</if>
+			<if test="efctFnsDt != null">,#{efctFnsDt}</if>
+			,#{bdOwnerNm}
+			<if test="bdBfSeq > 0">,#{bdBfSeq}</if>
+			<if test="bdUpSeq > 0">,#{bdUpSeq}</if>
+			<if test='bdSttusCd != null and !bdSttusCd.equals("")'>,#{bdSttusCd}</if>
+			,#{bdTitle}
+			,#{bdBody}
+			<if test='bdDivCd != null and !bdDivCd.equals("")'>,#{bdDivCd}</if>
+			<if test="bdFilesCnt > 0">,#{bdFilesCnt}</if>
+			,#{bdFilesNm}
+			,#{bdFilesPath}
+			<if test="bdUrlsCnt > 0">,#{bdUrlsCnt}</if>
+			,#{bdUrlsNm}
+			,#{bdTgtAuthIds}
+			,#{bdTgtIds}
+		);
+	</insert>
+	
+	<update id="updateBoard" parameterType="jin.mes.form.operMgt.altBoard.AltBoardDto">
+		UPDATE BIZOWN.CW_ALT_BOARD
+		SET CHG_DT = SYSDATE
+			<if test='bdTitle != null and !bdTitle.equals("")'>,BD_TITLE = #{bdTitle}</if>
+			<if test='bdBody != null and !bdBody.equals("")'>,BD_BODY = #{bdBody}</if>
+			<if test='bdUseYn != null and !bdUseYn.equals("")'>,BD_USE_YN = #{bdUseYn}</if>
+			<if test='lastChgTrtrId != null and !lastChgTrtrId.equals("")'>,LAST_CHG_TRTR_ID = #{lastChgTrtrId}</if>
+			<if test='bdEditorNm!= null and !bdEditorNm.equals("")'>,BD_EDITOR_NM = #{bdEditorNm}</if>
+			<if test="efctStDt != null">,EFCT_ST_DT = #{efctStDt}</if>
+			<if test="efctFnsDt != null">,EFCT_FNS_DT = #{efctFnsDt}</if>
+			<if test='bdSttusCd != null and !bdSttusCd.equals("")'>,BD_STTUS_CD = #{bdSttusCd}</if>
+			<if test='bdDivCd != null and !bdDivCd.equals("")'>,BD_DIV_CD = #{bdDivCd}</if>
+			<choose>
+				<when test="bdFilesCnt > 0">,BD_FILES_CNT = #{bdFilesCnt}, BD_FILES_NM = #{bdFilesNm}, BD_FILES_PATH = #{bdFilesPath}</when>
+				<otherwise>,BD_FILES_CNT = 0, BD_FILES_NM = '', BD_FILES_PATH = ''</otherwise>
+			</choose>
+			<choose>
+				<when test="bdUrlsCnt > 0">,BD_URLS_CNT = #{bdUrlsCnt}, BD_URLS_NM = #{bdUrlsNm}, BD_URLS_ADDR = #{bdUrlsAddr}</when>
+				<otherwise>,BD_URLS_CNT = 0, BD_URLS_NM = '', BD_URLS_ADDR = ''</otherwise>
+			</choose>
+			<if test="bdTgtAuthIds != null">,BD_TGT_AUTH_IDS = #{bdTgtAuthIds}</if>
+			<if test="bdTgtIds != null">,BD_TGT_IDS = #{bdTgtIds}</if>
+		WHERE BD_SEQ = #{bdSeq}
+	</update>
+
+	<update id="deleteBoard" parameterType="long">
+		UPDATE BIZOWN.CW_ALT_BOARD
+		SET BD_DEL_YN = 'Y'
+		WHERE BD_SEQ = #{bdSeq}
+	</update>
+
+	<delete id="deleteBoardReal" parameterType="long">
+		DELETE FROM BIZOWN.CW_ALT_BOARD
+		WHERE BD_SEQ = #{bdSeq}
+	</delete>
+
+
+
+</mapper>

@@ -1,0 +1,56 @@
+package kr.co.itcall.jte.api.sample.controller;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import kr.co.itcall.jte.api.sample.model.SampleQuestion;
+import kr.co.itcall.jte.api.sample.repository.SampleQuestionRepository;
+import kr.co.itcall.jte.spring.config.exception.ResourceNotFoundException;
+
+@RestController
+@RequestMapping("/sample")
+public class SampleQuestionController {
+
+	@Autowired
+	private SampleQuestionRepository sampleQuestionRepository;
+
+	@GetMapping("/questions")
+	public Page<SampleQuestion> getQuestions(Pageable pageable) {
+		return sampleQuestionRepository.findAll(pageable);
+	}
+
+	@PostMapping("/questions")
+	public SampleQuestion createQuestion(@Valid @RequestBody SampleQuestion question) {
+		return sampleQuestionRepository.save(question);
+	}
+
+	@PutMapping("/questions/{questionId}")
+	public SampleQuestion updateQuestion(@PathVariable Long questionId, @Valid @RequestBody SampleQuestion questionRequest) {
+		return sampleQuestionRepository.findById(questionId).map(sampleQuestion -> {
+//			sampleQuestion.setSampleTitle(questionRequest.getSampleTitle());
+//			sampleQuestion.setSampleDes(questionRequest.getSampleDes());
+			return sampleQuestionRepository.save(sampleQuestion);
+		}).orElseThrow(() -> new ResourceNotFoundException("Question not found with id " + questionId));
+	}
+
+	@DeleteMapping("/questions/{questionId}")
+	public ResponseEntity<?> deleteQuestion(@PathVariable Long questionId) {
+		return sampleQuestionRepository.findById(questionId).map(sampleQuestion -> {
+			sampleQuestionRepository.delete(sampleQuestion);
+			return ResponseEntity.ok().build();
+		}).orElseThrow(() -> new ResourceNotFoundException("Question not found with id " + questionId));
+	}
+
+}

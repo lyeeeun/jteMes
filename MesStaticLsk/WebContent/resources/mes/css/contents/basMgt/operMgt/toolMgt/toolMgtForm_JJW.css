@@ -1,0 +1,72 @@
+.toolMgtForm #jtePopForm_master {
+	margin-top: 0;
+	padding-top: 0;
+}
+
+.toolMgtForm .col-left-title {
+	width: 20%;
+}
+
+.toolMgtForm .col-right-content {
+	width: 70%;
+}
+
+.toolMgtForm .group-checkbox {
+	overflow: auto;
+	height: 150px;
+	background-color: #ffffff;
+	padding-top: 5px;
+	border: 1px solid #C7D5F4;
+}
+
+.toolMgtForm .center-input .btn-input {
+	width: 100%;
+}
+
+.toolMgtForm .jtePopForm_master th {
+   text-align: left;   
+}
+
+.toolMgtForm .left-input {
+   width: 90%;
+   float: left;
+}
+
+.toolMgtForm .right-input {
+   width: 90%;
+   float: right;
+}
+
+.toolMgtForm .center-input {
+	width: 100%;
+}
+
+.toolMgtForm .normal-input {
+	width: 100%;
+}
+
+.toolMgtForm .col-left-title {
+   width: 18%;
+}
+
+.toolMgtForm .col-left-content {
+   width: 32%;
+}
+
+.toolMgtForm .col-right-title {
+   width: 18%;
+}
+
+.toolMgtForm .col-right-content {
+   width: 32%;
+}
+
+.toolMgtForm .jte-msgBox {
+	width: 90%;
+	float: right;
+}
+
+/*20.08.05 왼쪽 셀 가운데 정렬 JJW*/
+.toolMgtForm.k-grid th:first-child, .toolMgtForm.k-grid td:first-child {
+	text-align: center;
+}

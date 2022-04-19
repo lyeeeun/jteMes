@@ -1,0 +1,289 @@
+/***** 200511JJW 오른쪽 그리드 - 추가버튼 팝업 *******/
+
+#jtePopToolUse {
+	height: 100%;
+}
+
+.inputQualMgtForm-jteSingleGrid {
+	width:100%;
+	height:100%;
+	float:left;
+}
+
+/* .inputQualMgtForm-jteSubGrid {
+	width: 100%;
+	height:39.5%;
+	float:right;
+} */
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.k-grid-toolbar .jte-search-aria #jtePopInputQualAdd_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;	
+}
+
+.k-grid-toolbar .jte-search-aria #jteQualBadChkPop_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;	
+}
+
+.inputQualMgtForm .fa-info-circle:before {
+	color:#3367D6;
+}
+
+.inputQualMgtForm .jtePopForm_master {
+	width: 100%;
+}
+
+.inputQualMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.inputQualMgtForm .col-left-title {
+	width: 24%;
+}
+
+.inputQualMgtForm .col-left-content {
+	width: 27%;
+}
+
+.inputQualMgtForm .col-right-title {
+	width: 22%;
+}
+
+.inputQualMgtForm .col-right-content {
+	width: 27%;
+}
+
+.inputQualMgtForm .normal-input{
+	width: 100%;
+}
+
+.inputQualMgtForm .center-input{
+	width: 100%;
+}
+
+.inputQualMgtForm .left-input {
+	width: 100%;
+}
+
+.inputQualMgtForm .right-input {
+	width: 100%;
+}
+
+.inputQualMgtForm .left-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.inputQualMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.inputQualMgtForm .search-btn {
+	width: 100%;
+}
+
+/***** 200511JJW 오른쪽 그리드 정비이력 버튼 클릭 시 나타나는 팝업  *******/
+
+.inputQualMgtForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.inputQualMgtForm .popsc-col-left-title {
+	width: 24%;
+}
+
+.inputQualMgtForm .popsc-col-left-content {
+	width: 26%;
+}
+
+.inputQualMgtForm .popsc-col-right-title {
+	width: 24%;
+}
+
+.inputQualMgtForm .popsc-col-right-content {
+	width: 26%;
+}
+
+
+.inputQualMgtForm .normal-input{
+	width: 100%;
+}
+
+.inputQualMgtForm .center-input{
+	width: 100%;
+}
+
+.inputQualMgtForm .left-input {
+	width: 100%;
+}
+
+.inputQualMgtForm .right-input {
+	width: 100%;
+}
+
+.inputQualMgtForm .left-input.btn-input {
+	width: 95%;
+	float: left;
+}
+
+.inputQualMgtForm .td-right-title {
+	width: 90%;
+	float: right;
+	margin-top: 5px;
+}
+
+.inputQualMgtForm .search-btn {
+	width: 100%;
+}
+
+#jtePopQcDocAdd_master {
+	/* font-size: 16px; */
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+#jtePopQcDocAdd_form td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+#jteQualBadChkPop_master {
+	/* font-size: 16px; */
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 2px;
+}
+
+#jteQualBadChkPop_form td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+
+
+/************************************/
+/*20.08.05 JJW 팝업 수정 및 왼쪽 체크박스 가운데 정렬*/
+
+.inputQualMgtForm .jteQualBadChkPop_master th {
+	text-align: left;	
+}
+
+.inputQualMgtForm .poptr-col-left-title {
+	width: 18%;
+}
+
+.inputQualMgtForm .poptr-col-left-content-1 {
+	width: 20%;
+}
+
+.inputQualMgtForm .poptr-col-left-content-2 {
+	width: 12%;
+}
+
+.inputQualMgtForm .poptr-col-right-title {
+	width: 18%;
+}
+
+.inputQualMgtForm .poptr-col-right-content {
+	width: 32%;
+}
+
+.inputQualMgtForm.k-grid th:first-child, .inputQualMgtForm.k-grid td:first-child {
+	text-align: center;
+}
+
+/*** 201007 JJW 입고검사 - 입고검사 팝업  ***/
+
+.mtrlOdcursitMgtForm.input-list {
+	font-weight: bold;
+	font-size: 16px;
+	text-align: center;
+}
+
+.mtrlOdcursitMgtForm-table {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.mtrlOdcursitMgtForm-index {
+	text-align: center;
+}
+
+.mtrlOdcursitMgtForm.final-btn-area {
+	margin-top: 10px;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-1 {
+	width:5%;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-2 {
+	width:13%;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-3 {
+	width:37%;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-4 {
+	width:13%;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-5 {
+	width:13%;
+}
+
+.mtrlOdcursitMgtForm-table .col-input-list-6 {
+	width:19%;
+}
+
+.center-input {
+	width: 100%;
+}
+
+
+/***************************************/
+
+/*20.10.07 입고검사 > 입고검사 팝업 LYM*/
+.mtrlOdcursitMgtForm-table {
+	font-size: 14px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.mtrlOdcursitMgtForm-table tr:nth-child(2n+1) {
+	background-color: rgba(51, 103, 214, 0.05);
+/* 	border-bottom: 1px solid #d5d5d5 */
+}
+
+.mtrlOdcursitMgtForm-table tr:nth-child(1) {
+   background-image : url(textures/highlight.png);
+   background-color : rgba(51, 103, 214, 0.19);
+}
+
+.mtrlOdcursitMgtForm-table td {
+	padding: .45em .4em;
+}
+
+.pop_selfInspect_Form_title {
+   background-image : url(textures/highlight.png);
+   background-color : rgba(51, 103, 214, 0.19);
+}
+
+/*********************************/

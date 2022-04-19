@@ -1,0 +1,65 @@
+
+.sr-listtb {
+	background-color: #f2f6fc;
+	padding: 15px 10px;
+}
+
+.syslogMgtForm .col-one-title {
+	width: 7%;
+}
+
+.syslogMgtForm .col-one-content {
+	width: 10%;
+}
+
+.syslogMgtForm .col-two-title {
+	width: 7%;
+}
+
+.syslogMgtForm .col-two-content {
+	width: 10%;
+}
+
+.syslogMgtForm .col-thr-title {
+	width: 7%;
+}
+
+.syslogMgtForm .col-thr-content {
+	width: 10%;
+}
+
+.syslogMgtForm .col-fou-title {
+	width: 7%;
+}
+
+.syslogMgtForm .col-fou-content {
+	width: 10%;
+}
+
+.syslogMgtForm .col-fiv-title {
+	width: 7%;
+}
+
+.syslogMgtForm .col-fiv-content {
+	width: 10%;
+}
+
+.syslogMgtForm .col-btn-content {
+	width: 10%;
+}
+
+.syslogMgtForm .search-title {
+/* 	font-size: 16px; */
+	font-weight: bold;
+}
+
+.syslogMgtForm .search-input .form-control {
+	border: 1px solid #3367D6;
+	border-radius: 5px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.syslogMgtForm .search-button {
+	
+}

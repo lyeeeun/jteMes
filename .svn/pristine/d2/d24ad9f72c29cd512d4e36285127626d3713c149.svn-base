@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/rms_layout}" lang="ko">
+<head>
+<title>main index</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script type="text/javascript">
+	
+</script>
+</head>
+<body>
+	<div class="container">
+		<div class="content" layout:fragment="content">
+<!-- 			<p>
+				테스트 이미지입니다.<br> <img src="/image/storyhubblespirograph.jpg">
+			</p> -->
+		</div>
+	</div>
+</body>
+<!-- 시작화면 overview 뜨게하기 -->
+<th:block layout:fragment="script">
+	<script>
+		var form2 = document.createElement('form');
+		var objs2;
+		objs2 = document.createElement('input');
+		objs2.setAttribute('type', 'hidden');
+		objs2.setAttribute('name', 'name');
+		objs2.setAttribute('value', 'overview');
+		form2.appendChild(objs2);
+		
+		objs2 =null;
+		objs2 = document.createElement('input');
+		objs2.setAttribute('type', 'hidden');
+		objs2.setAttribute('name', 'title');
+		objs2.setAttribute('value', 'OverView');
+		form2.appendChild(objs2);
+		
+		form2.setAttribute('method', 'post');
+		form2.setAttribute('action', '/overview');
+		document.body.appendChild(form2);
+		form2.submit();
+	</script>
+</th:block>
+</html>
+</html>

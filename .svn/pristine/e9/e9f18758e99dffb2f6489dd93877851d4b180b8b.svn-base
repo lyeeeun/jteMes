@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.basMgt.operMgt.rlehoMgt.NewRlehoMgtMapper">
+
+	<sql id="place_children">
+			place.place_id			AS placeId,
+			place.place_nm			AS placeNm,
+			place.place_parent		AS placeParent,
+			place.place_manager		AS placeManager,
+			place.place_seq			AS placeSeq,
+			place.place_std01		AS placeStd01,
+			place.place_std02		AS placeStd02,
+			place.place_str_std01	AS placeStrStd01,
+			place.place_str_std02	AS placeStrStd02,
+			place.created_at		AS createdAt,
+			place.updated_at		AS updatedAt,
+			place.creator_id		AS creatorId,
+			place.updator_id		AS updatorId,
+			place.description		AS DESCRIPTION,
+			place.is_use			AS isUse,
+			urInfo.user_nm			AS placeManagerNm,
+			IF((SELECT COUNT(1)FROM bc_place_info child  WHERE child.place_parent = place.place_id) > 0 ,TRUE,FALSE) AS hasChildren
+		FROM bc_place_info place
+		LEFT OUTER JOIN mb_user_info urInfo ON place.place_manager = urInfo.user_id
+		WHERE 1=1 
+		
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="placeStrStd01 != null and placeStrStd01 != '' ">
+			AND place_str_std01 = #{placeStrStd01}
+		</if>
+		<if test="placeStrStd02 != null and placeStrStd02 != '' ">
+			AND place_str_std02 = #{placeStrStd02}
+		</if>
+		<if test="placeParent != null and placeParent != '' ">
+			AND place_parent = #{placeParent}
+		</if>
+	</sql>
+	
+	<!--트리조회 -->
+	<select id="selectPlaceTree"
+	parameterType="jin.mes.cform.basMgt.operMgt.rlehoMgt.NewRlehoMgtDto"
+		resultType="jin.mes.cform.basMgt.operMgt.rlehoMgt.NewRlehoMgtDto">
+		SELECT	
+		<include refid="place_children" />
+		AND place.place_parent = IFNULL(#{placeId},'')
+		ORDER BY placeSeq asc
+	</select>
+	
+	
+	<!-- 위치 조회 List -->
+	<select id="selectPlaceList"
+	parameterType="jin.mes.cform.basMgt.operMgt.rlehoMgt.NewRlehoMgtDto"
+		resultType="jin.mes.cform.basMgt.operMgt.rlehoMgt.NewRlehoMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY placeSeq asc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="place_children" />
+					AND place.place_parent = IFNULL(#{placeParent},'')
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 위치 조회 Count-->
+	<select id="selectPlaceListCount"
+	parameterType="jin.mes.cform.basMgt.operMgt.rlehoMgt.NewRlehoMgtDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="place_children" />
+					AND place.place_parent = IFNULL(#{placeParent},'')
+				)c_table
+	</select>
+	
+	<!-- 위치 조회  페이징 없음 -->
+	<select id="selectPlaceListAll"
+	parameterType="jin.mes.cform.basMgt.operMgt.rlehoMgt.NewRlehoMgtDto"
+		resultType="jin.mes.cform.basMgt.operMgt.rlehoMgt.NewRlehoMgtDto">
+				SELECT 
+					<include refid="place_children" />
+					ORDER BY placeSeq asc
+	</select>
+	
+	<!-- 위치 입력 -->
+	<insert id="insertPlaceInfo" parameterType="jin.mes.cform.basMgt.operMgt.rlehoMgt.NewRlehoMgtDto">
+		<selectKey keyProperty="placeId" resultType="java.lang.String" order="BEFORE">
+			select CREATE_PK('PLE') as placeId
+		</selectKey>
+		INSERT INTO bc_place_info(
+			place_id,
+			place_nm,
+			place_parent,
+			place_manager,
+			place_seq,
+			place_std01,
+			place_std02,
+			place_str_std01,
+			place_str_std02,
+			created_at,
+			updated_at,
+			creator_id,
+			updator_id,
+			description,
+			is_use
+		)VALUES(
+			#{placeId},
+			#{placeNm},
+			#{placeParent},
+			#{placeManager},
+			#{placeSeq},
+			#{placeStd01},
+			#{placeStd02},
+			#{placeStrStd01},
+			#{placeStrStd02},
+			NOW(),
+			NOW(),
+			#{creatorId},
+			#{updatorId},
+			#{description},
+			TRUE
+		)
+	</insert>
+	
+	<!-- 위치수정 -->
+	<update id="updatePlaceInfo" parameterType="jin.mes.cform.basMgt.operMgt.rlehoMgt.NewRlehoMgtDto">
+		UPDATE bc_place_info
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="placeNm != null">
+				,place_nm = #{placeNm}
+			</if>
+			<if test="placeManager != null">	
+				,place_manager = #{placeManager}
+			</if>	
+			<if test="description != null">	
+				,description = #{description}
+			</if>
+			<if test="placeSeq != null">	
+				,place_seq = #{placeSeq}
+			</if>
+			<if test="placeStd01 != null">	
+				,place_std01 = #{placeStd01}
+			</if>
+			<if test="placeStd02 != null">	
+				,place_std02 = #{placeStd02}
+			</if>
+			<if test="placeStrStd01 != null">	
+				,place_str_std01 = #{placeStrStd01}
+			</if>
+			<if test="placeStrStd02 != null">	
+				,place_str_std02 = #{placeStrStd02}
+			</if>
+			<if test="isUse != null">
+				,is_use = #{isUse}
+			</if>
+		WHERE place_id = #{placeId}
+	</update>
+	
+	<!-- 위치삭제 -->
+	<delete id="deletePlaceInfo" parameterType="jin.mes.cform.basMgt.operMgt.rlehoMgt.NewRlehoMgtDto">
+		DELETE FROM bc_place_info
+		WHERE place_id = #{placeId}
+	</delete>
+</mapper>

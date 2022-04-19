@@ -1,0 +1,23 @@
+
+/**20.12.21 YUMI 메인 화면 검색 영역 항목별 여백 추가 **/
+.shipMgtForm.search-btn-area .nc-pro-title {
+	margin-left: 5px;
+}
+
+/**20.12.21 YUMI 메인 그리드 체크박스 중앙 정렬**/
+.shipMgtForm .k-grid th:first-child,
+.shipMgtForm .k-grid td:first-child {
+	text-align: center;
+}
+
+/**20.12.21 YUMI 메인 그리드 수정, 조회 버튼 중앙 정렬**/
+.shipMgtForm .k-grid td:nth-child(2),
+.shipMgtForm .k-grid td:nth-child(12) {
+	text-align: center;
+}
+
+/**20.12.21 YUMI 출하 정보 등록 팝업 체크박스 중앙 정렬**/
+#shipInfo #jtePopForm_grid.k-grid th:first-child,
+#shipInfo #jtePopForm_grid.k-grid td:first-child {
+	text-align: center;	
+}

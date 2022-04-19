@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.form.basMgt.menuMgt.menuInfo.MenuInfoMapper">
+
+	<sql id="menu_children">
+			menu.menu_id				AS menuId, 
+			menu.dupl_yn 				AS duplYn, 
+			menu.is_del					AS isDel, 
+			menu.is_lock				AS isLock, 
+			menu.menu_cd				AS menuCd, 
+			menu.menu_nm				AS menuNm, 
+			menu.menu_seq				AS menuSeq, 
+			menu.msg_id					AS msgId, 
+			menu.svc_url				AS svcUrl, 
+			menu.up_menu_id				AS ReportsTo,
+			menu.up_menu_id				AS upMenuId, 
+			menu.view_url				AS viewUrl,
+			menu.created_at				AS createdAt, 
+			menu.updated_at				AS updatedAt, 
+			menu.creator_id				AS creatorId, 
+			menu.updator_id				AS updatorId, 
+			menu.description			AS DESCRIPTION,
+			menu.menu_std01				AS menuStd01,
+			menu.menu_std02				AS menuStd02,
+			menu.menu_std03				AS menuStd03,
+			menu.menu_std04				AS menuStd04,
+			menu.menu_std05				AS menuStd05,
+			menu.menu_std_str01			AS menuStdStr01,
+			menu.menu_std_str02			AS menuStdStr02,
+			menu.menu_std_str03			AS menuStdStr03,
+			menu.menu_std_str04			AS menuStdStr04,
+			menu.menu_std_str05			AS menuStdStr05,
+			IF((SELECT COUNT(1)FROM cw_menu_bas child  WHERE child.up_menu_id = menu.menu_id) > 0 ,TRUE,FALSE) AS hasChildren
+		FROM cw_menu_bas menu
+		WHERE up_menu_id = IFNULL(#{menuId},'')
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="menuCd != null and menuCd != '' ">
+			AND menu_cd  = #{menuCd}
+		</if>
+		
+	</sql>
+	
+	<!--트리조회 -->
+	<select id="selectMenuTree"
+	parameterType="jin.mes.form.basMgt.menuMgt.menuInfo.MenuInfoDto"
+		resultType="jin.mes.form.basMgt.menuMgt.menuInfo.MenuInfoDto">
+		SELECT	
+		<include refid="menu_children" />
+		ORDER BY menuSeq ASC
+	</select>
+	
+	
+	<!-- 메뉴 조회 List -->
+	<select id="selectMenuList"
+	parameterType="jin.mes.form.basMgt.menuMgt.menuInfo.MenuInfoDto"
+		resultType="jin.mes.form.basMgt.menuMgt.menuInfo.MenuInfoDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY menuSeq ASC) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="menu_children" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 메뉴 조회 Count-->
+	<select id="selectMenuListCount"
+	parameterType="jin.mes.form.basMgt.menuMgt.menuInfo.MenuInfoDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="menu_children" />
+				)c_table
+	</select>
+	
+	<!-- 메뉴 입력 -->
+	<insert id="insertMenuInfo" parameterType="jin.mes.form.basMgt.menuMgt.menuInfo.MenuInfoDto">
+		INSERT INTO cw_menu_bas(
+			menu_id,
+			up_menu_id,
+			menu_nm,
+			msg_id,
+			menu_cd,	
+			menu_seq,
+			svc_url,
+			view_url,
+			dupl_yn,
+			is_lock	,
+			is_del,
+			description,
+			creator_id,	
+			created_at,
+			updator_id,	
+			updated_at,
+			menu_std01,
+			menu_std02,
+			menu_std03,
+			menu_std04,
+			menu_std05,
+			menu_std_str01,
+			menu_std_str02,
+			menu_std_str03,
+			menu_std_str04,
+			menu_std_str05
+			
+		)VALUES(
+			#{menuId},
+			#{upMenuId},
+			#{menuNm},
+			#{msgId},
+			#{menuCd},
+			#{menuSeq},
+			#{svcUrl},
+			#{svcUrl},
+			#{duplYn},
+			FALSE,
+			FALSE,
+			#{description},
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			NOW(),
+			#{menuStd01},
+			#{menuStd02},
+			#{menuStd03},
+			#{menuStd04},
+			#{menuStd05},
+			#{menuStdStr01},
+			#{menuStdStr02},
+			#{menuStdStr03},
+			#{menuStdStr04},
+			#{menuStdStr05}
+		)
+	</insert>
+	
+	<!-- 메뉴수정 -->
+	<update id="updateMenuInfo" parameterType="jin.mes.form.basMgt.menuMgt.menuInfo.MenuInfoDto">
+		UPDATE cw_menu_bas
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="menuNm != null">
+				,menu_nm = #{menuNm}
+			</if>
+			<if test="menuSeq != null">	
+				,menu_seq = #{menuSeq}
+			</if>	
+			<if test="svcUrl != null">	
+				,svc_url = #{svcUrl}
+			</if>
+			<if test="svcUrl != null">	
+				,view_url = #{svcUrl}
+			</if>
+			<if test="duplYn != null">	
+				,dupl_yn = #{duplYn}
+			</if>
+			<if test="isLock != null">	
+				,is_lock = #{isLock}
+			</if>
+			<if test="isDel != null">	
+				,is_del = #{isDel}
+			</if>
+			<if test="description != null">	
+				,description = #{description}
+			</if>
+			<if test="menuStd01 != null">
+				,menu_std01 = #{menuStd01}
+			</if>
+			<if test="menuStd02 != null">
+				,menu_std02 = #{menuStd02}
+			</if>
+			<if test="menuStd03 != null">
+				,menu_std03 = #{menuStd03}
+			</if>
+			<if test="menuStd04 != null">
+				,menu_std04 = #{menuStd04}
+			</if>
+			<if test="menuStd05 != null">
+				,menu_std05 = #{menuStd05}
+			</if>
+			<if test="menuStdStr01 != null">
+				,menu_std_str01 = #{menuStdStr01}
+			</if>
+			<if test="menuStdStr02 != null">
+				,menu_std_str02 = #{menuStdStr02}
+			</if>
+			<if test="menuStdStr03 != null">
+				,menu_std_str03 = #{menuStdStr03}
+			</if>
+			<if test="menuStdStr04 != null">
+				,menu_std_str04 = #{menuStdStr04}
+			</if>
+			<if test="menuStdStr05 != null">
+				,menu_std_str05 = #{menuStdStr05}
+			</if>
+			
+		WHERE menu_id = #{menuId}
+	</update>
+</mapper>

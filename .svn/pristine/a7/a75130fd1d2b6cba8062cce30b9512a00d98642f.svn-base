@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.mapper.mtrl.sparePartsMgt.SparePartsMgtMapper">
+	<!-- 설비정보 -->
+	<sql id="toolInfo_base">
+			toolInfo.tool_id		AS toolId, 
+			toolInfo.tool_nm     	AS toolNm, 
+			toolInfo.tool_type   	AS toolType,
+			toolInfo.tool_dc		AS toolDc,
+			toolInfo.tool_price  	AS toolPrice, 
+			toolInfo.tool_limit  	AS toolLimit, 
+			toolInfo.tool_desc   	AS toolDesc,
+			toolInfo.is_use      	AS isUse, 
+			toolInfo.creator_id  	AS creatorId, 
+			toolInfo.created_at  	AS createdAt,
+			toolInfo.updator_id  	AS updatorId,
+			toolInfo.updated_at  	AS updatedAt,
+			COUNT(toolInfo.tool_id) AS toolCount
+		FROM bc_tool_info AS toolInfo
+		LEFT OUTER JOIN cm_tool_mgt  AS toolMgt ON toolMgt.tool_id = toolInfo.tool_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="toolType != null and toolType != '' ">
+			AND toolInfo.tool_type = #{toolType}
+		</if>
+		<if test="toolId != null and toolId != '' ">
+			AND toolInfo.tool_id = #{toolId}
+		</if>
+		<if test="isUse != null and isUse != '' ">
+			AND toolInfo.is_use = #{isUse}
+		</if>
+		GROUP BY toolMgt.tool_id
+	</sql>
+
+	
+	<!-- 설비정보(Page) select -->
+	<select id="selectToolInfoList"
+		parameterType="jin.mes.form.mtrl.sparePartsMgt.SparePartsMgtDto"
+		resultType="jin.mes.form.mtrl.sparePartsMgt.SparePartsMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="toolInfo_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 설비정보 Count -->
+	<select id="selectToolInfoCount"
+		parameterType="jin.mes.form.mtrl.sparePartsMgt.SparePartsMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="toolInfo_base" />
+				)c_table
+	</select>
+</mapper>

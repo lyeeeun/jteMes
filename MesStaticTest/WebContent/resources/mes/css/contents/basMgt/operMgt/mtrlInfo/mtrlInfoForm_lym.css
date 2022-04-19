@@ -1,0 +1,125 @@
+@CHARSET "UTF-8";
+
+/**200427 CSS 파일 생성_LYM**/
+
+.k-grid-toolbar .jte-search-aria #jteSingleGrid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.k-grid-toolbar .jte-search-aria #jtePopForm_grid_shSelTxt {
+	margin-left: 5px;
+	margin-right: 3px;
+}
+
+.mtrlInfoForm {
+	margin-top: 0.8em;
+}
+
+.mtrlInfoForm .center-input {
+	width: 100%;
+}
+
+.mtrlInfoForm .center-input.btn-input{
+	width: 100%;
+}
+
+
+.mtrlInfoForm .col-left-title {
+	width: 17%;
+}
+
+.mtrlInfoForm .col-left-content {
+	width: 30%;
+}
+
+.mtrlInfoForm .col-right-title {
+	width: 23%;
+}
+
+.mtrlInfoForm .col-right-content {
+	width: 30%;
+}
+
+.mtrlInfoForm .grid-content {
+	width: 100%;
+}
+
+.jte-search-aria .input.k-textbox{
+	margin-left: 0.4em;
+	margin-right: 0.4em;
+}
+
+.mtrlInfoForm .k-listbox {
+    box-sizing: border-box;
+    height: 300px;
+    /** listbox inline 표시 위해_gwpark **/
+    display: inline-flex; 
+    margin-top: 2%;
+}
+
+.mtrlInfoForm .k-numerictextbox .k-numeric-wrap .k-input {
+	padding: 4px 0px;
+}
+
+.mtrlInfoForm .k-listbox.k-listbox-toolbar-right .k-listbox-toolbar {
+    margin-left: 8px;
+    margin-right: 4px; /* 200409 툴바 양옆으로 마진 부여_LYM */
+}
+
+.mtrlInfoForm .jte-msgBox {
+	width: 100%;
+	text-align: center;
+	float: right
+}
+
+.mtrlInfoForm .jtePopAddForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.mtrlInfoForm .jtePopForm_master {
+	width: 100%;
+	padding-left: 3.5%;
+	padding-right: 3.5%;
+}
+
+.mtrlInfoForm .jtePopForm_master th {
+	text-align: left;	
+}
+
+.mtrlInfoForm .jtePopForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.mtrlInfoForm .left-caret:before {
+	padding-left: 40px;
+}
+
+.mtrlInfoForm .left-input {
+	width: 100%;
+}
+
+.mtrlInfoForm .jtePopAddForm_master td {
+	padding-top: .45em;
+	padding-bottom: .45em;
+}
+
+.mtrlInfoForm .right-input {
+	width: 100%;
+	float: right;
+}
+
+#jtePopForm_grid .k-grid-toolbar {
+	padding: .22em .2em .28em;
+}
+
+#jtePopForm_grid td {
+	padding: .4em .6em;	
+}
+
+.mtrlInfoForm .final-btn-area {
+	margin-top: 11px;
+}
