@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompMgtMapper">
+
+	<!-- 업체정보 -->
+	<sql id="comp_base">
+			compInfo.comp_id		AS compId,
+			compInfo.comp_nm		AS compNm,
+			compInfo.comp_managr	AS compManagr,
+			compInfo.comp_number	AS compNumber,
+			compInfo.comp_type		AS compType,
+			compInfo.comp_addr		AS compAddr,
+			compInfo.created_at		AS createdAt,
+			compInfo.updated_at		AS updatedAt,
+			compInfo.creator_id		AS creatorId,
+			compInfo.updator_id		AS updatorId,
+			compInfo.description	AS description,
+			compInfo.is_use			AS isUse,
+			compInfo.comp_std01		AS compStd01,
+			compInfo.comp_std02		AS compStd02,
+			compInfo.comp_std03		AS compStd03,
+			compInfo.comp_std04		AS compStd04,
+			compInfo.comp_std05		AS compStd05,
+			compInfo.comp_std_str01		AS compStdStr01,
+			compInfo.comp_std_str02		AS compStdStr02,
+			compInfo.comp_std_str03		AS compStdStr03,
+			compInfo.comp_std_str04		AS compStdStr04,
+			compInfo.comp_std_str05		AS compStdStr05
+			
+			<if test="mtrlId != null and mtrlId != '' ">
+				,rtlMtrl.mtrl_id			AS mtrlId
+			</if>
+			<if test="toolId != null and toolId != '' ">
+				,rtlTool.tool_id			AS toolId
+			</if>
+		FROM bc_company_info compInfo
+		<if test="mtrlId != null and mtrlId != '' ">
+			LEFT OUTER JOIN bc_rtl_mtrl_comp rtlMtrl ON rtlMtrl.comp_id = compInfo.comp_id
+		</if>
+		<if test="toolId != null and toolId != '' ">
+			LEFT OUTER JOIN bc_rtl_tool_comp rtlTool ON rtlTool.comp_id = compInfo.comp_id
+		</if>
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="compType != null and compType != '' ">
+			AND compInfo.comp_type = #{compType}
+		</if>
+		<if test="compId != null and compId != '' ">
+			AND compInfo.comp_id = #{compId}
+		</if>
+		<if test="isUse != null and isUse != '' ">
+			AND compInfo.is_use = #{isUse}
+		</if>
+		<if test="mtrlId != null and mtrlId != '' ">
+			AND rtlMtrl.mtrl_id = #{mtrlId}
+		</if>
+		<if test="toolId != null and toolId != '' ">
+			AND rtlTool.tool_id = #{toolId}
+		</if>
+	</sql>
+	
+	<!-- 업체주소 -->
+	<sql id="comp_addr">
+			compAddr.comp_id			AS compId, 
+			compAddr.comp_addr_id		AS compAddrId, 
+			compAddr.comp_addr_detail	AS compAddrDetail, 
+			compAddr.comp_addr_user		AS compAddrUser, 
+			compAddr.comp_addr_number	AS compAddrNumber, 
+			compAddr.comp_desc			AS compDesc, 
+			compAddr.created_at			AS createdAt, 
+			compAddr.updated_at			AS updatedAt, 
+			compAddr.creator_id			AS creatorId, 
+			compAddr.updator_id			AS updatorId, 
+			compAddr.is_use				AS isUse
+		FROM bc_company_addr compAddr 
+		WHERE compAddr.comp_id = #{compId}
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="compAddrId != null and compAddrId != '' ">
+			AND compAddr.comp_addr_id = #{compAddrId}
+		</if>
+		<if test="isUse != null and isUse != '' ">
+			AND compAddr.is_use = #{isUse}
+		</if>
+	</sql>
+	
+	<!-- 업체정보(Page) select -->
+	<select id="selectCompList"
+		parameterType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompMgtDto"
+		resultType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="comp_base" />
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 업체정보 Count -->
+	<select id="selectCompCount"
+		parameterType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="comp_base" />
+				)c_table
+	</select>
+	
+	<!-- 업체정보 팝업 조회  -->
+	<select id="selectCompPop"
+		parameterType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompMgtDto"
+		resultType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompMgtDto">
+		SELECT 
+		<include refid="comp_base" />
+	</select>
+	
+	<!-- 업체 입력 -->
+	<insert id="insertCompInfo" parameterType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompMgtDto">
+	<selectKey keyProperty="compId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('COP') AS compId
+	</selectKey>
+		INSERT INTO bc_company_info(
+			comp_id, 
+			comp_nm,
+			comp_managr, 
+			comp_number, 
+			comp_type, 
+			comp_addr, 
+			DESCRIPTION,
+			creator_id, 
+			created_at, 
+			updator_id, 
+			updated_at, 
+			is_use,
+			comp_std01,
+			comp_std02,
+			comp_std03,
+			comp_std04,
+			comp_std05,
+			comp_std_str01,
+			comp_std_str02,
+			comp_std_str03,
+			comp_std_str04,
+			comp_std_str05
+		)VALUES(
+			#{compId},
+			#{compNm},
+			#{compManagr}, 
+			#{compNumber}, 
+			#{compType},
+			#{compAddr},
+			#{description}, 
+			#{creatorId},
+			NOW(), 
+			#{updatorId},
+			NOW(),
+			TRUE,
+			#{compStd01},
+			#{compStd02},
+			#{compStd03},
+			#{compStd04},
+			#{compStd05},
+			#{compStdStr01},
+			#{compStdStr02},
+			#{compStdStr03},
+			#{compStdStr04},
+			#{compStdStr05}
+		)
+	</insert>
+	
+	<!-- 위치수정 -->
+	<update id="updateCompInfo" parameterType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompMgtDto">
+		UPDATE bc_company_info
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="compStd01 != null">
+				,comp_std01 = #{compStd01}
+			</if>
+			<if test="compStd02 != null">
+				,comp_std02 = #{compStd02}
+			</if>
+			<if test="compStd03 != null">
+				,comp_std03 = #{compStd03}
+			</if>
+			<if test="compStd04 != null">
+				,comp_std04 = #{compStd04}
+			</if>
+			<if test="compStd05 != null">
+				,comp_std05 = #{compStd05}
+			</if>
+			<if test="compStdStr01 != null">
+				,comp_std_str01 = #{compStdStr01}
+			</if>
+			<if test="compStdStr02 != null">
+				,comp_std_str02 = #{compStdStr02}
+			</if>
+			<if test="compStdStr03 != null">
+				,comp_std_str03 = #{compStdStr03}
+			</if>
+			<if test="compStdStr04 != null">
+				,comp_std_str04 = #{compStdStr04}
+			</if>
+			<if test="compStdStr05 != null">
+				,comp_std_str05 = #{compStdStr05}
+			</if>
+			<if test="compNm != null">	
+				,comp_nm = #{compNm}
+			</if>
+			<if test="compManagr != null">	
+				,comp_managr = #{compManagr}
+			</if>
+			<if test="compNumber != null">	
+				,comp_number = #{compNumber}
+			</if>
+			<if test="compType != null">	
+				,comp_type = #{compType}
+			</if>
+			<if test="compAddr != null">	
+				,comp_addr = #{compAddr}
+			</if>
+			<if test="description != null">	
+				,description = #{description}
+			</if>
+			<if test="isUse != null">	
+				,is_use = #{isUse}
+			</if>
+		WHERE comp_id = #{compId}
+	</update>
+	
+	<!-- 위치삭제 -->
+	<delete id="deleteCompInfo" parameterType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompMgtDto">
+		DELETE FROM bc_company_info
+		WHERE comp_id = #{compId}
+	</delete>
+	
+	<!-- 업체상세주소 select -->
+	<select id="selectCompAddrList"
+		parameterType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompAddrDto"
+		resultType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompAddrDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="comp_addr" />
+			)s_table
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<!-- 업체상세주소 Count -->
+	<select id="selectCompAddrCount"
+		parameterType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompAddrDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="comp_addr" />
+				)c_table
+	</select>
+
+	<!-- 업체상세주소 select -->
+	<select id="selectCompChild"
+		parameterType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompAddrDto"
+		resultType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompAddrDto">
+		SELECT
+		'K'				AS	action, 
+		<include refid="comp_addr" />
+	</select>
+	<!-- 업체 입력 -->
+	<insert id="insertCompAddrInfo" parameterType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompAddrDto">
+	<selectKey keyProperty="compAddrId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('COPADR') AS compId
+	</selectKey>
+		INSERT INTO bc_company_addr(
+			comp_id, 
+			comp_addr_id, 
+			comp_addr_detail, 
+			comp_addr_user, 
+			comp_addr_number, 
+			comp_desc, 
+			created_at, 
+			updated_at, 
+			creator_id, 
+			updator_id, 
+			is_use
+		)VALUES(
+			#{compId}, 
+			#{compAddrId}, 
+			#{compAddrDetail}, 
+			#{compAddrUser}, 
+			#{compAddrNumber}, 
+			#{compDesc}, 
+			NOW(),
+			NOW(), 
+			#{creatorId}, 
+			#{updatorId}, 
+			TRUE
+		)
+	</insert>
+	
+	<!-- 위치수정 -->
+	<update id="updateCompAddrInfo" parameterType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompAddrDto">
+		UPDATE bc_company_addr
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="compAddrDetail != null">
+				,comp_addr_detail = #{compAddrDetail}
+			</if>
+			<if test="compAddrUser != null">	
+				,comp_addr_user = #{compAddrUser}
+			</if>	
+			<if test="compAddrNumber != null">	
+				,comp_addr_number = #{compAddrNumber}
+			</if>
+			<if test="compDesc != null">	
+				,comp_desc = #{compDesc}
+			</if>
+			<if test="isUse != null">	
+				,is_use = #{isUse}
+			</if>
+		WHERE comp_id = #{compId} AND comp_addr_id = #{compAddrId}
+	</update>
+	
+	<!-- 위치삭제 -->
+	<delete id="deleteCompAddrInfo" parameterType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompAddrDto">
+		DELETE FROM bc_company_addr
+		WHERE comp_id = #{compId} AND comp_addr_id = #{compAddrId}
+	</delete>
+
+	<!-- 업체 정보 조회(All) -->
+	<select id="selectAllCompList"
+		resultType="jin.mes.cform.basMgt.operMgt.compMgt.KwangjinCompMgtDto">
+		SELECT
+		<include refid="comp_base" />
+	</select>
+
+</mapper>

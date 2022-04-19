@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.facilMgt.facilCorMgt.KwangjinFacilCorMgtMapper">
+
+	<!-- 설비 정비이력 -->
+	<sql id="eqmtMtnc_base">
+			eqmtMtnc.eqmt_mtnc_id		AS eqmtMtncId,
+			eqmtMtnc.eqmt_mtnc_start	AS eqmtMtncStart,
+			eqmtMtnc.eqmt_mtnc_end		AS eqmtMtncEnd,
+			eqmtMtnc.eqmt_mtnc_user		AS eqmtMtncUser,
+			eqmtMtnc.eqmt_mtnc_cost		AS eqmtMtncCost,
+			eqmtMtnc.eqmt_mtnc_desc		AS eqmtMtncDesc,
+			eqmtMtnc.creator_id			AS creatorId,
+			eqmtMtnc.created_at			AS createdAt,
+			eqmtMtnc.updator_id			AS updatorId,
+			eqmtMtnc.updated_at			AS updatedAt,
+			eqmtMtnc.eqmt_mgt_id		AS eqmtMgtId,
+			eqmtMgt.eqmt_mgt_nm			AS eqmtMgtNm,
+			urInfo.user_nm				AS eqmtMtncUserNm
+		FROM his_equipment_maintenance eqmtMtnc
+		LEFT OUTER JOIN bc_equipment_mgt eqmtMgt ON eqmtMgt.eqmt_mgt_id = eqmtMtnc.eqmt_mgt_id
+		LEFT OUTER JOIN mb_user_info urInfo ON eqmtMtnc.eqmt_mtnc_user = urInfo.user_id
+		WHERE 1=1
+		<if test="eqmtMtncId != null and eqmtMtncId != '' ">
+			AND eqmtMtnc.eqmt_mtnc_id = #{eqmtMtncId}
+		</if>
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="searchStartDate != null and searchStartDate != '' and searchEndDate != null and searchEndDate != '' ">
+			AND DATE_FORMAT(eqmtMtnc.created_at,'%Y-%m-%d') between #{searchStartDate} AND #{searchEndDate}
+		</if>
+	</sql>
+	
+		<!-- 설비 정비이력(Page) select -->
+	<select id="selectEqmtMtncList"
+		parameterType="jin.mes.cform.facilMgt.facilCorMgt.KwangjinFacilCorMgtDto"
+		resultType="jin.mes.cform.facilMgt.facilCorMgt.KwangjinFacilCorMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="eqmtMtnc_base" />
+			)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+
+	<!-- 설비 정비이력Count -->
+	<select id="selectEqmtMtncCount"
+		parameterType="jin.mes.cform.facilMgt.facilCorMgt.KwangjinFacilCorMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="eqmtMtnc_base" />
+				)c_table
+	</select>
+	
+	<!-- 설비 정비이력 입력 -->
+	<insert id="insertEqmtMtnc" parameterType="jin.mes.cform.facilMgt.facilCorMgt.KwangjinFacilCorMgtDto">
+		<selectKey keyProperty="eqmtMtncId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('MTENC') AS eqmtMtncId
+		</selectKey>
+		INSERT INTO his_equipment_maintenance(
+			eqmt_mtnc_id,
+			eqmt_mtnc_start,
+			eqmt_mtnc_end,
+			eqmt_mtnc_user,
+			eqmt_mtnc_cost,
+			eqmt_mtnc_desc,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at,
+			eqmt_mgt_id
+		)VALUES(
+			#{eqmtMtncId},
+			#{eqmtMtncStart},
+			#{eqmtMtncEnd},
+			#{eqmtMtncUser},
+			#{eqmtMtncCost},
+			#{eqmtMtncDesc},
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			NOW(),
+			#{eqmtMgtId}
+		)
+	</insert>
+	
+	<!-- 설비 정비이력 수정 -->
+	<update id="updateEqmtMtnc" parameterType="jin.mes.cform.facilMgt.facilCorMgt.KwangjinFacilCorMgtDto">
+		UPDATE his_equipment_maintenance
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="eqmtMtncStart != null">	
+				,eqmt_mtnc_start = #{eqmtMtncStart}
+			</if>
+			<if test="eqmtMtncEnd != null">	
+				,eqmt_mtnc_end = #{eqmtMtncEnd}
+			</if>
+			<if test="eqmtMtncUser != null">	
+				,eqmt_mtnc_user = #{eqmtMtncUser}
+			</if>
+			<if test="eqmtMtncCost != null">	
+				,eqmt_mtnc_cost = #{eqmtMtncCost}
+			</if>
+			<if test="eqmtMtncDesc != null">	
+				,eqmt_mtnc_desc = #{eqmtMtncDesc}
+			</if>
+		WHERE eqmt_mtnc_id  = #{eqmtMtncId}
+	</update>
+	
+	<!-- 설비 정비이력 삭제 -->
+	<delete id="deleteEqmtMtnc" parameterType="jin.mes.cform.facilMgt.facilCorMgt.KwangjinFacilCorMgtDto">
+		DELETE FROM his_equipment_maintenance
+		WHERE eqmt_mtnc_id  = #{eqmtMtncId}
+	</delete>
+	
+	
+	
+	<!--설비 가동시간 -->
+	<sql id="eqmtWork_base">
+			eqmtWork.eqmt_work_start	AS eqmtWorkStart,
+			eqmtWork.eqmt_work_end      AS eqmtWorkEnd,
+			eqmtWork.eqmt_mgt_id        AS eqmtMgtId
+		FROM his_equipment_work eqmtWork
+		WHERE eqmtWork.eqmt_mgt_id = #{eqmtMgtId} AND DATE_FORMAT(eqmt_work_start,'%Y-%m-%d') = DATE_FORMAT(#{eqmtWorkStart},'%Y-%m-%d')
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<!-- 설비 가동시간(Page) select -->
+	<select id="selectEqmtWorkList"
+		parameterType="jin.mes.cform.facilMgt.facilCorMgt.KwangjinFacilCorMgtDto"
+		resultType="jin.mes.cform.facilMgt.facilCorMgt.KwangjinFacilCorMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY eqmtWorkStart desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="eqmtWork_base" />
+			)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+
+	<!-- 설비 가동시간Count -->
+	<select id="selectEqmtWorkCount"
+		parameterType="jin.mes.cform.facilMgt.facilCorMgt.KwangjinFacilCorMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="eqmtWork_base" />
+				)c_table
+	</select>
+	
+	<!--설비가동시간, 설비종합효율 -->
+	<select id="selectEqmtOverall"
+		parameterType="jin.mes.cform.facilMgt.facilCorMgt.KwangjinFacilCorMgtDto"
+		resultType="jin.mes.cform.facilMgt.facilCorMgt.KwangjinFacilCorMgtDto">
+		SELECT
+			eqmt_mgt_id AS eqmtMgtId,
+			TIME_FORMAT(SEC_TO_TIME(SUM(TIMESTAMPDIFF(SECOND ,eqmt_work_start,eqmt_work_end))), '%H 시간 %i 분 %s 초') 		AS runTime,		-- 총 가동시간
+			SUM(((24*60*60)-(24*60*60 - TIMESTAMPDIFF(SECOND ,eqmt_work_start,eqmt_work_end)))/(24*60*60))					AS eqmtPercent	-- 총 종합효율
+		FROM his_equipment_work eqmtWork
+		WHERE eqmtWork.eqmt_mgt_id = #{eqmtMgtId} AND DATE_FORMAT(eqmt_work_start,'%Y-%m-%d') = DATE_FORMAT(#{eqmtWorkStart},'%Y-%m-%d')
+		GROUP BY eqmt_mgt_id
+	</select>
+	
+	<!-- 설비 정비이력 입력 -->
+	<insert id="insertEqmtWork" parameterType="jin.mes.cform.facilMgt.facilCorMgt.KwangjinFacilCorMgtDto">
+		INSERT INTO his_equipment_work(
+			prod_work_id,
+			eqmt_work_start,
+			eqmt_work_end,
+			eqmt_mgt_id
+		)VALUES(
+			#{prodWorkId},
+			#{eqmtWorkStart},
+			#{eqmtWorkEnd},
+			#{eqmtMgtId}
+		)
+	</insert>
+	
+	<!-- 설비 정비이력 수정 -->
+	<update id="updateEqmtWork" parameterType="jin.mes.cform.facilMgt.facilCorMgt.KwangjinFacilCorMgtDto">
+		UPDATE his_equipment_work
+		SET eqmt_mgt_id = eqmt_mgt_id
+			<if test="eqmtWorkStart != null">
+				,eqmt_work_start = #{eqmtWorkStart}
+			</if>
+			<if test="eqmtWorkEnd != null">
+				,eqmt_work_end = #{eqmtWorkEnd}
+			</if>
+		WHERE eqmt_mgt_id  = #{eqmtMgtId} AND prod_work_id = #{prodWorkId}
+	</update>
+</mapper>

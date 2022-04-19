@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+       
+    <!-- 
+    <bean id="dataSourceOri" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://123.142.10.99:3306/ccms?characterEncoding=euckr"/>
+        <property name="username" value="ccms"/>
+        <property name="password" value = "atos1989"/>
+        <property name="defaultAutoCommit" value = "false"/>
+    </bean>
+    -->
+    <!-- 접속정보 -->
+<!--     <bean id="dataSourceOri" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> -->
+<!--         <property name="driverClassName" value="com.tmax.tibero.jdbc.TbDriver"/> -->
+<!--         <property name="url" value="jdbc:tibero:thin:@123.142.10.107:8629:ccms"/> -->
+<!--         <property name="username" value="ATOS_MES"/> -->
+<!--         <property name="password" value="atos1989"/> -->
+<!--         <property name="defaultAutoCommit" value="false"/> -->
+<!--         <property name="minIdle" value="0"/> -->
+<!--         minIdle : 커넥션 풀에 유지되수 있는 idle 상태 커넥션의 최소 개수. (기본값 : 0) -->
+<!--         <property name="maxActive" value="-1"/> -->
+<!--         maxActive : 서비스에서 동시에 사용될수 있는 최대 커넥션 개수. (기본값 : 8)  -->
+<!--         <property name="maxIdle" value="1000"/> -->
+<!--         maxIdle : 커넥션 풀에서 유지될수 있는 idle 상태 커넥션의 최대 개수. (기본값 : 8) -->
+<!--     </bean> -->
+        <!-- 접속정보 -->
+ <bean id="dataSourceOri" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.mariadb.jdbc.Driver"/>
+        <property name="url" value="jdbc:mariadb://127.0.0.1:3306/JteDev"/>
+        <property name="username" value="testUser"/>
+        <property name="password" value="1q2w3e~!@"/>
+        <property name="defaultAutoCommit" value="false"/>
+        <property name="minIdle" value="0"/>
+        <!-- minIdle : 커넥션 풀에 유지되수 있는 idle 상태 커넥션의 최소 개수. (기본값 : 0) -->
+        <property name="maxActive" value="-1"/>
+        <!-- maxActive : 서비스에서 동시에 사용될수 있는 최대 커넥션 개수. (기본값 : 8)  -->
+        <property name="maxIdle" value="1000"/>
+        <!-- maxIdle : 커넥션 풀에서 유지될수 있는 idle 상태 커넥션의 최대 개수. (기본값 : 8) -->
+    </bean>
+    <bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+        <constructor-arg ref="dataSourceOri" />
+        <property name="logFormatter">
+            <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+                <property name="loggingType" value="MULTI_LINE" />
+                <property name="sqlPrefix" value="SQL : "/>
+            </bean>
+        </property>
+    </bean>
+</beans>

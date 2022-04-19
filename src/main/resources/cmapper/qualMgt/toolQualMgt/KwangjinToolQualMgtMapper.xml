@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.qualMgt.toolQualMgt.KwangjinToolQualMgtMapper">
+
+	<!-- 공구 관리정보 -->
+	<sql id="toolMgt_base">
+			toolMgt.tool_mgt_id 		AS toolMgtId,
+			toolMgt.tool_mgt_gbn 		AS toolMgtGbn,
+			toolMgt.tool_mgt_desc 		AS toolMgtDesc,
+			toolMgt.creator_id 			AS creatorId,
+			toolMgt.created_at 			AS createdAt,
+			toolMgt.updator_id 			AS updatorId,
+			toolMgt.updated_at 			AS updatedAt,
+			toolMgt.comp_id 			AS compId,
+			compInfo.comp_nm			AS compNm,
+			compInfo.comp_std_str02		AS compStdStr02,
+			compInfo.comp_number		AS compNumber,
+			toolMgt.is_del 				AS isDel,
+			
+			toolInfo.tool_id 			AS toolId,
+			toolInfo.tool_nm 			AS toolNm,
+			toolInfo.tool_type 			AS toolType,
+			toolInfo.tool_price 		AS toolPrice,
+			toolInfo.tool_limit 		AS toolLimit,
+			toolInfo.tool_desc 			AS toolDesc,
+			toolInfo.is_use 			AS isUse,
+			toolInfo.tool_std01  		AS toolStd01,
+			toolInfo.tool_std02  		AS toolStd02,
+			toolInfo.tool_std03  		AS toolStd03,
+			toolInfo.tool_std04  		AS toolStd04,
+			toolInfo.tool_std05  		AS toolStd05,
+			toolInfo.tool_std_str01  	AS toolStdStr01,
+			toolInfo.tool_std_str02  	AS toolStdStr02,
+			toolInfo.tool_std_str03  	AS toolStdStr03,
+			toolInfo.tool_std_str04  	AS toolStdStr04,
+			toolInfo.tool_std_str05  	AS toolStdStr05
+		FROM cm_tool_mgt toolMgt
+			LEFT OUTER JOIN bc_tool_info toolInfo ON toolMgt.tool_id = toolInfo.tool_id
+			LEFT OUTER JOIN bc_company_info compInfo ON toolMgt.comp_id = compInfo.comp_id
+		WHERE 1=1
+		AND toolInfo.tool_id = #{toolId}
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="toolMgtId != null and toolMgtId != '' ">
+			AND toolMgt.tool_mgt_id = #{toolMgtId}
+		</if>
+		<if test="toolType != null and toolType != '' ">
+			AND toolInfo.tool_type = #{toolType}
+		</if>
+		<if test="isUse != null and isUse != '' ">
+			AND toolInfo.is_use = #{isUse}
+		</if>
+		<if test="isDel != null">
+			AND toolMgt.is_del = #{isDel}
+		</if>
+	</sql>
+
+	<!-- 공구 관리정보(Page) select -->
+	<select id="selectToolMgtList"
+		parameterType="jin.mes.cform.qualMgt.toolQualMgt.KwangjinToolQualMgtDto"
+		resultType="jin.mes.cform.qualMgt.toolQualMgt.KwangjinToolQualMgtDto">
+		SELECT * FROM (
+		SELECT
+		<choose>
+			<when test="sort != null and sort != '' ">
+				ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+			</when>
+			<otherwise>
+				ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+			</otherwise>
+		</choose>
+		<include refid="toolMgt_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>
+	</select>
+
+	<!-- 공구 관리정보 Count -->
+	<select id="selectToolMgtCount"
+		parameterType="jin.mes.cform.qualMgt.toolQualMgt.KwangjinToolQualMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM (
+		SELECT
+		<include refid="toolMgt_base" />
+		)c_table
+	</select>
+	
+	
+	
+	<sql id="toolInfo_base">
+			toolInfo.tool_id 			AS toolId,
+			toolInfo.tool_nm 			AS toolNm,
+			toolInfo.tool_type 			AS toolType,
+			toolInfo.tool_price 		AS toolPrice,
+			toolInfo.tool_limit 		AS toolLimit,
+			toolInfo.tool_desc 			AS toolDesc,
+			toolInfo.is_use 			AS isUse,
+			toolInfo.creator_id 		AS creatorId,
+			toolInfo.created_at 		AS createdAt,
+			toolInfo.updator_id 		AS updatorId,
+			toolInfo.updated_at 		AS updatedAt,
+			toolInfo.tool_std01  		AS toolStd01,
+			toolInfo.tool_std02  		AS toolStd02,
+			toolInfo.tool_std03  		AS toolStd03,
+			toolInfo.tool_std04  		AS toolStd04,
+			toolInfo.tool_std05  		AS toolStd05,
+			toolInfo.tool_std_str01  	AS toolStdStr01,
+			toolInfo.tool_std_str02  	AS toolStdStr02,
+			toolInfo.tool_std_str03  	AS toolStdStr03,
+			toolInfo.tool_std_str04  	AS toolStdStr04,
+			toolInfo.tool_std_str05  	AS toolStdStr05
+		FROM bc_tool_info toolInfo
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="isUse != null and isUse != '' ">
+			AND toolInfo.is_use = #{isUse}
+		</if>
+	</sql>
+
+	<!-- (기준정보)공구정보 Select -->
+	<select id="selectToolInfoList"
+		parameterType="jin.mes.cform.qualMgt.toolQualMgt.KwangjinToolQualMgtDto"
+		resultType="jin.mes.cform.qualMgt.toolQualMgt.KwangjinToolQualMgtDto">
+		SELECT * FROM (
+		SELECT
+		<choose>
+			<when test="sort != null and sort != '' ">
+				ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+			</when>
+			<otherwise>
+				ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+			</otherwise>
+		</choose>
+		<include refid="toolInfo_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+		</if>
+	</select>
+
+	<!-- (기준정보)공구정보 Count -->
+	<select id="selectToolInfoCount"
+		parameterType="jin.mes.cform.qualMgt.toolQualMgt.KwangjinToolQualMgtDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM (
+		SELECT
+		<include refid="toolInfo_base" />
+		)c_table
+	</select>
+	
+
+	<!-- 검사정보 조회-->
+	<sql id="toolQual_base">
+			inspectInfo.inspect_id		AS inspectId,
+			inspectInfo.question_id		AS questionId,
+			inspectInfo.question_value	AS questionValue,
+			inspectInfo.target_id		AS targetId,
+			toolInfo.tool_nm			AS toolNm,
+			inspectInfo.inspect_date	AS inspectDate,
+			inspectInfo.inspector_id	AS inspectorId,
+			urInfo.user_nm				AS inspectorNm,
+			inspectInfo.category		AS category
+		FROM his_inspect_info inspectInfo
+			LEFT OUTER JOIN cm_tool_mgt toolMgt ON toolMgt.tool_mgt_id = inspectInfo.target_id
+			LEFT OUTER JOIN bc_tool_info toolInfo ON toolInfo.tool_id = toolMgt.tool_id
+			JOIN mb_user_info urInfo ON urInfo.user_id = inspectInfo.inspector_id
+		WHERE 1=1
+		AND inspectInfo.category = 'tool_inspect'
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="targetId != null and targetId != '' ">
+			AND inspectInfo.target_id = #{targetId}
+		</if>
+	</sql>
+	
+	<!-- 검사정보 (Page) Select -->
+	<select id="selectToolQualList"
+		parameterType="jin.mes.cform.qualMgt.toolQualMgt.KwangjinToolQualMgtDto"
+		resultType="jin.mes.cform.qualMgt.toolQualMgt.KwangjinToolQualMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY inspectDate desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="toolQual_base" />
+			)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+
+	<!--  검사정보(Page) Count -->
+	<select id="selectToolQualCount"
+		parameterType="jin.mes.cform.qualMgt.toolQualMgt.KwangjinToolQualMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="toolQual_base" />
+				)c_table
+	</select>
+	
+	<!-- 검사정보 등록 -->
+	<insert id="insertToolQual" parameterType="jin.mes.cform.qualMgt.toolQualMgt.KwangjinToolQualMgtDto">
+		<selectKey keyProperty="inspectId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('INSP') AS inspect_id
+		</selectKey>
+		INSERT INTO his_inspect_info(
+				inspect_id,
+				question_id,
+				question_value,
+				target_id,
+				inspect_date,
+				inspector_id,
+				category
+		)VALUES(
+				#{inspectId},
+				'toolCheck',
+				#{questionValue},
+				#{targetId},
+				#{inspectDate},
+				#{inspectorId},
+				'tool_inspect'
+		)
+	</insert>
+	
+	<!-- 검사정보 수정 -->
+	<update id="updateToolQual" parameterType="jin.mes.cform.qualMgt.toolQualMgt.KwangjinToolQualMgtDto">
+		UPDATE his_inspect_info
+			SET inspect_id = inspect_id
+				<if test="questionValue != null ">
+					,question_value = #{questionValue}
+				</if>
+				<if test="inspectDate != null ">
+					,inspect_date = #{inspectDate}
+				</if>
+				<if test="inspectorId != null ">
+					,inspector_id = #{inspectorId}
+				</if>
+		WHERE inspect_id = #{inspectId}
+	</update>
+	
+	<!-- 검사정보 삭제 -->
+	<delete id="deleteToolQual" parameterType="jin.mes.cform.qualMgt.toolQualMgt.KwangjinToolQualMgtDto">
+		DELETE FROM his_inspect_info
+		WHERE inspect_id = #{inspectId}
+	</delete>
+</mapper>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.perform.performOrderGrid.KwangjinPerformOrderGridMapper">
+	<sql id="performOrder_base">
+			itemInfo.item_id 													AS itemId, 
+			itemInfo.item_nm 													AS itemNm,
+			IFNULL(lotQty,0) 													AS itemOrderQty, 
+			IFNULL(itemAchieve,0) 												AS itemAchieveQty,
+			IFNULL(itemAchieve/lotQty*100,0)									AS itemAchieveRate,
+			IFNULL(IFNULL(SUM(itemAchieve),0)/SUM(lotQty)*100,0)				AS itemTotalGoodRate,
+			IFNULL((SUM(lotQty)-IFNULL(SUM(itemAchieve),0))/SUM(lotQty)*100,0)	AS itemTotalRemainRate
+		FROM bc_item_info itemInfo
+		LEFT JOIN (
+				SELECT 
+					lotInfo.item_id, 
+					SUM(lot_qty) AS lotQty,
+					qmItem.itemAchieve AS itemAchieve
+					
+				FROM prs_lot_info lotInfo
+
+				LEFT JOIN (
+						SELECT item_id, SUM(item_qty_total) itemAchieve
+						FROM qm_item_mgt
+						WHERE 1=1
+						AND item_qty_target != 'prod_tagt02'
+						GROUP BY item_id
+					) qmItem
+				ON lotInfo.item_id = qmItem.item_id
+
+				WHERE 1=1
+				GROUP BY lotInfo.item_id
+		) lotInfo
+		ON itemInfo.item_id = lotInfo.item_id
+		WHERE IFNULL(itemAchieve,0) > 0
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="itemId != null">
+			AND itemInfo.item_id = #{itemId}
+		</if>
+		GROUP BY itemInfo.item_id
+		HAVING 1=1
+	</sql>
+	
+	
+	<select id="selectPerformOrder"
+		parameterType="jin.mes.cform.perform.performOrderGrid.KwangjinPerformOrderGridDto"
+		resultType="jin.mes.cform.perform.performOrderGrid.KwangjinPerformOrderGridDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY itemAchieveRate desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="performOrder_base"></include>
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<select id="selectPerformOrderCount"
+	parameterType="jin.mes.cform.perform.performOrderGrid.KwangjinPerformOrderGridDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="performOrder_base"></include>
+		)c_table
+	</select>
+	
+<!-- 	
+	<sql id="lotDetail_base">
+		workInfo.routing_id AS routingId, 
+		userInfo.user_nm AS userNm, 
+		prod_work_qty AS prodWorkQty, 
+		prod_work_good AS prodWorkGood,
+		prod_work_bad as prodWorkBad, 
+		prod_work_good/prod_work_qty*100 as prodWorkGoodRate,
+		prod_work_bad/(prod_work_good+prod_work_bad)*100 as prodWorkBadRate,
+		(CASE WHEN prod_work_start is NULL THEN '임시대기'
+		WHEN (prod_work_start is not null and prod_work_end is null) THEN '작업중'
+		WHEN (prod_work_start is not null and prod_work_end is NOT null) THEN '작업완료'
+		 END) AS workState
+	FROM prs_work_info workInfo
+	INNER JOIN mb_user_info userInfo
+	ON workInfo.prod_work_user = userInfo.user_id
+	WHERE workInfo.lot_id = #{lotId}
+	<if test="searchText != null and searchText != '' ">
+	AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+	</if>
+	GROUP BY workInfo.prod_work_id
+	</sql>
+	
+	<select id="selectLotDetail"
+		parameterType="jin.mes.cform.perform.performOrderGrid.KwangjinPerformOrderGridDto"
+		resultType="jin.mes.cform.perform.performOrderGrid.KwangjinPerformOrderGridDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY routingId asc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="lotDetail_base"></include>
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<select id="selectLotDetailCount"
+	parameterType="jin.mes.cform.perform.performOrderGrid.KwangjinPerformOrderGridDto"
+		resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM(
+			SELECT
+			<include refid="lotDetail_base"></include>
+		)c_table
+	</select>
+	 -->
+</mapper>

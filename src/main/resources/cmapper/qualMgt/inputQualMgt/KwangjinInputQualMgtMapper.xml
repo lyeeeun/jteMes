@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.qualMgt.inputQualMgt.KwangjinInputQualMgtMapper">
+
+	<!-- 불량관리 - 자재 -->
+	<sql id="badMtrl_base">
+			badId,	
+			badCode,
+			badQty,
+			badFile,
+			chkUser,
+			chkUserNm,
+			chkDate,
+			badTarget,
+			badTargetCode,
+			badTargetNm,
+			badDesc,
+			mtrlId,
+			mtrlNm,
+			mtrlMgtId,
+			badPgUser,
+			badPgUserNm,
+			badPgDate,
+			badPgCd,
+			badPgNm
+		FROM(
+			SELECT -- 1. 자재 - 입고불량
+					bad.bad_id					AS badId, 			-- 불량아이디
+					bad.bad_code				AS badCode,			-- 불량코드(기초코드)
+					bad.bad_qty					AS badQty,			-- 불량수량
+					bad.bad_file				AS badFile,			-- 첨부파일
+					bad.chk_user				AS chkUser,			-- 불량등록자 아이디
+					badUser.user_nm				AS chkUserNm,		-- 불량등록자 이름
+					bad.chk_date				AS chkDate,			-- 불략확인일
+					bad.bad_target				AS badTarget,		-- 불량업무구분(기초코드)
+					bad.bad_target_code			AS badTargetCode,	-- 불량업무코드(대상ID매핑)
+					'' 							AS badTargetNm,		-- 개별주문에는 명칭이 없으므로 생략
+					bad.bad_desc				AS badDesc,			-- 불량설명
+					mtrlMgt.mtrl_id				AS mtrlId,			-- 자재 ID
+					mtrlInfo.mtrl_nm			AS mtrlNm,			-- 자재명
+					qmMtrl.mtrl_mgt_id			AS mtrlMgtId,		-- 자재상세ID
+					mtrlMgt.creator_id	 		AS badPgUser,		-- 발주 수령자 아이디
+					mtrlUser.user_nm			AS badPgUserNm,		-- 발주 수령자 이름
+					mtrlMgt.created_at	 		AS badPgDate,		-- 발주 수령일
+					mtrlMgt.mtrl_mgt_id			AS badPgCd,			-- 주문서 코드
+					''							AS badPgNm			-- 주문서 명
+					
+				FROM prs_bad_product bad
+				JOIN qm_mtrl_mgt qmMtrl ON qmMtrl.mtrl_qty_target_code = bad.bad_id AND qmMtrl.mtrl_qty_target = 'mtrl_tagt03'	-- 수량확인
+				LEFT OUTER JOIN cm_mtrl_mgt mtrlMgt ON mtrlMgt.mtrl_mgt_id = qmMtrl.mtrl_mgt_id	AND bad.bad_target_code = mtrlMgt.mtrl_mgt_id	-- 자재상세정보 확인
+				LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlInfo.mtrl_id = mtrlMgt.mtrl_id -- 자재마스터 확인
+				LEFT OUTER JOIN mb_user_info badUser ON badUser.user_id = bad.chk_user 			-- 불량등록자 확인
+				LEFT OUTER JOIN mb_user_info mtrlUser ON mtrlUser.user_id = mtrlMgt.creator_id 	-- 수량 확인자
+				
+			UNION
+			
+			SELECT -- 2. 자재 - 작업 불량
+					bad.bad_id					AS badId, 			-- 불량아이디
+					bad.bad_code				AS badCode,			-- 불량코드(기초코드)
+					bad.bad_qty					AS badQty,			-- 불량수량
+					bad.bad_file				AS badFile,			-- 첨부파일
+					bad.chk_user				AS chkUser,			-- 불량등록자 아이디
+					badUser.user_nm				AS chkUserNm,		-- 불량등록자 이름
+					bad.chk_date				AS chkDate,			-- 불략확인일
+					bad.bad_target				AS badTarget,		-- 불량업무구분(기초코드)
+					bad.bad_target_code			AS badTargetCode,	-- 불량업무코드(대상ID매핑)
+					'' 							AS badTargetNm,		-- 개별주문에는 명칭이 없으므로 생략
+					bad.bad_desc				AS badDesc,			-- 불량설명
+					mtrlMgt.mtrl_id				AS mtrlId,			-- 자재 ID
+					mtrlInfo.mtrl_nm			AS mtrlNm,			-- 자재명
+					qmMtrl.mtrl_mgt_id			AS mtrlMgtId,		-- 자재상세ID
+					workInfo.prod_work_user	 	AS badPgUser,		-- 발주 수령자 아이디
+					orderUser.user_nm			AS badPgUserNm,		-- 발주 수령자 이름
+					workInfo.prod_work_start 	AS badPgDate,		-- 작업 시작일
+					workInfo.prod_work_id		AS badPgCd,			-- 작업코드
+					''							AS badPgNm			-- 프로그램명
+				FROM prs_bad_product bad
+				INNER JOIN prs_work_info workInfo ON bad.bad_target_code = workInfo.prod_work_id
+				JOIN qm_mtrl_mgt qmMtrl ON qmMtrl.mtrl_qty_target_code = bad.bad_id AND qmMtrl.mtrl_qty_target = 'mtrl_tagt03'    -- 수량확인
+				LEFT OUTER JOIN cm_mtrl_mgt mtrlMgt ON mtrlMgt.mtrl_mgt_id = qmMtrl.mtrl_mgt_id	-- 자재상세정보 확인
+				LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlInfo.mtrl_id = mtrlMgt.mtrl_id -- 자재마스터 확인
+				LEFT OUTER JOIN mb_user_info badUser ON badUser.user_id = bad.chk_user -- 불량등록자 확인
+				LEFT OUTER JOIN mb_user_info orderUser ON orderUser.user_id = workInfo.prod_work_user -- 수량 확인자
+		)u_table
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="mtrlMgtId != null and mtrlMgtId != '' ">
+			AND u_table.mtrlMgtId = #{mtrlMgtId}
+		</if>
+		<if test="mtrlId != null and mtrlId != '' ">
+			AND u_table.mtrlId = #{mtrlId}
+		</if>
+		<if test="badId != null and badId != '' ">
+			AND u_table.badId = #{badId}
+		</if>
+		<if test="badTarget != null and badTarget != '' ">
+			AND u_table.badTarget = #{badTarget}
+		</if>
+		<if test="badTargetCode != null and badTargetCode != '' ">
+			AND u_table.badTargetCode = #{badTargetCode}
+		</if>
+		<if test="chkUserNm != null and chkUserNm != '' ">
+			AND u_table.chkUserNm = #{chkUserNm}
+		</if>
+		<if test="badPgUserNm != null and badPgUserNm != '' ">
+			AND u_table.badPgUserNm = #{badPgUserNm}
+		</if>
+		<if test="badPgCd != null and badPgCd != '' ">
+			AND u_table.badPgCd = #{badPgCd}
+		</if>
+		<if test="badPgNm != null and badPgNm != '' ">
+			AND u_table.badPgNm = #{badPgNm}
+		</if>
+	</sql>
+	
+	<!-- 불량관리 - 자재(Page) select -->
+	<select id="selectMtrlBadList"
+		parameterType="jin.mes.cform.qualMgt.inputQualMgt.KwangjinInputQualMgtDto"
+		resultType="jin.mes.cform.qualMgt.inputQualMgt.KwangjinInputQualMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY chkDate desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="badMtrl_base" />
+			)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+
+	<!--  불량관리 - 자재 (Count) -->
+	<select id="selectMtrlBadCount"
+		parameterType="jin.mes.cform.qualMgt.inputQualMgt.KwangjinInputQualMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="badMtrl_base" />
+				)c_table
+	</select>
+	
+	<!-- 불량관리 등록 -->
+	<insert id="insertMtrlBad" parameterType="jin.mes.cform.qualMgt.inputQualMgt.KwangjinInputQualMgtDto">
+		<selectKey keyProperty="badId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('PRDBD') AS bad_id
+		</selectKey>
+		INSERT INTO prs_bad_product(
+				bad_id,
+				bad_code,
+				bad_qty,
+				bad_file,
+				chk_user,
+				chk_date,
+				bad_target,
+				bad_target_code,
+				bad_desc
+		)VALUES(
+				#{badId},
+				#{badCode},
+				#{badQty},
+				#{badFile},
+				#{chkUser},
+				#{chkDate},
+				#{badTarget},
+				#{badTargetCode},
+				#{badDesc}
+		)
+	</insert>
+	
+	<!-- 불량관리 수정 -->
+	<update id="updateMtrlBad" parameterType="jin.mes.cform.qualMgt.inputQualMgt.KwangjinInputQualMgtDto">
+		UPDATE prs_bad_product
+			SET bad_id = bad_id
+				<if test="badQty != null ">
+					,bad_qty = #{badQty}
+				</if>
+				<if test="badCode != null ">
+					,bad_code = #{badCode}
+				</if>
+				<if test="chkUser != null ">
+					,chk_user = #{chkUser}
+				</if>
+				<if test="chkDate != null ">
+					,chk_date = #{chkDate}
+				</if>
+				<if test="badDesc != null ">
+					,bad_desc = #{badDesc}
+				</if>
+				<if test="badFile != null ">
+					,bad_file = #{badFile}
+				</if>
+		WHERE bad_id = #{badId}
+	</update>
+	
+	<!-- 불량관리 삭제 -->
+	<delete id="deleteMtrlBad" parameterType="jin.mes.cform.qualMgt.inputQualMgt.KwangjinInputQualMgtDto">
+		DELETE FROM prs_bad_product
+		WHERE bad_id = #{badId}
+	</delete>
+	
+	
+	
+	<!-- 자재 히스토리 정보 -->
+	<sql id="mtrlMgtInput_history">
+			mtrlMgtId,
+			mtrlQtyTarget,
+			mtrlQtyTargetCode,
+			mtrlQtyTotal, 
+			mtrlQtyDesc,
+			mtrlQtyPgCd,
+			mtrlQtyPgNm,
+			mtrlQtyDate,
+			mtrlQtyUser,
+			mtrlQtyUserNm,
+			mtrlInspect
+		FROM(
+		
+			-- 자체 발주
+			SELECT 
+				mgt.mtrl_mgt_id				AS mtrlMgtId, -- 자재개별코드
+				mgt.mtrl_qty_target			AS mtrlQtyTarget, -- 업무구분
+				mgt.mtrl_qty_target_code	AS mtrlQtyTargetCode, -- 업무코드
+				mgt.mtrl_qty_total			AS mtrlQtyTotal, -- 수량
+				mgt.mtrl_inspect			AS mtrlInspect,
+				manual.manual_desc			AS mtrlQtyDesc, -- 비고
+				manual.lot_id				AS mtrlQtyPgCd, -- 코드
+				''							AS mtrlQtyPgNm, -- 코드명
+				manual.manual_at			AS mtrlQtyDate,  -- 수동입력 날짜
+				manual.manual_user			AS mtrlQtyUser,  -- 수동입력 대상자 아이디
+				userInfo.user_nm			AS mtrlQtyUserNm  -- 수동입력 대상자 이름
+			FROM qm_mtrl_mgt mgt 
+			LEFT OUTER JOIN qm_manual_info manual ON mgt.mtrl_qty_target_code = manual.manual_id
+			LEFT OUTER JOIN mb_user_info userInfo ON userInfo.user_id = manual.manual_user
+			WHERE mgt.mtrl_qty_target = 'mtrl_tagt01'
+			AND mgt.mtrl_mgt_id = #{mtrlMgtId}
+		
+			-- 자체 자재사용
+			UNION
+			SELECT 
+				mgt.mtrl_mgt_id				AS mtrlMgtId, -- 자재개별코드
+				mgt.mtrl_qty_target			AS mtrlQtyTarget, -- 업무구분
+				mgt.mtrl_qty_target_code	AS mtrlQtyTargetCode, -- 업무코드
+				mgt.mtrl_qty_total			AS mtrlQtyTotal, -- 수량
+				mgt.mtrl_inspect			AS mtrlInspect,
+				manual.manual_desc			AS mtrlQtyDesc, -- 비고
+				manual.lot_id				AS mtrlQtyPgCd, -- 코드
+				''							AS mtrlQtyPgNm, -- 코드명
+				manual.manual_at			AS mtrlQtyDate,  -- 수동입력 날짜
+				manual.manual_user			AS mtrlQtyUser,  -- 수동입력 대상자 아이디
+				userInfo.user_nm			AS mtrlQtyUserNm  -- 수동입력 대상자 이름
+			FROM qm_mtrl_mgt mgt 
+			LEFT OUTER JOIN qm_manual_info manual ON mgt.mtrl_qty_target_code = manual.manual_id
+			LEFT OUTER JOIN mb_user_info userInfo ON userInfo.user_id = manual.manual_user
+			WHERE mgt.mtrl_qty_target = 'mtrl_tagt02'
+			AND mgt.mtrl_mgt_id = #{mtrlMgtId}
+			)u_table
+		WHERE 1=1
+		AND mtrlQtyTarget = 'mtrl_tagt01'
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="mtrlQtyTargetCode != null and mtrlQtyTargetCode != '' ">
+			AND u_table.mtrlQtyTargetCode = #{mtrlQtyTargetCode}
+		</if>
+	</sql>
+		
+	<!-- 발주계획(Page) select -->
+	<select id="selectMtrlMgtHisList"
+		parameterType="jin.mes.cform.qualMgt.inputQualMgt.KwangjinInputQualMgtDto"
+		resultType="jin.mes.cform.qualMgt.inputQualMgt.KwangjinInputQualMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY mtrlQtyDate desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="mtrlMgtInput_history" />
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]>#{firstIndex} AND RNUM <![CDATA[ <= ]]>#{lastIndex}
+				</if>
+	</select>
+	
+	<!-- 발주계획 Count -->
+	<select id="selectMtrlMgtHisCount"
+		parameterType="jin.mes.cform.qualMgt.inputQualMgt.KwangjinInputQualMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="mtrlMgtInput_history" />
+				)c_table
+	</select>
+	
+		<!-- 자재 관리정보 -->
+	<sql id="mtrlMgt_base">
+			mtrlMgt.mtrl_mgt_id					AS mtrlMgtId,
+			mtrlMgt.mtrl_mgt_cnt            	AS mtrlMgtCnt,
+			mtrlMgt.description             	AS mtrlMgtDesc,
+			mtrlMgt.creator_id              	AS creatorId,
+			mtrlMgt.created_at              	AS createdAt,
+			mtrlMgt.updator_id              	AS updatorId,
+			mtrlMgt.updated_at              	AS updatedAt,
+			mtrlMgt.mtrl_id                 	AS mtrlId,
+			mtrlMgt.is_del 	                	AS isDel,
+			mtrlInfo.mtrl_nm         			AS mtrlNm, 
+			mtrlInfo.mtrl_type       			AS mtrlType,
+			mtrlInfo.mtrl_std01     			AS mtrlStd01,
+			mtrlInfo.mtrl_std02     			AS mtrlStd02,
+			mtrlInfo.mtrl_std03     			AS mtrlStd03,
+			mtrlInfo.mtrl_std04     			AS mtrlStd04,
+			mtrlInfo.mtrl_std05     			AS mtrlStd05, 
+			mtrlInfo.mtrl_std_str01				AS mtrlStdStr01, 
+			mtrlInfo.mtrl_std_str02				AS mtrlStdStr02, 
+			mtrlInfo.mtrl_std_str03				AS mtrlStdStr03, 
+			mtrlInfo.mtrl_std_str04				AS mtrlStdStr04,
+			mtrlInfo.mtrl_std_str05				AS mtrlStdStr05,
+			mtrlInfo.mtrl_cost       			AS mtrlCost, 
+			mtrlInfo.is_use          			AS isUse,  
+			mtrlInfo.description     			AS mtrlDiv,
+			mtrlInfo.mtrl_desc					AS mtrlDesc
+		FROM cm_mtrl_mgt mtrlMgt
+		LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlMgt.mtrl_id = mtrlInfo.mtrl_id
+		WHERE mtrlInfo.is_use = TRUE
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="mtrlId != null and mtrlId != '' ">
+			AND mtrlMgt.mtrl_id = #{mtrlId}
+		</if>
+		<if test="mtrlMgtId != null">
+			AND mtrlMgt.mtrl_mgt_id = #{mtrlMgtId}
+		</if>
+		<if test="mtrlStdStr03 != null">
+			AND mtrlInfo.mtrl_std_str03 = #{mtrlStdStr03}
+		</if>
+		<if test="isDel != null">
+			AND mtrlMgt.is_del = #{isDel}
+		</if>
+		
+	</sql>
+	
+	<!-- 자재정보(Page) select -->
+	<select id="selectMtrlMgtList"
+		parameterType="jin.mes.cform.qualMgt.inputQualMgt.KwangjinInputQualMgtDto"
+		resultType="jin.mes.cform.qualMgt.inputQualMgt.KwangjinInputQualMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="mtrlMgt_base" />
+				)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- 자재정보 Count -->
+	<select id="selectMtrlMgtCount"
+		parameterType="jin.mes.cform.qualMgt.inputQualMgt.KwangjinInputQualMgtDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="mtrlMgt_base" />
+			)c_table
+	</select>
+	
+	<!-- 검사완료 처리 -->
+	<update id="updateInputQual" parameterType="jin.mes.cform.qualMgt.inputQualMgt.KwangjinInputQualMgtDto">
+		UPDATE prs_mtrl_order
+		SET updator_id = #{updatorId},
+			updated_at = NOW(),
+			mtrl_qual_sta = 'inspecComplete',
+			mtrl_qual_date = NOW()
+		WHERE mtrl_order_id  = #{mtrlOrderId}
+	</update>
+	
+	<update id="updateMtrlInput" parameterType="jin.mes.cform.qualMgt.inputQualMgt.KwangjinInputQualMgtDto">
+		UPDATE qm_mtrl_mgt
+		SET mtrl_inspect = 'inspecComplete'
+		WHERE mtrl_qty_target_code = #{mtrlQtyTargetCode}
+	</update>
+</mapper>

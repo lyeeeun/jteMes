@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.mfgMgt.productPlan.KwangjinProductPlanMapper">
+	<!-- 생산계획(품목) 조회 쿼리 -->
+	<sql id = "productPlan_base">
+		itemId,
+		itemNm,
+		itemStd01,
+		itemStd02,
+		itemStd03,
+		itemStd04,
+		itemStd05,
+		itemStdStr01,
+		itemStdStr02,
+		itemStdStr03,
+		itemStdStr04,
+		itemStdStr05,
+		itemType,
+		itemPrice,
+		itemDesc,
+		prodPlanYear, 
+		prodPlanMonth
+		<foreach collection="calPrmt" item="dayUnit">
+			, MAX(IF(prodPlanDay = #{dayUnit}, prodPlanQty, 0))		AS planQty${dayUnit}
+		</foreach>
+		,SUM(prodPlanQty) AS planTotalQty
+		FROM(
+			SELECT
+				itemCal.itemId					AS itemId,
+				itemCal.itemNm					AS itemNm,
+				itemCal.itemStd01 				AS itemStd01,
+				itemCal.itemStd02 				AS itemStd02,
+				itemCal.itemStd03 				AS itemStd03,
+				itemCal.itemStd04 				AS itemStd04,
+				itemCal.itemStd05 				AS itemStd05,
+				itemCal.itemStdStr01 			AS itemStdStr01,
+				itemCal.itemStdStr02 			AS itemStdStr02,
+				itemCal.itemStdStr03 			AS itemStdStr03,
+				itemCal.itemStdStr04 			AS itemStdStr04,
+				itemCal.itemStdStr05			AS itemStdStr05,
+				itemCal.itemType 				AS itemType,
+				itemCal.itemPrice 				AS itemPrice,
+				itemCal.itemDesc				AS itemDesc,
+				itemCal.prodPlanWeek,
+				itemCal.prodPlanYear,
+				itemCal.prodPlanMonth,
+				itemCal.prodPlanDay				AS prodPlanDay,
+				plan.prod_Plan_Id				AS prodPlanId, 
+				plan.prod_plan_type				AS prodPlanType,
+				IFNULL(plan.prod_plan_qty,0)	AS prodPlanQty
+			FROM(
+				SELECT 
+				item.item_id				AS itemId,
+				MAX(item.item_nm)			AS itemNm,
+				MAX(item.item_std01) 		AS itemStd01,
+				MAX(item.item_std02) 		AS itemStd02,
+				MAX(item.item_std03) 		AS itemStd03,
+				MAX(item.item_std04) 		AS itemStd04,
+				MAX(item.item_std05) 		AS itemStd05,
+				MAX(item.item_std_str01) 	AS itemStdStr01,
+				MAX(item.item_std_str02) 	AS itemStdStr02,
+				MAX(item.item_std_str03) 	AS itemStdStr03,
+				MAX(item.item_std_str04) 	AS itemStdStr04,
+				MAX(item.item_std_str05)	AS itemStdStr05,
+				MAX(item.item_type) 		AS itemType,
+				MAX(item.item_price) 		AS itemPrice,
+				MAX(item.description)		AS itemDesc,
+				cal.cal_week 				AS prodPlanWeek,
+				cal.cal_year 				AS prodPlanYear,
+				cal.cal_month	 			AS prodPlanMonth,
+				cal.cal_day 				AS prodPlanDay
+				FROM bc_calendar_info cal 
+				CROSS JOIN bc_item_info item
+				WHERE cal.cal_solar BETWEEN CONCAT(#{calYear},'-',#{calMonth},'-01') AND LAST_DAY(CONCAT(#{calYear},'-',#{calMonth},'-01'))
+				GROUP BY item.item_id,cal.cal_week,cal.cal_year,cal.cal_month,cal.cal_day 
+			)itemCal
+			LEFT OUTER JOIN prs_product_plan plan ON plan.prod_plan_year = itemCal.prodPlanYear AND plan.prod_plan_month = itemCal.prodPlanMonth AND plan.prod_plan_day = itemCal.prodPlanDay AND plan.item_id = itemCal.itemId
+			WHERE 1=1
+			<if test="searchText != null and searchText != '' ">
+				AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+			</if>
+			GROUP BY itemCal.itemId, itemCal.prodPlanWeek, itemCal.prodPlanYear, itemCal.prodPlanMonth, itemCal.prodPlanDay 
+		)pivot
+		GROUP BY itemId, itemNm, prodPlanYear , prodPlanMonth
+	</sql>
+	
+	<!-- 생산계획(품목)정보 조회 -->
+	<select id="selectProductPlanList"
+		parameterType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.MfgplanDto"
+		resultType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.MfgplanDto">
+		SELECT * FROM (
+			SELECT 
+			<choose>
+				<when test='sort != null and sort != "" '>
+					ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+				</when>
+				<otherwise>
+					ROW_NUMBER() OVER(ORDER BY itemId DESC) AS RNUM,
+				</otherwise>
+			</choose>
+			<include refid="productPlan_base" />
+		)s_table
+		<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+			WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+		</if>
+	</select>
+	
+	<!-- 생산계획(품목) 카운트 -->
+	<select id="selectProductPlanCount"
+	parameterType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.MfgplanDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="productPlan_base" />
+				)c_table
+	</select>
+	
+	<!-- 생산계획(품목)상세정보 조회 -->
+	<select id="selectProductPlanDetail"
+		parameterType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.ProductPlanDto"
+		resultType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.ProductPlanDto">
+		SELECT 
+			item.item_id									AS itemId,
+			item.item_nm									AS itemNm,
+			plan.prod_plan_id								AS prodPlanId, 
+			plan.prod_plan_type								AS prodPlanType, 
+			IFNULL(plan.prod_plan_year,#{prodPlanYear})		AS prodPlanYear, 
+			IFNULL(plan.prod_plan_month,#{prodPlanMonth})	AS prodPlanMonth, 
+			IFNULL(plan.prod_plan_day,#{prodPlanDay})		AS prodPlanDay, 
+			IFNULL(plan.prod_plan_qty,0)					AS prodPlanQty, 
+			plan.prod_plan_desc								AS prodPlanDesc, 
+			plan.created_at									AS createdAt, 
+			plan.creator_id									AS creatorId, .
+			plan.updated_at									AS updatedAt, 
+			plan.updator_id									AS updatorId,
+			IF (IFNULL(plan.prod_plan_id,'') = '', 'C','U')	AS ACTION
+		FROM bc_item_info item
+		LEFT OUTER JOIN prs_product_plan plan ON plan.item_id = item.item_id
+		<if test="prodPlanType != null and prodPlanType != '' ">
+			AND plan.prod_plan_type = #{prodPlanType}
+		</if>
+		<if test="prodPlanYear != null and prodPlanYear != '' ">
+			AND plan.prod_plan_year = #{prodPlanYear}
+		</if>
+		<if test="prodPlanMonth != null and prodPlanMonth != '' ">
+			AND plan.prod_plan_month = #{prodPlanMonth}
+		</if>
+		<if test="prodPlanDay != null and prodPlanDay != '' ">
+			AND plan.prod_plan_day = #{prodPlanDay}
+		</if>
+		WHERE 1=1
+		<if test="itemId != null and itemId != '' ">
+			AND item.item_id = #{itemId}
+		</if>
+	</select>
+	
+	<!-- 생산계획 등록 -->
+	<insert id="insertProductPlan" parameterType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.ProductPlanDto">
+		<selectKey keyProperty="prodPlanId" resultType="java.lang.String" order="BEFORE">
+			SELECT CREATE_PK('PLN') AS prodPlanId
+		</selectKey>
+		INSERT 
+			INTO prs_product_plan(
+				prod_plan_id, 
+				prod_plan_type, 
+				prod_plan_year, 
+				prod_plan_month, 
+				prod_plan_day, 
+				prod_plan_qty, 
+				prod_plan_desc, 
+				created_at, 
+				creator_id, 
+				updated_at, 
+				updator_id, 
+				item_id,
+				lot_id
+			)
+			VALUES(
+				#{prodPlanId},
+				#{prodPlanType},
+				#{prodPlanYear}, 
+				#{prodPlanMonth}, 
+				#{prodPlanDay},
+				#{prodPlanQty}, 
+				#{prodPlanDesc}, 
+				now(), 
+				#{creatorId}, 
+				now(), 
+				#{updatorId}, 
+				#{itemId},
+				#{lotId}
+			)
+	</insert>
+	
+	<!-- 생산계획 수정 -->
+	<update id="updateProductPlan" parameterType="jin.mes.form.mfgMgt.mfgplanMgt.mfgplan.ProductPlanDto">
+		UPDATE prs_product_plan 
+			SET prod_plan_qty = #{prodPlanQty}, 
+				prod_plan_desc = #{prodPlanDesc}, 
+				updator_id = #{updatorId}, 
+				updated_at = now()
+			WHERE prod_plan_id = #{prodPlanId}
+	</update>
+	
+	<!-- 생산계획 삭제 -->
+	<delete id="deleteProductPlan">
+		DELETE FROM prs_product_plan
+		WHERE prod_plan_id = #{prodPlanId} 
+	</delete>
+</mapper>

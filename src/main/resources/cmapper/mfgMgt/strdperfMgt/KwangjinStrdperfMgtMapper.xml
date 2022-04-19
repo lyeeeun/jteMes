@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.mfgMgt.strdperfMgt.KwangjinStrdperfMgtMapper">
+	
+	<!-- 표준/실적공수 기준  -->
+	<sql id="strderf_base">
+			odr.order_id				AS orderId,
+			odr.order_nm				AS orderNm,
+			odr.order_stdt				AS orderStdt,
+			odr.created_at				AS createdAt,
+			lot.lot_id					AS lotId,
+			lot.lot_nm					AS lotNm,
+			lot.lot_qty					AS lotQty,
+			item.item_id				AS itemId,
+			item.item_nm				AS itemNm,
+			rout.routing_id				AS routingId,
+			workBase.routing_type		AS routingType,
+			workBase.routing_seq		AS routingSeq,
+			workBase.prod_work_id		AS pordWorkId,
+			workBase.prod_work_user		AS prodWorkUser,
+			workBase.user_nm			AS prodWorkUserNm,
+			workBase.prod_work_start	AS prodWorkStart,
+			workBase.prod_work_end		AS prodWorkEnd,
+			workBase.prod_work_qty		AS prodWorkQty,	
+			workBase.prod_work_good		AS prodWorkGood,
+			workBase.prod_work_bad		AS prodWorkBad,
+			workBase.eqmt_mgt_id		AS eqmtMgtId,
+			workBase.eqmt_mgt_nm		AS eqmtMgtNm,
+			workBase.place_id			AS placeId,
+			workBase.place_nm			AS placeNm,
+			IF(IFNULL(SUM(rout.man_hour * workBase.prod_work_qty),0) > 0,SUM(rout.man_hour * workBase.prod_work_qty)/60,0) AS baseHour,
+			IF(IFNULL(workBase.realTime,0) > 0,workBase.realTime/60,0 )AS realTime
+		FROM prs_lot_info lot
+		LEFT OUTER JOIN prs_order_info odr ON lot.order_id = odr.order_id
+		LEFT OUTER JOIN bc_item_info item ON lot.item_id = item.item_id
+		LEFT OUTER JOIN bc_routing_info rout ON rout.item_id = item.item_id
+		LEFT OUTER JOIN (SELECT 
+					wok.routing_id,
+					rout.routing_type,
+					rout.routing_seq,
+					wok.prod_work_id,
+					wok.prod_work_user,
+					usr.user_nm,
+					wok.prod_work_start,
+					wok.prod_work_end,
+					wok.prod_work_qty,			
+					wok.prod_work_good,
+					wok.prod_work_bad,
+					wok.eqmt_mgt_id,
+					eqmt.eqmt_mgt_nm,
+					eqmt.place_id,
+					place.place_nm,
+					TIMESTAMPDIFF(SECOND,prod_work_start ,prod_work_end) AS realTime
+				FROM prs_work_info wok
+				LEFT OUTER JOIN bc_routing_info AS rout ON wok.routing_id = rout.routing_id
+				LEFT OUTER JOIN mb_user_info AS usr ON wok.prod_work_user = usr.user_id
+				LEFT OUTER JOIN bc_equipment_mgt eqmt ON eqmt.eqmt_mgt_id = wok.eqmt_mgt_id
+				LEFT OUTER JOIN bc_place_info place ON eqmt.place_id = place.place_id
+				WHERE 1=1
+				)AS workBase ON workBase.routing_id = rout.routing_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="orderId != null">
+			AND lot.order_id = #{orderId}
+		</if>
+	</sql>
+	
+	<!-- 표준/실적공수 select -->
+	<select id="selectStrderfList"
+		parameterType="jin.mes.cform.mfgMgt.strdperfMgt.KwangjinStrdperfMgtDto"
+		resultType="jin.mes.cform.mfgMgt.strdperfMgt.KwangjinStrdperfMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY createdAt desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="strderf_base" />
+				GROUP BY lot_id
+			)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- 표준/실적공수 select(Count) -->
+	<select id="selectStrderfListCount"
+	parameterType="jin.mes.cform.mfgMgt.strdperfMgt.KwangjinStrdperfMgtDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="strderf_base" />
+				GROUP BY lot_id
+			)c_table
+	</select>
+	
+	<!-- 작업지시 조회  -->
+	<sql id="prodAssign_base">
+			assgn.prod_asm_id		AS prodAsmId,
+			assgn.prod_asm_nm		AS prodAsmNm,
+			assgn.prod_asm_date		AS prodAsmDate,
+			assgn.prod_asm_qty		AS prodAsmQty,
+			assgn.prod_asm_desc     AS prodAsmDesc,
+			assgn.prod_asm_type		AS prodAsmType,
+			assgn.prod_asm_user		AS prodAsmUser,
+			urInfo.user_nm			AS prodAsmUserNm,
+			assgn.prod_asm_state	AS prodAsmState,
+			assgn.created_at		AS createdAt,
+			assgn.creator_id		AS creatorId,
+			assgn.lot_id			AS lotId
+			
+		FROM prs_product_assignment assgn
+		LEFT OUTER JOIN mb_user_info urInfo ON urInfo.user_id = assgn.prod_asm_user
+		LEFT OUTER JOIN prs_lot_info lotInfo ON lotInfo.lot_id = assgn.lot_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="lotId != null and lotId != ''">
+			AND assgn.lot_id = #{lotId}
+		</if>
+	</sql>
+	
+	<!-- 작업지시 select -->
+	<select id="selectProdAssignList"
+		parameterType="jin.mes.cform.mfgMgt.strdperfMgt.KwangjinStrdperfMgtDto"
+		resultType="jin.mes.cform.mfgMgt.strdperfMgt.KwangjinStrdperfMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY createdAt desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="prodAssign_base" />
+			)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- 작업지시 select(Count) -->
+	<select id="selectProdAssignCount"
+	parameterType="jin.mes.cform.mfgMgt.strdperfMgt.KwangjinStrdperfMgtDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="prodAssign_base" />
+			)c_table
+	</select>
+	
+		<!-- 표준/실적공수 기준  -->
+	<sql id="strderfDetail_base">
+				odr.order_id				AS orderId,
+				odr.order_nm				AS orderNm,
+				odr.order_stdt				AS orderStdt,
+				lot.lot_id					AS lotId,
+				lot.lot_nm					AS lotNm,
+				lot.lot_qty					AS lotQty,
+				item.item_id				AS itemId,
+				item.item_nm				AS itemNm,
+				rout.routing_id				AS routingId,
+				assgn.prod_asm_id		AS prodAsmId,
+				workBase.routing_type		AS routingType,
+				workBase.routing_seq		AS routingSeq,
+				workBase.prod_work_id		AS pordWorkId,
+				workBase.prod_work_user		AS prodWorkUser,
+				workBase.user_nm			AS prodWorkUserNm,
+				workBase.prod_work_start	AS prodWorkStart,
+				workBase.prod_work_end		AS prodWorkEnd,
+				workBase.prod_work_qty		AS prodWorkQty,	
+				workBase.prod_work_good		AS prodWorkGood,
+				workBase.prod_work_bad		AS prodWorkBad,
+				workBase.eqmt_mgt_id		AS eqmtMgtId,
+				workBase.eqmt_mgt_nm		AS eqmtMgtNm,
+				workBase.place_id			AS placeId,
+				workBase.place_nm			AS placeNm,
+				IF(IFNULL(SUM(rout.man_hour * workBase.prod_work_qty),0) > 0,SUM(rout.man_hour * workBase.prod_work_qty)/60,0) AS baseHour,
+				IF(IFNULL(workBase.realTime,0) > 0,workBase.realTime/60,0 )AS realTime
+			FROM prs_lot_info lot
+			LEFT OUTER JOIN prs_order_info odr ON lot.order_id = odr.order_id
+			LEFT OUTER JOIN bc_item_info item ON lot.item_id = item.item_id
+			LEFT OUTER JOIN bc_routing_info rout ON rout.item_id = item.item_id
+			LEFT OUTER JOIN prs_product_assignment assgn ON assgn.lot_id = lot.lot_id
+			LEFT OUTER JOIN (SELECT 
+						wok.routing_id,
+						rout.routing_type,
+						rout.routing_seq,
+						wok.prod_work_id,
+						wok.prod_work_user,
+						usr.user_nm,
+						wok.prod_work_start,
+						wok.prod_work_end,
+						wok.prod_work_qty,
+						wok.prod_work_good,
+						wok.prod_work_bad,
+						wok.eqmt_mgt_id,
+						eqmt.eqmt_mgt_nm,
+						eqmt.place_id,
+						place.place_nm,
+						TIMESTAMPDIFF(SECOND,prod_work_start ,prod_work_end) AS realTime
+					FROM prs_work_info wok
+					LEFT OUTER JOIN bc_routing_info AS rout ON wok.routing_id = rout.routing_id
+					LEFT OUTER JOIN mb_user_info AS usr ON wok.prod_work_user = usr.user_id
+					LEFT OUTER JOIN bc_equipment_mgt eqmt ON eqmt.eqmt_mgt_id = wok.eqmt_mgt_id
+					LEFT OUTER JOIN bc_place_info place ON eqmt.place_id = place.place_id
+					WHERE 1=1
+					)AS workBase ON workBase.routing_id = rout.routing_id
+			WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="prodAsmId != null">
+			AND assgn.prod_asm_id = #{prodAsmId}
+		</if>
+	</sql>
+	
+	<!-- 표준/실적공수 상세정보  select -->
+	<select id="selectStrderfDetailList"
+		parameterType="jin.mes.cform.mfgMgt.strdperfMgt.KwangjinStrdperfMgtDto"
+		resultType="jin.mes.cform.mfgMgt.strdperfMgt.KwangjinStrdperfMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY routingSeq asc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="strderfDetail_base" />
+				GROUP BY assgn.prod_asm_id, rout.routing_id
+			)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- 표준/실적공수 상세정보 select(Count) -->
+	<select id="selectStrderfDetailListCount"
+	parameterType="jin.mes.cform.mfgMgt.strdperfMgt.KwangjinStrdperfMgtDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="strderfDetail_base" />
+				GROUP BY assgn.prod_asm_id, rout.routing_id
+			)c_table
+	</select>
+	
+	
+</mapper>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" style="height: 100%; margin: 0px;">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<link rel="shortcut icon" href="/static/favicon.ico">	
+<link href='/static/css/kendoui/kendo.default.min.css' rel="stylesheet">
+<link href='/static/css/kendoui/kendo.common.min.css' rel="stylesheet">
+
+<link rel="stylesheet" href="/resources/mes/css/login/login.css">
+
+<script type="text/javascript" src="/static/js/secure/rsa.js"></script>
+<script type="text/javascript" src="/static/js/secure/jsbn.js"></script>
+<script type="text/javascript" src="/static/js/secure/prng4.js"></script>
+<script type="text/javascript" src="/static/js/secure/rng.js"></script>
+
+<script type="text/javascript" src="/static/js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="/static/js/kendo.all.min.js"></script>
+<script type="text/javascript" src="/static/js/login/login.js"></script>
+
+<title>JIN-MES : Login</title>
+</head>
+<body class="click">
+	<div class="login-back">
+		<div class="login-box">
+			<form id = "loginForm" name="loginForm" action="/loginProcess" method="post" style="text-align:center;" onsubmit="return login()">
+				<div class="login-input-area">
+					<div class="input-id-area">
+						<div class="text-area">
+							<input type="text" class="login_info" id="id_text" placeholder="ID" autocomplete="off" />
+							<input type="hidden" name="id" id="id" value=""/>
+						</div>
+					</div>
+					<div class="input-pw-area">
+						<div class="text-area">
+							<input type="password" class="login_info" id="pw_text" placeholder="Password" autocomplete="off"/>
+							<input type="hidden" name="pw" id="pw" value=""/>
+						</div>
+					</div>
+ 						<input type="hidden" id="RSAModulus" value="${_RSAModules}"/>
+	 					<input type="hidden" id="RSAExponent" value="${_RSAExponent}"/>
+	 					<input type="hidden" id="loginMsg" th:value="${loginMsg}">
+	 				</div>
+					<div class="login-btn-area">
+						<input type="submit" class="login_btn" value="로그인" />
+					<!--<a href="/registration">회원가입</a> -->
+					</div>
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+			</form>
+		</div>
+		<div class="copy">
+			COPYRIGHTⓒ<span> JinTechEng Co., Ltd</span> ALL RIGHTS RESERVED.
+		</div>
+	</div>
+</body>
+</html>

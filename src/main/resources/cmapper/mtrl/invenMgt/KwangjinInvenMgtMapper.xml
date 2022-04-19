@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.mtrl.invenMgt.KwangjinInvenMgtMapper">
+
+	<!-- 제품 관리정보 -->
+	<sql id="itemInvenMgt_base">
+			itemMgt.item_id 		AS itemId,
+			itemMgt.item_mgt_id 	AS itemMgtId,
+			itemMgt.item_stock 		AS itemStock,
+			itemMgt.updated_at 		AS updatedAt,
+			itemInfo.item_nm 		AS itemNm,
+			itemInfo.item_type		AS itemType
+		FROM cm_item_mgt itemMgt
+		LEFT OUTER JOIN bc_item_info itemInfo ON itemMgt.item_id = itemInfo.item_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<sql id="mtrlInvenMgt_base">
+			mtrlMgt.mtrl_id				AS mtrlId,
+			mtrlMgt.mtrl_mgt_id			AS mtrlMgtId,
+			mtrlMgt.mtrl_mgt_cnt		AS mtrlMgtCnt,
+			mtrlMgt.updated_at			AS updatedAt,
+			mtrlInfo.mtrl_nm			AS mtrlNm,
+			mtrlInfo.mtrl_std04			AS mtrlStd04
+		FROM cm_mtrl_mgt mtrlMgt
+		LEFT OUTER JOIN bc_material_info mtrlInfo ON mtrlMgt.mtrl_id = mtrlInfo.mtrl_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+	</sql>
+	
+	<select id="selectInvenMgt"
+		parameterType="jin.mes.cform.mtrl.invenMgt.KwangjinInvenMgtDto"
+		resultType="jin.mes.cform.mtrl.invenMgt.KwangjinInvenMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<choose>
+						<when test="selectTarget == 'item'">
+							<include refid="itemInvenMgt_base" />
+						</when>
+						<when test="selectTarget == 'mtrl'">
+							<include refid="mtrlInvenMgt_base" />
+						</when>
+					</choose>
+				)s_table
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+	</select>
+	
+	<select id="selectInvenMgtCount"
+		parameterType="jin.mes.cform.mtrl.invenMgt.KwangjinInvenMgtDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<choose>
+						<when test="selectTarget == 'item'">
+							<include refid="itemInvenMgt_base" />
+						</when>
+						<when test="selectTarget == 'mtrl'">
+							<include refid="mtrlInvenMgt_base" />
+						</when>
+					</choose>
+				)c_table
+	</select>
+
+	
+	<!-- 제품 사용 히스토리-->
+	<sql id="itemUse_history">
+			itemMgtId,
+			itemQtyTarget,
+			itemQtyTargetCode,
+			itemQtyTotal,
+			itemQtyDesc,	
+			itemQtyPgCd,
+			itemQtyDate,
+			itemQtyUser,
+			itemQtyUserNm
+		FROM (
+			-- 생산
+			SELECT 
+				qmItem.item_mgt_id			AS itemMgtId,			-- 개별 품목 코드
+				qmItem.item_qty_target 			AS itemQtyTarget,		-- 업무 구불
+				qmItem.item_qty_target_code		AS itemQtyTargetCode,	-- 업무 코드 
+				qmItem.item_qty_total			AS itemQtyTotal,		-- 수량
+				'제조 완료'				AS itemQtyDesc,			-- 비고
+				qmItem.item_mgt_id			AS itemQtyPgCd,			
+				manual.manual_at			AS itemQtyDate,			-- 제조 완료 일자 
+				manual.manual_user			AS itemQtyUser,			-- 작업자(등록자)
+				urInfo.user_nm				AS itemQtyUserNm		-- 작업자 이름
+			FROM qm_item_mgt qmItem
+			LEFT OUTER JOIN qm_manual_info manual ON qmItem.item_qty_target_code = manual.manual_id
+			LEFT OUTER JOIN mb_user_info urInfo ON manual.manual_user = urInfo.user_id
+			WHERE 1=1
+			AND qmItem.item_qty_target = 'prod_tagt01' 
+			AND qmItem.item_mgt_id = #{itemMgtId}
+			
+			-- 출하 
+			UNION
+			SELECT 
+				qmItem.item_mgt_id			AS itemMgtId,			-- 개별 품목 코드
+				qmItem.item_qty_target 			AS itemQtyTarget,		-- 업무 구불
+				qmItem.item_qty_target_code		AS itemQtyTargetCode,	-- 업무 코드 
+				qmItem.item_qty_total			AS itemQtyTotal,		-- 수량
+				'출하 완료'					AS itemQtyDesc,			-- 비고
+				qmItem.item_mgt_id			AS itemQtyPgCd,			
+				manual.manual_at			AS itemQtyDate,			-- 제조 완료 일자 
+				manual.manual_user			AS itemQtyUser,			-- 작업자(등록자)
+				urInfo.user_nm				AS itemQtyUserNm		-- 작업자 이름
+			FROM qm_item_mgt qmItem
+			LEFT OUTER JOIN qm_manual_info manual ON qmItem.item_qty_target_code = manual.manual_id
+			LEFT OUTER JOIN mb_user_info urInfo ON manual.manual_user = urInfo.user_id
+			WHERE 1=1
+			AND qmItem.item_qty_target = 'prod_tagt02'
+			AND qmItem.item_mgt_id = #{itemMgtId}
+			
+			-- 불량
+			UNION
+			SELECT 
+				DISTINCT
+				qmItem.item_mgt_id				AS itemMgtId,			-- 개별 품목 코드
+				qmItem.item_qty_target 			AS itemQtyTarget,		-- 업무 구불
+				qmItem.item_qty_target_code		AS itemQtyTargetCode,	-- 업무 코드 
+				qmItem.item_qty_total			AS itemQtyTotal,		-- 수량
+				badItem.bad_desc				AS itemDesc,			-- 비고
+				badItem.bad_target_code			AS itemQtyPgCd,			-- 작업 코드(작업, 출하)
+				badItem.chk_date				AS itemQtyDate,			-- 검사일
+				badItem.chk_user				AS itemQtyUser,			-- 검사자
+				urInfo.user_nm					AS itemQtyUserNm		-- 검사자 이름
+			FROM qm_item_mgt qmItem
+			INNER JOIN prs_bad_product badItem ON qmItem.item_qty_target_code = badItem.bad_target_code OR qmItem.item_qty_target_code = badItem.bad_id
+			LEFT OUTER JOIN mb_user_info urInfo ON urInfo.user_id = badItem.chk_user
+			WHERE 1=1
+			AND badItem.bad_target != 'qual_spec03'
+			AND qmItem.item_mgt_id = #{itemMgtId}
+			
+		)u_table
+		WHERE 1=1
+	</sql>
+
+
+		<!-- 제품구매업체(Page) select -->
+	<select id="selectItemHisList"
+		parameterType="jin.mes.cform.mtrl.invenMgt.KwangjinInvenHisDto"
+		resultType="jin.mes.cform.mtrl.invenMgt.KwangjinInvenHisDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY itemQtyDate desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="itemUse_history" />
+			)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+
+	<!-- 제품구매업체 Count -->
+	<select id="selectItemHisCount"
+		parameterType="jin.mes.cform.mtrl.invenMgt.KwangjinInvenHisDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="itemUse_history" />
+				)c_table
+	</select>
+	
+		<!-- 자재 사용 히스토리-->
+	<sql id="mtrlUse_history">
+			mtrlMgtId,
+			mtrlQtyTarget,
+			mtrlQtyTargetCode,
+			mtrlQtyTotal, 
+			mtrlQtyDesc,
+			mtrlQtyPgCd,
+			mtrlQtyPgNm,
+			mtrlQtyDate,
+			mtrlQtyUser,
+			mtrlQtyUserNm
+		FROM(
+		
+			-- 자체 발주
+			SELECT 
+				mgt.mtrl_mgt_id				AS mtrlMgtId, -- 자재개별코드
+				mgt.mtrl_qty_target			AS mtrlQtyTarget, -- 업무구분
+				mgt.mtrl_qty_target_code	AS mtrlQtyTargetCode, -- 업무코드
+				mgt.mtrl_qty_total			AS mtrlQtyTotal, -- 수량
+				manual.manual_desc			AS mtrlQtyDesc, -- 비고
+				manual.lot_id				AS mtrlQtyPgCd, -- 코드
+				''							AS mtrlQtyPgNm, -- 코드명
+				manual.manual_at			AS mtrlQtyDate,  -- 수동입력 날짜
+				manual.manual_user			AS mtrlQtyUser,  -- 수동입력 대상자 아이디
+				userInfo.user_nm			AS mtrlQtyUserNm  -- 수동입력 대상자 이름
+			FROM qm_mtrl_mgt mgt 
+			LEFT OUTER JOIN qm_manual_info manual ON mgt.mtrl_qty_target_code = manual.manual_id
+			LEFT OUTER JOIN mb_user_info userInfo ON userInfo.user_id = manual.manual_user
+			WHERE mgt.mtrl_qty_target = 'mtrl_tagt01'
+			AND mgt.mtrl_mgt_id = #{mtrlMgtId}
+		
+			-- 자체 자재사용
+			UNION
+			SELECT 
+				mgt.mtrl_mgt_id				AS mtrlMgtId, -- 자재개별코드
+				mgt.mtrl_qty_target			AS mtrlQtyTarget, -- 업무구분
+				mgt.mtrl_qty_target_code	AS mtrlQtyTargetCode, -- 업무코드
+				mgt.mtrl_qty_total			AS mtrlQtyTotal, -- 수량
+				manual.manual_desc			AS mtrlQtyDesc, -- 비고
+				manual.lot_id				AS mtrlQtyPgCd, -- 코드
+				''							AS mtrlQtyPgNm, -- 코드명
+				manual.manual_at			AS mtrlQtyDate,  -- 수동입력 날짜
+				manual.manual_user			AS mtrlQtyUser,  -- 수동입력 대상자 아이디
+				userInfo.user_nm			AS mtrlQtyUserNm  -- 수동입력 대상자 이름
+			FROM qm_mtrl_mgt mgt 
+			LEFT OUTER JOIN qm_manual_info manual ON mgt.mtrl_qty_target_code = manual.manual_id
+			LEFT OUTER JOIN mb_user_info userInfo ON userInfo.user_id = manual.manual_user
+			WHERE mgt.mtrl_qty_target = 'mtrl_tagt02'
+			AND mgt.mtrl_mgt_id = #{mtrlMgtId}
+			)u_table
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="mtrlQtyTarget != null and mtrlQtyTarget != '' ">
+			AND u_table.mtrlQtyTarget = #{mtrlQtyTarget}
+		</if>
+		<if test="mtrlQtyTargetCode != null and mtrlQtyTargetCode != '' ">
+			AND u_table.mtrlQtyTargetCode = #{mtrlQtyTargetCode}
+		</if>
+	</sql>
+	
+		<!-- 자재구매업체(Page) select -->
+	<select id="selectMtrlHisList"
+		parameterType="jin.mes.cform.mtrl.invenMgt.KwangjinInvenHisDto"
+		resultType="jin.mes.cform.mtrl.invenMgt.KwangjinInvenHisDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY mtrlQtyDate desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="mtrlUse_history" />
+			)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+
+	<!-- 자재구매업체 Count -->
+	<select id="selectMtrlHisCount"
+		parameterType="jin.mes.cform.mtrl.invenMgt.KwangjinInvenHisDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="mtrlUse_history" />
+				)c_table
+	</select>
+
+</mapper>

@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinOrderDetailMgtMapper">
+	
+	<!--수주조회 -->
+	<sql id="order_base">
+			orInfo.order_id 		AS orderId,
+			orInfo.slip_num			AS slipNum,
+			orInfo.order_nm			AS orderNm, 
+			orInfo.order_manager	AS orderManager, 
+			orInfo.order_stdt		AS orderStdt, 
+			orInfo.order_eddt		AS orderEddt, 
+			orInfo.order_cost		AS orderCost, 
+			orInfo.comp_id			AS compId,
+			compInfo.comp_nm		AS compNm,
+			compInfo.comp_std_str02	AS compStdStr02,
+			compInfo.comp_number	AS compNumber,
+			orInfo.order_state		AS orderState, 
+			orInfo.description		AS description,
+			orInfo.created_at		AS createdAt, 
+			orInfo.creator_id		AS creatorId, 
+			orInfo.updated_at		AS updatedAt, 
+			orInfo.updator_id		AS updatorId,
+			urInfo.user_nm			AS orderManagerNm,
+			orInfo.item_id			AS itemId,
+			itemInfo.item_nm		AS itemNm,
+			itemInfo.item_std_str01	AS itemStdStr01,
+			itemInfo.item_std_str02	AS itemStdStr02,
+			orInfo.lot_qty			AS lotQty,
+			orInfo.ship_qty			AS shipQty
+		FROM test_order_info orInfo 
+			LEFT OUTER JOIN mb_user_info urInfo ON orInfo.order_manager = urInfo.user_id
+			LEFT OUTER JOIN bc_company_info compInfo ON orInfo.comp_id = compInfo.comp_id
+			LEFT OUTER JOIN bc_item_info itemInfo ON orInfo.item_id = itemInfo.item_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="orderId != null and orderId != '' ">
+			AND orInfo.order_id = #{orderId} 
+		</if>
+		<if test="itemId != null and itemId != '' ">
+			AND orInfo.item_id = #{itemId}
+		</if>
+		order by createdAt desc
+	</sql>
+	
+	<!-- 수주정보 select -->
+	<select id="selectOrderList"
+		parameterType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinOrderDetailMgtDto"
+		resultType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinOrderDetailMgtDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="order_base" />
+			)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- 수주정보 select -->
+	<select id="selectOrderListCount"
+	parameterType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinOrderDetailMgtDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="order_base" />
+			)c_table
+	</select>
+	
+	<!-- 수주정보 select(order-child) -->
+	<select id="selectOrderOne"
+	parameterType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinOrderDetailMgtDto"
+		resultType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinOrderDetailMgtDto">
+				SELECT
+				<include refid="order_base" />
+	</select>
+	
+	<!-- 수주정보 입력 -->
+	<insert id="insertOrderInfo" parameterType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinOrderDetailMgtDto">
+	<selectKey keyProperty="orderId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('TESTORD') AS orderId
+	</selectKey>
+		INSERT INTO test_order_info(
+			order_id,
+			slip_num,
+			order_nm,
+			order_manager,
+			order_stdt,
+			order_eddt,
+			created_at,
+			updated_at,
+			creator_id,
+			updator_id,
+			description,
+			order_state,
+			lot_qty,
+			comp_id,
+			comp_nm,
+			comp_std_str02,
+			item_id,
+			item_nm,
+			item_std_str01,
+			item_std_str02,
+			ship_qty
+		)VALUES(
+			#{orderId},
+			#{slipNum},
+			#{orderNm},
+			#{orderManager},
+			#{orderStdt},
+			#{orderEddt},
+			NOW(),
+			NOW(),
+			#{creatorId},
+			#{updatorId},
+			#{description},
+			#{orderState},
+			#{lotQty},
+			#{compId},
+			#{compNm},
+			#{compStdStr02},
+			#{itemId},
+			#{itemNm},
+			#{itemStdStr01},
+			#{itemStdStr02},
+			#{shipQty}
+		)
+	</insert>
+	
+	<!-- 수주정보 수정 -->
+	<update id="updateOrderInfo" parameterType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinOrderDetailMgtDto">
+		UPDATE test_order_info
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="orderNm != null and orderNm != ''">	
+				,order_nm = #{orderNm}
+			</if>
+			<if test="orderManager != null and orderManager != ''">	
+				,order_manager = #{orderManager}
+			</if>
+			<if test="orderStdt != null and orderStdt != ''">	
+				,order_stdt = #{orderStdt}
+			</if>
+			<if test="orderEddt != null and orderEddt != ''">	
+				,order_eddt = #{orderEddt}
+			</if>
+			<if test="orderCost != null and orderCost != ''">	
+				,order_cost = #{orderCost}
+			</if>
+			<if test="description != null and description != ''">	
+				,description = #{description}
+			</if>
+			<if test="orderState != null and orderState != ''">	
+				,order_state = #{orderState}
+			</if>
+			<if test="lotQty != null and lotQty != ''">	
+				,lot_qty = #{lotQty}
+			</if>
+			<if test="compId != null and compId != ''">	
+				,comp_id = #{compId}
+			</if>
+			<if test="compStdStr02 != null and compStdStr02 != ''">	
+				,comp_std_str02 = #{compStdStr02}
+			</if>
+			<if test="compNm != null and compNm != ''">	
+				,comp_nm = #{compNm}
+			</if>
+			<if test="itemId != null and itemId != ''">	
+				,item_id = #{itemId}
+			</if>
+			<if test="itemNm != null and itemNm != ''">	
+				,item_nm = #{itemNm}
+			</if>
+			<if test="itemStdStr01 != null and itemStdStr01 != ''">	
+				,item_std_str01 = #{itemStdStr01}
+			</if>
+			<if test="itemStdStr02 != null and itemStdStr02 != ''">	
+				,item_std_str02 = #{itemStdStr02}
+			</if>
+			<if test="shipQty != null and shipQty != ''">	
+				,ship_qty = #{shipQty}
+			</if>
+		WHERE order_id  = #{orderId}
+	</update>
+	
+		<!-- 발주주문서 입력 -->
+	<insert id="insertOrderTie" parameterType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinOrderDetailMgtDto">
+	<selectKey keyProperty="tieId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('TIE') AS tieId
+	</selectKey>
+		INSERT INTO prs_tie_mgt(
+			tie_id,
+			order_id
+		)VALUES(
+			#{tieId},
+			#{orderId}
+	</insert>
+	
+	<!-- 발주주문서 수정 -->
+	<update id="updateOrderTie" parameterType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinOrderDetailMgtDto">
+		UPDATE prs_tie_mgt
+		SET
+			<if test="orderId != null">	
+				order_id = #{orderId}
+			</if>
+		WHERE tie_id = #{tieId}
+	</update>
+	
+	<!-- 수주정보 삭제 -->
+	<delete id="deleteOrderInfo" parameterType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinOrderDetailMgtDto">
+		DELETE FROM test_order_info
+		WHERE order_id  = #{orderId}
+	</delete>
+	
+	<!--Lot조회 -->
+	<sql id="lot_base">
+			lot.lot_seq														AS lotSeq,
+			lot.lot_id														AS lotId,
+			lot.lot_nm														AS lotNm,
+			lot.lot_code													AS lotCode,
+			lot.lot_type													AS lotType,
+			lot.lot_qty														AS lotQty,
+			IFNULL(lot_person_cost,0)										AS lotPersonCost,
+			IFNULL(lot_person_cost_after,0)									AS lotPersonCostAfter,
+			IFNULL(lot_mtrl_cost,0)											AS lotMtrlCost,
+			IFNULL(lot_mtrl_cost_after,0)									AS lotMtrlCostAfter,
+			lot.lot_pm														AS lotPm,
+			lot.lot_state													AS lotState,
+			lot.lot_desc													AS lotDesc,
+			lot.created_at													AS createdAt,
+			lot.creator_id													AS creatorId,
+			lot.updated_at													AS updatedAt,
+			lot.updator_id													AS updatorId,
+			lot.item_id														AS itemId,
+			lot.order_id													AS orderId,
+			item.item_nm													AS itemNm,
+			urInfo.user_Nm													AS lotPmNm,
+			orInfo.order_nm													AS orderNm, 
+			orInfo.order_manager											AS orderManager, 
+			orInfo.order_stdt												AS orderStdt, 
+			orInfo.order_eddt												AS orderEddt, 
+			orInfo.order_cost												AS orderCost, 
+			orInfo.comp_id													AS compId,
+			compInfo.comp_nm												AS compNm,
+			compInfo.comp_std_str02											AS compStdStr02,
+			compInfo.comp_number											AS compNumber,
+			orInfo.order_state												AS orderState, 
+			orInfo.description												AS description
+		FROM prs_lot_info lot 
+			LEFT OUTER JOIN bc_item_info item on lot.item_id = item.item_id
+			LEFT OUTER JOIN mb_user_info urInfo on lot.lot_pm = urInfo.user_id
+			LEFT OUTER JOIN prs_order_info orInfo on orInfo.order_id = lot.order_id
+			LEFT OUTER JOIN bc_company_info compInfo on compInfo.comp_id = orInfo.comp_id  
+		WHERE 1=1
+		<if test="orderId != null">	 
+			AND lot.order_id = #{orderId}
+		</if>
+		<if test="lotSeq != null and lotSeq != ''">	
+			AND lot.lot_seq = #{lotSeq}
+		</if>
+		<if test="lotState != null and lotState != ''">	
+			AND lot.lot_state = #{lotState}
+		</if>
+		<if test="lotType != null and lotType != ''">
+			AND lot.lot_type = #{lotType}
+		</if>
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="lotState == 'ord_sta00' ">	
+			AND lot.lot_state = ''
+		</if>		
+	</sql>
+
+	<!-- Lot 조회 select -->
+	<select id="selectLotList"
+		parameterType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinLotInfoDto"
+		resultType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinLotInfoDto">
+			SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="lot_base" />
+				)s_table
+				<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+					WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+				</if>
+	</select>
+	
+	<!-- Lot 조회 select(Count) -->
+	<select id="selectLotListCount"
+	parameterType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinLotInfoDto"
+		resultType="java.lang.Integer">
+		SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="lot_base" />
+			)c_table
+	</select>
+	
+	<!-- 수주에 포함된 LOT 조회(order-child) -->
+	<select id="selectOrderChild"
+		parameterType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinLotInfoDto"
+		resultType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinLotInfoDto">
+			SELECT 
+			'K'	AS action, -- 저장행위 기본상태(K인 경우 DB에 저장되지 않는다.) 
+			<include refid="lot_base" />
+	</select>
+	
+	<!-- Lot정보 입력 -->
+	<insert id="insertLotInfo" parameterType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinLotInfoDto">
+	<selectKey keyProperty="lotId" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_LOT_PK(#{compInitials})
+	</selectKey>
+		INSERT INTO prs_lot_info(
+			lot_id,
+			lot_nm,
+			lot_code,
+			lot_type,
+			lot_qty,
+			lot_original_qty,
+			lot_mtrl_cost,
+			lot_mtrl_cost_after,
+			lot_person_cost,
+			lot_person_cost_after,
+			lot_pm,
+			lot_state,
+			lot_desc,
+			created_at,
+			creator_id,
+			updated_at,
+			updator_id,
+			item_id,
+			order_id
+		)VALUES(
+			#{lotId},
+			#{lotNm},
+			#{lotCode},
+			#{lotType},
+			#{lotQty},
+			#{lotQty},
+			#{lotMtrlCost},
+			#{lotMtrlCostAfter},
+			#{lotPersonCost},
+			#{lotPersonCostAfter},
+			#{lotPm},
+			#{lotState},
+			#{lotDesc},
+			NOW(),
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			#{itemId},
+			#{orderId}
+		)
+	</insert>
+	
+	<!-- Lot정보 수정 -->
+	<update id="updateLotInfo" parameterType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinLotInfoDto">
+		UPDATE prs_lot_info
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="lotNm != null and lotNm != ''">	
+				,lot_nm = #{lotNm}
+			</if>
+			<if test="lotCode != null and lotCode != ''">	
+				,lot_code = #{lotCode}
+			</if>
+			<if test="lotType != null and lotType != ''">	
+				,lot_type = #{lotType}
+			</if>
+			<if test="lotQty != null and lotQty != ''">	
+				,lot_qty = #{lotQty}
+			</if>
+			<if test="lotMtrlCost != null and lotMtrlCost != ''">	
+				,lot_mtrl_cost = #{lotMtrlCost}
+			</if>
+			<if test="lotMtrlCostAfter != null and lotMtrlCostAfter != ''">	
+				,lot_mtrl_cost_after = #{lotMtrlCostAfter}
+			</if>
+			<if test="lotPersonCost != null and lotPersonCost != ''">	
+				,lot_person_cost = #{lotPersonCost}
+			</if>
+			<if test="lotPersonCostAfter != null and lotPersonCostAfter != ''">	
+				,lot_person_cost_after = #{lotPersonCostAfter}
+			</if>
+			<if test="lotPm != null and lotPm != ''">	
+				,lot_pm = #{lotPm}
+			</if>
+			<if test="lotState != null and lotState != ''">	
+				,lot_state = #{lotState}
+			</if>
+			<if test="lotDesc != null and lotDesc != ''">	
+				,lot_desc = #{lotDesc}
+			</if>
+			<if test="itemId != null and itemId != ''">	
+				,item_id = #{itemId}
+			</if>
+		WHERE lot_seq  = #{lotSeq}
+	</update>
+	
+	<!-- lot 착수진행 처리 -->
+	<update id="updateLotPass" parameterType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinLotInfoDto">
+		UPDATE prs_lot_info
+		SET updator_id = #{updatorId},
+			updated_at = NOW(),
+			lot_state = 'ord_sta01'
+		WHERE lot_id  = #{lotId}
+	</update>
+	
+	<!-- Lot정보 삭제 -->
+	<delete id="deleteLotInfo" parameterType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinLotInfoDto">
+		DELETE FROM prs_lot_info
+		WHERE lot_seq  = #{lotSeq}
+	</delete>
+
+<!-- 클레임에의한 Lot정보 입력 -->
+	<insert id="insertClaimReLotInfo" parameterType="jin.mes.cform.orderMgt.orderDetailMgt.KwangjinLotInfoDto">
+	<selectKey keyProperty="lotSeq" resultType="int" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
+		INSERT INTO prs_lot_info(
+			lot_id,
+			lot_nm,
+			lot_code,
+			lot_type,
+			lot_qty,
+			lot_mtrl_cost,
+			lot_mtrl_cost_after,
+			lot_person_cost,
+			lot_person_cost_after,
+			lot_pm,
+			lot_state,
+			lot_desc,
+			created_at,
+			creator_id,
+			updated_at,
+			updator_id,
+			item_id,
+			order_id
+		)VALUES(
+			#{lotId},
+			#{lotNm},
+			#{lotCode},
+			#{lotType},
+			#{lotQty},
+			#{lotMtrlCost},
+			#{lotMtrlCostAfter},
+			#{lotPersonCost},
+			#{lotPersonCostAfter},
+			#{lotPm},
+			#{lotState},
+			#{lotDesc},
+			NOW(),
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			#{itemId},
+			#{orderId}
+		)
+	</insert>
+</mapper>

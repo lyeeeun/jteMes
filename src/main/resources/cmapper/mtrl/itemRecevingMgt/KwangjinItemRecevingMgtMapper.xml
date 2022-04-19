@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingMgtMapper">
+
+	<!-- 제품 관리정보 -->
+	<sql id="itemRecevingMgt_base">
+			itemMgt.item_id AS itemId,
+			itemMgt.item_mgt_id AS itemMgtId,
+			itemMgt.item_mgt_type AS itemMgtType,
+			itemMgt.item_mfg_date AS itemMfgDate,
+			itemMgt.item_stock AS itemStock,
+			itemMgt.item_package_stock AS itemPackageStock,
+			itemMgt.description AS description,
+			itemMgt.created_at AS createdAt,
+			itemMgt.creator_id AS creatorId,
+			itemMgt.updated_at AS updatedAt,
+			itemMgt.updator_id AS updatorId,
+			itemMgt.is_del as isDel,
+			itemInfo.item_nm AS itemNm,
+			itemInfo.item_type AS itemType,
+			itemInfo.item_price AS itemPrice,
+			itemInfo.item_person_cost AS itemPersonCost,
+			itemInfo.item_std01 AS itemStd01,
+			itemInfo.item_std02 AS itemStd02,
+			itemInfo.item_std03 AS itemStd03,
+			itemInfo.item_std04 AS itemStd04,
+			itemInfo.item_std05 AS itemStd05,
+			itemInfo.item_std_str01 as itemStdStr01,
+			itemInfo.item_std_str02 as itemStdStr02,
+			itemInfo.item_std_str03 as itemStdStr03,
+			itemInfo.item_std_str04 as itemStdStr04,
+			itemInfo.item_std_str05 as itemStdStr05,
+			itemInfo.description AS itemDesc
+		FROM cm_item_mgt itemMgt
+		LEFT OUTER JOIN bc_item_info itemInfo ON itemMgt.item_id = itemInfo.item_id
+		WHERE itemInfo.is_use = TRUE
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="itemId != null">
+			AND itemMgt.item_id = #{itemId} 
+		</if>
+		<if test="itemMgtId != null">
+			AND itemMgt.item_mgt_id = #{itemMgtId}
+		</if>
+		<if test="isDel != null">
+			AND itemMgt.is_del = #{isDel}
+		</if>
+	</sql>
+	
+	<!-- 제품정보(Page) select -->
+	<select id="selectItemRecevingMgtList"
+		parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingMgtDto"
+		resultType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="itemRecevingMgt_base" />
+				)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- 자재정보(Page) select -->
+	<select id="selectStockList"
+		parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingMgtDto"
+		resultType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingMgtDto">
+		SELECT
+				<include refid="itemRecevingMgt_base" />
+	</select>
+	
+	<!-- 제품정보 Count -->
+	<select id="selectItemRecevingMgtCount"
+		parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingMgtDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="itemRecevingMgt_base" />
+			)c_table
+	</select>
+	
+		<!-- 제품 관리정보 -->
+	<sql id="itemLot_base">
+			lotInfo.lot_id				AS lotId,
+			lotInfo.lot_nm				AS lotNm,
+			lotInfo.lot_type			AS lotType,
+			lotInfo.lot_qty				AS lotQty,
+			lotInfo.lot_original_qty	AS lotOriginalQty,
+			lotInfo.lot_pm				AS lotPm,
+			urInfo.user_nm				AS lotPmNm,
+			lotInfo.lot_state			AS lotState,
+			lotInfo.created_at			AS createdAt,
+			lotInfo.creator_id			AS creatorId,
+			lotInfo.updated_at			AS updatedAt,
+			lotInfo.updator_id			AS updatorId,
+			lotInfo.item_id				AS itemId,
+			itemInfo.item_nm			AS itemNm,
+			lotInfo.order_id			AS orderId
+		
+		FROM prs_lot_info lotInfo
+		LEFT OUTER JOIN mb_user_info urInfo ON urInfo.user_id = lotInfo.lot_pm
+		LEFT OUTER JOIN bc_item_info itemInfo ON itemInfo.item_id = lotInfo.item_id
+		LEFT OUTER JOIN prs_order_info orderInfo ON lotInfo.order_id = orderInfo.order_id
+		LEFT OUTER JOIN cm_item_mgt itemMgt ON itemMgt.item_mgt_id = lotInfo.lot_id
+		WHERE 1=1
+		<if test="searchText != null and searchText != '' ">
+			AND ${searchGubun} LIKE CONCAT('%',#{searchText},'%')
+		</if>
+		<if test="orderId != null">
+			AND lotInfo.order_id = #{orderId} 
+		</if>
+		<if test="itemMgtId != null">
+			AND itemMgt.item_mgt_id = #{itemMgtId}
+		</if>
+	</sql>
+	
+	<!-- 제품정보(Page) select -->
+	<select id="selectItemLotList"
+		parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingMgtDto"
+		resultType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingMgtDto">
+		SELECT * FROM (
+				SELECT 
+					<choose>
+						<when test="sort != null and sort != '' ">
+							ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+						</when>
+						<otherwise>
+							ROW_NUMBER() OVER(ORDER BY updatedAt desc) AS RNUM,
+						</otherwise>
+					</choose>
+					<include refid="itemLot_base" />
+				)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+	
+	<!-- 제품정보 Count -->
+	<select id="selectItemLotCount"
+		parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingMgtDto"
+		resultType="java.lang.Integer">
+			SELECT count(*) 
+			FROM (
+				SELECT
+				<include refid="itemLot_base" />
+			)c_table
+	</select>
+	
+	<!-- 제품정보 입력 -->
+	<insert id="insertItemRecevingMgt" parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingMgtDto">
+		INSERT INTO cm_item_mgt(
+			item_id,
+			order_id,
+			item_mgt_id,
+			item_mgt_type,
+			item_mfg_date,
+			item_stock,
+			description,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at,
+			is_del
+		) VALUES(
+			#{itemId},
+			#{orderId},
+			#{itemMgtId},
+			#{itemMgtType},
+			NOW(),
+			#{itemStock},
+			#{description},
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			NOW(),
+			FALSE
+		)
+	</insert>
+	<!-- 제품 정보수정 -->
+	<update id="updateItemRecevingMgt" parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingMgtDto">
+		UPDATE cm_item_mgt
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="itemStock != null">	
+				,item_stock = #{itemStock}
+			</if>
+			<if test="description != null">	
+				,description = #{description}
+			</if>
+		WHERE item_mgt_id = #{itemMgtId}
+	</update>
+	
+	<delete id="deleteItemStock" parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingMgtDto">
+		DELETE FROM cm_item_mgt
+		WHERE 1=1
+		AND item_mgt_id = #{itemMgtId}
+	</delete>
+	
+		<!-- 제품입고 정보 select -->
+	<select id="selectItemLotDupleKeyCount"
+	parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingMgtDto"
+		resultType="java.lang.Integer">
+			SELECT COUNT(*) 
+			FROM cm_item_mgt
+			WHERE item_id = #{itemId}
+			AND item_mgt_id = #{itemMgtId}
+	</select>
+	
+	<!-- 제품 사용 히스토리-->
+	<sql id="itemReceving_history">
+			itemId,
+			itemMgtId,
+			orderId,
+			itemQtyTarget,
+			itemQtyTargetCode,
+			itemQtyTotal,
+			itemQtyDesc,	
+			itemQtyPgCd,
+			itemQtyDate,
+			itemQtyUser,
+			itemQtyUserNm
+		FROM (
+			-- 생산
+			SELECT 
+				qmItem.item_id					AS itemId,				-- 제품 코드
+				qmItem.item_mgt_id				AS itemMgtId,			-- 개별 품목 코드
+				qmItem.order_id					AS orderId,				-- 수주 코드
+				qmItem.item_qty_target 			AS itemQtyTarget,		-- 업무 구불
+				qmItem.item_qty_target_code		AS itemQtyTargetCode,	-- 업무 코드 
+				qmItem.item_qty_total			AS itemQtyTotal,		-- 수량
+				'제조 완료'						AS itemQtyDesc,			-- 비고
+				qmItem.item_mgt_id				AS itemQtyPgCd,			
+				qmItem.item_qty_date			AS itemQtyDate,			-- 제조 완료 일자 
+				manual.manual_user				AS itemQtyUser,			-- 작업자(등록자)
+				urInfo.user_nm					AS itemQtyUserNm		-- 작업자 이름
+			FROM qm_item_mgt qmItem
+			LEFT OUTER JOIN qm_manual_info manual ON qmItem.item_qty_target_code = manual.manual_id
+			LEFT OUTER JOIN mb_user_info urInfo ON manual.manual_user = urInfo.user_id
+			LEFT OUTER JOIN bc_item_info itemInfo ON qmItem.item_id = itemInfo.item_id
+			LEFT OUTER JOIN prs_order_info orInfo ON itemInfo.item_id = orInfo.item_id
+			WHERE 1=1
+			AND item_qty_target = 'prod_tagt01'
+			AND item_mgt_id = #{itemMgtId}
+			
+			UNION
+			
+			-- 출하
+			SELECT 
+				qmItem.item_id				AS itemId,
+				qmItem.item_mgt_id				AS itemMgtId,			-- 개별 품목 코드
+				qmItem.order_id				AS orderId,
+				qmItem.item_qty_target 			AS itemQtyTarget,		-- 업무 구불
+				qmItem.item_qty_target_code		AS itemQtyTargetCode,	-- 업무 코드 
+				qmItem.item_qty_total			AS itemQtyTotal,		-- 수량
+				'출하 완료'						AS itemQtyDesc,			-- 비고
+				qmItem.item_mgt_id				AS itemQtyPgCd,			
+				qmItem.item_qty_date			AS itemQtyDate,			-- 제조 완료 일자 
+				manual.manual_user				AS itemQtyUser,			-- 작업자(등록자)
+				urInfo.user_nm					AS itemQtyUserNm		-- 작업자 이름
+			FROM qm_item_mgt qmItem
+			LEFT OUTER JOIN qm_manual_info manual ON qmItem.item_qty_target_code = manual.manual_id
+			LEFT OUTER JOIN mb_user_info urInfo ON manual.manual_user = urInfo.user_id
+			LEFT OUTER JOIN bc_item_info itemInfo ON qmItem.item_id = itemInfo.item_id
+			LEFT OUTER JOIN prs_order_info orInfo ON itemInfo.item_id = orInfo.item_id
+			WHERE 1=1
+			AND item_qty_target = 'prod_tagt02'
+			AND item_mgt_id = #{itemMgtId}
+
+			UNION
+			
+			-- 불량1	
+			SELECT 
+				DISTINCT
+				qmItem.item_id				AS itemId,
+				qmItem.item_mgt_id				AS itemMgtId,			-- 개별 품목 코드
+				qmItem.order_id				AS orderId,
+				qmItem.item_qty_target 			AS itemQtyTarget,		-- 업무 구불
+				qmItem.item_qty_target_code		AS itemQtyTargetCode,	-- 업무 코드 
+				qmItem.item_qty_total			AS itemQtyTotal,		-- 수량
+				badItem.bad_desc				AS itemDesc,			-- 비고
+				badItem.bad_target_code			AS itemQtyPgCd,			-- 작업 코드(작업, 출하)
+				badItem.chk_date				AS itemQtyDate,			-- 검사일
+				badItem.chk_user				AS itemQtyUser,			-- 검사자
+				urInfo.user_nm					AS itemQtyUserNm		-- 검사자 이름
+			FROM qm_item_mgt qmItem
+			INNER JOIN prs_bad_product badItem ON qmItem.item_qty_target_code = badItem.bad_target_code OR qmItem.item_qty_target_code = badItem.bad_id
+			LEFT OUTER JOIN mb_user_info urInfo ON urInfo.user_id = badItem.chk_user
+			LEFT OUTER JOIN bc_item_info itemInfo ON qmItem.item_id = itemInfo.item_id
+			LEFT OUTER JOIN prs_order_info orInfo ON itemInfo.item_id = orInfo.item_id
+			WHERE 1=1
+			AND badItem.bad_target != 'qual_spec01'	
+			AND item_mgt_id = #{itemMgtId}
+					
+			UNION
+			
+			-- 불량2
+			SELECT 
+				DISTINCT
+				qmItem.item_id				AS itemId,
+				qmItem.item_mgt_id				AS itemMgtId,			-- 개별 품목 코드
+				qmItem.order_id 			AS orderId,
+				qmItem.item_qty_target 			AS itemQtyTarget,		-- 업무 구불
+				qmItem.item_qty_target_code		AS itemQtyTargetCode,	-- 업무 코드 
+				qmItem.item_qty_total			AS itemQtyTotal,		-- 수량
+				badItem.bad_desc				AS itemDesc,			-- 비고
+				badItem.bad_target_code			AS itemQtyPgCd,			-- 작업 코드(작업, 출하)
+				badItem.chk_date				AS itemQtyDate,			-- 검사일
+				badItem.chk_user				AS itemQtyUser,			-- 검사자
+				urInfo.user_nm					AS itemQtyUserNm		-- 검사자 이름
+			FROM qm_item_mgt qmItem
+			INNER JOIN prs_bad_product badItem ON qmItem.item_qty_target_code = badItem.bad_target_code OR qmItem.item_qty_target_code = badItem.bad_id
+			LEFT OUTER JOIN mb_user_info urInfo ON urInfo.user_id = badItem.chk_user
+			LEFT OUTER JOIN bc_item_info itemInfo ON qmItem.item_id = itemInfo.item_id
+			LEFT OUTER JOIN prs_order_info orInfo ON itemInfo.item_id = orInfo.item_id
+			WHERE 1=1
+			AND badItem.bad_target != 'qual_spec03'	
+			AND item_mgt_id = #{itemMgtId}
+		)u_table
+		WHERE 1=1
+	</sql>
+
+
+		<!-- 제품구매업체(Page) select -->
+	<select id="selectItemRecevingHisList"
+		parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingHisDto"
+		resultType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingHisDto">
+		SELECT * FROM (
+			SELECT 
+				<choose>
+					<when test="sort != null and sort != '' ">
+						ROW_NUMBER() OVER(ORDER BY ${sort}) AS RNUM,
+					</when>
+					<otherwise>
+						ROW_NUMBER() OVER(ORDER BY itemQtyDate desc) AS RNUM,
+					</otherwise>
+				</choose>
+				<include refid="itemReceving_history" />
+			)s_table
+			<if test="firstIndex != null and firstIndex != 0 and lastIndex != null and lastIndex != 0 ">
+				WHERE RNUM <![CDATA[ >= ]]> #{firstIndex} AND RNUM <![CDATA[ <= ]]> #{lastIndex}
+			</if>
+	</select>
+
+	<!-- 제품구매업체 Count -->
+	<select id="selectItemRecevingHisCount"
+		parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingHisDto"
+		resultType="java.lang.Integer">
+				SELECT count(*) 
+				FROM (
+					SELECT
+					<include refid="itemReceving_history" />
+				)c_table
+	</select>
+	
+	<!-- 제품 입고/사용 총수량 -->
+	<select id="selectItemRecevingHisTotal"
+		parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingHisDto"
+		resultType="int">
+		SELECT IFNULL(SUM(item_qty_total),0) AS itemQtyTotal FROM qm_item_mgt
+		WHERE item_mgt_id = #{itemMgtId}	
+	</select>
+
+	<!-- 제품 수량 관리 등록 -->
+	<insert id="insertItemRecevingHis" parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingHisDto">
+		INSERT INTO qm_item_mgt(
+			item_id,
+			item_mgt_id,
+			order_id,
+			item_qty_user,
+			item_qty_target,
+			item_qty_target_code,
+			item_qty_total,
+			item_qty_date
+		) VALUES(
+			#{itemId},
+			#{itemMgtId},
+			#{orderId},
+			#{itemQtyUser},
+			#{itemQtyTarget},
+			#{itemQtyTargetCode},
+			#{itemQtyTotal},
+			#{itemQtyDate}
+		)
+	</insert>
+	
+	<!-- 제품 수량 관리 수정 -->
+	<update id="updateItemRecevingHis" parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingHisDto">
+		UPDATE qm_item_mgt
+		SET item_qty_total = #{itemQtyTotal} 
+		WHERE item_qty_target = #{itemQtyTarget} AND item_qty_target_code  = #{itemQtyTargetCode} AND item_mgt_id  = #{itemMgtId}
+	</update>
+	
+	<!-- 제품 수량 관리 삭제 -->
+	<delete id="deleteItemRecevingHis" parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingHisDto">
+		DELETE FROM qm_item_mgt
+		WHERE item_qty_target = #{itemQtyTarget} AND item_qty_target_code  = #{itemQtyTargetCode} AND item_mgt_id  = #{itemMgtId}
+	</delete>
+	
+	
+	<!-- 제품 히스토리 수동입력 -->
+	<insert id="insertManualInfo" parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingHisDto">
+	<selectKey keyProperty="itemQtyTargetCode" resultType="java.lang.String" order="BEFORE">
+		SELECT CREATE_PK('MANUAL') AS itemQtyTargetCode
+	</selectKey>
+		INSERT INTO qm_manual_info(
+			manual_id,
+			manual_cnt,
+			manual_at,
+			manual_user,
+			creator_id,
+			created_at,
+			updator_id,
+			updated_at,
+			manual_desc,
+			lot_id
+		)VALUES(
+			#{itemQtyTargetCode},
+			#{itemQtyTotal},
+			NOW(),
+			#{itemQtyUser},
+			#{creatorId},
+			NOW(),
+			#{updatorId},
+			NOW(),
+			#{itemQtyDesc},
+			#{itemQtyPgCd}
+		)
+	</insert>
+	
+		<!-- 제품 히스토리 수동수정 -->
+	<update id="updateManualInfo" parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingHisDto">
+		UPDATE qm_manual_info
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="itemQtyTotal != null">	
+				,manual_cnt = #{itemQtyTotal}
+			</if>
+			<if test="itemQtyDate != null">	
+				,manual_at = #{itemQtyDate}
+			</if>
+			<if test="itemQtyUser != null">	
+				,manual_user = #{itemQtyUser}
+			</if>
+			<if test="itemQtyDesc != null">	
+				,manual_desc = #{itemQtyDesc}
+			</if>
+			<if test="itemQtyPgCd != null">	
+				,lot_id = #{itemQtyPgCd}
+			</if>
+		WHERE manual_id  = #{itemQtyTargetCode} 
+	</update>
+	
+	
+	<!-- 제품 히스토리 수동 삭제-->
+	<delete id="deleteManualInfo" parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingHisDto">
+		DELETE FROM qm_manual_info
+		WHERE manual_id  = #{itemQtyTargetCode}
+	</delete>
+	
+		<!-- 반납 or 모두사용 -->
+	<update id="updateItemRecevingMgtIsDel" parameterType="jin.mes.cform.mtrl.itemRecevingMgt.KwangjinItemRecevingMgtDto">
+		UPDATE cm_item_mgt
+		SET updator_id = #{updatorId},	
+			updated_at = NOW()
+			<if test="isDel != null">	
+				,is_del = #{isDel}
+			</if>
+		WHERE item_mgt_id  = #{itemMgtId}
+	</update>	
+</mapper>
