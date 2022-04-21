@@ -152,8 +152,8 @@ this.lfn_jtePop_set = function(mode,selectedItem){
 		//그리드 세팅
 		gfn_resizePop(lfo_common.popId, {width:750,height:650});
 		$("#jtePopForm_grid").html("");
-		lfn_jtePopGrd_setGrd();		
+		lfn_jtePopGrd_setGrd();
 	}
 }
-
+/*github test*/
 </script>
