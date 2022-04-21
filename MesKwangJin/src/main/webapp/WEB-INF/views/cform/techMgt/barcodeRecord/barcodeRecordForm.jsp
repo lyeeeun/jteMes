@@ -110,7 +110,7 @@ this.lfn_jtePop_open = function(mode, selectedItem){
 		width: "705px", 
 		height: "700px",
 		id:lfo_common.popId,
-		title: "바코드 조회",
+		title: "바코드 조회중",
 		resizable : true,
 		animation:{open :{effects:"expand:vertical fadeIn"},
 		close :{effects:"expand:vertical fadeIn", reverse: true}},
